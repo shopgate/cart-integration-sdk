@@ -13,14 +13,14 @@ include_once dirname(__FILE__).DS.'vendors'.DS.'shopgate_qr_encoder'.DS.'qr_enco
 
 try {
 	$config = ShopgateConfig::validateAndReturnConfig();
-	
+
 	$plugin = $config["plugin"];
-	
+
 	if(file_exists(SHOPGATE_BASE_DIR.'/plugins/'.$plugin)
 	&& file_exists(SHOPGATE_BASE_DIR.'/plugins/'.$plugin.'/includes.php')) {
 		include_once SHOPGATE_BASE_DIR.'/plugins/'.$plugin.'/includes.php';
 	}
-	
+
 } catch (Exception $e) {
-	
+	var_dump($e->getMessage());
 }
