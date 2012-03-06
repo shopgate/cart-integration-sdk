@@ -37,7 +37,7 @@ function sg_json_encode($array) {
 		$string = json_encode($array);
 	} else {
 		if(!class_exists("Services_JSON"))
-			require_once dirname(__FILE__).'/../ext/JSON.php';
+			require_once dirname(__FILE__).'/../vendors/JSON.php';
 		$json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
 		$string = $json->encode($array);
 	}
@@ -51,7 +51,7 @@ function sg_json_decode($json, $assoc = false) {
 		$array = json_decode($json, $assoc);
 	} else {
 		if(!class_exists("Services_JSON"))
-			require_once dirname(__FILE__).'/../ext/JSON.php';
+			require_once dirname(__FILE__).'/../vendors/JSON.php';
 
 		$jsonUse = SERVICES_JSON_IN_OBJ;
 		if($assoc) $jsonUse = SERVICES_JSON_LOOSE_TYPE;
@@ -320,14 +320,14 @@ class ShopgateConfig {
 		////////////////////////////////////////////////////////////////////////
 		if(!empty($newConfig["server"]) && $newConfig["server"] === "pg") {
 			// Playground?
-			self::$config["api_url"] = "https://api.shopgatepg.com/shopgateway/api/";
+			self::$config["api_url"] = "https://api.shopgatepg.com/merchant_api/";
 		} else if(!empty($newConfig["server"]) && $newConfig["server"] === "custom"
 		&& !empty($newConfig["server_custom_url"])) {
 			// Eigener Test-Server?
 			self::$config["api_url"] = $newConfig["server_custom_url"];
 		} else {
 			// Live-Server?
-			self::$config["api_url"] = "https://api.shopgate.com/shopgateway/api/";
+			self::$config["api_url"] = "https://api.shopgate.com/merchant_api/";
 		}
 	}
 
@@ -479,7 +479,7 @@ class ShopgateLibrary extends ShopgateObject {
 			'get_shop_info',
 			'add_order',
 			'update_order',
-			'connect',
+			'get_customer',
 			'get_items_csv',
 			'get_categories_csv',
 			'get_reviews_csv',
@@ -558,7 +558,7 @@ class ShopgateLibrary extends ShopgateObject {
 
 			$this->{$actionCamelCase}();
 		} catch (Exception $e) {
-			header('HTTP/1.0 500 ShopgateFrameowrkException Throwed', true, 500);
+			header('HTTP/1.0 500 ShopgateLibraryException Throwed', true, 500);
 
 			// Abfangen einer beliebigen Excpetion innerhalb eines Plugins.
 			// Der Fehler wird an den Serve zurückgegeben
@@ -665,8 +665,8 @@ class ShopgateLibrary extends ShopgateObject {
 		function getPermissions() {
 			$permissions = array();
 			$files = array(
-				SHOPGATE_BASE_DIR."/config.php",
-				SHOPGATE_BASE_DIR."/myconfig.php",
+				SHOPGATE_BASE_DIR."/config/config.php",
+				SHOPGATE_BASE_DIR."/config/myconfig.php",
 				SHOPGATE_BASE_DIR."/temp/",
 				SHOPGATE_BASE_DIR."/temp/cache/",
 			);
@@ -786,9 +786,9 @@ class ShopgateLibrary extends ShopgateObject {
 		}
 
 		// Die Userdaten über das Plugin auslesen
-		$userData = $this->plugin->getUserData($this->params['user'], $this->params['pass']);
+		$userData = $this->plugin->getCustomer($this->params['user'], $this->params['pass']);
 
-		if(!is_object($userData) || get_class($userData) !== "ShopgateShopCustomer") {
+		if(!is_object($userData) || get_class($userData) !== "ShopgateCustomer") {
 			throw new ShopgateLibraryException("Das zurückgegebene Format ist ungültig.");
 		}
 
@@ -825,7 +825,7 @@ class ShopgateLibrary extends ShopgateObject {
 
 		if($generate_csv) {
 			// CSV-Datei erstellen/updaten
-			$this->plugin->startCreateItemsCsv();
+			$this->plugin->startGetItemsCsv();
 		}
 
 		if(!file_exists($fileName)) {
@@ -863,7 +863,7 @@ class ShopgateLibrary extends ShopgateObject {
 // 		$this->plugin = ShopgatePluginCore::newInstance($this->config);
 
 		// CSV-Datei erstellen/updaten
-		$this->plugin->startCreateCategoriesCsv();
+		$this->plugin->startGetCategoriesCsv();
 
 		if(!file_exists($fileName)) {
 			throw new ShopgateLibraryException("Datei $fileName konnte nicht gefunden werden.");
@@ -904,7 +904,7 @@ class ShopgateLibrary extends ShopgateObject {
 		$fileName = ShopgateConfig::getReviewsCsvFilePath();
 
 		$Plugin = ShopgatePluginCore::newInstance($this->config);
-		$Plugin->startCreateReviewsCsv();
+		$Plugin->startGetReviewsCsv();
 
 		if(!file_exists($fileName)) {
 			throw new ShopgateLibraryException("Datei $fileName nicht gefunden");
@@ -997,11 +997,15 @@ class ShopgateMerchantApi extends ShopgateObject {
  * <code>
  * class ShopgatePlugin extends ShopgatePluginCore {
  *	public function getUserData($user, $pass) {}
+ *	public function getOrders() {}
  *	public function addOrder(ShopgateOrder $order) {}
+ *	public function updateOrder(ShopgateOrder $order) {}
  *	protected function createItemsCSV() {}
  *	protected function createCategoriesCSV() {}
  *	protected function createReviewsCSV() {}
  *	protected function createPagesCSV() {}
+ *	protected function createCustomer() {}
+ * 
  * }
  * </code>
  *
@@ -1162,13 +1166,13 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 	 *
 	 * @throws ShopgateLibraryException
 	 */
-	public final function startCreateItemsCsv() {
+	public final function startGetItemsCsv() {
 		$this->createBuffer(ShopgateConfig::getItemsCsvFilePath());
 		$this->createItemsCsv(); // CSV-Datei mit Buffer schreiben
 		$this->finishBuffer(ShopgateConfig::getItemsCsvFilePath());
 	}
 
-	public final function startCreateCategoriesCsv() {
+	public final function startGetCategoriesCsv() {
 		$this->createBuffer(ShopgateConfig::getCategoriesCsvFilePath());
 		$this->createCategoriesCsv(); // CSV-Datei mit Buffer schreiben
 		$this->finishBuffer(ShopgateConfig::getCategoriesCsvFilePath());
@@ -1182,7 +1186,7 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 	 *
 	 * @throws ShopgateLibraryException
 	 */
-	public final function startCreateReviewsCsv() {
+	public final function startGetReviewsCsv() {
 		$this->createBuffer(ShopgateConfig::getReviewsCsvFilePath());
 		$this->createReviewsCsv(); // CSV-Datei mit Buffer schreiben
 		$this->finishBuffer(ShopgateConfig::getReviewsCsvFilePath());
@@ -1197,7 +1201,7 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 	 * @throws ShopgateLibraryException
 	 *
 	 */
-	public final function startCreatePagesCsv() {
+	public final function startGetPagesCsv() {
 		$this->createBuffer(ShopgateConfig::getPagesCsvFilePath());
 		$this->createPagesCsv(); // CSV-Datei mit Buffer schreiben
 		$this->finishBuffer(ShopgateConfig::getReviewsCsvFilePath());
@@ -1529,9 +1533,9 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 	 *
 	 * @param String $user
 	 * @param String $pass
-	 * @return ShopgateShopCustomer
+	 * @return ShopgateCustomer
 	 */
-	public abstract function getUserData($user, $pass);
+	public abstract function getCustomer($user, $pass);
 
 	/**
 	 * <p>Diese Funktion speichert eine Bestellung in Ihre Datenbank. Das Object $order enthält alle
@@ -1575,9 +1579,9 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 	 * @throws ShopgateLibraryException
 	 * @example plugins/plugin_example.inc.php
 	 */
-	protected abstract function createItemsCsv();
+	protected abstract function getItemsCsv();
 
-	protected abstract function createCategoriesCsv();
+	protected abstract function getCategoriesCsv();
 
 	/**
 	 * Erzeugt die CSV-Datei mit den Produktberwertungen
@@ -1585,15 +1589,15 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 	 * @throws ShopgateLibraryException
 	 * @example plugins/plugin_example.inc.php
 	 */
-	protected abstract function createReviewsCsv();
-
+	protected abstract function getReviewsCsv();
+	
 	/**
 	 * Erzeugt die CSV-Datei mit den Zusatztexten für Produkte
 	 *
 	 * @throws ShopgateLibraryException
 	 * @example plugins/plugin_example.inc.php
 	 */
-	protected abstract function createPagesCsv();
+	protected abstract function getPagesCsv();
 
 	/**
 	 * Erstellt Informationen ueber das verwendete Shopsystem
