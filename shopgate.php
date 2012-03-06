@@ -9,6 +9,8 @@ require_once(dirname(__FILE__).DS.'vendors'.DS.'2d_is.php');
 require_once(dirname(__FILE__).DS.'vendors'.DS.'JSON.php');
 require_once(dirname(__FILE__).DS.'vendors'.DS.'mobile_redirect.class.php');
 
+include_once dirname(__FILE__).DS.'vendors'.DS.'shopgate_qr_encoder'.DS.'qr_encoder.php';
+
 try {
 	$config = ShopgateConfig::validateAndReturnConfig();
 	
