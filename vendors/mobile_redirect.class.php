@@ -1,6 +1,6 @@
 <?php
 
-include_once dirname(__FILE__).'/../includes.php';
+include_once dirname(__FILE__).'/../shopgate.php';
 
 /**
  * Manage and create the JavaScript for redirect to mobile-site
