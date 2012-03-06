@@ -108,10 +108,10 @@ class ShopgateLibraryException extends Exception {
 ###################################################################################
 
 if(!isset($shopgate_config)) {
-	if (file_exists(SHOPGATE_BASE_DIR.'/myconfig.php')) {
-		require_once SHOPGATE_BASE_DIR.'/myconfig.php';
-	} else if (file_exists(SHOPGATE_BASE_DIR.'/config.php')) {
-		require_once SHOPGATE_BASE_DIR.'/config.php';
+	if (file_exists(SHOPGATE_BASE_DIR.DS.'config'.DS.'myconfig.php')) {
+		require_once SHOPGATE_BASE_DIR.DS.'config'.DS.'myconfig.php';
+	} else if (file_exists(SHOPGATE_BASE_DIR.DS.'config'.DS.'config.php')) {
+		require_once SHOPGATE_BASE_DIR.DS.'config'.DS.'config.php';
 	}
 }
 
@@ -458,7 +458,7 @@ class ShopgateLibrary extends ShopgateObject {
 	 * Das Plugin für das jeweilige Shopping-System, das passende
 	 * Plugin wird entsprechend der Config geladen.
 	 *
-	 * @var ShopgatePluginCore
+	 * @var ShopgatePluginApi
 	 */
 	private $plugin;
 
@@ -495,18 +495,20 @@ class ShopgateLibrary extends ShopgateObject {
 	 */
 	private $response = array();
 
-	public static function &getInstance() {
+	public static function &getInstance($shopgatePluginApi) {
 		if (empty(self::$singleton)) {
-			self::$singleton = new self();
+			self::$singleton = new self($shopgatePluginApi);
 		}
 		
 		return self::$singleton;
 	}
 	
-	public function __construct() {
+	public function __construct($shopgatePluginApi) {
 		// Übergebene Parameter importieren
 		$this->params = $_REQUEST;
 
+		$this->plugin = $shopgatePluginApi;
+		
 		$this->response["is_error"] = 0;
 		$this->response["error_text"] = "";
 		$this->response["version"] = SHOPGATE_PLUGIN_VERSION;
@@ -534,7 +536,7 @@ class ShopgateLibrary extends ShopgateObject {
 			$this->config = ShopgateConfig::validateAndReturnConfig();
 
 			// Plugin-Datei laden
-			$this->plugin = ShopgatePluginCore::newInstance($this->config);
+			//$this->plugin = ShopgatePluginCore::newInstance($this->config);
 
 			if(!empty($this->params["use_errorhandler"]))
 				set_error_handler('ShopgateErrorHandler');
@@ -1057,9 +1059,9 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 	public $splittetExport = false;
 
 	public function __construct($config) {
-		$this->core = ShopgateLibrary::getInstance();
+		$this->core = ShopgateLibrary::getInstance($this);
 		
-		if(!$Instance->setConfig($config)) {
+		if(!$this->setConfig($config)) {
 			throw new ShopgateLibraryException("Config-Datei konnte nicht initialisiert werden");
 		}
 		
@@ -1069,7 +1071,7 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 		}
 
 		// Muss das Wort "true" in der überschriebenen startup() zurückgeben
-		if($Instance->startup() !== true) {
+		if($this->startup() !== true) {
 			throw new ShopgateLibraryException("Plugin konnte nicht initialisiert werden ");
 		}
 	}
@@ -1090,6 +1092,15 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 	 * hier evtl. eigene Variablen zu initialisieren, oder die
 	 * Verbindung zu einer Datenbank aufzubauen etc..
 	 *
+	 */
+	public function startup() {
+
+		return true;
+	}	
+	
+	/**
+	 * Wird bei jedem Request aufgerufen und leitet die Anfrage zum Framework weiter, 
+	 * damit dieses dann die Anfrage weiter bearbeiten kann. 
 	 */	
 	public function handleRequest($data = array()) {
 		
@@ -1105,6 +1116,43 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 
 		return $shopInfo;
 	}
+	
+	/**
+	 * Erstellt eine neue Datei und einen neuen Buffer für Schreibzugriffe in diese Datei
+	 *
+	 * @param String $filePath   - Der Pfad zu der zuerzeugenden Datei (ohne .tmp)
+	 * @param Boolean $createTempFile  -  Erzeugt eine .tmp
+	 */
+	private final function createBuffer($filePath){
+		$timeStart = time();
+		$filePath .= ".tmp";
+		
+		$this->log(basename($filePath).' wird erstellt', "access");
+		
+		$this->fileHandle = @fopen($filePath, 'w');
+		if(!$this->fileHandle) {
+			throw new ShopgateLibraryException("Datei $filePath konnte nicht geöffnet/erstellt werden");
+		}
+		$this->buffer = array();
+	}
+	
+	/**
+	 * Schließt die Datei und leert den Buffer
+	 *
+	 * @param String $filePath  Der Pfad der zu erzeugten Datei (ohne .tmp)
+	 * @param Boolean $isTempFile  Es handelt sich um eine .tmp - Datei. Die Datei wird umbenannt von $filePath.tmp in $filePath
+	 * @param Boolean $saveOldFile
+	 */
+	private final function finishBuffer($filePath){
+		$this->flushBuffer(); // Evtl. noch nicht gespeicherte Daten im Buffer schreiben
+		fclose($this->fileHandle);
+
+		rename($filePath.".tmp", $filePath);
+		
+		$this->log('Fertig, '.basename($filePath).' wurde erfolgreich erstellt', "access");
+		$duration = time() - $timeStart;
+		$this->log("Dauer: $duration Sekunden", "access");
+	}
 
 	/**
 	 * Starte das Erstellen der items.csv.
@@ -1115,53 +1163,15 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 	 * @throws ShopgateLibraryException
 	 */
 	public final function startCreateItemsCsv() {
-
-		$this->log('items.csv wird erstellt', "access");
-		$timeStart = time();
-		$filePath = ShopgateConfig::getItemsCsvFilePath();
-		$tmpFilePath = $filePath.".tmp";
-		$this->fileHandle = @fopen($tmpFilePath, 'w');
-		if(!$this->fileHandle) {
-			throw new ShopgateLibraryException("Datei $tmpFilePath konnte nicht geöffnet/erstellt werden");
-		}
-
+		$this->createBuffer(ShopgateConfig::getItemsCsvFilePath());
 		$this->createItemsCsv(); // CSV-Datei mit Buffer schreiben
-
-		$this->flushBuffer(); // Evtl. noch nicht gespeicherte Daten im Buffer schreiben
-
-		fclose($this->fileHandle);
-
-		if(file_exists($filePath)) rename($filePath, $filePath.".old");
-		rename($tmpFilePath, $filePath);
-
-		$this->log('Fertig, items.csv wurde erfolgreich erstellt', "access");
-		$duration = time() - $timeStart;
-		$this->log("Dauer: $duration Sekunden", "access");
+		$this->finishBuffer(ShopgateConfig::getItemsCsvFilePath());
 	}
 
 	public final function startCreateCategoriesCsv() {
-
-		$this->log('categories.csv wird erstellt', "access");
-		$timeStart = time();
-		$filePath = ShopgateConfig::getCategoriesCsvFilePath();
-		$tmpFilePath = $filePath.".tmp";
-		$this->fileHandle = @fopen($tmpFilePath, 'w');
-		if(!$this->fileHandle) {
-			throw new ShopgateLibraryException("Datei $tmpFilePath konnte nicht geöffnet/erstellt werden");
-		}
-
+		$this->createBuffer(ShopgateConfig::getCategoriesCsvFilePath());
 		$this->createCategoriesCsv(); // CSV-Datei mit Buffer schreiben
-
-		$this->flushBuffer(); // Evtl. noch nicht gespeicherte Daten im Buffer schreiben
-
-		fclose($this->fileHandle);
-
-		if(file_exists($filePath)) rename($filePath, $filePath.".old");
-		rename($tmpFilePath, $filePath);
-
-		$this->log('Fertig, categories.csv wurde erfolgreich erstellt', "access");
-		$duration = time() - $timeStart;
-		$this->log("Dauer: $duration Sekunden", "access");
+		$this->finishBuffer(ShopgateConfig::getCategoriesCsvFilePath());
 	}
 
 	/**
@@ -1173,27 +1183,9 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 	 * @throws ShopgateLibraryException
 	 */
 	public final function startCreateReviewsCsv() {
-		$this->log('reviews.csv wird erstellt', 'access');
-		$timeStart = time();
-
-		$filePath = ShopgateConfig::getReviewsCsvFilePath();
-		$this->fileHandle = @fopen($filePath, 'w');
-		if(!$this->fileHandle) {
-			$this->_error("Datei $filePath konnte nicht geöffnet/erstellt werden");
-		}
-		$this->buffer = array();
-		try {
-			$this->createReviewsCsv(); // CSV-Datei mit Buffer schreiben
-			$this->flushBuffer(); // Evtl. noch nicht gespeicherte Daten im Buffer schreiben
-		} catch (ShopgateLibraryException $e) {
-			$this->log("Fehler beim erstellen der ReviewCsv. ". print_r($e, true));
-		}
-
-		fclose($this->fileHandle);
-
-		$this->log('Fertig, reviews.csv wurde erfolgreich erstellt', 'access');
-		$duration = time() - $timeStart;
-		$this->log("Dauer: $duration Sekunden", 'access');
+		$this->createBuffer(ShopgateConfig::getReviewsCsvFilePath());
+		$this->createReviewsCsv(); // CSV-Datei mit Buffer schreiben
+		$this->finishBuffer(ShopgateConfig::getReviewsCsvFilePath());
 	}
 
 	/**
@@ -1206,27 +1198,9 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 	 *
 	 */
 	public final function startCreatePagesCsv() {
-		$this->log('pages.csv wird erstellt', 'access');
-		$timeStart = time();
-
-		$filePath = ShopgateConfig::getPagesCsvFilePath();
-		$this->fileHandle = @fopen($filePath, 'w');
-		if(!$this->fileHandle) {
-			$this->_error("Datei $filePath konnte nicht geöffnet/erstellt werden");
-		}
-
-		try {
-			$this->createPagesCsv(); // CSV-Datei mit Buffer schreiben
-			$this->flushBuffer(); // Evtl. noch nicht gespeicherte Daten im Buffer schreiben
-		} catch (ShopgateLibraryException $e) {
-			$this->log("Fehler beim erstellen der Pages-CSV. ". print_r($e, true));
-		}
-
-		fclose($this->fileHandle);
-
-		$this->log('Fertig, pages.csv wurde erfolgreich erstellt', 'access');
-		$duration = time() - $timeStart;
-		$this->log("Dauer: $duration Sekunden", 'access');
+		$this->createBuffer(ShopgateConfig::getPagesCsvFilePath());
+		$this->createPagesCsv(); // CSV-Datei mit Buffer schreiben
+		$this->finishBuffer(ShopgateConfig::getReviewsCsvFilePath());
 	}
 
 	/**
