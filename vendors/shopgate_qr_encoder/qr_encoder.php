@@ -1,6 +1,6 @@
 <?php
 
-include_once (dirname(__FILE__).'/../../ext/phpqrcode/qrlib.php');
+include_once (dirname(__FILE__).'/../phpqrcode/qrlib.php');
 
 class QrEncoder{
 
