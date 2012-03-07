@@ -1022,7 +1022,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	 */
 	public function __construct() {
 		$this->config = ShopgateConfig::validateAndReturnConfig();
-	}	
+	}
 	
 	/**
 	 * Führt alle Abfragen an der ShopgateMerchantApi durch.
@@ -1121,7 +1121,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 		);
 
 		return $this->_execute($data);
-	}	
+	}
 	
 	/**
 	 * Eine Bestellung als abgeschlossen markieren
@@ -1271,7 +1271,7 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 	 * damit dieses dann die Anfrage weiter bearbeiten kann.
 	 */
 	public function handleRequest($data = array()) {
-		
+		$this->core->handleRequest();
 	}
 
 	/**
