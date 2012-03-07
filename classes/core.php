@@ -553,7 +553,10 @@ class ShopgateLibrary extends ShopgateObject {
 	 *
 	 * @throws ShopgateLibraryException
 	 */
-	public function handleRequest() {
+	public function handleRequest($data) {
+		// TODO: Workaround entfernen
+		$this->params = $data;
+		
 // 		$valServ = new ShopgateAuthentificationService();
 // 		$valServ->checkValidAuthentification();
 
@@ -623,22 +626,6 @@ class ShopgateLibrary extends ShopgateObject {
 	 */
 	private function __checkApiKey() {
 		if(defined('DEBUG') && DEBUG == 1) return ;
-
-		if(!isset($this->params['apikey'])) {
-			header("HTTP/1.0 403 Forbidden");
-			throw new ShopgateLibraryException('Kein apikey übergeben');
-		} elseif($this->params['apikey'] != $this->config['apikey']) {
-			header("HTTP/1.0 403 Forbidden");
-			throw new ShopgateLibraryException('Der apikey ist falsch');
-		}
-
-		if(!isset($this->params['customer_number'])) {
-			header("HTTP/1.0 403 Forbidden");
-			throw new ShopgateLibraryException('Keine customer_number übergeben');
-		} elseif($this->params['customer_number'] != $this->config['customer_number']) {
-			header("HTTP/1.0 403 Forbidden");
-			throw new ShopgateLibraryException('Die customer_number ist falsch');
-		}
 
 		if(!isset($this->params['shop_number'])) {
 			header("HTTP/1.0 403 Forbidden");
@@ -1270,7 +1257,7 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 	 * damit dieses dann die Anfrage weiter bearbeiten kann.
 	 */
 	public function handleRequest($data = array()) {
-		$this->core->handleRequest();
+		$this->core->handleRequest($data);
 	}
 
 	/**
