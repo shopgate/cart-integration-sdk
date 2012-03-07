@@ -1074,7 +1074,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 		$data["action"] = "get_orders";
 		
 		$data = array_merge($data, $parameter);
-		$result = $this->_sendRequest( $data );
+		$result = $this->sendRequest( $data );
 
 		if(empty($result["orders"])) throw new ShopgateLibraryException("Das Format entspricht nicht der ShopgateAPI.\n".print_r($result,true));
 
