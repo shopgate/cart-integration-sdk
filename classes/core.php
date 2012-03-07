@@ -754,9 +754,11 @@ class ShopgateLibrary extends ShopgateObject {
 		}
 
 		$this->shopgateMerchantApi = new ShopgateMerchantApi();
-		$order = $this->shopgateMerchantApi->getOrders(array('order_numbers[0]'=>$this->params['order_number']));
-		$orderId = $this->plugin->addOrder($order);
-
+		$orders = $this->shopgateMerchantApi->getOrders(array('order_numbers[0]'=>$this->params['order_number']));
+		foreach($orders as $order){
+			$orderId = $this->plugin->addOrder($order);
+		}
+		
 		$this->response["external_order_number"] = $orderId;
 	}
 
