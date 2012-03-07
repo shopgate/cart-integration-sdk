@@ -553,7 +553,7 @@ class ShopgateLibrary extends ShopgateObject {
 	 *
 	 * @throws ShopgateLibraryException
 	 */
-	public function handleRequest($data) {
+	public function handleRequest() {
 // 		$valServ = new ShopgateAuthentificationService();
 // 		$valServ->checkValidAuthentification();
 
