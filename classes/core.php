@@ -430,6 +430,25 @@ class ShopgateObject {
 			fwrite(self::$errorLogFileHandler, $msg);
 		}
 	}
+	
+	/**
+	 * Converts a an underscored string to a camelized one.
+	 *
+	 * e.g.:<br />
+	 * $this->camelize("get_categories_csv") returns "getCategoriesCsv"<br />
+	 * $this->camelize("shopgate_library", true) returns "ShopgateLibrary"<br />
+	 *
+	 * @param string $str The underscored string.
+	 * @param bool $capitalize_first Set true to capitalize the first letter (e.g. for class names). Default: false.
+	 * @return string The camelized string.
+	 */
+	public function camelize($str, $capitalize_first = false) {
+		if($capitalize_first) {
+			$str[0] = strtoupper($str[0]);
+		}
+		$func = create_function('$c', 'return strtoupper($c[1]);');
+		return preg_replace_callback('/_([a-z])/', $func, $str);
+	}
 
 	/**
 	 * Sorgt am Ende für das Schließen der Log-Datei,
@@ -981,7 +1000,7 @@ class ShopgateLibrary extends ShopgateObject {
 
 		echo $returnStr;
 		exit;
-	}	
+	}
 	
 }
 
@@ -1005,7 +1024,7 @@ class ShopgateMerchantApi extends ShopgateObject {
  *	protected function createReviewsCSV() {}
  *	protected function createPagesCSV() {}
  *	protected function createCustomer() {}
- * 
+ *
  * }
  * </code>
  *
@@ -1100,15 +1119,15 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 	public function startup() {
 
 		return true;
-	}	
+	}
 	
 	/**
-	 * Wird bei jedem Request aufgerufen und leitet die Anfrage zum Framework weiter, 
-	 * damit dieses dann die Anfrage weiter bearbeiten kann. 
-	 */	
+	 * Wird bei jedem Request aufgerufen und leitet die Anfrage zum Framework weiter,
+	 * damit dieses dann die Anfrage weiter bearbeiten kann.
+	 */
 	public function handleRequest($data = array()) {
 		
-	}	
+	}
 
 	/**
 	 * Starte das Erstellen der ShopInfo
