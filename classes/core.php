@@ -1754,7 +1754,7 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 	 * @throws ShopgateLibraryException
 	 * @example plugins/plugin_example.inc.php
 	 */
-	protected abstract function getPagesCsv();
+	//protected abstract function getPagesCsv();
 
 	/**
 	 * Erstellt Informationen ueber das verwendete Shopsystem
@@ -1762,7 +1762,7 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 	 * @throws ShopgateLibraryException
 	 * @example plugins/plugin_example.inc.php
 	 */
-	protected abstract function createShopInfo();
+	//protected abstract function createShopInfo();
 }
 
 
