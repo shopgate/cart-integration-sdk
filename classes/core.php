@@ -1077,6 +1077,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	 */
 	public function getOrders($parameter) {
 		$data["action"] = "get_orders";
+		$data["with_items"] = 1;
 		
 		$data = array_merge($data, $parameter);
 		$result = $this->sendRequest( $data );
