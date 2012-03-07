@@ -487,6 +487,13 @@ class ShopgateLibrary extends ShopgateObject {
 	 * @var array
 	 */
 	private $params;
+	
+	/**
+	 * Die Klasse für die Kommunikation mit der ShopgateMerchantApi.
+	 *
+	 * @var ShopgateMerchantApi
+	 */
+	private $shopgateMerchantApi;
 
 	/**
 	 * Die erlaubten Funktionen, die aufgerufen werden können.
@@ -494,17 +501,19 @@ class ShopgateLibrary extends ShopgateObject {
 	 * @var array
 	 */
 	private  $actionWhitelist = array(
-			'ping',
-			'get_shop_info',
-			'add_order',
-			'update_order',
-			'get_customer',
-			'get_items_csv',
-			'get_categories_csv',
-			'get_reviews_csv',
-			'get_pages_csv',
-			'get_log_file'
-			);
+		'ping',
+		'get_shop_info',
+		'add_order',
+		'update_order',
+		'get_customer',
+		'get_items_csv',
+		'get_categories_csv',
+		'get_reviews_csv',
+		'get_pages_csv',
+		'get_log_file',
+		'check_coupon',
+		'redeem_coupon'
+	);
 
 	/**
 	 * Die Daten, die zurück an Shopgate gehen. Dieses Array wird beim
@@ -524,7 +533,7 @@ class ShopgateLibrary extends ShopgateObject {
 	
 	public function __construct($shopgatePluginApi) {
 		// Übergebene Parameter importieren
-		$this->params = $_REQUEST;
+		$this->params = $_POST;
 
 		$this->plugin = $shopgatePluginApi;
 		
@@ -544,7 +553,7 @@ class ShopgateLibrary extends ShopgateObject {
 	 *
 	 * @throws ShopgateLibraryException
 	 */
-	public function start() {
+	public function handleRequest($data) {
 // 		$valServ = new ShopgateAuthentificationService();
 // 		$valServ->checkValidAuthentification();
 
@@ -738,8 +747,6 @@ class ShopgateLibrary extends ShopgateObject {
 		}else{
 			$this->response["shopinfo"] = 'Keine Information über das Shopsystem verfügbar';
 		}
-
-
 	}
 
 	/**
@@ -756,8 +763,8 @@ class ShopgateLibrary extends ShopgateObject {
 			throw new ShopgateLibraryException('add_order aufgerufen, aber keine order_number übergeben');
 		}
 
-		$orderApi = new ShopgateOrderApi();
-		$order = $orderApi->getOrder($this->params['order_number']);
+		$this->shopgateMerchantApi = new ShopgateMerchantApi();
+		$order = $this->shopgateMerchantApi->getOrders(array('order_numbers[0]'=>$this->params['order_number']));
 		$orderId = $this->plugin->addOrder($order);
 
 		$this->response["external_order_number"] = $orderId;
@@ -792,7 +799,7 @@ class ShopgateLibrary extends ShopgateObject {
 	 *
 	 * @throws ShopgateLibraryException
 	 */
-	private function connect() {
+	private function get_customer() {
 		$this->log("Call ShopgateConnect", "access");
 		$this->__checkApiKey();
 
