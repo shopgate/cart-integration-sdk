@@ -1226,15 +1226,14 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 
 	public $splittetExport = false;
 
-	public function __construct($config) {
+	public function __construct() {
 		$this->core = ShopgateLibrary::getInstance($this);
 		
-		if(!$this->setConfig($config)) {
+		if(!$this->setConfig(ShopgateConfig::validateAndReturnConfig())) {
 			throw new ShopgateLibraryException("Config-Datei konnte nicht initialisiert werden");
 		}
 		
-		$_config = ShopgateConfig::validateAndReturnConfig();
-		if(isset($config["use_custom_error_handler"]) && $config["use_custom_error_handler"]) {
+		if(isset($this->config["use_custom_error_handler"]) && $this->config["use_custom_error_handler"]) {
 			set_error_handler('ShopgateErrorHandler');
 		}
 
