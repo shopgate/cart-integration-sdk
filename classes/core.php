@@ -1742,9 +1742,9 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 	 * @throws ShopgateLibraryException
 	 * @example plugins/plugin_example.inc.php
 	 */
-	protected abstract function getItemsCsv();
+	protected abstract function createItemsCsv();
 
-	protected abstract function getCategoriesCsv();
+	protected abstract function createCategoriesCsv();
 
 	/**
 	 * Erzeugt die CSV-Datei mit den Produktberwertungen
@@ -1752,7 +1752,7 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 	 * @throws ShopgateLibraryException
 	 * @example plugins/plugin_example.inc.php
 	 */
-	protected abstract function getReviewsCsv();
+	protected abstract function createReviewsCsv();
 	
 	/**
 	 * Erzeugt die CSV-Datei mit den Zusatztexten für Produkte
