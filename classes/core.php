@@ -103,37 +103,6 @@ class ShopgateLibraryException extends Exception {
 }
 
 
-###################################################################################
-# Config Datei
-###################################################################################
-
-if(!isset($shopgate_config)) {
-	if (file_exists(SHOPGATE_BASE_DIR.DS.'config'.DS.'myconfig.php')) {
-		require_once SHOPGATE_BASE_DIR.DS.'config'.DS.'myconfig.php';
-	} else if (file_exists(SHOPGATE_BASE_DIR.DS.'config'.DS.'config.php')) {
-		require_once SHOPGATE_BASE_DIR.DS.'config'.DS.'config.php';
-	}
-}
-
-if (file_exists(SHOPGATE_BASE_DIR.'/devconfig.php')) {
-	require_once SHOPGATE_BASE_DIR.'/devconfig.php';
-}
-
-if (isset($shopgate_config) && is_array($shopgate_config)) {
-	try {
-		ShopgateConfig::setConfig($shopgate_config, false);
-	} catch (Exception $e) {
-		$response = array(
-			"is_error"=>true,
-			"error"=>$e->getMessage(),
-		);
-		echo sg_json_encode($response);
-		exit;
-	}
-}
-
-
-
 /**
  * Einstellungen für das Framework
  *
@@ -141,7 +110,7 @@ if (isset($shopgate_config) && is_array($shopgate_config)) {
  * @version 1.0.0
  *
  */
-class ShopgateConfig {
+class ShopgateConfig extends ShopgateObject {
 
 	/**
 	 * Die Standardeinstellungen.
@@ -217,7 +186,7 @@ class ShopgateConfig {
 			self::validateConfig(self::$config);
 		} catch (ShopgateLibraryException $e) { throw $e; }
 
-		return self::$config;
+		return self::getConfig();
 	}
 
 	/**
@@ -225,7 +194,7 @@ class ShopgateConfig {
 	 * Returnd the configuration without validating
 	 * @return arra
 	 */
-	public static final function getConfig() {
+	public static function getConfig() {
 		return self::$config;
 	}
 
@@ -368,6 +337,35 @@ class ShopgateConfig {
 		}
 
 		fclose($handle);
+	}
+}
+
+###################################################################################
+# Config Datei
+###################################################################################
+
+if(!isset($shopgate_config)) {
+	if (file_exists(SHOPGATE_BASE_DIR.DS.'config'.DS.'myconfig.php')) {
+		require_once SHOPGATE_BASE_DIR.DS.'config'.DS.'myconfig.php';
+	} else if (file_exists(SHOPGATE_BASE_DIR.DS.'config'.DS.'config.php')) {
+		require_once SHOPGATE_BASE_DIR.DS.'config'.DS.'config.php';
+	}
+}
+
+if (file_exists(SHOPGATE_BASE_DIR.'/devconfig.php')) {
+	require_once SHOPGATE_BASE_DIR.'/devconfig.php';
+}
+
+if (isset($shopgate_config) && is_array($shopgate_config)) {
+	try {
+		ShopgateConfig::setConfig($shopgate_config, false);
+	} catch (Exception $e) {
+		$response = array(
+			"is_error"=>true,
+			"error"=>$e->getMessage(),
+		);
+		echo sg_json_encode($response);
+		exit;
 	}
 }
 
@@ -529,6 +527,10 @@ class ShopgateLibrary extends ShopgateObject {
 		}
 		
 		return self::$singleton;
+	}
+	
+	public function setConfig(ShopgateConfig $config) {
+		$this->config = $config->getConfig();
 	}
 	
 	public function __construct($shopgatePluginApi) {
@@ -1213,7 +1215,7 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 
 	public $splittetExport = false;
 
-	public function __construct() {
+	final public function __construct() {
 		$this->core = ShopgateLibrary::getInstance($this);
 		
 		if(!$this->setConfig(ShopgateConfig::validateAndReturnConfig())) {
@@ -1223,7 +1225,7 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 		if(isset($this->config["use_custom_error_handler"]) && $this->config["use_custom_error_handler"]) {
 			set_error_handler('ShopgateErrorHandler');
 		}
-
+		
 		// Muss das Wort "true" in der überschriebenen startup() zurückgeben
 		if($this->startup() !== true) {
 			throw new ShopgateLibraryException("Plugin konnte nicht initialisiert werden ");
