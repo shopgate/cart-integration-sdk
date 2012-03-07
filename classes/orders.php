@@ -299,7 +299,7 @@ class ShopgateOrder extends ShopgateObject {
 	 * @see http://de.wikipedia.org/wiki/ISO_4217
 	 * @return string
 	 */
-	public function getCurency() { return $this->currency; }
+	public function getCurrency() { return $this->currency; }
 
 	/**
 	 * Is this flag is set to 1, the Order is a Test
