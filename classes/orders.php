@@ -60,7 +60,7 @@ class ShopgateOrder extends ShopgateObject {
 			foreach( $data as $key => $value ) {
 
 				if( $key == "delivery_address" || $key == "invoice_address" ) {
-					$value = new ShopgateOrderAddress($value);
+					$value = new ShopgateAddress($value);
 				} else if( $key == "delivery_notes" ) {
 					$notes = array();
 					foreach ( $value as $note ) $notes[] = new ShopgateOrderDeliveryNote( $note );
@@ -318,14 +318,14 @@ class ShopgateOrder extends ShopgateObject {
 	/**
 	 * The invoice address of the customer
 	 *
-	 * @return ShopgateOrderAddress
+	 * @return ShopgateAddress
 	 */
 	public function getInvoiceAddress() { return $this->invoice_address; }
 
 	/**
 	 * The delivery address of the customer
 	 *
-	 * @return ShopgateOrderAddress
+	 * @return ShopgateAddress
 	 */
 	public function getDeliveryAddress() { return $this->delivery_address; }
 
