@@ -1005,7 +1005,145 @@ class ShopgateLibrary extends ShopgateObject {
 }
 
 class ShopgateMerchantApi extends ShopgateObject {
+	private $config;
+
+	/**
+	 * Der Konstruktor der ShopgateMerchantApi-Klasse.
+	 * Lädt die angegebene Config.
+	 *
+	 * ShopgateConfig
+	 */
+	public function __construct() {
+		$this->config = ShopgateConfig::validateAndReturnConfig();
+	}	
 	
+	/**
+	 * Führt alle Abfragen an der ShopgateMerchantApi durch.
+	 *
+	 * @access private
+	 *
+	 * @param function		Die aufgerufene Funktion.
+	 * @param array $params1  	Die Parameter der aufgerufenen Funktion.
+	 * @param $files
+	 *
+	 * @throws ShopgateLibraryException
+	 */
+	private function sendRequest($data) {
+		if(empty($this->config)) $this->config = ShopgateConfig::validateAndReturnConfig();
+		
+		
+		$data['shop_number'] = $this->config["shop_number"];
+
+		$url = $this->config["api_url"];
+		$curl = curl_init($url);
+
+		curl_setopt($curl, CURLOPT_HEADER, false);
+		curl_setopt($curl, CURLOPT_USERAGENT, "ShopgatePlugin/" . SHOPGATE_PLUGIN_VERSION);
+		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		curl_setopt($curl, CURLOPT_USERPWD, ShopgateAuthentificationService::getCurlAuthentificationString());
+		curl_setopt($curl, CURLOPT_POST, true);
+		curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+
+		$response = curl_exec($curl);
+		$info = curl_getinfo($curl);
+		curl_close($curl);
+
+		if (!$response) throw new ShopgateLibraryException("No Connection to the Server");
+
+		$decodetResponse = sg_json_decode($response, true);
+
+		if(empty($decodetResponse)) {
+			throw new ShopgateLibraryException('Error Parsing the Response \n'.print_r($response, true));
+		}
+
+		if($decodetResponse['error'] != 0) {
+			throw new ShopgateLibraryException($decodetResponse);
+		}
+
+		return $decodetResponse;
+	}
+
+	/**
+	 * Die Details einer Bestellung von Shopgate mit der Bestellnummer abholen.
+	 * Es wird ein Objekt mit den kompletten Bestellinformationen zurückgegeben.
+	 *
+	 * @tutorial <a href="https://www.shopgate.com/apidoc/function_details/9">
+	 * https://www.shopgate.com/apidoc/function_details/9</a>
+	 *
+	 * @param mixed[] $parameter	Sucheinschränkungen können über diesen Parameter eingestellt werden.
+	 * @throws ShopgateLibraryException
+	 * @return ShopgateOrder[] 	Die Bestellung in einem ShopgateOrder-Objekt
+	 */
+	public function getOrders($parameter) {
+		$data["action"] = "get_orders";
+		
+		$data = array_merge($data, $parameter);
+		$result = $this->_sendRequest( $data );
+
+		if(empty($result["orders"])) throw new ShopgateLibraryException("Das Format entspricht nicht der ShopgateAPI.\n".print_r($result,true));
+
+		$orders = array();
+		foreach($result["orders"] as $order) {
+			$orders[] = new ShopgateOrder( $order );
+		}
+
+		return $orders;
+	}
+
+	/**
+	 * Fügt einer Bestellung von Shopgate einen Lieferschein hinzu.
+	 *
+	 * @param ShopgateOrder $order
+	 * @param String $shippingServiceId
+	 * @param Integer $trackingNumber
+	 * @param Boolean $markAsCompleted
+	 * @return mixed[]
+	 */
+	public function addOrderDeliveryNote(ShopgateOrder $order, $shippingServiceId, $trackingNumber, $markAsCompleted = false) {
+		if(is_object($order) && get_class($order) == "ShopgateOrder")
+			$order = $order->getOrderNumber();
+
+		$data = array(
+			"action" => "addOrderDeliveryNote",
+			"order_number" => $order,
+			"shipping_service_id" => $shippingServiceId,
+			"tracking_number" => (string) $trackingNumber,
+			"mark_as_completed" => $markAsCompleted,
+		);
+
+		return $this->_execute($data);
+	}	
+	
+	/**
+	 * Eine Bestellung als abgeschlossen markieren
+	 *
+	 * @param String $orderNumber
+	 * @return mixed []
+	 */
+	public function setOrderShippingCompleted($orderNumber) {
+		$params = array();
+
+		return $this->_execute("set_order_shipping_completed", $params);
+	}
+
+	/**
+	 * Eine Nachricht an den Kunden der Bestellung schicken.
+	 *
+	 * @param ShopgateOrder $order	Die Bestellung in einem ShopgateOrder-Objekt
+	 * @param string $message	Die Nachricht an den Kunden
+	 */
+	public function sendOrderMessage($order, $message) {
+		$data = array(
+			"action" => "send_order_message",
+			"order_number"=>$order->getOrderNumber(),
+			"message"=>$message,
+		);
+
+		$this->sendRequest($data);
+	}
+
 }
 
 /**
