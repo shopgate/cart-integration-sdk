@@ -535,7 +535,8 @@ class ShopgateLibrary extends ShopgateObject {
 	
 	public function __construct($shopgatePluginApi) {
 		// Übergebene Parameter importieren
-		$this->params = $_POST;
+		// TODO in $_POST ändern. Zum testen $_REQUEST
+		$this->params = $_REQUEST;
 
 		$this->plugin = $shopgatePluginApi;
 		
