@@ -428,7 +428,7 @@ class ShopgateObject {
 			fwrite(self::$errorLogFileHandler, $msg);
 		}
 	}
-	
+
 	/**
 	 * Converts a an underscored string to a camelized one.
 	 *
@@ -463,7 +463,7 @@ class ShopgateObject {
 
 class ShopgateLibrary extends ShopgateObject {
 	private static $singleton;
-	
+
 	/**
 	 * Konfiguration des Frameworks.
 	 *
@@ -485,7 +485,7 @@ class ShopgateLibrary extends ShopgateObject {
 	 * @var array
 	 */
 	private $params;
-	
+
 	/**
 	 * Die Klasse für die Kommunikation mit der ShopgateMerchantApi.
 	 *
@@ -525,21 +525,21 @@ class ShopgateLibrary extends ShopgateObject {
 		if (empty(self::$singleton)) {
 			self::$singleton = new self($shopgatePluginApi);
 		}
-		
+
 		return self::$singleton;
 	}
-	
+
 	public function setConfig(ShopgateConfig $config) {
 		$this->config = $config->getConfig();
 	}
-	
+
 	public function __construct($shopgatePluginApi) {
 		// Übergebene Parameter importieren
 		// TODO in $_POST ändern. Zum testen $_REQUEST
 		$this->params = $_REQUEST;
 
 		$this->plugin = $shopgatePluginApi;
-		
+
 		$this->response["is_error"] = 0;
 		$this->response["error_text"] = "";
 		$this->response["version"] = SHOPGATE_PLUGIN_VERSION;
@@ -557,9 +557,11 @@ class ShopgateLibrary extends ShopgateObject {
 	 * @throws ShopgateLibraryException
 	 */
 	public function handleRequest($data) {
+		define("_SHOPGATE_API", true);
+
 		// TODO: Workaround entfernen
 		$this->params = $data;
-		
+
 // 		$valServ = new ShopgateAuthentificationService();
 // 		$valServ->checkValidAuthentification();
 
@@ -758,7 +760,7 @@ class ShopgateLibrary extends ShopgateObject {
 		foreach($orders as $order){
 			$orderId = $this->plugin->addOrder($order);
 		}
-		
+
 		$this->response["external_order_number"] = $orderId;
 	}
 
@@ -1000,7 +1002,7 @@ class ShopgateLibrary extends ShopgateObject {
 		echo $returnStr;
 		exit;
 	}
-	
+
 }
 
 class ShopgateMerchantApi extends ShopgateObject {
@@ -1015,7 +1017,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	public function __construct() {
 		$this->config = ShopgateConfig::validateAndReturnConfig();
 	}
-	
+
 	/**
 	 * Führt alle Abfragen an der ShopgateMerchantApi durch.
 	 *
@@ -1029,8 +1031,8 @@ class ShopgateMerchantApi extends ShopgateObject {
 	 */
 	private function sendRequest($data) {
 		if(empty($this->config)) $this->config = ShopgateConfig::validateAndReturnConfig();
-		
-		
+
+
 		$data['shop_number'] = $this->config["shop_number"];
 
 		$url = $this->config["api_url"];
@@ -1078,7 +1080,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	public function getOrders($parameter) {
 		$data["action"] = "get_orders";
 		$data["with_items"] = 1;
-		
+
 		$data = array_merge($data, $parameter);
 		$result = $this->sendRequest( $data );
 
@@ -1115,7 +1117,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 
 		return $this->_execute($data);
 	}
-	
+
 	/**
 	 * Eine Bestellung als abgeschlossen markieren
 	 *
@@ -1127,10 +1129,10 @@ class ShopgateMerchantApi extends ShopgateObject {
 			'action'=>'set_order_shipping_completed',
 			'order_number'=>$orderNumber,
 		);
-		
+
 		return $this->sendRequest($data);
 	}
-	
+
 	/**
 	 * Eine Nachricht an den Kunden der Bestellung schicken.
 	 *
@@ -1176,12 +1178,12 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 	private $allowedEncodings = array(
 		'UTF-8', 'ASCII', 'CP1252', 'ISO-8859-15', 'UTF-16LE','ISO-8859-1'
 		);
-		
+
 	/**
 	 * @var ShopgateLibrary
 	 */
 	protected $core;
-	
+
 	/**
 	 * Die Handler für die Datei, in die geschrieben werden soll.
 	 *
@@ -1224,15 +1226,15 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 
 	final public function __construct() {
 		$this->core = ShopgateLibrary::getInstance($this);
-		
+
 		if(!$this->setConfig(ShopgateConfig::validateAndReturnConfig())) {
 			throw new ShopgateLibraryException("Config-Datei konnte nicht initialisiert werden");
 		}
-		
+
 		if(isset($this->config["use_custom_error_handler"]) && $this->config["use_custom_error_handler"]) {
 			set_error_handler('ShopgateErrorHandler');
 		}
-		
+
 		// Muss das Wort "true" in der überschriebenen startup() zurückgeben
 		if($this->startup() !== true) {
 			throw new ShopgateLibraryException("Plugin konnte nicht initialisiert werden ");
@@ -1260,7 +1262,7 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 
 		return true;
 	}
-	
+
 	/**
 	 * Wird bei jedem Request aufgerufen und leitet die Anfrage zum Framework weiter,
 	 * damit dieses dann die Anfrage weiter bearbeiten kann.
@@ -1279,7 +1281,7 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 
 		return $shopInfo;
 	}
-	
+
 	/**
 	 * Erstellt eine neue Datei und einen neuen Buffer für Schreibzugriffe in diese Datei
 	 *
@@ -1289,16 +1291,16 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 	private final function createBuffer($filePath){
 		$timeStart = time();
 		$filePath .= ".tmp";
-		
+
 		$this->log(basename($filePath).' wird erstellt', "access");
-		
+
 		$this->fileHandle = @fopen($filePath, 'w');
 		if(!$this->fileHandle) {
 			throw new ShopgateLibraryException("Datei $filePath konnte nicht geöffnet/erstellt werden");
 		}
 		$this->buffer = array();
 	}
-	
+
 	/**
 	 * Schließt die Datei und leert den Buffer
 	 *
@@ -1311,7 +1313,7 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 		fclose($this->fileHandle);
 
 		rename($filePath.".tmp", $filePath);
-		
+
 		$this->log('Fertig, '.basename($filePath).' wurde erfolgreich erstellt', "access");
 		$duration = time() - $timeStart;
 		$this->log("Dauer: $duration Sekunden", "access");
@@ -1749,7 +1751,7 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 	 * @example plugins/plugin_example.inc.php
 	 */
 	protected abstract function createReviewsCsv();
-	
+
 	/**
 	 * Erzeugt die CSV-Datei mit den Zusatztexten für Produkte
 	 *
