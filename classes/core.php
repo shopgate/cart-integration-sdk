@@ -1123,9 +1123,12 @@ class ShopgateMerchantApi extends ShopgateObject {
 	 * @return mixed []
 	 */
 	public function setOrderShippingCompleted($orderNumber) {
-		$params = array();
+		$data = array(
+			'action'=>'set_order_shipping_completed',
+			'order_number'=>$orderNumber,
+		);
 		
-		return $this->sendRequest("set_order_shipping_completed", $params);
+		return $this->sendRequest($data);
 	}
 	
 	/**
