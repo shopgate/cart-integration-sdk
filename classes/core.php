@@ -521,31 +521,42 @@ class ShopgateLibrary extends ShopgateObject {
 	 */
 	private $response = array();
 
-	public static function &getInstance($shopgatePluginApi) {
+	public static function &getInstance() {
 		if (empty(self::$singleton)) {
-			self::$singleton = new self($shopgatePluginApi);
+			self::$singleton = new self();
 		}
 
 		return self::$singleton;
 	}
 
-	public function setConfig(ShopgateConfig $config) {
-		$this->config = $config->getConfig();
-	}
-
-	public function __construct($shopgatePluginApi) {
+	private function __construct() {
 		// Übergebene Parameter importieren
 		// TODO in $_POST ändern. Zum testen $_REQUEST
 		$this->params = $_REQUEST;
-
-		$this->plugin = $shopgatePluginApi;
 
 		$this->response["is_error"] = 0;
 		$this->response["error_text"] = "";
 		$this->response["version"] = SHOPGATE_PLUGIN_VERSION;
 		$this->response["trace_id"] = isset($this->params["trace_id"]) ? $this->params["trace_id"] : null;
 	}
-
+	
+	/**
+	 * Registers the current ShopgatePluginApi's instance for callbacks.
+	 *
+	 * This is usually done by ShopgatePluginApi::__construct() as soon as you instantiate your plugin implementation.
+	 * The registered instance is the one whose callback methods (e.g. ShopgatePlugin::addOrder()) get called on incoming
+	 * requests.
+	 *
+	 * @param ShopgatePluginApi $shopgatePluginApi
+	 */
+	public function setPlugin(ShopgatePluginApi $shopgatePluginApi) {
+		$this->plugin = $shopgatePluginApi;
+	}
+	
+	public function setConfig(ShopgateConfig $config) {
+		$this->config = $config->getConfig();
+	}
+	
 	/**
 	 * Dies ist der Einstiegspunkt des Frameworks. Es werden die Konfigurationen
 	 * ausgelesen und gesetzt. Vor dem Aufrufen der eigentlichen Aktion wird
@@ -1177,14 +1188,17 @@ class ShopgateMerchantApi extends ShopgateObject {
 abstract class ShopgatePluginApi extends ShopgateObject {
 	private $allowedEncodings = array(
 		'UTF-8', 'ASCII', 'CP1252', 'ISO-8859-15', 'UTF-16LE','ISO-8859-1'
-		);
+	);
 
 	/**
+<<<<<<< .mine
+=======
 	 * @var ShopgateLibrary
 	 */
 	protected $core;
 
 	/**
+>>>>>>> .r37
 	 * Die Handler für die Datei, in die geschrieben werden soll.
 	 *
 	 * @var resource
@@ -1225,7 +1239,7 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 	public $splittetExport = false;
 
 	final public function __construct() {
-		$this->core = ShopgateLibrary::getInstance($this);
+		ShopgateLibrary::getInstance()->setPlugin($this);
 
 		if(!$this->setConfig(ShopgateConfig::validateAndReturnConfig())) {
 			throw new ShopgateLibraryException("Config-Datei konnte nicht initialisiert werden");
