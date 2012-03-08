@@ -327,7 +327,7 @@ class ShopgateConfig extends ShopgateObject {
 		}
 
 		$message = "";
-		$handle = fopen(dirname(__FILE__).'/../myconfig.php', 'w+');
+		$handle = fopen(dirname(__FILE__).'/../config/myconfig.php', 'w+');
 		if($handle == false){
 			throw new ShopgateLibraryException("Fehler beim Lesen oder Schrieben der Config-Datei");
 			fclose($handle);
@@ -539,7 +539,7 @@ class ShopgateLibrary extends ShopgateObject {
 
 		$this->response["is_error"] = 0;
 		$this->response["error_text"] = "";
-		$this->response["version"] = SHOPGATE_PLUGIN_VERSION;
+// 		$this->response["version"] = SHOPGATE_PLUGIN_VERSION;
 		$this->response["trace_id"] = isset($this->params["trace_id"]) ? $this->params["trace_id"] : null;
 	}
 	
