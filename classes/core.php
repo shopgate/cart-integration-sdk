@@ -520,7 +520,10 @@ class ShopgateLibrary extends ShopgateObject {
 	 * @var array
 	 */
 	private $response = array();
-
+	
+	/**
+	 * @return ShopgateLibrary
+	 */
 	public static function &getInstance() {
 		if (empty(self::$singleton)) {
 			self::$singleton = new self();
@@ -1191,14 +1194,6 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 	);
 
 	/**
-<<<<<<< .mine
-=======
-	 * @var ShopgateLibrary
-	 */
-	protected $core;
-
-	/**
->>>>>>> .r37
 	 * Die Handler für die Datei, in die geschrieben werden soll.
 	 *
 	 * @var resource
@@ -1282,7 +1277,7 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 	 * damit dieses dann die Anfrage weiter bearbeiten kann.
 	 */
 	public function handleRequest($data = array()) {
-		$this->core->handleRequest($data);
+		ShopgateLibrary::getInstance($this)->handleRequest($data);
 	}
 
 	/**
