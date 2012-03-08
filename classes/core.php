@@ -729,7 +729,7 @@ class ShopgateLibrary extends ShopgateObject {
 	 * Liefert Information ueber das verwendete Shopsystem zurueck
 	 */
 	private function getShopInfo() {
-		$this->__checkApiKey();
+		//$this->__checkApiKey();
 		$Plugin = ShopgatePluginCore::newInstance($this->config);
 		$info = $Plugin->startCreateShopInfo();
 		if(!empty($info)){
@@ -793,7 +793,7 @@ class ShopgateLibrary extends ShopgateObject {
 	 */
 	private function get_customer() {
 		$this->log("Call ShopgateConnect", "access");
-		$this->__checkApiKey();
+		//$this->__checkApiKey();
 
 		// Shopgate-Connect
 		// GET-Parameter: user, pass
@@ -822,7 +822,7 @@ class ShopgateLibrary extends ShopgateObject {
 	 * @throws ShopgateLibraryException
 	 */
 	private function getItemsCsv() {
-		$this->__checkApiKey();
+		//$this->__checkApiKey();
 
 		$generate_csv = $this->config["generate_items_csv_on_the_fly"];
 
@@ -873,7 +873,7 @@ class ShopgateLibrary extends ShopgateObject {
 	}
 
 	private function getCategoriesCsv() {
-		$this->__checkApiKey();
+		//$this->__checkApiKey();
 
 		$fileName = ShopgateConfig::getCategoriesCsvFilePath();
 
@@ -917,7 +917,7 @@ class ShopgateLibrary extends ShopgateObject {
 	 * @throws ShopgateLibraryException
 	 */
 	private function getReviewsCsv() {
-		$this->__checkApiKey();
+		//$this->__checkApiKey();
 
 		$fileName = ShopgateConfig::getReviewsCsvFilePath();
 
@@ -945,7 +945,7 @@ class ShopgateLibrary extends ShopgateObject {
 	 * @throws ShopgateLibraryException
 	 */
 	private function getPagesCsv() {
-		$this->__checkApiKey();
+		//$this->__checkApiKey();
 
 		$fileName = ShopgateConfig::getPagesCsvFilePath();
 
@@ -968,7 +968,7 @@ class ShopgateLibrary extends ShopgateObject {
 	 *
 	 */
 	private function getLogFile() {
-		$this->__checkApiKey();
+		//$this->__checkApiKey();
 
 		$type = "error";
 		if(isset($this->params['log_type'])) {
