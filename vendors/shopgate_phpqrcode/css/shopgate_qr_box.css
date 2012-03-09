@@ -1,0 +1,97 @@
+/*
+ #########################################################################
+ #                       Shogate GmbH
+ # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ #
+ # http://www.shopgate.com
+ #
+ # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ #
+ # @version $Rev: 50 $
+ #
+ # @author Martin Weber, Shopgate GmbH	weber@shopgate.com
+ #
+ # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ #########################################################################
+ */
+ 
+#shopgate_qr_banner {
+	background: #333 !important;			/* Hintergrundfarbe */
+	border: 5px solid #333 !important;		/* Hintergrundfarbe */
+	border-top: 7px solid #333 !important;		/* Hintergrundfarbe */
+	border-bottom: 7px solid #333 !important;		/* Hintergrundfarbe */
+	width: 100% !important;
+	border-collapse: collapse !important;
+}
+
+#shopgate_qr_banner td.shopgate_qr_code,
+#shopgate_qr_banner td.shopgate_bubble,
+#shopgate_qr_banner td.shopgate_store,
+#shopgate_qr_banner td.shopgate_powered_by {
+	border: none !important;
+	padding: 0px !important;
+}
+
+#shopgate_qr_banner td.shopgate_qr_code {
+	text-align: center !important;
+}
+		
+#shopgate_qr_banner td.shopgate_bubble {
+	vertical-align: middle !important;
+	padding-left: 1px !important;
+}	
+
+#shopgate_qr_banner td.shopgate_store {
+	vertical-align: top !important;
+	text-align: center !important;
+	padding-top: 3px !important;
+}
+
+#shopgate_qr_banner td.shopgate_powered_by { 
+	vertical-align: bottom !important;
+}
+
+#shopgate_qr_banner td.shopgate_qr_code img {
+	max-height: 111px !important;
+	max-width: 111px !important;
+}
+
+#shopgate_qr_banner td.shopgate_bubble div {
+	height: 95px !important;
+	background-image: url('../images/bubble_bg.png') !important;
+	background-repeat: no-repeat !important;
+	width: 255px !important;
+	margin: 0 auto !important;
+}
+
+#shopgate_qr_banner td.shopgate_bubble ul {
+	margin: 0px !important;
+	padding: 18px 0px 0px 25px !important;
+	line-height: 1.25 !important;
+}
+
+#shopgate_qr_banner td.shopgate_bubble li,
+#shopgate_qr_banner td.shopgate_bubble a {
+	list-style: none !important;
+	color: #3d3d3d !important;
+	font-family: 'Helvetica Neue', Helvetica, Arial !important;
+	font-weight: bold !important;
+	font-size: 16px !important;
+	text-shadow: 0px 1px 2px #fff !important;
+	margin: 0 !important;
+}
+
+#shopgate_qr_banner td.shopgate_powered_by a,
+#shopgate_qr_banner td.shopgate_powered_by {
+	text-align: center !important;
+	color: #fff !important;
+	font-family: Tahoma, Arial !important;
+	font-size: 11px !important;
+	padding-bottom: 6px !important;
+}
+
+#shopgate_qr_banner td.shopgate_store a img {
+	width: 110px !important;
+	height: 36px !important;
+	border: none !important;
+}

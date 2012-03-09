@@ -192,10 +192,15 @@ class ShopgateConfig extends ShopgateObject {
 	/**
 	 *
 	 * Returnd the configuration without validating
-	 * @return arra
+	 * @return array
 	 */
 	public static function getConfig() {
 		return self::$config;
+	}
+
+	public static function getConfigField($field) {
+		if(isset(self::$config[$field])) return self::$config[$field];
+		else return null;
 	}
 
 	public static final function getPluginName() {
@@ -352,8 +357,8 @@ if(!isset($shopgate_config)) {
 	}
 }
 
-if (file_exists(SHOPGATE_BASE_DIR.'/devconfig.php')) {
-	require_once SHOPGATE_BASE_DIR.'/devconfig.php';
+if (file_exists(SHOPGATE_BASE_DIR.DS.'config'.DS.'/devconfig.php')) {
+	require_once SHOPGATE_BASE_DIR.DS.'config'.DS.'/devconfig.php';
 }
 
 if (isset($shopgate_config) && is_array($shopgate_config)) {
@@ -520,7 +525,7 @@ class ShopgateLibrary extends ShopgateObject {
 	 * @var array
 	 */
 	private $response = array();
-	
+
 	/**
 	 * @return ShopgateLibrary
 	 */
@@ -542,7 +547,7 @@ class ShopgateLibrary extends ShopgateObject {
 // 		$this->response["version"] = SHOPGATE_PLUGIN_VERSION;
 		$this->response["trace_id"] = isset($this->params["trace_id"]) ? $this->params["trace_id"] : null;
 	}
-	
+
 	/**
 	 * Registers the current ShopgatePluginApi's instance for callbacks.
 	 *
@@ -555,11 +560,11 @@ class ShopgateLibrary extends ShopgateObject {
 	public function setPlugin(ShopgatePluginApi $shopgatePluginApi) {
 		$this->plugin = $shopgatePluginApi;
 	}
-	
+
 	public function setConfig(ShopgateConfig $config) {
 		$this->config = $config->getConfig();
 	}
-	
+
 	/**
 	 * Dies ist der Einstiegspunkt des Frameworks. Es werden die Konfigurationen
 	 * ausgelesen und gesetzt. Vor dem Aufrufen der eigentlichen Aktion wird

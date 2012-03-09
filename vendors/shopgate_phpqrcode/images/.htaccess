@@ -1,0 +1,15 @@
+###############################################################################
+# .htacces Security File
+# Author: Martin Weber
+# Shopgate GmbH
+# website: http://www.shopgate.com
+# Project: http://code.google.com/p/shopgate-framework/
+#
+# Revision: $Rev: 50 $
+###############################################################################
+
+Order deny,allow
+Deny from all
+<Files *.png>
+	Allow from all
+</Files>
