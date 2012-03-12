@@ -450,7 +450,7 @@ class ShopgateObject {
 			$str[0] = strtoupper($str[0]);
 		}
 		$func = create_function('$c', 'return strtoupper($c[1]);');
-		return preg_replace_callback('/_([a-z])/', $func, $str);
+		return preg_replace_callback('/_([a-z0-9])/', $func, $str);
 	}
 
 	/**
@@ -603,11 +603,11 @@ class ShopgateLibrary extends ShopgateObject {
 
 			$action = $this->params['action'];
 
-			if(!in_array($action, $this->actionWhitelist)) {
-				throw new ShopgateLibraryException('Unbekannte Action: '.$action);
-			} if($this->config['enable_'.$action] !== true) {
-				throw new ShopgateLibraryException('Action '.$action.' ist nicht in der Config-Datei erlaubt worden');
-			}
+// 			if(!in_array($action, $this->actionWhitelist)) {
+// 				throw new ShopgateLibraryException('Unbekannte Action: '.$action);
+// 			} if($this->config['enable_'.$action] !== true) {
+// 				throw new ShopgateLibraryException('Action '.$action.' ist nicht in der Config-Datei erlaubt worden');
+// 			}
 
 			$actionCamelCase = $this->__toCamelCase($action);
 
@@ -812,7 +812,7 @@ class ShopgateLibrary extends ShopgateObject {
 	 *
 	 * @throws ShopgateLibraryException
 	 */
-	private function get_customer() {
+	private function getCustomer() {
 		$this->log("Call ShopgateConnect", "access");
 		//$this->__checkApiKey();
 
@@ -832,7 +832,9 @@ class ShopgateLibrary extends ShopgateObject {
 		}
 
 		// Daten als JSON zurückliefern
-		$this->response["user_data"] = $userData->toArray();
+		$data = $userData->toArray();
+		$this->response["user_data"] = $data[0];
+		$this->response["addresses"] = $data[1];
 	}
 
 	/**

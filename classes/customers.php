@@ -24,9 +24,13 @@ class ShopgateCustomer extends ShopgateObject {
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_customer/en
 	 */
 	public function __construct($data = null) {
+		$methods = get_class_methods($this);
 		if (is_array($data)) {
 			foreach ($data as $key => $value) {
 				$setter = 'set'.camelize($key, true);
+				if (!in_array($setter, $methods)) {
+					throw new ShopgateLibraryException('ShopgateCustomer::__construct(): Unbekanntes Attribut "'.$key.'" übergeben.');
+				}
 				$this->$setter($value);
 			}
 		}
@@ -52,10 +56,10 @@ class ShopgateCustomer extends ShopgateObject {
 	 * @throws ShopgateLibraryException if a non-integer is passed
 	 */
 	public function setCustomerGroupId($value) {
-		if (is_int($value)) {
-			$this->customer_group_id = $value;
+		if (is_numeric($value)) {
+			$this->customer_group_id = (int) $value;
 		} else {
-			throw new ShopgateLibraryException("Non-int passed to setCustomerGroupId");
+			throw new ShopgateLibraryException("Non-numeric value passed to setCustomerGroupId");
 		}
 	}
 
@@ -193,6 +197,32 @@ class ShopgateCustomer extends ShopgateObject {
 		
 		return $addresses;
 	}
+	
+	/**
+	 * Returns an array with user's and address data.
+	 *
+	 * Index 1 contains the ShopgateCustomer object's attributes as associative array.
+	 * Index 2 contains a list of associative arrays containing the corresponding ShopgateAddress object's attributes.
+	 *
+	 * @return mixed[]
+	 */
+	public function toArray() {
+		$attributes = get_object_vars($this);
+		$customer = array();
+		$addresses = array();
+		foreach ($attributes as $attribute => $value) {
+			if ($attribute == 'addresses') {
+				foreach ($value as $address) {
+					$addresses[] = $address->toArray();
+				}
+			} else {
+				$getter = 'get'.$this->camelize($attribute);
+				$customer[$attribute] = $this->{$getter}();
+			}
+		}
+		
+		return array($customer, $addresses);
+	}
 }
 
 class ShopgateAddress extends ShopgateObject {
@@ -225,13 +255,176 @@ class ShopgateAddress extends ShopgateObject {
 	/**
 	 * @param array $data An array with the address information.
 	 */
-	public function __construct( $data = null ) {
-		if( is_array( $data ) ) {
-			foreach($data as $key => $value) {
-				$this->{$key} = $value;
+	public function __construct($data = null) {
+		$methods = get_class_methods($this);
+		if (is_array($data)) {
+			foreach ($data as $key => $value) {
+				if (($key == 'is_invoice_address') || ($key == 'is_delivery_address')) {
+					$prefix = '';
+					$capitalizeFirst = false;
+				} else {
+					$prefix = 'get';
+					$capitalizeFirst = true;
+				}
+				
+				$setter = $prefix.camelize($key, $capitalizeFirst);
+				if (!in_array($setter, $methods)) {
+					throw new ShopgateLibraryException('ShopgateCustomer::__construct(): Unbekanntes Attribut "'.$key.'" übergeben.');
+				}
+				$this->$setter($value);
 			}
 		}
 	}
+	
+	/**********
+	 * Setter *
+	 **********/
+	
+	/**
+	 * @param int $value
+	 */
+	public function setId($value) {
+		$this->id = $value;
+	}
+	
+	/**
+	* @param int $value ShopgateAddress::BOTH or ShopgateAddress::INVOICE or ShopgateAddress::DELIVERY
+	* @throws ShopgateLibraryException
+	*/
+	public function setAddressType($value) {
+		if (
+			$value != self::INVOICE &&
+			$value != self::DELIVERY &&
+			$value != self::BOTH
+		) {
+			throw new ShopgateLibraryException('ShopgateAddress::setAddressType(): Ungültiger Wert.');
+		}
+		
+		$this->is_invoice_address  = (bool) ($value & self::INVOICE);
+		$this->is_delivery_address = (bool) ($value & self::DELIVERY);
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setFirstName($value) {
+		$this->first_name = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+		public function setLastName($value) {
+		$this->last_name = $value;
+	}
+	
+	/**
+	 * @param string $value <ul><li>"m" = Male</li><li>"f" = Female</li></ul>
+	 * @throws ShopgateLibraryException
+	 */
+	public function setGender($value) {
+		if (($value != "m") && ($value != "f")) {
+			throw new ShopgateLibraryException('ShopgateAddress::setGender(): Ungültiger Wert.');
+		}
+		
+		$this->gender = $value;
+	}
+	
+	/**
+	 * @param string $value Format: yyyy-mm-dd (1983-02-17)
+	 */
+	public function setBirthday($value) {
+		$this->birthday = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setCompany($value) {
+		$this->company = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setStreet1($value) {
+		$this->street_1 = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setStreet2($value) {
+		$this->street_2 = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setCity($value) {
+		$this->city = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setZipcode($value) {
+		$this->zipcode = $value;
+	}
+	
+	/**
+	 * Sets the Country
+	 *
+	 * Format: ISO-3166-1
+	 *
+	 * Example: <ul><li>DE</li><li>US</li></ul>
+	 *
+	 * @see http://en.wikipedia.org/wiki/ISO_3166-1#Current_codes
+	 * @param string $value Country as ISO-3166-1
+	 */
+	public function setCountry($value) {
+		$this->country = $value;
+	}
+	
+	/**
+	 * Sets the state / province
+	 *
+	 * Format: ISO 3166-2
+	 *
+	 * Example: <ul><li>DE-HE</li><li>US-NY</li><ul>
+	 *
+	 * @see http://en.wikipedia.org/wiki/ISO_3166-2#Current_codes
+	 * @param string $value State as ISO-3166-2
+	 */
+	public function setState($value) {
+		$this->state = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setPhone($value) {
+		$this->phone = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setMobile($value) {
+		$this->mobile = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setMail($value) {
+		$this->mail = $value;
+	}
+	
+	
+	/**********
+	 * Getter *
+	 **********/
 	
 	/**
 	 * @return int
@@ -341,4 +534,28 @@ class ShopgateAddress extends ShopgateObject {
 	 * @return string
 	 */
 	public function getMail() { return $this->mail; }
+	
+	/**
+	 * Returns an array with the address data.
+	 *
+	 * @return mixed[] The object as an associative array.
+	 */
+	 public function toArray() {
+		$attributes = get_object_vars($this);
+		$address = array();
+		foreach ($attributes as $key => $value) {
+			if (($key == 'is_invoice_address') || ($key == 'is_delivery_address')) {
+				$prefix = '';
+				$capitalizeFirst = false;
+			} else {
+				$prefix = 'get';
+				$capitalizeFirst = true;
+			}
+			
+			$getter = $prefix.$this->camelize($key, $capitalizeFirst);
+			$address[$key] = $this->{$getter}();
+		}
+	
+		return $address;
+	}
 }
