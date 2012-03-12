@@ -1042,9 +1042,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	 *
 	 * @access private
 	 *
-	 * @param function		Die aufgerufene Funktion.
-	 * @param array $params1  	Die Parameter der aufgerufenen Funktion.
-	 * @param $files
+	 * @param array $data  	Die POST-Parameter der aufgerufenen Funktion.
 	 *
 	 * @throws ShopgateLibraryException
 	 */
