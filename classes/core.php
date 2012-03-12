@@ -96,7 +96,7 @@ class ShopgateLibraryException extends Exception {
 		$btrace = debug_backtrace();
 		$btrace = $btrace[1];
 		$message = (isset($btrace["class"])?$btrace["class"]."::":"").$btrace["function"]."():".$btrace["line"]." - " . print_r($message, true);
-		ShopgateLibrary::logWrite($message);
+		ShopgatePluginApi::logWrite($message);
 
 		parent::__construct($message);
 	}
@@ -466,7 +466,7 @@ class ShopgateObject {
 	}
 }
 
-class ShopgateLibrary extends ShopgateObject {
+class ShopgatePluginApi extends ShopgateObject {
 	private static $singleton;
 
 	/**
@@ -480,7 +480,7 @@ class ShopgateLibrary extends ShopgateObject {
 	 * Das Plugin für das jeweilige Shopping-System, das passende
 	 * Plugin wird entsprechend der Config geladen.
 	 *
-	 * @var ShopgatePluginApi
+	 * @var ShopgatePlugin
 	 */
 	private $plugin;
 
@@ -527,7 +527,7 @@ class ShopgateLibrary extends ShopgateObject {
 	private $response = array();
 
 	/**
-	 * @return ShopgateLibrary
+	 * @return ShopgatePlugin
 	 */
 	public static function &getInstance() {
 		if (empty(self::$singleton)) {
@@ -549,16 +549,16 @@ class ShopgateLibrary extends ShopgateObject {
 	}
 
 	/**
-	 * Registers the current ShopgatePluginApi's instance for callbacks.
+	 * Registers the current ShopgatePlugin instance for callbacks.
 	 *
-	 * This is usually done by ShopgatePluginApi::__construct() as soon as you instantiate your plugin implementation.
+	 * This is usually done by ShopgatePlugin::__construct() as soon as you instantiate your plugin implementation.
 	 * The registered instance is the one whose callback methods (e.g. ShopgatePlugin::addOrder()) get called on incoming
 	 * requests.
 	 *
-	 * @param ShopgatePluginApi $shopgatePluginApi
+	 * @param ShopgatePlugin $shopgatePlugin
 	 */
-	public function setPlugin(ShopgatePluginApi $shopgatePluginApi) {
-		$this->plugin = $shopgatePluginApi;
+	public function setPlugin(ShopgatePlugin $shopgatePlugin) {
+		$this->plugin = $shopgatePlugin;
 	}
 
 	public function setConfig(ShopgateConfig $config) {
@@ -751,7 +751,7 @@ class ShopgateLibrary extends ShopgateObject {
 	 */
 	private function getShopInfo() {
 		//$this->__checkApiKey();
-		$Plugin = ShopgatePluginCore::newInstance($this->config);
+		$Plugin = ShopgatePlugin::newInstance($this->config);
 		$info = $Plugin->startCreateShopInfo();
 		if(!empty($info)){
 			$this->response["shopinfo"] = $info;
@@ -1193,7 +1193,7 @@ class ShopgateMerchantApi extends ShopgateObject {
  * @author Martin Weber
  * @version 1.0.0
  */
-abstract class ShopgatePluginApi extends ShopgateObject {
+abstract class ShopgatePlugin extends ShopgateObject {
 	private $allowedEncodings = array(
 		'UTF-8', 'ASCII', 'CP1252', 'ISO-8859-15', 'UTF-16LE','ISO-8859-1'
 	);
@@ -1239,7 +1239,7 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 	public $splittetExport = false;
 
 	final public function __construct() {
-		ShopgateLibrary::getInstance()->setPlugin($this);
+		ShopgatePluginApi::getInstance()->setPlugin($this);
 
 		if(!$this->setConfig(ShopgateConfig::validateAndReturnConfig())) {
 			throw new ShopgateLibraryException("Config-Datei konnte nicht initialisiert werden");
@@ -1282,7 +1282,7 @@ abstract class ShopgatePluginApi extends ShopgateObject {
 	 * damit dieses dann die Anfrage weiter bearbeiten kann.
 	 */
 	public function handleRequest($data = array()) {
-		ShopgateLibrary::getInstance($this)->handleRequest($data);
+		ShopgatePluginApi::getInstance($this)->handleRequest($data);
 	}
 
 	/**
