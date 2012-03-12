@@ -366,8 +366,8 @@ if (isset($shopgate_config) && is_array($shopgate_config)) {
 		ShopgateConfig::setConfig($shopgate_config, false);
 	} catch (Exception $e) {
 		$response = array(
-			"is_error"=>true,
-			"error"=>$e->getMessage(),
+			"error"=>true,
+			"error_text"=>$e->getMessage(),
 		);
 		echo sg_json_encode($response);
 		exit;
@@ -542,7 +542,7 @@ class ShopgateLibrary extends ShopgateObject {
 		// TODO in $_POST ändern. Zum testen $_REQUEST
 		$this->params = $_REQUEST;
 
-		$this->response["is_error"] = 0;
+		$this->response["error"] = 0;
 		$this->response["error_text"] = "";
 // 		$this->response["version"] = SHOPGATE_PLUGIN_VERSION;
 		$this->response["trace_id"] = isset($this->params["trace_id"]) ? $this->params["trace_id"] : null;
@@ -617,8 +617,8 @@ class ShopgateLibrary extends ShopgateObject {
 
 			// Abfangen einer beliebigen Excpetion innerhalb eines Plugins.
 			// Der Fehler wird an den Serve zurückgegeben
-			$this->response["is_error"] = 1;
-			$this->response["error"] = $e->getMessage();
+			$this->response["error"] = 1; // TODO:
+			$this->response["error_text"] = $e->getMessage();
 		}
 
 		// Gib die Daten zurück an Shopgate
@@ -626,7 +626,7 @@ class ShopgateLibrary extends ShopgateObject {
 		header('Content-Type: application/json');
 		echo sg_json_encode($this->response);
 
-		return !isset($this->response["is_error"]);
+		return !(isset($this->response["error"]) && $this->response["error"] > 0);
 	}
 
 	/**
