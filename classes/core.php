@@ -76,7 +76,7 @@ function ShopgateErrorHandler($errno, $errstr, $errfile, $errline) {
 }
 
 /**
- * Diese Excpetion wird in einem Fehlerfall von der Shopgate Library geworfen.
+ * Diese Exception wird in einem Fehlerfall von der Shopgate Library geworfen.
  * Alle Fehler werden im Log mitprotokolliert.
  *
  * @author Martin Weber
@@ -466,6 +466,49 @@ class ShopgateObject {
 	}
 }
 
+class ShopgateContainer extends ShopgateObject {
+	/**
+	 * @param array $data An array containing the container's data as defined at our wiki
+	 * @see http://wiki.shopgate.com/........
+	 * @todo Link aktualisieren
+	 */
+	public function __construct($data = null) {
+		$methods = get_class_methods($this);
+		if (is_array($data)) {
+			foreach ($data as $key => $value) {
+				$setter = 'set'.$this->camelize($key, true);
+				if (!in_array($setter, $methods)) {
+					throw new ShopgateLibraryException('Unbekanntes Attribut "'.$key.'" übergeben.');
+				}
+				$this->$setter($value);
+			}
+		}
+	}
+	
+	/**
+	 * Returns an associative array with the containers address data.
+	 *
+	 * @param int $boolToInt Set true to convert boolean true to 1 and boolean false to 0 or false otherwise.
+	 * @return mixed[]
+	 */
+	public function toArray($boolToInt = true) {
+		$attributes = get_object_vars($this);
+		$array = array();
+		foreach ($attributes as $attribute => $value) {
+			$getter = 'get'.$this->camelize($attribute, true);
+			$array[$attribute] = $this->{$getter}();
+			
+			// Ggf. Booleans zu Integers konvertieren
+			if ($boolToInt) {
+				if ($array[$attribute] === false) $array[$attribute] = 0;
+				if ($array[$attribute] === true)  $array[$attribute] = 1;
+			}
+		}
+		
+		return $array;
+	}
+}
+
 class ShopgatePluginApi extends ShopgateObject {
 	private static $singleton;
 
@@ -745,21 +788,7 @@ class ShopgatePluginApi extends ShopgateObject {
 		$this->response["php_curl"] = function_exists("curl_version") ? curl_version() : "No PHP-CURL installed";
 		$this->response["php_extensions"] = get_loaded_extensions();
 	}
-
-	/**
-	 * Liefert Information ueber das verwendete Shopsystem zurueck
-	 */
-	private function getShopInfo() {
-		//$this->__checkApiKey();
-		$Plugin = ShopgatePlugin::newInstance($this->config);
-		$info = $Plugin->startCreateShopInfo();
-		if(!empty($info)){
-			$this->response["shopinfo"] = $info;
-		}else{
-			$this->response["shopinfo"] = 'Keine Information über das Shopsystem verfügbar';
-		}
-	}
-
+	
 	/**
 	 * Informiere das Framework über neue Meldungen wie z.B. eine neue
 	 * Bestellung eingegangen.
@@ -825,16 +854,18 @@ class ShopgatePluginApi extends ShopgateObject {
 		}
 
 		// Die Userdaten über das Plugin auslesen
-		$userData = $this->plugin->getCustomer($this->params['user'], $this->params['pass']);
-
-		if(!is_object($userData) || get_class($userData) !== "ShopgateCustomer") {
+		$customer = $this->plugin->getCustomer($this->params['user'], $this->params['pass']);
+		if(!is_object($customer) || get_class($customer) !== "ShopgateCustomer") {
 			throw new ShopgateLibraryException("Das zurückgegebene Format ist ungültig.");
 		}
 
 		// Daten als JSON zurückliefern
-		$data = $userData->toArray();
-		$this->response["user_data"] = $data[0];
-		$this->response["addresses"] = $data[1];
+		$customerData = $customer->toArray();
+		$addressList = $customerData['addresses'];
+		unset($customerData['addresses']);
+		
+		$this->response["user_data"] = $customerData;
+		$this->response["addresses"] = $addressList;
 	}
 
 	/**

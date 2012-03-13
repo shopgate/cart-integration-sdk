@@ -8,49 +8,49 @@ class ShopgateOrder extends ShopgateObject {
 	const COD = "COD";
 	const PAYPAL = "PAYPAL";
 
-	private $order_number;
-	private $customer_number;
+	protected $order_number;
+	protected $customer_number;
 
-	private $external_order_number;
-	private $external_order_id;
+	protected $external_order_number;
+	protected $external_order_id;
 
-	private $external_customer_number;
-	private $external_customer_id;
+	protected $external_customer_number;
+	protected $external_customer_id;
 
-	private $mail;
-	private $phone;
-	private $mobile;
+	protected $mail;
+	protected $phone;
+	protected $mobile;
 
-	private $confirm_shipping_url;
+	protected $confirm_shipping_url;
 
-	private $created_time;
+	protected $created_time;
 
-	private $payment_method;
+	protected $payment_method;
 
-	private $is_paid;
+	protected $is_paid;
 
-	private $payment_time;
-	private $payment_transaction_number;
-	private $payment_infos;
+	protected $payment_time;
+	protected $payment_transaction_number;
+	protected $payment_infos;
 
-	private $is_shipping_blocked;
-	private $is_shipping_completed;
-	private $shipping_completed_time;
+	protected $is_shipping_blocked;
+	protected $is_shipping_completed;
+	protected $shipping_completed_time;
 
-	private $amount_items;
-	private $amount_shipping;
-	private $amount_payment;
-	private $amount_complete;
-	private $currency;
-	private $is_test;
-	private $is_storno;
+	protected $amount_items;
+	protected $amount_shipping;
+	protected $amount_payment;
+	protected $amount_complete;
+	protected $currency;
+	protected $is_test;
+	protected $is_storno;
 
-	private $invoice_address;
-	private $delivery_address;
+	protected $invoice_address;
+	protected $delivery_address;
 
-	private $items;
+	protected $items;
 
-	private $delivery_notes;
+	protected $delivery_notes;
 
 	/**
 	 * @param array $data  Ein Array mit allen Informationen der Bestellung
@@ -345,22 +345,22 @@ class ShopgateOrder extends ShopgateObject {
 }
 
 class ShopgateOrderItem extends ShopgateObject {
-	private $item_number;
+	protected $item_number;
 
-	private $quantity;
+	protected $quantity;
 
-	private $name;
+	protected $name;
 
-	private $unit_amount;
-	private $unit_amount_with_tax;
+	protected $unit_amount;
+	protected $unit_amount_with_tax;
 
-	private $tax_percent;
+	protected $tax_percent;
 
-	private $currency;
+	protected $currency;
 
-	private $internal_order_info;
+	protected $internal_order_info;
 
-	private $options = array();
+	protected $options = array();
 
 	/**
 	 * Der Konstruktor der ShopgateOrderItem-Klasse.
@@ -454,11 +454,11 @@ class ShopgateOrderItem extends ShopgateObject {
 }
 
 class ShopgateOrderItemOption extends ShopgateObject {
-	private $name;
-	private $value;
-	private $additional_amount_with_tax;
-	private $value_number;
-	private $option_number;
+	protected $name;
+	protected $value;
+	protected $additional_amount_with_tax;
+	protected $value_number;
+	protected $option_number;
 
 	public function __construct($data = array()) {
 		if(!empty($data)) {
@@ -529,10 +529,10 @@ class ShopgateDeliveryNote extends ShopgateObject {
 	const TOF = "TOF"; // Trnas-o-Flex
 	const UPS = "UPS"; // UPS
 
-	private $shipping_service_id = ShopgateOrderDeliveryNote::DHL;
-	private $tracking_number = "";
-	private $shipping_time = null;
-	private $delivery_items = array();
+	protected $shipping_service_id = ShopgateOrderDeliveryNote::DHL;
+	protected $tracking_number = "";
+	protected $shipping_time = null;
+	protected $delivery_items = array();
 
 	/**
 	 * Der Konstruktor der ShopgateDeliveryNote-Klasse.

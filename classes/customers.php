@@ -1,40 +1,22 @@
 <?php
-class ShopgateCustomer extends ShopgateObject {
-	private $customer_number;
-	private $customer_group;
-	private $customer_group_id;
+class ShopgateCustomer extends ShopgateContainer {
+	protected $customer_number;
+	protected $customer_group;
+	protected $customer_group_id;
 	
-	private $first_name;
-	private $last_name;
+	protected $first_name;
+	protected $last_name;
 
- 	private $gender;
-	private $birthday;
+ 	protected $gender;
+	protected $birthday;
 	
-	private $phone;
-	private $mobile;
-	private $mail;
+	protected $phone;
+	protected $mobile;
+	protected $mail;
 	
-	private $newsletter_subscription;
+	protected $newsletter_subscription;
 	
-	private $addresses;
-
-
-	/**
-	 * @param array $data An array containing the customer's details as defined in the wiki.
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_customer/en
-	 */
-	public function __construct($data = null) {
-		$methods = get_class_methods($this);
-		if (is_array($data)) {
-			foreach ($data as $key => $value) {
-				$setter = 'set'.camelize($key, true);
-				if (!in_array($setter, $methods)) {
-					throw new ShopgateLibraryException('ShopgateCustomer::__construct(): Unbekanntes Attribut "'.$key.'" übergeben.');
-				}
-				$this->$setter($value);
-			}
-		}
-	}
+	protected $addresses;
 	
 	
 	/**********
@@ -62,29 +44,29 @@ class ShopgateCustomer extends ShopgateObject {
 			throw new ShopgateLibraryException("Non-numeric value passed to setCustomerGroupId");
 		}
 	}
-
+	
 	/**
 	 * @param string $value
 	 */
 	public function setFirstName($value) { $this->first_name = $value; }
-
+	
 	/**
 	 * @param string $value
 	 */
 	public function setLastName($value) { $this->last_name = $value; }
-
+	
 	/**
 	 * @param string $value <ul><li>"m" = Male</li><li>"f" = Female</li></ul>
 	 * @throws ShopgateLibraryException if a value other than "m" or "f" is passed.
 	 */
 	public function setGender($value) {
-		if (($value === "m") || ($value === "f")) {
+		if (($value != "m") && ($value != "f") && !empty($value)) {
 			$this->gender = $value;
 		} else {
-			throw new ShopgateLibraryException("Value passed to setGender is not 'm', nor 'f'.");
+			throw new ShopgateLibraryException('ShopgateAddress::setGender(): Invalid value: '.var_export($value, true));
 		}
 	}
-
+	
 	/**
 	 * @param string $value Format: yyyy-mm-dd (1983-02-17)
 	 * @throws ShopgateLibraryException
@@ -144,22 +126,22 @@ class ShopgateCustomer extends ShopgateObject {
 	 * @return int
 	 */
 	public function getCustomerGroupId() { return (int) $this->customer_group_id; }
-
+	
 	/**
 	 * @return string
 	 */
 	public function getFirstName() { return $this->first_name; }
-
+	
 	/**
 	 * @return string
 	 */
 	public function getLastName() { return $this->last_name; }
-
+	
 	/**
 	 * @return string <ul><li>"m" = Male</li><li>"f" = Female</li></ul>
 	 */
 	public function getGender() { return $this->gender; }
-
+	
 	/**
 	 * @return string Format: yyyy-mm-dd (1983-02-17)
 	 */
@@ -193,88 +175,53 @@ class ShopgateCustomer extends ShopgateObject {
 		$addresses = array();
 		
 		foreach ($this->addresses as $address)
-			if ($address->getAddressType == $type) $addresses[] = $address;
+			if ($address->getAddressType() == $type) $addresses[] = $address;
 		
 		return $addresses;
 	}
 	
-	/**
-	 * Returns an array with user's and address data.
-	 *
-	 * Index 1 contains the ShopgateCustomer object's attributes as associative array.
-	 * Index 2 contains a list of associative arrays containing the corresponding ShopgateAddress object's attributes.
-	 *
-	 * @return mixed[]
-	 */
 	public function toArray() {
-		$attributes = get_object_vars($this);
-		$customer = array();
-		$addresses = array();
-		foreach ($attributes as $attribute => $value) {
-			if ($attribute == 'addresses') {
-				foreach ($value as $address) {
-					$addresses[] = $address->toArray();
-				}
-			} else {
-				$getter = 'get'.$this->camelize($attribute);
-				$customer[$attribute] = $this->{$getter}();
-			}
-		}
+		$array = parent::toArray();
 		
-		return array($customer, $addresses);
+		// Adressen zu Arrays konvertieren
+		$addressObjects = $array['addresses'];
+		$addressArrays = array();
+		foreach ($addressObjects as $addressObject) {
+			$addressArrays[] = $addressObject->toArray();
+		}
+		$array['addresses'] = $addressArrays;
+		
+		return $array;
 	}
 }
 
-class ShopgateAddress extends ShopgateObject {
+class ShopgateAddress extends ShopgateContainer {
 	const INVOICE  = 0x01;
 	const DELIVERY = 0x10;
 	const BOTH     = 0x11;
 	
-	private $id;
-	private $is_invoice_address;
-	private $is_delivery_address;
+	protected $id;
+	protected $is_invoice_address;
+	protected $is_delivery_address;
 	
-	private $first_name;
-	private $last_name;
+	protected $first_name;
+	protected $last_name;
 	
-	private $gender;
-	private $birthday;
+	protected $gender;
+	protected $birthday;
 	
-	private $company;
-	private $street_1;
-	private $street_2;
-	private $zipcode;
-	private $city;
-	private $country;
-	private $state;
+	protected $company;
+	protected $street_1;
+	protected $street_2;
+	protected $zipcode;
+	protected $city;
+	protected $country;
+	protected $state;
 	
-	private $phone;
-	private $mobile;
-	private $mail;
+	protected $phone;
+	protected $mobile;
+	protected $mail;
 	
-	/**
-	 * @param array $data An array with the address information.
-	 */
-	public function __construct($data = null) {
-		$methods = get_class_methods($this);
-		if (is_array($data)) {
-			foreach ($data as $key => $value) {
-				if (($key == 'is_invoice_address') || ($key == 'is_delivery_address')) {
-					$prefix = '';
-					$capitalizeFirst = false;
-				} else {
-					$prefix = 'get';
-					$capitalizeFirst = true;
-				}
-				
-				$setter = $prefix.camelize($key, $capitalizeFirst);
-				if (!in_array($setter, $methods)) {
-					throw new ShopgateLibraryException('ShopgateCustomer::__construct(): Unbekanntes Attribut "'.$key.'" übergeben.');
-				}
-				$this->$setter($value);
-			}
-		}
-	}
 	
 	/**********
 	 * Setter *
@@ -288,9 +235,9 @@ class ShopgateAddress extends ShopgateObject {
 	}
 	
 	/**
-	* @param int $value ShopgateAddress::BOTH or ShopgateAddress::INVOICE or ShopgateAddress::DELIVERY
-	* @throws ShopgateLibraryException
-	*/
+	 * @param int $value ShopgateAddress::BOTH or ShopgateAddress::INVOICE or ShopgateAddress::DELIVERY
+	 * @throws ShopgateLibraryException
+	 */
 	public function setAddressType($value) {
 		if (
 			$value != self::INVOICE &&
@@ -302,6 +249,20 @@ class ShopgateAddress extends ShopgateObject {
 		
 		$this->is_invoice_address  = (bool) ($value & self::INVOICE);
 		$this->is_delivery_address = (bool) ($value & self::DELIVERY);
+	}
+	
+	/**
+	 * @param bool $value
+	 */
+	public function setIsInvoiceAddress($value) {
+		$this->is_invoice_address = (bool) $value;
+	}
+	
+	/**
+	 * @param bool $value
+	 */
+	public function setIsDeliveryAddress($value) {
+		$this->is_delivery_address = (bool) $value;
 	}
 	
 	/**
@@ -322,9 +283,9 @@ class ShopgateAddress extends ShopgateObject {
 	 * @param string $value <ul><li>"m" = Male</li><li>"f" = Female</li></ul>
 	 * @throws ShopgateLibraryException
 	 */
-	public function setGender($value) {
-		if (($value != "m") && ($value != "f")) {
-			throw new ShopgateLibraryException('ShopgateAddress::setGender(): Ungültiger Wert.');
+	public function setGender($value = null) {
+		if (($value != "m") && ($value != "f") && !empty($value)) {
+			throw new ShopgateLibraryException('ShopgateAddress::setGender(): Invalid value: '.var_export($value, true));
 		}
 		
 		$this->gender = $value;
@@ -434,20 +395,20 @@ class ShopgateAddress extends ShopgateObject {
 	/**
 	* @return bool
 	*/
-	public function isInvoiceAddress() { return (bool) $this->is_invoice_address; }
+	public function getIsInvoiceAddress() { return (bool) $this->is_invoice_address; }
 	
 	/**
 	 * @return bool
 	 */
-	public function isDeliveryAddress() { return (bool) $this->is_delivery_address; }
+	public function getIsDeliveryAddress() { return (bool) $this->is_delivery_address; }
 	
 	/**
 	 * @return int ShopgateAddress::BOTH or ShopgateAddress::INVOICE or ShopgateAddress::DELIVERY
 	 */
 	public function getAddressType() {
 		return (int) (
-			($this->isInvoiceAddress()  ? self::INVOICE  : 0) |
-			($this->isDeliveryAddress() ? self::DELIVERY : 0)
+			($this->getIsInvoiceAddress()  ? self::INVOICE  : 0) |
+			($this->getIsDeliveryAddress() ? self::DELIVERY : 0)
 		);
 	}
 	
@@ -455,17 +416,17 @@ class ShopgateAddress extends ShopgateObject {
 	 * @return string
 	 */
 	public function getFirstName() { return $this->first_name; }
-
+	
 	/**
 	 * @return string
 	 */
 	public function getLastName() { return $this->last_name; }
-
+	
 	/**
 	 * @return string <ul><li>"m" = Male</li><li>"f" = Female</li></ul>
 	 */
 	public function getGender() { return $this->gender; }
-
+	
 	/**
 	 * @return string Format: yyyy-mm-dd (1983-02-17)
 	 */
@@ -534,28 +495,4 @@ class ShopgateAddress extends ShopgateObject {
 	 * @return string
 	 */
 	public function getMail() { return $this->mail; }
-	
-	/**
-	 * Returns an array with the address data.
-	 *
-	 * @return mixed[] The object as an associative array.
-	 */
-	 public function toArray() {
-		$attributes = get_object_vars($this);
-		$address = array();
-		foreach ($attributes as $key => $value) {
-			if (($key == 'is_invoice_address') || ($key == 'is_delivery_address')) {
-				$prefix = '';
-				$capitalizeFirst = false;
-			} else {
-				$prefix = 'get';
-				$capitalizeFirst = true;
-			}
-			
-			$getter = $prefix.$this->camelize($key, $capitalizeFirst);
-			$address[$key] = $this->{$getter}();
-		}
-	
-		return $address;
-	}
 }
