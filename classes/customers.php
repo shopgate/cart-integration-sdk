@@ -60,11 +60,13 @@ class ShopgateCustomer extends ShopgateContainer {
 	 * @throws ShopgateLibraryException if a value other than "m" or "f" is passed.
 	 */
 	public function setGender($value) {
-		if (($value != "m") && ($value != "f") && !empty($value)) {
-			$this->gender = $value;
-		} else {
+		if (empty($value)) return;
+		
+		if (($value != "m") && ($value != "f")) {
 			throw new ShopgateLibraryException('ShopgateAddress::setGender(): Invalid value: '.var_export($value, true));
 		}
+		
+		$this->gender = $value;
 	}
 	
 	/**
@@ -179,20 +181,6 @@ class ShopgateCustomer extends ShopgateContainer {
 		
 		return $addresses;
 	}
-	
-	public function toArray() {
-		$array = parent::toArray();
-		
-		// Adressen zu Arrays konvertieren
-		$addressObjects = $array['addresses'];
-		$addressArrays = array();
-		foreach ($addressObjects as $addressObject) {
-			$addressArrays[] = $addressObject->toArray();
-		}
-		$array['addresses'] = $addressArrays;
-		
-		return $array;
-	}
 }
 
 class ShopgateAddress extends ShopgateContainer {
@@ -284,7 +272,9 @@ class ShopgateAddress extends ShopgateContainer {
 	 * @throws ShopgateLibraryException
 	 */
 	public function setGender($value = null) {
-		if (($value != "m") && ($value != "f") && !empty($value)) {
+		if (empty($value)) return;
+		
+		if (($value != "m") && ($value != "f")) {
 			throw new ShopgateLibraryException('ShopgateAddress::setGender(): Invalid value: '.var_export($value, true));
 		}
 		

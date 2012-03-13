@@ -473,8 +473,8 @@ class ShopgateContainer extends ShopgateObject {
 	 * @todo Link aktualisieren
 	 */
 	public function __construct($data = null) {
-		$methods = get_class_methods($this);
 		if (is_array($data)) {
+			$methods = get_class_methods($this);
 			foreach ($data as $key => $value) {
 				$setter = 'set'.$this->camelize($key, true);
 				if (!in_array($setter, $methods)) {
@@ -486,7 +486,7 @@ class ShopgateContainer extends ShopgateObject {
 	}
 	
 	/**
-	 * Returns an associative array with the containers address data.
+	 * Converts the Container object recursively to an associative array.
 	 *
 	 * @param int $boolToInt Set true to convert boolean true to 1 and boolean false to 0 or false otherwise.
 	 * @return mixed[]
@@ -503,9 +503,25 @@ class ShopgateContainer extends ShopgateObject {
 				if ($array[$attribute] === false) $array[$attribute] = 0;
 				if ($array[$attribute] === true)  $array[$attribute] = 1;
 			}
+			
+			// Ggf. enthaltene Listen rekursiv durchlaufen und in den Listen enthaltene Container-Objekte in Arrays umwandeln
+			if (is_array($array[$attribute])) {
+				array_walk_recursive($array[$attribute], array(&$this, 'containerListToArray'), $boolToInt);
+			}
+			
+			// Ggf. enthaltene Container-Objekte zu Arrays umwandeln
+			if (is_object($array[$attribute]) && ($array[$attribute] instanceof ShopgateContainer)) {
+				$array[$attribute]->toArray($boolToInt);
+			}
 		}
 		
 		return $array;
+	}
+	
+	protected function containerListToArray(&$value, $key, $boolToInt = true) {
+		if (is_object($value) && ($value instanceof ShopgateContainer)) {
+			$value = $value->toArray($boolToInt);
+		}
 	}
 }
 
@@ -1135,7 +1151,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 		$result = $this->sendRequest( $data );
 
 		if(empty($result["orders"])) throw new ShopgateLibraryException("Das Format entspricht nicht der ShopgateAPI.\n".print_r($result,true));
-
+		
 		$orders = array();
 		foreach($result["orders"] as $order) {
 			$orders[] = new ShopgateOrder( $order );

@@ -1,5 +1,5 @@
 <?php
-class ShopgateOrder extends ShopgateObject {
+class ShopgateOrder extends ShopgateContainer {
 	const SHOPGATE = "SHOPGATE";
 	const PREPAY = "PREPAY";
 	const CC = "CC";
@@ -51,32 +51,318 @@ class ShopgateOrder extends ShopgateObject {
 	protected $items;
 
 	protected $delivery_notes;
+	
+	
+	/**********
+	 * Setter *
+	 **********/
+	
+	/**
+	 * The Shopgate order number
+	 *
+	 * Format: Exact 10 Digits
+	 * Sample: 1012001234
+	 *
+	 * @param string $value
+	 */
+	public function setOrderNumber($value) { $this->order_number = $value; }
 
 	/**
-	 * @param array $data  Ein Array mit allen Informationen der Bestellung
+	 * The customer number by shopgate
+	 *
+	 * Format: Exact 5 Digits
+	 * Sample: 101234
+	 *
+	 * @param string $value
 	 */
-	public function __construct( $data = null ) {
-		if( is_array( $data ) ) {
-			foreach( $data as $key => $value ) {
+	public function setCustomerNumber($value) { $this->customer_number = $value; }
 
-				if( $key == "delivery_address" || $key == "invoice_address" ) {
-					$value = new ShopgateAddress($value);
-				} else if( $key == "delivery_notes" ) {
-					$notes = array();
-					foreach ( $value as $note ) $notes[] = new ShopgateOrderDeliveryNote( $note );
-					$value = $notes;
-				} else if( $key == "items" ) {
-					$items = array();
-					foreach ($value as $item) $items[] = new ShopgateOrderItem( $item );
-					$value = $items;
-				}
+	/**
+	 * The order number in your system
+	 *
+	 * @param string $value
+	 */
+	public function setExternalOrderNumber($value) { $this->external_order_number = $value; }
 
-				$this->{$key} = $value;
-			}
+	/**
+	 * The order id in your system
+	 *
+	 * @param string $value
+	 */
+	public function setExternalOrderId($value) { $this->external_order_id = $value; }
+
+	/**
+	 * The customer number in your system
+	 *
+	 * @param string $value
+	 */
+	public function setExternalCustomerNumber($value) { $this->external_customer_number = $value; }
+
+	/**
+	 * The customer id in your system
+	 *
+	 * @param string $value
+	 */
+	public function setExternalCustomerId($value) { $this->external_customer_id = $value; }
+
+	/**
+	 * The eMail-Adress of the customer
+	 *
+	 * @param string $value
+	 */
+	public function setMail($value) { $this->mail = $value; }
+
+	/**
+	 * The phone-number of the cutsomer
+	 *
+	 * Sample: +49123456789
+	 *
+	 * @param string $value
+	 */
+	public function setPhone($value) { $this->phone = $value; }
+
+	/**
+	 * The mobile-number of the cutsomer
+	 *
+	 * Sample: +49123456789
+	 *
+	 * @param string $value
+	 */
+	public function setMobile($value) { $this->mobile = $value; }
+
+	/**
+	 * The confirm shipping url to confirm the shipping manual
+	 *
+	 * @param string $value
+	 */
+	public function setConfirmShippingUrl($value) { $this->confirm_shipping_url = $value; }
+
+	/**
+	 * The DateTime when the order was created
+	 *
+	 * If $format is empty, the default DateTime returne in ISO-8601 (date('c');)
+	 *
+	 * Format: ISO-8601 - 2012-02-08T009:20:25+01:00
+	 *
+	 * @see http://www.php.net/manual/de/function.date.php
+	 * @see http://en.wikipedia.org/wiki/ISO_8601
+	 * @param string $value
+	 */
+	public function setCreatedTime($format = "") {
+		$time = $this->created_time;
+		if(!empty($format)) {
+			$timestamp = strtotime($time);
+			$time = date($format, $timestamp);
 		}
+
+		return $time;
 	}
 
+	/**
+	 * The payment method for the order
+	 *
+	 * Sample: <ul><li>DEBIT</li><li>SHOPGATE</li><li>PREPAY</li><li>CC</li><li>INVOICE</li><li>DEBIT</li><li>COD</li><li>PAYPAL</li></ul>
+	 *
+	 * @see http://wiki.shopgate.com/Merchant_API_payment_infos/de
+	 * @param string $value
+	 */
+	public function setPaymentMethod($value) { $this->payment_method = $value; }
 
+	/**
+	 * Is the order is payed
+	 *
+	 * @param bool $value
+	 */
+	public function setIsPaid($value) { $this->is_paid = $value; }
+
+	/**
+	 * The Time when the order was payed
+	 *
+	 * If $format is empty, the default DateTime returne in ISO-8601 (date('c');)
+	 *
+	 * Format: ISO-8601 - 2012-02-08T009:20:25+01:00
+	 *
+	 * @see http://www.php.net/manual/de/function.date.php
+	 * @see http://en.wikipedia.org/wiki/ISO_8601
+	 * @param string $value
+	 */
+	public function setPaymentTime($value) {
+		$this->payment_time = $value;
+	}
+
+	/**
+	 * The Transactioncode for some paymentproviders
+	 *
+	 * @param string $value
+	 */
+	public function setPaymentTransactionNumber($value) { $this->payment_transaction_number = $value; }
+
+	public function setPaymentInfos($value) { $this->payment_infos = $value; }
+
+	/**
+	 * Is the shipping is blocked
+	 *
+	 * @param string $value
+	 */
+	public function setIsShippingBlocked($value) { $this->is_shipping_blocked = $value; }
+
+	/**
+	 * Is the Shipping is completed
+	 */
+	public function setIsShippingCompleted($value) { $this->is_shipping_completed = $value; }
+
+	/**
+	 * The Time when the Shipping was set completed
+	 *
+	 * Format: ISO-8601 - 2012-02-08T009:20:25+01:00
+	 *
+	 * @see http://www.php.net/manual/de/function.date.php
+	 * @see http://en.wikipedia.org/wiki/ISO_8601
+	 * @param string $value
+	 */
+	public function setShippingCompletedTime($value) {
+		$this->shipping_completed_time = $value;
+	}
+
+	/**
+	 * The full amount of Items
+	 *
+	 * @param float $value
+	 */
+	public function setAmountItems($value) { $this->amount_items = $value; }
+
+	/**
+	 * The shipping price
+	 *
+	 * @param float $value
+	 */
+	public function setAmountShipping($value) { $this->amount_shipping = $value; }
+
+	/**
+	 * Amount for Payment
+	 *
+	 * @param float $value
+	 */
+	public function setAmountPayment($value) { $this->amount_payment = $value; }
+
+	/**
+	 * Complete amount for the order
+	 *
+	 * @param float $value
+	 */
+	public function setAmountComplete($value) { $this->amount_complete = $value; }
+
+	/**
+	 * The currency for this order
+	 *
+	 * The currency ISO-Code from ISO-4217
+	 *
+	 * Sample: <ul><li>EUR</li><li>CHF</li></ul>
+	 *
+	 * @see http://de.wikipedia.org/wiki/ISO_4217
+	 * @param string $value
+	 */
+	public function setCurrency($value) { $this->currency = $value; }
+
+	/**
+	 * Is this flag is set to 1, the Order is a Test
+	 *
+	 * @param bool $value
+	 */
+	public function setIsTest($value) { $this->is_test = $value; }
+
+	/**
+	 * Is this flag is set to 1 the order is cancled
+	 *
+	 * @param bool $value
+	 */
+	public function setIsStorno($value) { $this->is_storno = $value; }
+
+	/**
+	 * The invoice address of the customer
+	 *
+	 * @param ShopgateAddress|mixed[] $value
+	 */
+	public function setInvoiceAddress($value) {
+		if (!is_object($element) && !($element instanceof ShopgateAddress) && !is_array($value)) {
+			throw new ShopgateLibraryException('Invalid value: '.var_export($value, true));
+		}
+		
+		if (is_array($value)) {
+			$value = new ShopgateAddress($value);
+		}
+		
+		$this->invoice_address = $value;
+	}
+
+	/**
+	 * The delivery address of the customer
+	 *
+	 * @param ShopgateAddress|mixed[] $value
+	 */
+	public function setDeliveryAddress($value) {
+		if (!is_object($element) && !($element instanceof ShopgateAddress) && !is_array($value)) {
+			throw new ShopgateLibraryException('Invalid value: '.var_export($value, true));
+		}
+		
+		if (is_array($value)) {
+			$value = new ShopgateAddress($value);
+		}
+				
+		$this->delivery_address = $value;
+	}
+
+	/**
+	 * The list of itmes in the order
+	 *
+	 * @param ShopgateOrderItem[]|mixed[][] $value
+	 */
+	public function setItems($value) {
+		if (!is_array($value)) {
+			throw new ShopgateLibraryException('Invalid value: '.var_export($value, true));
+		}
+		
+		foreach ($value as &$element) {
+			if (is_object($element) && ($element instanceof ShopgateOrderItem) || !is_array($element)) {
+				throw new ShopgateLibraryException('Invalid value in array: '.var_export($value, true));
+			}
+			
+			if (is_array($element)) {
+				$element = new ShopgateOrderItem($element);
+			}
+		}
+		
+		$this->items = $value;
+	}
+
+	/**
+	 * The list of delivery Notes of the order
+	 *
+	 * @param ShopgateDeliveryNote[]|mixed[][] $value
+	 */
+	public function setDeliveryNotes($value) {
+		if (!is_array($value)) {
+			throw new ShopgateLibraryException('Invalid value: '.var_export($value, true));
+		}
+		
+		foreach ($value as &$element) {
+			if (is_object($element) && ($element instanceof ShopgateDeliveryNote) || !is_array($element)) {
+				throw new ShopgateLibraryException('Invalid value in array: '.var_export($value, true));
+			}
+				
+			if (is_array($element)) {
+				$element = new ShopgateDeliveryNote($element);
+			}
+		}
+		
+		$this->items = $value;
+	}
+	
+	
+	/**********
+	 * Getter *
+	 **********/
+	
 	/**
 	 * The Shopgate order number
 	 *
@@ -344,7 +630,7 @@ class ShopgateOrder extends ShopgateObject {
 	public function getDeliveryNotes() { return $this->delivery_notes; }
 }
 
-class ShopgateOrderItem extends ShopgateObject {
+class ShopgateOrderItem extends ShopgateContainer {
 	protected $item_number;
 
 	protected $quantity;
@@ -361,20 +647,118 @@ class ShopgateOrderItem extends ShopgateObject {
 	protected $internal_order_info;
 
 	protected $options = array();
+	
+	protected $inputs;
 
+	
+	/**********
+	 * Setter *
+	 **********/
+	
 	/**
-	 * Der Konstruktor der ShopgateOrderItem-Klasse.
+	 * Returns the name value
 	 *
-	 * @param array $data Ein Array mit allen Informationen zu einem Produkt der Bestellung.
+	 * @param string $value
 	 */
-	public function __construct( $data = null ) {
-		if( is_array( $data ) ) {
-			foreach($data as $key => $value) {
-				$this->{$key} = $value;
-			}
-		}
+	public function setName($value) {
+		$this->name = $value;
 	}
 
+	/**
+	 * Returns the item_number value
+	 *
+	 * @param string $value
+	 */
+	public function setItemNumber($value) {
+		$this->item_number = $value;
+	}
+
+	/**
+	 * Returns the unit_amount value
+	 *
+	 * @param string $value
+	 */
+	public function setUnitAmount($value) {
+		$this->unit_amount = $value;
+	}
+
+	/**
+	 * Returns the unit_amount_with_tax value
+	 *
+	 * @param float $value
+	 */
+	public function setUnitAmountWithTax($value) {
+		$this->unit_amount_with_tax = $value;
+	}
+
+	/**
+	 * Returns the quantity value
+	 *
+	 * @param int $value
+	 */
+	public function setQuantity($value) {
+		$this->quantity = $value;
+	}
+
+	/**
+	* Returns the tax_percent value
+	*
+	* @param float $value
+	*/
+	public function setTaxPercent($value) {
+		$this->tax_percent = $value;
+	}
+
+	/**
+	 * Returns the currency value
+	 *
+	 * @param string $value
+	 */
+	public function setCurrency($value) {
+		$this->currency = $value;
+	}
+
+	/**
+	 * Returns the internal_order_info value
+	 *
+	 * @param string $value
+	 */
+	public function setInternalOrderInfo($value) { $this->internal_order_info = $value; }
+
+	/**
+	 * Returns the options value
+	 *
+	 * @param ShopgateOrderItemOption[]|mixed[][] $value
+	 */
+	public function setOptions($value) {
+		if (!is_array($value)) {
+			throw new ShopgateLibraryException('Invalid value: '.var_export($value, true));
+		}
+		
+		foreach ($value as &$element) {
+			if (is_object($element) && ($element instanceof ShopgateOrderItemOption) || !is_array($element)) {
+				throw new ShopgateLibraryException('Invalid value in array: '.var_export($value, true));
+			}
+		
+			if (is_array($element)) {
+				$element = new ShopgateOrderItemOption($element);
+			}
+		}
+		
+		$this->items = $value;
+	}
+	
+	/**
+ 	 * @param unknown_type $value
+ 	 * @todo IMPLEMENTIEREN
+	 */
+	public function setInputs($value) { $this->inputs = $value; }
+	
+	
+	/**********
+	 * Getter *
+	 **********/
+	
 	/**
 	 * Returns the name value
 	 *
@@ -451,25 +835,78 @@ class ShopgateOrderItem extends ShopgateObject {
 	 * @return ShopgateOrderItemOption[]
 	 */
 	public function getOptions() { return $this->options; }
+
+	/**
+	* @param unknown_type $value
+	* @todo IMPLEMENTIEREN
+	*/
+	public function getInputs($value) {
+		return $this->inputs;
+	}
 }
 
-class ShopgateOrderItemOption extends ShopgateObject {
+class ShopgateOrderItemOption extends ShopgateContainer {
 	protected $name;
 	protected $value;
 	protected $additional_amount_with_tax;
 	protected $value_number;
 	protected $option_number;
-
-	public function __construct($data = array()) {
-		if(!empty($data)) {
-			$this->setName($data["name"]);
-			$this->setValue($data["value"]);
-			$this->setAdditionalUnitAmountWithTax($data["additional_amount_with_tax"]);
-			$this->setValueNumber($data["value_number"]);
-			$this->setOptionNumber($data["option_number"]);
-		}
+	
+	
+	/**********
+	 * Setter *
+	 **********/
+	
+	/**
+	 * Returns the name value
+	 *
+	 * @param string $value
+	 */
+	public function setName($value) {
+		$this->name = $value;
 	}
 
+	/**
+	 * Returns the value value
+	 *
+	 * @param string $value
+	 */
+	public function setValue($value) {
+		$this->value = $value;
+	}
+
+	/**
+	 * Returns the additional_unit_amount_with_tax value
+	 *
+	 * @param string $value
+	 */
+	public function setAdditionalUnitAmountWithTax($value) {
+		$this->additional_unit_amount_with_tax = $value;
+	}
+
+	/**
+	 * Returns the value_number value
+	 *
+	 * @param string $value
+	 */
+	public function setValueNumber($value) {
+		$this->value_number = $value;
+	}
+
+	/**
+	 * Returns the option_number value
+	 *
+	 * @param string $value
+	 */
+	public function setOptionNumber($value) {
+		$this->option_number = $value;
+	}
+
+	
+	/**********
+	 * Getter *
+	 **********/
+	
 	/**
 	 * Returns the name value
 	 *
@@ -516,7 +953,7 @@ class ShopgateOrderItemOption extends ShopgateObject {
 	}
 }
 
-class ShopgateDeliveryNote extends ShopgateObject {
+class ShopgateDeliveryNote extends ShopgateContainer {
 	const DHL = "DHL"; // DHL
 	const DHLEXPRESS = "DHLEXPRESS"; // DHLEXPRESS
 	const DP = "DP"; // Deutsche Post
@@ -532,20 +969,42 @@ class ShopgateDeliveryNote extends ShopgateObject {
 	protected $shipping_service_id = ShopgateOrderDeliveryNote::DHL;
 	protected $tracking_number = "";
 	protected $shipping_time = null;
-	protected $delivery_items = array();
+
+	/**********
+	 * Setter *
+	 **********/
+	
+	/**
+	 * Returns the shipping_service_id value
+	 *
+	 * @param string $value
+	 */
+	public function setShippingType($value) {
+		$this->shipping_type = $value;
+	}
 
 	/**
-	 * Der Konstruktor der ShopgateDeliveryNote-Klasse.
+	 * Returns the tracking_number value
 	 *
-	 * @param array $data 	Ein Array mit allen Information über die Lieferung der Bestellung.
+	 * @param string $value
 	 */
-	public function __construct( $data = null ) {
-		if( is_array( $data ) ) {
-			foreach($data as $key => $value) {
-				$this->{$key} = $value;
-			}
-		}
+	public function setTrackingNumber($value) {
+		$this->tracking_number = $value;
 	}
+
+	/**
+	 * Returns the tracking_number value
+	 *
+	 * @param string $value
+	 */
+	public function setShippingTime($value) {
+		$this->tracking_number = $value;
+	}
+	
+	
+	/**********
+	 * Getter *
+	 **********/
 
 	/**
 	 * Returns the shipping_service_id value
@@ -572,14 +1031,5 @@ class ShopgateDeliveryNote extends ShopgateObject {
 	 */
 	public function getShippingTime() {
 		return $this->tracking_number;
-	}
-
-	/**
-	 * Returns the items value
-	 *
-	 * @return array
-	 */
-	public function getDeliveryItems() {
-		return $this->delivery_items;
 	}
 }
