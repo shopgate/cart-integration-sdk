@@ -51,12 +51,12 @@ class ShopgateOrder extends ShopgateContainer {
 	protected $items;
 
 	protected $delivery_notes;
-	
-	
+
+
 	/**********
 	 * Setter *
 	 **********/
-	
+
 	/**
 	 * The Shopgate order number
 	 *
@@ -148,15 +148,7 @@ class ShopgateOrder extends ShopgateContainer {
 	 * @see http://en.wikipedia.org/wiki/ISO_8601
 	 * @param string $value
 	 */
-	public function setCreatedTime($format = "") {
-		$time = $this->created_time;
-		if(!empty($format)) {
-			$timestamp = strtotime($time);
-			$time = date($format, $timestamp);
-		}
-
-		return $time;
-	}
+	public function setCreatedTime($value) { $this->created_time = $value; }
 
 	/**
 	 * The payment method for the order
@@ -287,11 +279,11 @@ class ShopgateOrder extends ShopgateContainer {
 		if (!is_object($element) && !($element instanceof ShopgateAddress) && !is_array($value)) {
 			throw new ShopgateLibraryException('Invalid value: '.var_export($value, true));
 		}
-		
+
 		if (is_array($value)) {
 			$value = new ShopgateAddress($value);
 		}
-		
+
 		$this->invoice_address = $value;
 	}
 
@@ -304,11 +296,11 @@ class ShopgateOrder extends ShopgateContainer {
 		if (!is_object($element) && !($element instanceof ShopgateAddress) && !is_array($value)) {
 			throw new ShopgateLibraryException('Invalid value: '.var_export($value, true));
 		}
-		
+
 		if (is_array($value)) {
 			$value = new ShopgateAddress($value);
 		}
-				
+
 		$this->delivery_address = $value;
 	}
 
@@ -321,17 +313,17 @@ class ShopgateOrder extends ShopgateContainer {
 		if (!is_array($value)) {
 			throw new ShopgateLibraryException('Invalid value: '.var_export($value, true));
 		}
-		
+
 		foreach ($value as &$element) {
 			if (is_object($element) && ($element instanceof ShopgateOrderItem) || !is_array($element)) {
 				throw new ShopgateLibraryException('Invalid value in array: '.var_export($value, true));
 			}
-			
+
 			if (is_array($element)) {
 				$element = new ShopgateOrderItem($element);
 			}
 		}
-		
+
 		$this->items = $value;
 	}
 
@@ -344,25 +336,25 @@ class ShopgateOrder extends ShopgateContainer {
 		if (!is_array($value)) {
 			throw new ShopgateLibraryException('Invalid value: '.var_export($value, true));
 		}
-		
+
 		foreach ($value as &$element) {
 			if (is_object($element) && ($element instanceof ShopgateDeliveryNote) || !is_array($element)) {
 				throw new ShopgateLibraryException('Invalid value in array: '.var_export($value, true));
 			}
-				
+
 			if (is_array($element)) {
 				$element = new ShopgateDeliveryNote($element);
 			}
 		}
-		
-		$this->items = $value;
+
+// 		$this->items = $value;
 	}
-	
-	
+
+
 	/**********
 	 * Getter *
 	 **********/
-	
+
 	/**
 	 * The Shopgate order number
 	 *
@@ -647,14 +639,14 @@ class ShopgateOrderItem extends ShopgateContainer {
 	protected $internal_order_info;
 
 	protected $options = array();
-	
+
 	protected $inputs;
 
-	
+
 	/**********
 	 * Setter *
 	 **********/
-	
+
 	/**
 	 * Returns the name value
 	 *
@@ -734,31 +726,31 @@ class ShopgateOrderItem extends ShopgateContainer {
 		if (!is_array($value)) {
 			throw new ShopgateLibraryException('Invalid value: '.var_export($value, true));
 		}
-		
+
 		foreach ($value as &$element) {
 			if (is_object($element) && ($element instanceof ShopgateOrderItemOption) || !is_array($element)) {
 				throw new ShopgateLibraryException('Invalid value in array: '.var_export($value, true));
 			}
-		
+
 			if (is_array($element)) {
 				$element = new ShopgateOrderItemOption($element);
 			}
 		}
-		
+
 		$this->items = $value;
 	}
-	
+
 	/**
  	 * @param unknown_type $value
  	 * @todo IMPLEMENTIEREN
 	 */
 	public function setInputs($value) { $this->inputs = $value; }
-	
-	
+
+
 	/**********
 	 * Getter *
 	 **********/
-	
+
 	/**
 	 * Returns the name value
 	 *
@@ -851,12 +843,12 @@ class ShopgateOrderItemOption extends ShopgateContainer {
 	protected $additional_amount_with_tax;
 	protected $value_number;
 	protected $option_number;
-	
-	
+
+
 	/**********
 	 * Setter *
 	 **********/
-	
+
 	/**
 	 * Returns the name value
 	 *
@@ -902,11 +894,11 @@ class ShopgateOrderItemOption extends ShopgateContainer {
 		$this->option_number = $value;
 	}
 
-	
+
 	/**********
 	 * Getter *
 	 **********/
-	
+
 	/**
 	 * Returns the name value
 	 *
@@ -973,7 +965,7 @@ class ShopgateDeliveryNote extends ShopgateContainer {
 	/**********
 	 * Setter *
 	 **********/
-	
+
 	/**
 	 * Returns the shipping_service_id value
 	 *
@@ -1000,8 +992,8 @@ class ShopgateDeliveryNote extends ShopgateContainer {
 	public function setShippingTime($value) {
 		$this->tracking_number = $value;
 	}
-	
-	
+
+
 	/**********
 	 * Getter *
 	 **********/
