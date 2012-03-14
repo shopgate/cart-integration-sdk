@@ -346,8 +346,8 @@ class ShopgateOrder extends ShopgateContainer {
 				$element = new ShopgateDeliveryNote($element);
 			}
 		}
-
-// 		$this->items = $value;
+		
+		$this->delivery_notes = $value;
 	}
 
 

@@ -84,21 +84,84 @@ function ShopgateErrorHandler($errno, $errstr, $errfile, $errline) {
  *
  */
 class ShopgateLibraryException extends Exception {
-	public $lastResponse;
-
+	// Initizialization / instantiation of plugin failure
+	const INIT_EMPTY_CONFIG = 1;
+	
+	// Configuration failure
+	const CONFIG_INVALID_VALUE = 10;
+	
+	// Plugin API errors
+	const PLUGIN_API_NO_ACTION = 20;
+	const PLUGIN_API_UNKNOWN_ACTION = 21;
+	const PLUGIN_API_DISABLED_ACTION = 22;
+	
+	const PLUGIN_API_NO_ORDER_NUMBER = 30;
+	
+	// Plugin errors
+	const PLUGIN_DUPLICATE_ORDER = 60;
+	const PLUGIN_ORDER_NOT_FOUND = 61;
+	
+	const PLUGIN_LOAD_CUSTOMER_FAILED = 70;
+	const PLUGIN_LOAD_CUSTOMER_ADDRESSES_FAILED = 71;
+	const PLUGIN_CUSTOMER_WRONG_USERNAME_OR_PASSWORD = 72;
+	
+	
+	// Unknown error code (the value passed as code gets to be the message)
+	const UNKNOWN_ERROR_CODE = 999;
+	
+	protected static $errorMessages = array(
+		// Initizialization / instantiation of plugin failure
+		self::INIT_EMPTY_CONFIG => 'empty configuration',
+		
+		// Configuration failure
+		self::CONFIG_INVALID_VALUE => 'invalid value in configuration',
+		
+		// Plugin API errors
+		self::PLUGIN_API_NO_ACTION => 'no action specified',
+		self::PLUGIN_API_UNKNOWN_ACTION  => 'unkown action requested',
+		self::PLUGIN_API_DISABLED_ACTION => 'disabled action requested',
+		
+		// Plugin errors
+		self::PLUGIN_DUPLICATE_ORDER => 'duplicate order',
+		self::PLUGIN_ORDER_NOT_FOUND => 'order not found',
+	);
+	
 	/**
-	 * Es sind nur Nachrichten als Text erlaubt
-	 * @param string $message
+	 * Exception type for errors within the Shopgate plugin and library.
+	 *
+	 * The general exception message is determined by the error code, the additionalInformation
+	 * argument, if set, is appended.
+	 *
+	 * For compatiblity reasons, if an unknown error code is passed, the value is used as message
+	 * and the code 999 (Unknown error code) is assigned. This should not be used anymore, though.
+	 *
+	 * @param int $code One of the constants defined in ShopgateLibraryException.
+	 * @param string $additionalInformation More detailed information on what exactly went wrong.
 	 */
-	function __construct($message) {
-		$this->lastResponse = $message;
-
+	function __construct($code, $additionalInformation = null) {
+		// Set code and message
+		if (isset(self::$errorMessages[$code])) {
+			$message = self::$errorMessages[$code];
+		} else {
+			$message = 'Unknown error code: "'.$code.'"';
+			$code = self::UNKNOWN_ERROR_CODE;
+		}
+		
+		// Set additional information
+		if (!empty($additionalInformation)) {
+			$message .= ' - Additional information: "'.$additionalInformation.'"';
+		}
+		
+		// Add tracing information to the message
 		$btrace = debug_backtrace();
 		$btrace = $btrace[1];
 		$message = (isset($btrace["class"])?$btrace["class"]."::":"").$btrace["function"]."():".$btrace["line"]." - " . print_r($message, true);
-		ShopgatePluginApi::logWrite($message);
-
-		parent::__construct($message);
+		
+		// Log the error
+		ShopgateObject::logWrite($code.' - '.$message);
+		
+		// Call default Exception class constructor
+		parent::__construct($message, $code);
 	}
 }
 
@@ -278,14 +341,23 @@ class ShopgateConfig extends ShopgateObject {
 	 */
 	private static function validateConfig(array $newConfig) {
 		//Pflichtfelder überprüfen
-		if(!preg_match("/^\S+/", $newConfig['apikey'])){
-			throw new ShopgateLibraryException("Das Feld 'apikey' in der Konfiguration hat ein Falsches Format oder ist leer. Bitte prüfen Sie, das keine Leerzeichen vorhanden sind.");
+		if (!preg_match("/^\S+/", $newConfig['apikey'])) {
+			throw new ShopgateLibraryException(
+				ShopgateLibraryException::CONFIG_INVALID_VALUE,
+				"Field 'apikey' contains invalid value '{$newConfig['apikey']}'."
+			);
 		}
 		if(!preg_match("/^\d{5,}$/", $newConfig['customer_number'])){
-			throw new ShopgateLibraryException("Das Feld 'customer_number' in der Konfiguration muss mindestens fünf Ziffern enthalten und darf keine Leerzechen enthalten.");
+			throw new ShopgateLibraryException(
+				ShopgateLibraryException::CONFIG_INVALID_VALUE,
+				"Field 'customer_number' contains invalid value '{$newConfig['customer_number']}'."
+			);
 		}
-		if(!preg_match("/^\d{5}$/", $newConfig['shop_number'])){
-			throw new ShopgateLibraryException("Das Feld 'shop_number' in der Konfiguration muss genau fünf Ziffern enthalten und darf keine Leerzeichen enthalten.");
+		if (!preg_match("/^\d{5}$/", $newConfig['shop_number'])) {
+			throw new ShopgateLibraryException(
+				ShopgateLibraryException::CONFIG_INVALID_VALUE,
+				"Field 'shop_number' contains invalid value '{$newConfig['shop_number']}'."
+			);
 		}
 
 		////////////////////////////////////////////////////////////////////////
@@ -477,9 +549,8 @@ class ShopgateContainer extends ShopgateObject {
 			foreach ($data as $key => $value) {
 				$setter = 'set'.$this->camelize($key, true);
 				if (!in_array($setter, $methods)) {
-					$this->log('Unbekanntes Attribut "'.$key.'" übergeben.');
+					//$this->log(__CLASS__.'::__construct(): Unbekanntes Attribut "'.$key.'" übergeben.');
 					continue;
-					//throw new ShopgateLibraryException('Unbekanntes Attribut "'.$key.'" übergeben.');
 				}
 				$this->$setter($value);
 			}
@@ -586,7 +657,7 @@ class ShopgatePluginApi extends ShopgateObject {
 	private $response = array();
 
 	/**
-	 * @return ShopgatePlugin
+	 * @return ShopgatePluginApi
 	 */
 	public static function &getInstance() {
 		if (empty(self::$singleton)) {
@@ -600,7 +671,7 @@ class ShopgatePluginApi extends ShopgateObject {
 		// Übergebene Parameter importieren
 		// TODO in $_POST ändern. Zum testen $_REQUEST
 		$this->params = $_REQUEST;
-
+		
 		$this->response["error"] = 0;
 		$this->response["error_text"] = "";
 // 		$this->response["version"] = SHOPGATE_PLUGIN_VERSION;
@@ -632,59 +703,55 @@ class ShopgatePluginApi extends ShopgateObject {
 	 * Eventuell aufgetretene Fehler werden hier abgefangen und an den Server
 	 * zurückgegeben.
 	 *
-	 * @throws ShopgateLibraryException
+	 * @return bool false if an error occured, otherwise true.
 	 */
 	public function handleRequest($data) {
-		define("_SHOPGATE_API", true);
-
-		// TODO: Workaround entfernen
 		$this->params = $data;
-
+		
 // 		$valServ = new ShopgateAuthentificationService();
 // 		$valServ->checkValidAuthentification();
 
-		header("HTTP/1.0 200 OK");
-
 		try {
-			// Config-Datei laden
+			// Load config
+			// TODO: again??
 			$this->config = ShopgateConfig::validateAndReturnConfig();
-
-			// Plugin-Datei laden
-			//$this->plugin = ShopgatePluginCore::newInstance($this->config);
-
-			if(!empty($this->params["use_errorhandler"]))
+			
+			// Set error handler to Shopgate's handler if requested
+			if (!empty($this->params["use_errorhandler"])) {
 				set_error_handler('ShopgateErrorHandler');
-
-			// Action überprüfen und aufrufen
-			if(empty($this->params['action'])) {
-				throw new ShopgateLibraryException('Get-Parameter "action" nicht übergeben');
 			}
-
-			$action = $this->params['action'];
-
-// 			if(!in_array($action, $this->actionWhitelist)) {
-// 				throw new ShopgateLibraryException('Unbekannte Action: '.$action);
-// 			} if($this->config['enable_'.$action] !== true) {
-// 				throw new ShopgateLibraryException('Action '.$action.' ist nicht in der Config-Datei erlaubt worden');
-// 			}
-
-			$actionCamelCase = $this->__toCamelCase($action);
-
-			$this->{$actionCamelCase}();
+			
+			// Check if an action to call has been passed, is known and enabled
+			if (empty($this->params['action'])) {
+				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ACTION, 'Passed parameters: '.var_export($data, true));
+			}
+			
+			if (!in_array($this->params['action'], $this->actionWhitelist)) {
+				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_UNKNOWN_ACTION, "'{$this->params['action']}'");
+			}
+			
+			if ($this->config['enable_'.$this->params['action']] !== true) {
+				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_DISABLED_ACTION, "'{$this->params['action']}'");
+			}
+			
+			// Call the action
+			$action = $this->__toCamelCase($this->params['action']);
+			$this->{$action}();
+		} catch (ShopgateLibraryException $e) {
+			$this->response['error'] = $e->getCode();
+			$this->response['error_text'] = $e->getMessage();
 		} catch (Exception $e) {
-			header('HTTP/1.0 500 ShopgateLibraryException Throwed', true, 500);
-
-			// Abfangen einer beliebigen Excpetion innerhalb eines Plugins.
-			// Der Fehler wird an den Serve zurückgegeben
-			$this->response["error"] = 1; // TODO:
-			$this->response["error_text"] = $e->getMessage();
+			$se = new ShopgateLibraryException($e->getMessage());
+			$this->response['error'] = $se->getCode();
+			$this->response['error_text'] = $se->getMessage();
 		}
-
-		// Gib die Daten zurück an Shopgate
-
+		
+		// Print out the response
+		header("HTTP/1.0 200 OK");
 		header('Content-Type: application/json');
 		echo sg_json_encode($this->response);
-
+		
+		// Return true or false
 		return !(isset($this->response["error"]) && $this->response["error"] > 0);
 	}
 
@@ -816,13 +883,12 @@ class ShopgatePluginApi extends ShopgateObject {
 		$this->log("Bestellung mit folgenden Parametern wurde übergeben:\n".print_r($this->params,true), 'access');
 
 		// Benachrichtigung über neue Bestellung oder sonstige Benachrichtigung
-		if(!isset($this->params['order_number'])) {
-			throw new ShopgateLibraryException('add_order aufgerufen, aber keine order_number übergeben');
+		if (!isset($this->params['order_number'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ORDER_NUMBER);
 		}
-
-		$this->shopgateMerchantApi = new ShopgateMerchantApi();
-		$orders = $this->shopgateMerchantApi->getOrders(array('order_numbers[0]'=>$this->params['order_number']));
-		foreach($orders as $order){
+		
+		$orders = ShopgateMerchantApi::getInstance()->getOrders(array('order_numbers[0]'=>$this->params['order_number']));
+		foreach ($orders as $order) {
 			$orderId = $this->plugin->addOrder($order);
 		}
 
@@ -1075,6 +1141,11 @@ class ShopgatePluginApi extends ShopgateObject {
 }
 
 class ShopgateMerchantApi extends ShopgateObject {
+	/**
+	 * @var ShopgateMerchantApi
+	 */
+	private static $singleton;
+	
 	private $config;
 
 	/**
@@ -1085,6 +1156,17 @@ class ShopgateMerchantApi extends ShopgateObject {
 	 */
 	public function __construct() {
 		$this->config = ShopgateConfig::validateAndReturnConfig();
+	}
+	
+	/**
+	 * @return ShopgateMerchantApi
+	 */
+	public static function getInstance() {
+		if (empty(self::$singleton)) {
+			self::$singleton = new self();
+		}
+		
+		return self::$singleton;
 	}
 
 	/**
@@ -1287,19 +1369,24 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	public $splittetExport = false;
 
 	final public function __construct() {
-		ShopgatePluginApi::getInstance()->setPlugin($this);
-
-		if(!$this->setConfig(ShopgateConfig::validateAndReturnConfig())) {
-			throw new ShopgateLibraryException("Config-Datei konnte nicht initialisiert werden");
+		// Load configuration
+		try {
+			$this->setConfig(ShopgateConfig::validateAndReturnConfig());
+		} catch (ShopgateLibraryException $e) {
+			// Logging is done in exception constructor
 		}
-
-		if(isset($this->config["use_custom_error_handler"]) && $this->config["use_custom_error_handler"]) {
+		
+		// Set error handler if configured
+		if (isset($this->config["use_custom_error_handler"]) && $this->config["use_custom_error_handler"]) {
 			set_error_handler('ShopgateErrorHandler');
 		}
-
-		// Muss das Wort "true" in der überschriebenen startup() zurückgeben
-		if($this->startup() !== true) {
-			throw new ShopgateLibraryException("Plugin konnte nicht initialisiert werden ");
+		
+		// Set plugin instance and fire the plugin's startup callback
+		try {
+			ShopgatePluginApi::getInstance()->setPlugin($this);
+			$this->startup();
+		} catch (ShopgateLibraryException $e) {
+			// Logging is done in exception constructor
 		}
 	}
 
@@ -1308,10 +1395,8 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @param array $config
 	 */
-	public final function setConfig(array $config) {
+	public final function setConfig(array $config = null) {
 		$this->config = $config;
-
-		return true;
 	}
 
 	/**
@@ -1320,17 +1405,16 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * Verbindung zu einer Datenbank aufzubauen etc..
 	 *
 	 */
-	public function startup() {
-
-		return true;
-	}
+	public abstract function startup();
 
 	/**
 	 * Wird bei jedem Request aufgerufen und leitet die Anfrage zum Framework weiter,
 	 * damit dieses dann die Anfrage weiter bearbeiten kann.
+	 *
+	 * @return bool false if an error occured, otherwise true.
 	 */
 	public function handleRequest($data = array()) {
-		ShopgatePluginApi::getInstance($this)->handleRequest($data);
+		return ShopgatePluginApi::getInstance()->handleRequest($data);
 	}
 
 	/**
