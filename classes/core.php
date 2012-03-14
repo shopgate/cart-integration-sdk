@@ -94,8 +94,11 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_API_NO_ACTION = 20;
 	const PLUGIN_API_UNKNOWN_ACTION = 21;
 	const PLUGIN_API_DISABLED_ACTION = 22;
+	const PLUGIN_API_WRONG_RESPONSE_FORMAT = 23;
 	
 	const PLUGIN_API_NO_ORDER_NUMBER = 30;
+	const PLUGIN_API_NO_USER = 35;
+	const PLUGIN_API_NO_PASS = 36;
 	
 	// Plugin errors
 	const PLUGIN_DUPLICATE_ORDER = 60;
@@ -103,8 +106,8 @@ class ShopgateLibraryException extends Exception {
 	
 	const PLUGIN_LOAD_CUSTOMER_FAILED = 70;
 	const PLUGIN_LOAD_CUSTOMER_ADDRESSES_FAILED = 71;
-	const PLUGIN_CUSTOMER_WRONG_USERNAME_OR_PASSWORD = 72;
-	
+	const PLUGIN_NO_ADDRESSES_FOUND = 72;
+	const PLUGIN_WRONG_USERNAME_OR_PASSWORD = 73;
 	
 	// Unknown error code (the value passed as code gets to be the message)
 	const UNKNOWN_ERROR_CODE = 999;
@@ -120,10 +123,21 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_API_NO_ACTION => 'no action specified',
 		self::PLUGIN_API_UNKNOWN_ACTION  => 'unkown action requested',
 		self::PLUGIN_API_DISABLED_ACTION => 'disabled action requested',
+		self::PLUGIN_API_WRONG_RESPONSE_FORMAT => 'wrong response format',
 		
+		self::PLUGIN_API_NO_ORDER_NUMBER => 'parameter "order_number" missing',
+		self::PLUGIN_API_NO_USER => 'parameter "user" missing',
+		self::PLUGIN_API_NO_PASS => 'parameter "pass" missing',
+	
 		// Plugin errors
 		self::PLUGIN_DUPLICATE_ORDER => 'duplicate order',
 		self::PLUGIN_ORDER_NOT_FOUND => 'order not found',
+		
+		self::PLUGIN_LOAD_CUSTOMER_FAILED => 'database error loading customer',
+		self::PLUGIN_LOAD_CUSTOMER_ADDRESSES_FAILED => 'database error loading customer\'s addresses',
+		self::PLUGIN_NO_ADDRESSES_FOUND => 'no addresses found for customer',
+		self::PLUGIN_WRONG_USERNAME_OR_PASSWORD => 'wrong username or password',
+		
 	);
 	
 	/**
@@ -138,7 +152,7 @@ class ShopgateLibraryException extends Exception {
 	 * @param int $code One of the constants defined in ShopgateLibraryException.
 	 * @param string $additionalInformation More detailed information on what exactly went wrong.
 	 */
-	function __construct($code, $additionalInformation = null) {
+	public function __construct($code, $additionalInformation = null) {
 		// Set code and message
 		if (isset(self::$errorMessages[$code])) {
 			$message = self::$errorMessages[$code];
@@ -146,19 +160,23 @@ class ShopgateLibraryException extends Exception {
 			$message = 'Unknown error code: "'.$code.'"';
 			$code = self::UNKNOWN_ERROR_CODE;
 		}
+		$logMessage = $message;
 		
 		// Set additional information
 		if (!empty($additionalInformation)) {
-			$message .= ' - Additional information: "'.$additionalInformation.'"';
+			$logMessage .= ' - Additional information: "'.$additionalInformation.'"';
 		}
 		
 		// Add tracing information to the message
 		$btrace = debug_backtrace();
 		$btrace = $btrace[1];
-		$message = (isset($btrace["class"])?$btrace["class"]."::":"").$btrace["function"]."():".$btrace["line"]." - " . print_r($message, true);
+		$logMessage = (isset($btrace["class"])
+			? $btrace["class"]."::"
+			: "")
+		.$btrace["function"]."():".$btrace["line"]." - " . print_r($logMessage, true);
 		
 		// Log the error
-		ShopgateObject::logWrite($code.' - '.$message);
+		ShopgateObject::logWrite($code.' - '.$logMessage);
 		
 		// Call default Exception class constructor
 		parent::__construct($message, $code);
@@ -930,16 +948,18 @@ class ShopgatePluginApi extends ShopgateObject {
 
 		// Shopgate-Connect
 		// GET-Parameter: user, pass
-		if(!isset($this->params['user'])) {
-			throw new ShopgateLibraryException('Parameter user nicht übergeben');
-		} elseif(!isset($this->params['pass'])) {
-			throw new ShopgateLibraryException('Parameter pass nicht übergeben');
+		if (!isset($this->params['user'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_USER);
+		}
+		
+		if (!isset($this->params['pass'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_PASS);
 		}
 
 		// Die Userdaten über das Plugin auslesen
 		$customer = $this->plugin->getCustomer($this->params['user'], $this->params['pass']);
-		if(!is_object($customer) || get_class($customer) !== "ShopgateCustomer") {
-			throw new ShopgateLibraryException("Das zurückgegebene Format ist ungültig.");
+		if (!is_object($customer) || !($customer instanceof ShopgateCustomer)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_REPONSE_FORMAT);
 		}
 
 		// Daten als JSON zurückliefern
