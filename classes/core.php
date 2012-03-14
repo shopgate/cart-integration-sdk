@@ -306,7 +306,7 @@ class ShopgateConfig extends ShopgateObject {
 	}
 
 	public static function saveConfig() {
-		$config = self::validateAndReturnConfig();
+		$config = self::getConfig();
 
 		$returnString  = "<?php"."\r\n";
 
@@ -478,13 +478,15 @@ class ShopgateContainer extends ShopgateObject {
 			foreach ($data as $key => $value) {
 				$setter = 'set'.$this->camelize($key, true);
 				if (!in_array($setter, $methods)) {
-					throw new ShopgateLibraryException('Unbekanntes Attribut "'.$key.'" übergeben.');
+					$this->log('Unbekanntes Attribut "'.$key.'" übergeben.');
+					continue;
+					//throw new ShopgateLibraryException('Unbekanntes Attribut "'.$key.'" übergeben.');
 				}
 				$this->$setter($value);
 			}
 		}
 	}
-	
+
 	/**
 	 * Converts the Container object recursively to an associative array.
 	 *
@@ -497,27 +499,27 @@ class ShopgateContainer extends ShopgateObject {
 		foreach ($attributes as $attribute => $value) {
 			$getter = 'get'.$this->camelize($attribute, true);
 			$array[$attribute] = $this->{$getter}();
-			
+
 			// Ggf. Booleans zu Integers konvertieren
 			if ($boolToInt) {
 				if ($array[$attribute] === false) $array[$attribute] = 0;
 				if ($array[$attribute] === true)  $array[$attribute] = 1;
 			}
-			
+
 			// Ggf. enthaltene Listen rekursiv durchlaufen und in den Listen enthaltene Container-Objekte in Arrays umwandeln
 			if (is_array($array[$attribute])) {
 				array_walk_recursive($array[$attribute], array(&$this, 'containerListToArray'), $boolToInt);
 			}
-			
+
 			// Ggf. enthaltene Container-Objekte zu Arrays umwandeln
 			if (is_object($array[$attribute]) && ($array[$attribute] instanceof ShopgateContainer)) {
 				$array[$attribute]->toArray($boolToInt);
 			}
 		}
-		
+
 		return $array;
 	}
-	
+
 	protected function containerListToArray(&$value, $key, $boolToInt = true) {
 		if (is_object($value) && ($value instanceof ShopgateContainer)) {
 			$value = $value->toArray($boolToInt);
@@ -804,7 +806,7 @@ class ShopgatePluginApi extends ShopgateObject {
 		$this->response["php_curl"] = function_exists("curl_version") ? curl_version() : "No PHP-CURL installed";
 		$this->response["php_extensions"] = get_loaded_extensions();
 	}
-	
+
 	/**
 	 * Informiere das Framework über neue Meldungen wie z.B. eine neue
 	 * Bestellung eingegangen.
@@ -879,7 +881,7 @@ class ShopgatePluginApi extends ShopgateObject {
 		$customerData = $customer->toArray();
 		$addressList = $customerData['addresses'];
 		unset($customerData['addresses']);
-		
+
 		$this->response["user_data"] = $customerData;
 		$this->response["addresses"] = $addressList;
 	}
@@ -1151,7 +1153,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 		$result = $this->sendRequest( $data );
 
 		if(empty($result["orders"])) throw new ShopgateLibraryException("Das Format entspricht nicht der ShopgateAPI.\n".print_r($result,true));
-		
+
 		$orders = array();
 		foreach($result["orders"] as $order) {
 			$orders[] = new ShopgateOrder( $order );
