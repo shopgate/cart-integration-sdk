@@ -12,16 +12,15 @@ require_once(dirname(__FILE__).DS.'vendors'.DS.'mobile_redirect.class.php');
 include_once dirname(__FILE__).DS.'vendors'.DS.'shopgate_phpqrcode'.DS.'qrlib.php';
 include_once dirname(__FILE__).DS.'vendors'.DS.'qr_code_manager.class.php';
 
-try {
-	$config = ShopgateConfig::validateAndReturnConfig();
+// try {
+// 	$config = ShopgateConfig::validateAndReturnConfig();
 
-	$plugin = $config["plugin"];
+// 	$plugin = $config["plugin"];
 
-	if(file_exists(SHOPGATE_BASE_DIR.'/plugins/'.$plugin)
-	&& file_exists(SHOPGATE_BASE_DIR.'/plugins/'.$plugin.'/includes.php')) {
-		include_once SHOPGATE_BASE_DIR.'/plugins/'.$plugin.'/includes.php';
-	}
+// 	if(file_exists(SHOPGATE_BASE_DIR.'/plugins/'.$plugin)
+// 	&& file_exists(SHOPGATE_BASE_DIR.'/plugins/'.$plugin.'/includes.php')) {
+// 		include_once SHOPGATE_BASE_DIR.'/plugins/'.$plugin.'/includes.php';
+// 	}
 
-} catch (Exception $e) {
-	var_dump($e->getMessage());
-}
+// } catch (Exception $e) {
+// }
