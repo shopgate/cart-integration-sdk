@@ -151,7 +151,6 @@ class ShopgateConfig extends ShopgateObject {
 		'plugin_currency' => 'EUR',
 		'plugin_root_dir' => "",
 		'enable_ping' => true,
-		'enable_get_shop_info' => true,
 		'enable_add_order' => true,
 		'enable_update_order' => true,
 		'enable_connect' => true,
@@ -566,7 +565,6 @@ class ShopgatePluginApi extends ShopgateObject {
 	 */
 	private  $actionWhitelist = array(
 		'ping',
-		'get_shop_info',
 		'add_order',
 		'update_order',
 		'get_customer',
@@ -805,6 +803,7 @@ class ShopgatePluginApi extends ShopgateObject {
 		$this->response["php_config"] = getSettings();
 		$this->response["php_curl"] = function_exists("curl_version") ? curl_version() : "No PHP-CURL installed";
 		$this->response["php_extensions"] = get_loaded_extensions();
+		$this->response["version"] = SHOPGATE_LIBRARY_VERSION;
 	}
 
 	/**
