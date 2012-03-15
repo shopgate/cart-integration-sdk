@@ -115,6 +115,15 @@ class ShopgateLibraryException extends Exception {
 	
 	const PLUGIN_FILE_NOT_FOUND = 80;
 	const PLUGIN_FILE_OPEN_ERROR = 81;
+	const PLUGIN_FILE_EMPTY_BUFFER = 82;
+	
+	// Merchant API errors
+	const MERCHANT_API_NO_CONNECTION = 100;
+	const MERCHANT_API_INVALID_RESPONSE = 101;
+	const MERCHANT_API_ERROR_RECEIVED = 102;
+	
+	// Authentification errors
+	const AUTHENTIFICATION_INVALID_USERNAME = 120;
 	
 	// Unknown error code (the value passed as code gets to be the message)
 	const UNKNOWN_ERROR_CODE = 999;
@@ -151,6 +160,15 @@ class ShopgateLibraryException extends Exception {
 		
 		self::PLUGIN_FILE_NOT_FOUND => 'file not found',
 		self::PLUGIN_FILE_OPEN_ERROR => 'cannot open file',
+		self::PLUGIN_FILE_EMPTY_BUFFER => 'buffer is empty',
+		
+		// Merchant API errors
+		self::MERCHANT_API_NO_CONNECTION => 'no connection to server',
+		self::MERCHANT_API_INVALID_RESPONSE => 'error parsing response',
+		self::MERCHANT_API_ERROR_RECEIVED => 'error code received',
+		
+		// Authentification errors
+		self::AUTHENTIFICATION_INVALID_USERNAME => 'invalid username',
 	);
 	
 	/**
@@ -1246,13 +1264,12 @@ class ShopgateMerchantApi extends ShopgateObject {
 	 */
 	private function sendRequest($data) {
 		if(empty($this->config)) $this->config = ShopgateConfig::validateAndReturnConfig();
-
-
+		
 		$data['shop_number'] = $this->config["shop_number"];
-
+		
 		$url = $this->config["api_url"];
 		$curl = curl_init($url);
-
+		
 		curl_setopt($curl, CURLOPT_HEADER, false);
 		curl_setopt($curl, CURLOPT_USERAGENT, "ShopgatePlugin/" . SHOPGATE_PLUGIN_VERSION);
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
@@ -1261,24 +1278,24 @@ class ShopgateMerchantApi extends ShopgateObject {
 		curl_setopt($curl, CURLOPT_USERPWD, ShopgateAuthentificationService::getCurlAuthentificationString());
 		curl_setopt($curl, CURLOPT_POST, true);
 		curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-
+		
 		$response = curl_exec($curl);
 		$info = curl_getinfo($curl);
 		curl_close($curl);
-
-		if (!$response) throw new ShopgateLibraryException("No Connection to the Server");
-
-		$decodetResponse = sg_json_decode($response, true);
-
-		if(empty($decodetResponse)) {
-			throw new ShopgateLibraryException('Error Parsing the Response \n'.print_r($response, true));
+		
+		if (!$response) throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_NO_CONNECTION);
+		
+		$decodedResponse = sg_json_decode($response, true);
+		
+		if (empty($decodedResponse)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE, 'Response: '.$response);
 		}
-
-		if($decodetResponse['error'] != 0) {
-			throw new ShopgateLibraryException($decodetResponse);
+		
+		if($decodedResponse['error'] != 0) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED, 'Response: '.response);
 		}
-
-		return $decodetResponse;
+		
+		return $decodedResponse;
 	}
 
 	/**
@@ -1297,9 +1314,14 @@ class ShopgateMerchantApi extends ShopgateObject {
 		$data["with_items"] = 1;
 
 		$data = array_merge($data, $parameter);
-		$result = $this->sendRequest( $data );
+		$result = $this->sendRequest($data);
 
-		if(empty($result["orders"])) throw new ShopgateLibraryException("Das Format entspricht nicht der ShopgateAPI.\n".print_r($result,true));
+		if (empty($result["orders"])) {
+			throw new ShopgateLibraryException(
+				ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE,
+				'"order" not set. Response: '.var_export($result, true)
+			);
+		}
 
 		$orders = array();
 		foreach($result["orders"] as $order) {
@@ -1600,7 +1622,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 
 	/**
 	 * Flush Buffer to file if $this->bufferLimit is exceeded.
-	 * The content is convert to UTF-8 if necessary.
+	 * The content is converted to UTF-8 if necessary.
 	 *
 	 */
 	private final function flushBuffer() {
@@ -1608,8 +1630,8 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		$c = "\"";
 		$string = '';
 
-		if(empty($this->buffer) && ftell($this->fileHandle) == 0)
-			throw new ShopgateLibraryException("Buffer ist Leer");
+		if (empty($this->buffer) && ftell($this->fileHandle) == 0)
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_EMPTY_BUFFER);
 
 
 		// Wenn noch am Anfang der CSV-Datei, schreibe die Kopfzeile
@@ -1633,52 +1655,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		$this->buffer = array(); // Leere den Buffer
 		$this->bufferCounter = 0; // Setze zähler auf
 	}
-
-	/**
-	 * Schreibe die Fehlermeldung in das Log
-	 * und werfe eine ShopgateLibraryException
-	 *
-	 * @param string $msg	Die Fehlermeldung.
-	 * @throws ShopgateLibraryException
-	 */
-	protected final function _error($msg) {
-		$this->log($msg);
-		throw new ShopgateLibraryException($msg);
-	}
-
-	/**
-	 * Setze Anführngszeichen um array Elemente
-	 *
-	 * @param array $array Der Daten-array
-	 * @return daten-array
-	 * @throws ShopgateLibraryException
-	 * @deprecated
-	 */
-	public function enquoteArray ($array)
-	{
-		if (!is_array($array)) {
-			throw new ShopgateLibraryException("Array parameter ist kein array");
-		}
-
-		foreach ($array as $k=>$v) {
-			$array[$k] = $this->enquote ($v);
-		}
-
-		return $array;
-	}
-
-	/**
-	 * Setze Anführngszeichen um einen String
-	 *
-	 * @param string $string Der String
-	 * @return String
-	 * @deprecated
-	 */
-	public function enquote ($string)
-	{
-		return '"' . $string . '"';
-	}
-
+	
 	/**
 	 *
 	 * Build a full Category-Array with default values
@@ -1698,17 +1675,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		);
 
 		return $row;
-	}
-
-	/**
-	 * Build a full Product-Array with default values
-	 *
-	 * @see http://www.shopgate.com/csvdoc
-	 * @return array
-	 * @deprecated
-	 */
-	protected  function buildDefaultRow() {
-		return $this->buildDefaultProductRow();
 	}
 
 	/**
@@ -2041,8 +2007,8 @@ class ShopgateAuthentificationService extends ShopgateObject {
 
 	    // Extraxt customer-number and Timestamp from username
 		$matches = array();
-	 	if(!preg_match('/(?<customer_number>[1-9][0-9]+)-(?<timestamp>[1-9][0-9]+)/', $_SERVER['PHP_AUTH_USER'], $matches)){
-			throw new ShopgateLibraryException("authorization username invalid format");
+	 	if (!preg_match('/(?<customer_number>[1-9][0-9]+)-(?<timestamp>[1-9][0-9]+)/', $_SERVER['PHP_AUTH_USER'], $matches)){
+	 		throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTIFICATION_INVALID_USERNAME);
    		}
 
    		$customer_number = $matches["customer_number"];
@@ -2059,7 +2025,9 @@ class ShopgateAuthentificationService extends ShopgateObject {
 			$valid = true;
 
 		// If not valid => Error
-		if(!$valid) { throw new ShopgateLibraryException("authorization username invalid format"); }
+		if(!$valid) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTIFICATION_INVALID_USERNAME);
+		}
 
 		return $valid;
 	}
