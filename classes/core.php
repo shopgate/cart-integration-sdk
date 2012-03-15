@@ -954,7 +954,7 @@ class ShopgatePluginApi extends ShopgateObject {
 		$this->response["php_config"] = getSettings();
 		$this->response["php_curl"] = function_exists("curl_version") ? curl_version() : "No PHP-CURL installed";
 		$this->response["php_extensions"] = get_loaded_extensions();
-		$this->response["version"] = SHOPGATE_LIBRARY_VERSION;
+		$this->response["shopgate_library_version"] = SHOPGATE_LIBRARY_VERSION;
 	}
 
 	/**
@@ -2032,12 +2032,12 @@ class ShopgateAuthentificationService extends ShopgateObject {
 	 * @return boolean
 	 */
 	public function checkValidAuthentification() {
-		header('WWW-Authenticate: Basic realm="Shopgate Merchant API"');
-	    header('HTTP/1.0 401 Unauthorized');
-	    echo "Insert Valid Login Data";
-
-	    // No Login-Data => Exit
-	    if(empty($_SERVER['PHP_AUTH_USER']) || empty($_SERVER['PHP_AUTH_PW'])) exit;
+		if(empty($_SERVER['PHP_AUTH_USER']) || empty($_SERVER['PHP_AUTH_PW'])){
+			header('WWW-Authenticate: Basic realm="Shopgate Merchant API"');
+		    header('HTTP/1.0 401 Unauthorized');
+		    echo "Insert Valid Login Data";
+		    exit;
+		}
 
 	    // Extraxt customer-number and Timestamp from username
 		$matches = array();
