@@ -86,9 +86,11 @@ function ShopgateErrorHandler($errno, $errstr, $errfile, $errline) {
 class ShopgateLibraryException extends Exception {
 	// Initizialization / instantiation of plugin failure
 	const INIT_EMPTY_CONFIG = 1;
+	const INIT_LOGFILE_OPEN_ERROR = 2;
 	
 	// Configuration failure
 	const CONFIG_INVALID_VALUE = 10;
+	const CONFIG_READ_WRITE_ERROR = 11;
 	
 	// Plugin API errors
 	const PLUGIN_API_NO_ACTION = 20;
@@ -100,6 +102,8 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_API_NO_USER = 35;
 	const PLUGIN_API_NO_PASS = 36;
 	
+	const PLUGIN_API_UNKNOWN_LOGTYPE = 37;
+	
 	// Plugin errors
 	const PLUGIN_DUPLICATE_ORDER = 60;
 	const PLUGIN_ORDER_NOT_FOUND = 61;
@@ -109,15 +113,20 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_NO_ADDRESSES_FOUND = 72;
 	const PLUGIN_WRONG_USERNAME_OR_PASSWORD = 73;
 	
+	const PLUGIN_FILE_NOT_FOUND = 80;
+	const PLUGIN_FILE_OPEN_ERROR = 81;
+	
 	// Unknown error code (the value passed as code gets to be the message)
 	const UNKNOWN_ERROR_CODE = 999;
 	
 	protected static $errorMessages = array(
 		// Initizialization / instantiation of plugin failure
 		self::INIT_EMPTY_CONFIG => 'empty configuration',
+		self::INIT_LOGFILE_OPEN_ERROR => 'cannot open/create logfile(s)',
 		
 		// Configuration failure
 		self::CONFIG_INVALID_VALUE => 'invalid value in configuration',
+		self::CONFIG_READ_WRITE_ERROR => 'error reading or writing configuration',
 		
 		// Plugin API errors
 		self::PLUGIN_API_NO_ACTION => 'no action specified',
@@ -128,6 +137,8 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_API_NO_ORDER_NUMBER => 'parameter "order_number" missing',
 		self::PLUGIN_API_NO_USER => 'parameter "user" missing',
 		self::PLUGIN_API_NO_PASS => 'parameter "pass" missing',
+		
+		self::PLUGIN_API_UNKNOWN_LOGTYPE => 'unknown logtype',
 	
 		// Plugin errors
 		self::PLUGIN_DUPLICATE_ORDER => 'duplicate order',
@@ -138,6 +149,8 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_NO_ADDRESSES_FOUND => 'no addresses found for customer',
 		self::PLUGIN_WRONG_USERNAME_OR_PASSWORD => 'wrong username or password',
 		
+		self::PLUGIN_FILE_NOT_FOUND => 'file not found',
+		self::PLUGIN_FILE_OPEN_ERROR => 'cannot open file',
 	);
 	
 	/**
@@ -423,11 +436,11 @@ class ShopgateConfig extends ShopgateObject {
 		$message = "";
 		$handle = fopen(dirname(__FILE__).'/../config/myconfig.php', 'w+');
 		if($handle == false){
-			throw new ShopgateLibraryException("Fehler beim Lesen oder Schrieben der Config-Datei");
+			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR);
 			fclose($handle);
 		}else{
 			if(!fwrite($handle, $returnString))
-			throw new ShopgateLibraryException("Fehler beim Lesen oder Schrieben der Config-Datei");
+			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR);
 		}
 
 		fclose($handle);
@@ -464,21 +477,61 @@ if (isset($shopgate_config) && is_array($shopgate_config)) {
 }
 
 class ShopgateObject {
+	const LOGTYPE_ACCESS = 'access';
+	const LOGTYPE_ERROR = 'error';
 
 	/**
 	 * Der FileHandler für die Fehler-Log-Datei.
 	 *
-	 * @var resource
+	 * @var resource[]
 	 */
-	protected static $errorLogFileHandler = null;
+	private static $fileHandles = array(
+		self::LOGTYPE_ACCESS => null,
+		self::LOGTYPE_ERROR => null,
+	);
+	
+	private static $instanceCount = 0;
+	
+	public function __construct() {
+		self::$instanceCount++;
+		self::init();
+	}
+	
 	/**
-	 *
-	 * Der FileHandler für die Zugriff-Log-Datei.
-	 *
-	 * @var resource
-	 */
-	protected static $accessLogFileHandler = null;
-
+	* Sorgt am Ende für das Schließen der Log-Datei,
+	* falls diese noch offen sein sollte.
+	*/
+	public function __destruct() {
+		self::$instanceCount--;
+		self::unInit();
+	}
+	
+	protected static function init() {
+		// initialize file handlers if neccessary
+		foreach (self::$fileHandles as $type => $handle) {
+			if (empty($handle)) {
+				$path = ShopgateConfig::getLogFilePath($type);
+				$newHandle = @fopen($path, 'a+');
+				if ($newHandle === false) {
+					throw new ShopgateLibraryException(ShopgateLibraryException::INIT_LOGFILE_OPEN_ERROR, 'File: '.$path);
+				}
+				self::$fileHandles[$type] = $newHandle;
+			}
+		}
+	}
+	
+	protected static function unInit() {
+		if (self::$instanceCount > 0) return;
+		
+		// close file handles on destruction of the last object
+		foreach (self::$fileHandles as $type => $handle) {
+			if (!empty($handle)) {
+				fclose($handle);
+				self::$fileHandles[$type] = null;
+			}
+		}
+	}
+	
 	/**
 	 * Leitet die geloggten Daten an logWrite weiter
 	 *
@@ -502,25 +555,27 @@ class ShopgateObject {
 	 *
 	 * @param string $msg
 	 */
-	public static function logWrite($msg, $type="error") {
-		$logFilePath = ShopgateConfig::getLogFilePath($type);
+	public static function logWrite($msg, $type = self::LOGTYPE_ERROR) {
+		// initialize if neccessary
+		self::init();
+		
+		// build log message
 		$msg = gmdate('d-m-Y H:i:s: ').$msg."\n";
-		if($type === "access") {
-			if(!self::$accessLogFileHandler) {
-				// Datei öffnen
-				self::$accessLogFileHandler = fopen($logFilePath, 'a');
-			}
-			// In Datei schreiben
-			fwrite(self::$accessLogFileHandler, $msg);
+		
+		// determine log file type and append message
+		switch (strtolower($type)) {
+			// write to error log if type is unknown
+			default: $type = self::LOGTYPE_ERROR;
+			
+			// allowed types:
+			case self::LOGTYPE_ERROR:
+			case self::LOGTYPE_ACCESS:
 		}
-		else {
-			if(!self::$errorLogFileHandler) {
-				// Datei öffnen
-				self::$errorLogFileHandler = fopen($logFilePath, 'a');
-			}
-			// In Datei schreiben
-			fwrite(self::$errorLogFileHandler, $msg);
-		}
+		
+		fwrite(self::$fileHandles[$type], $msg);
+		
+		// uninitialize if neccessary
+		self::unInit();
 	}
 
 	/**
@@ -543,15 +598,45 @@ class ShopgateObject {
 	}
 
 	/**
-	 * Sorgt am Ende für das Schließen der Log-Datei,
-	 * falls diese noch offen sein sollte.
+	 * Returns the requested number of lines of the requested log file's end
+	 *
+	 * @param string $type The log file to be read
+	 * @param int $lines Number of lines to return
+	 * @return string The requested log file content
+	 *
+	 * @see http://tekkie.flashbit.net/php/tail-functionality-in-php
 	 */
-	public function __destruct() {
-		if(self::$errorLogFileHandler) {
-			// Datei schließen
-			fclose(self::$errorLogFileHandler);
-			self::$errorLogFileHandler = null;
+	protected function tail($type = self::LOGTYPE_ERROR, $lines = 20) {
+		if (!isset(self::$fileHandles[$type])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_UNKNOWN_LOGTYPE, 'Type: '.$type);
 		}
+		
+		if (empty($lines)) $lines = 20;
+		
+		$handle = self::$fileHandles[$type];
+		$lineCounter = $lines;
+		$pos = -2;
+		$beginning = false;
+		$text = array();
+		
+		while ($lineCounter > 0) {
+			$t = '';
+			while ($t !== "\n") {
+				if (fseek($handle, $pos, SEEK_END) == -1) {
+					$beginning = true;
+					break;
+				}
+				$t = fgetc($handle);
+				$pos--;
+			}
+			
+			$lineCounter--;
+			if ($beginning) rewind($handle);
+			$text[] = fgets($handle);
+			if ($beginning) break;
+		}
+		
+		return implode('', array_reverse($text));
 	}
 }
 
@@ -680,22 +765,20 @@ class ShopgatePluginApi extends ShopgateObject {
 	public static function &getInstance() {
 		if (empty(self::$singleton)) {
 			self::$singleton = new self();
+			
+			// Übergebene Parameter importieren
+			// TODO in $_POST ändern. Zum testen $_REQUEST
+			self::$singleton->params = $_REQUEST;
+			
+			self::$singleton->response["error"] = 0;
+			self::$singleton->response["error_text"] = "";
+			// 		self::$singleton->response["version"] = SHOPGATE_PLUGIN_VERSION;
+			self::$singleton->response["trace_id"] = isset(self::$singleton->params["trace_id"]) ? self::$singleton->params["trace_id"] : null;
 		}
 
 		return self::$singleton;
 	}
-
-	private function __construct() {
-		// Übergebene Parameter importieren
-		// TODO in $_POST ändern. Zum testen $_REQUEST
-		$this->params = $_REQUEST;
-		
-		$this->response["error"] = 0;
-		$this->response["error_text"] = "";
-// 		$this->response["version"] = SHOPGATE_PLUGIN_VERSION;
-		$this->response["trace_id"] = isset($this->params["trace_id"]) ? $this->params["trace_id"] : null;
-	}
-
+	
 	/**
 	 * Registers the current ShopgatePlugin instance for callbacks.
 	 *
@@ -787,24 +870,7 @@ class ShopgatePluginApi extends ShopgateObject {
 		return preg_replace_callback('/_([a-z])/', $func, $str);
 	}
 
-	/**
-	 * Prüft ob der gegebene API-Key mit dem der Konfiguration übereinstimmt.
-	 *
-	 * @throws ShopgateLibraryException
-	 */
-	private function __checkApiKey() {
-		if(defined('DEBUG') && DEBUG == 1) return ;
-
-		if(!isset($this->params['shop_number'])) {
-			header("HTTP/1.0 403 Forbidden");
-			throw new ShopgateLibraryException('Keine shop_number übergeben');
-		} elseif($this->params['shop_number'] != $this->config['shop_number']) {
-			header("HTTP/1.0 403 Forbidden");
-			throw new ShopgateLibraryException('Die shop_number ist falsch');
-		}
-	}
-
-
+	
 	/****************************************
 	 * Actions die Aufgerufen werden können
 	 ****************************************/
@@ -926,7 +992,7 @@ class ShopgatePluginApi extends ShopgateObject {
 
 		// Benachrichtigung über neue Bestellung oder sonstige Benachrichtigung
 		if(!isset($this->params['order_number'])) {
-			throw new ShopgateLibraryException('add_order aufgerufen, aber keine order_number übergeben');
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ORDER_NUMBER);
 		}
 
 		$orderApi = new ShopgateOrderApi();
@@ -1004,7 +1070,7 @@ class ShopgatePluginApi extends ShopgateObject {
 		}
 
 		if(!file_exists($fileName)) {
-			throw new ShopgateLibraryException("Datei $fileName konnte nicht gefunden werden.");
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$fileName);
 		}
 
 		// Inhalt der Datei zurückgeben
@@ -1016,14 +1082,8 @@ class ShopgatePluginApi extends ShopgateObject {
 		$fp = fopen($fileName, "r");
 
 		if(!$fp) {
-			throw new ShopgateLibraryException('Konnte Datei nicht öffnen');
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$fileName);
 		}
-
-		while($line = fgets($fp) )
-		{
-			echo $line;
-		}//while end
-
 		fclose($fp);
 
 		exit;
@@ -1041,7 +1101,7 @@ class ShopgatePluginApi extends ShopgateObject {
 		$this->plugin->startGetCategoriesCsv();
 
 		if(!file_exists($fileName)) {
-			throw new ShopgateLibraryException("Datei $fileName konnte nicht gefunden werden.");
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$fileName);
 		}
 
 		// Inhalt der Datei zurückgeben
@@ -1053,7 +1113,7 @@ class ShopgatePluginApi extends ShopgateObject {
 		$fp = fopen($fileName, "r");
 
 		if(!$fp) {
-			throw new ShopgateLibraryException('Konnte Datei nicht öffnen');
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$fileName);
 		}
 
 		while($line = fgets($fp) )
@@ -1082,7 +1142,7 @@ class ShopgatePluginApi extends ShopgateObject {
 		$Plugin->startGetReviewsCsv();
 
 		if(!file_exists($fileName)) {
-			throw new ShopgateLibraryException("Datei $fileName nicht gefunden");
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$fileName);
 		}
 
 		// Inhalt der Datei an den Browser zurückgeben
@@ -1107,7 +1167,7 @@ class ShopgatePluginApi extends ShopgateObject {
 		$fileName = ShopgateConfig::getPagesCsvFilePath();
 
 		if(!file_exists($fileName)) {
-			throw new ShopgateLibraryException("Datei $fileName nicht gefunden");
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$fileName);
 		}
 
 		// Inhalt der Datei an den Browser zurückgeben
@@ -1125,39 +1185,24 @@ class ShopgatePluginApi extends ShopgateObject {
 	 *
 	 */
 	private function getLogFile() {
-		//$this->__checkApiKey();
-
-		$type = "error";
-		if(isset($this->params['log_type'])) {
+		if (isset($this->params['log_type'])) {
 			$type = $this->params['log_type'];
 		}
-
-		if(!isset($this->params['kilobyte'])) {
-			throw new ShopgateLibraryException('Parameter kilobyte nicht übergeben');
+		
+		$lines = (!isset($this->params['lines'])) ? null : $this->params['lines'];
+		
+		try {
+			$log = $this->tail($type, $lines);
+		} catch (ShopgateLibraryException $e) {
+			throw $e; // let handleRequest build the error message
 		}
-
-
-		$kilobyte = $this->params['kilobyte']; // Letzten x Kilobyte der Logdatei zurückgeben
-
-		$filePath = ShopgateConfig::getLogFilePath($type);
-
-		$bufferSize = floatval($kilobyte) * 1024;
-		$returnStr = "";
-
-		$fileSize = filesize($filePath);
-		if($fileSize > $bufferSize) {
-			$log = fopen($filePath,'r');
-			$returnStr = (fseek($log, -1*$bufferSize, SEEK_END) == 0) ? fread($log, $bufferSize) : "Error reading the file $filePath.";
-			fclose($log);
-		} else {
-			$returnStr = file_get_contents($filePath);
-		}
-
-
-		echo $returnStr;
+		
+		// return the requested log file content and end the script
+		header("HTTP/1.0 200 OK");
+		header('Content-Type: text/plain');
+		echo $log;
 		exit;
 	}
-
 }
 
 class ShopgateMerchantApi extends ShopgateObject {
@@ -1175,7 +1220,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	 * ShopgateConfig
 	 */
 	public function __construct() {
-		$this->config = ShopgateConfig::validateAndReturnConfig();
+		
 	}
 	
 	/**
@@ -1184,6 +1229,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	public static function getInstance() {
 		if (empty(self::$singleton)) {
 			self::$singleton = new self();
+			self::$singleton->config = ShopgateConfig::validateAndReturnConfig();
 		}
 		
 		return self::$singleton;
@@ -1389,6 +1435,8 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	public $splittetExport = false;
 
 	final public function __construct() {
+		parent::__construct();
+		
 		// Load configuration
 		try {
 			$this->setConfig(ShopgateConfig::validateAndReturnConfig());
@@ -1462,7 +1510,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 
 		$this->fileHandle = @fopen($filePath, 'w');
 		if(!$this->fileHandle) {
-			throw new ShopgateLibraryException("Datei $filePath konnte nicht geöffnet/erstellt werden");
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$filePath);
 		}
 		$this->buffer = array();
 	}
@@ -1942,6 +1990,7 @@ class ShopgateAuthentificationService extends ShopgateObject {
 	private $timestamp;
 
 	public function __construct() {
+		parent::__construct();
 		$config = ShopgateConfig::getConfig();
 		$this->customerNumber = $config["customer_number"];
 		$this->apiKey = $config["apikey"];
