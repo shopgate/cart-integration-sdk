@@ -101,6 +101,7 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_API_NO_ORDER_NUMBER = 30;
 	const PLUGIN_API_NO_USER = 35;
 	const PLUGIN_API_NO_PASS = 36;
+	const PLUGIN_API_NO_PAYMENT = 37;
 	
 	const PLUGIN_API_UNKNOWN_LOGTYPE = 37;
 	
@@ -146,6 +147,7 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_API_NO_ORDER_NUMBER => 'parameter "order_number" missing',
 		self::PLUGIN_API_NO_USER => 'parameter "user" missing',
 		self::PLUGIN_API_NO_PASS => 'parameter "pass" missing',
+		self::PLUGIN_API_NO_PAYMENT => 'parameter "payment" missing',
 		
 		self::PLUGIN_API_UNKNOWN_LOGTYPE => 'unknown logtype',
 	
@@ -327,13 +329,13 @@ class ShopgateConfig extends ShopgateObject {
 			if(isset(self::$config['path_to_access_log_file'])) {
 				return self::$config['path_to_access_log_file'];
 			} else {
-				return SHOPGATE_BASE_DIR.'/temp/access.log';
+				return SHOPGATE_BASE_DIR.'/temp/logs/access.log';
 			}
 		} else {
 			if(isset(self::$config['path_to_error_log_file'])) {
 				return self::$config['path_to_error_log_file'];
 			} else {
-				return SHOPGATE_BASE_DIR.'/temp/error.log';
+				return SHOPGATE_BASE_DIR.'/temp/logs/error.log';
 			}
 		}
 	}
@@ -1008,16 +1010,18 @@ class ShopgatePluginApi extends ShopgateObject {
 
 		$this->log("Bestellung mit folgenden Parametern wurde übergeben:\n".print_r($this->params,true), 'access');
 
-		// Benachrichtigung über neue Bestellung oder sonstige Benachrichtigung
 		if(!isset($this->params['order_number'])) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ORDER_NUMBER);
 		}
+		if (!isset($this->params['payment'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_PAYMENT);
+		}
 
-		$orderApi = new ShopgateOrderApi();
-		// Neue Bestellung: Daten holen und im eigenen System speichern
-		$order = $orderApi->getOrderDetails($this->params['order_number']);
-
-		$this->plugin->addOrder($order);
+		$order = ShopgateMerchantApi::getInstance()->getOrders(array('order_numbers[0]'=>$this->params['order_number']));
+		$payment = (bool) $this->params['payment'];
+		foreach ($orders as $order) {
+			$orderId = $this->plugin->updateOrder($order, $payment);
+		}
 	}
 
 	/**
@@ -1908,7 +1912,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 */
 	public abstract function addOrder(ShopgateOrder $order);
 
-	public abstract function updateOrder(ShopgateOrder $order);
+	public abstract function updateOrder(ShopgateOrder $order, $payment);
 
 	/**
 	 * Diese Funktion soll die Daten aus der Datenbank laden und mittels der
