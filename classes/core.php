@@ -1017,11 +1017,13 @@ class ShopgatePluginApi extends ShopgateObject {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_PAYMENT);
 		}
 
-		$order = ShopgateMerchantApi::getInstance()->getOrders(array('order_numbers[0]'=>$this->params['order_number']));
+		$orders = ShopgateMerchantApi::getInstance()->getOrders(array('order_numbers[0]'=>$this->params['order_number']));
 		$payment = (bool) $this->params['payment'];
 		foreach ($orders as $order) {
 			$orderId = $this->plugin->updateOrder($order, $payment);
 		}
+		
+		$this->response["external_order_number"] = $orderId;
 	}
 
 	/**
