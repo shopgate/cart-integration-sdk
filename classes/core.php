@@ -85,7 +85,7 @@ function ShopgateErrorHandler($errno, $errstr, $errfile, $errline) {
  */
 class ShopgateLibraryException extends Exception {
 	// Initizialization / instantiation of plugin failure
-	const INIT_EMPTY_CONFIG = 1;
+	//const INIT_EMPTY_CONFIG = 1;
 	const INIT_LOGFILE_OPEN_ERROR = 2;
 	
 	// Configuration failure
@@ -96,23 +96,20 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_API_NO_ACTION = 20;
 	const PLUGIN_API_UNKNOWN_ACTION = 21;
 	const PLUGIN_API_DISABLED_ACTION = 22;
-	const PLUGIN_API_WRONG_RESPONSE_FORMAT = 23;
 	
 	const PLUGIN_API_NO_ORDER_NUMBER = 30;
 	const PLUGIN_API_NO_USER = 35;
 	const PLUGIN_API_NO_PASS = 36;
 	const PLUGIN_API_NO_PAYMENT = 37;
 	
-	const PLUGIN_API_UNKNOWN_LOGTYPE = 37;
+	const PLUGIN_API_UNKNOWN_LOGTYPE = 38;
 	
 	// Plugin errors
 	const PLUGIN_DUPLICATE_ORDER = 60;
 	const PLUGIN_ORDER_NOT_FOUND = 61;
 	
-	const PLUGIN_LOAD_CUSTOMER_FAILED = 70;
-	const PLUGIN_LOAD_CUSTOMER_ADDRESSES_FAILED = 71;
-	const PLUGIN_NO_ADDRESSES_FOUND = 72;
-	const PLUGIN_WRONG_USERNAME_OR_PASSWORD = 73;
+	const PLUGIN_NO_ADDRESSES_FOUND = 70;
+	const PLUGIN_WRONG_USERNAME_OR_PASSWORD = 71;
 	
 	const PLUGIN_FILE_NOT_FOUND = 80;
 	const PLUGIN_FILE_OPEN_ERROR = 81;
@@ -132,7 +129,7 @@ class ShopgateLibraryException extends Exception {
 	
 	protected static $errorMessages = array(
 		// Initizialization / instantiation of plugin failure
-		self::INIT_EMPTY_CONFIG => 'empty configuration',
+		//self::INIT_EMPTY_CONFIG => 'empty configuration',
 		self::INIT_LOGFILE_OPEN_ERROR => 'cannot open/create logfile(s)',
 		
 		// Configuration failure
@@ -143,21 +140,17 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_API_NO_ACTION => 'no action specified',
 		self::PLUGIN_API_UNKNOWN_ACTION  => 'unkown action requested',
 		self::PLUGIN_API_DISABLED_ACTION => 'disabled action requested',
-		self::PLUGIN_API_WRONG_RESPONSE_FORMAT => 'wrong response format',
 		
 		self::PLUGIN_API_NO_ORDER_NUMBER => 'parameter "order_number" missing',
 		self::PLUGIN_API_NO_USER => 'parameter "user" missing',
 		self::PLUGIN_API_NO_PASS => 'parameter "pass" missing',
 		self::PLUGIN_API_NO_PAYMENT => 'parameter "payment" missing',
-		
 		self::PLUGIN_API_UNKNOWN_LOGTYPE => 'unknown logtype',
 	
 		// Plugin errors
 		self::PLUGIN_DUPLICATE_ORDER => 'duplicate order',
 		self::PLUGIN_ORDER_NOT_FOUND => 'order not found',
 		
-		self::PLUGIN_LOAD_CUSTOMER_FAILED => 'database error loading customer',
-		self::PLUGIN_LOAD_CUSTOMER_ADDRESSES_FAILED => 'database error loading customer\'s addresses',
 		self::PLUGIN_NO_ADDRESSES_FOUND => 'no addresses found for customer',
 		self::PLUGIN_WRONG_USERNAME_OR_PASSWORD => 'wrong username or password',
 		
