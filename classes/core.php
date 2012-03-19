@@ -1845,41 +1845,50 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	}
 
 	/**
-	 * Filter the String and remove all tags, which are not allowed.
+	 * Removes all html disallowed HTML tags from a given string.
 	 *
-	 * @param String $string
-	 * @param array $removeTags
-	 * @param array $allowedTags
+	 * By default the following are allowed:
 	 *
-	 * @return String
+	 * "ADDRESS", "AREA", "A", "BASE", "BASEFONT", "BIG", "BLOCKQUOTE", "BODY", "BR",
+	 * "B", "CAPTION", "CENTER", "CITE", "CODE", "DD", "DFN", "DIR", "DIV", "DL", "DT",
+	 * "EM", "FONT", "FORM", "H1", "H2", "H3", "H4", "H5", "H6", "HEAD", "HR", "HTML",
+	 * "ISINDEX", "I", "KBD", "LINK", "LI", "MAP", "MENU", "META", "OL", "OPTION", "PARAM", "PRE",
+	 * "IMG", "INPUT", "P", "SAMP", "SELECT", "SMALL", "STRIKE", "STRONG", "STYLE", "SUB", "SUP",
+	 * "TABLE", "TD", "TEXTAREA", "TH", "TITLE", "TR", "TT", "UL", "U", "VAR"
+	 *
+	 *
+	 * @param string $string The input string to be filtered.
+	 * @param string[] $removeTags The tags to be removed.
+	 * @param string[] $additionalAllowedTags Additional tags to be allowed.
+	 *
+	 * @return string The sanititzed string.
 	 */
-	protected function removeTagsFromString($string, $removeTags = array(), $allowedTags = array()) {
-		// Verfügbare Tags
-		$_Tags = array("ADDRESS", "APPLET", "AREA", "A", "BASE", "BASEFONT", "BIG", "BLOCKQUOTE",
+	protected function removeTagsFromString($string, $removeTags = array(), $additionalAllowedTags = array()) {
+		// all tags available
+		$allowedTags = array("ADDRESS", "APPLET", "AREA", "A", "BASE", "BASEFONT", "BIG", "BLOCKQUOTE",
 			"BODY", "BR", "B", "CAPTION", "CENTER", "CITE", "CODE", "DD", "DFN", "DIR", "DIV", "DL", "DT",
 			"EM", "FONT", "FORM", "H1", "H2", "H3", "H4", "H5", "H6", "HEAD", "HR", "HTML", "IMG", "INPUT",
 			"ISINDEX", "I", "KBD", "LINK", "LI", "MAP", "MENU", "META", "OL", "OPTION", "PARAM", "PRE",
 			"P", "SAMP", "SCRIPT", "SELECT", "SMALL", "STRIKE", "STRONG", "STYLE", "SUB", "SUP",
-			"TABLE", "TD", "TEXTAREA", "TH", "TITLE", "TR", "TT", "UL", "U", "VAR");
-
-		foreach ($_Tags as &$t) $t = strtolower($t);
-		foreach ($removeTags as &$t) $t = strtolower($t);
+			"TABLE", "TD", "TEXTAREA", "TH", "TITLE", "TR", "TT", "UL", "U", "VAR"
+		);
+		
+		// make them all lowercase
 		foreach ($allowedTags as &$t) $t = strtolower($t);
-
-		// Tags, die immer entfernt werden
-		$force_remove_tags = array("APPLET", "SCRIPT", "OBJECT");
-		$aTags = array_diff($_Tags, $force_remove_tags);
-
-		$_Tags = array_merge($_Tags, $allowedTags);
-
-		// Angegebene Tags entfernen
-		$_Tags = array_diff($_Tags, $removeTags);
-
+		foreach ($removeTags as &$t) $t = strtolower($t);
+		foreach ($additionalAllowedTags as &$t) $t = strtolower($t);
+		
+		// add the additional allowed tags to the list
+		$allowedTags = array_merge($allowedTags, $additionalAllowedTags);
+		
+		// strip the disallowed tags from the list
+		$allowedTags = array_diff($allowedTags, $removeTags);
+		
+		// add HTML brackets
 		foreach ($_Tags as &$t) $t = "<$t>";
-
-		$string = strip_tags($string, implode(",", $_Tags));
-
-		return $string;
+		
+		// let PHP sanitize the string and return it
+		return strip_tags($string, implode(",", $allowedTagsTags));
 	}
 
 	protected $exchangeRate = 1;
