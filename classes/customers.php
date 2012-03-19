@@ -176,8 +176,11 @@ class ShopgateCustomer extends ShopgateContainer {
 	public function getAddresses($type = ShopgateAddress::BOTH) {
 		$addresses = array();
 		
-		foreach ($this->addresses as $address)
-			if ($address->getAddressType() == $type) $addresses[] = $address;
+		foreach ($this->addresses as $address){
+			if (($address->getAddressType() & $type) == $address->getAddressType()) {
+				$addresses[] = $address;
+			}
+		}
 		
 		return $addresses;
 	}
