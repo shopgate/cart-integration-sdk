@@ -117,6 +117,7 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_FILE_NOT_FOUND = 80;
 	const PLUGIN_FILE_OPEN_ERROR = 81;
 	const PLUGIN_FILE_EMPTY_BUFFER = 82;
+	const PLUGIN_DATABASE_ERROR = 83;
 	
 	// Merchant API errors
 	const MERCHANT_API_NO_CONNECTION = 100;
@@ -163,6 +164,7 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_FILE_NOT_FOUND => 'file not found',
 		self::PLUGIN_FILE_OPEN_ERROR => 'cannot open file',
 		self::PLUGIN_FILE_EMPTY_BUFFER => 'buffer is empty',
+		self::PLUGIN_DATABASE_ERROR => 'database error',
 		
 		// Merchant API errors
 		self::MERCHANT_API_NO_CONNECTION => 'no connection to server',
@@ -187,13 +189,38 @@ class ShopgateLibraryException extends Exception {
 	 */
 	public function __construct($code, $additionalInformation = null) {
 		// Set code and message
+		$logMessage = self::buildLogMessageFor($code, $additionalInformation);
 		if (isset(self::$errorMessages[$code])) {
 			$message = self::$errorMessages[$code];
 		} else {
 			$message = 'Unknown error code: "'.$code.'"';
 			$code = self::UNKNOWN_ERROR_CODE;
 		}
-		$logMessage = $message;
+		
+		// Log the error
+		ShopgateObject::logWrite($code.' - '.$logMessage);
+		
+		// Call default Exception class constructor
+		parent::__construct($message, $code);
+	}
+	
+	/**
+	 * Gets the error message for an error code.
+	 *
+	 * @param int $code One of the constants in this class.
+	 */
+	public static function getMessageFor($code) {
+		if (isset(self::$errorMessages[$code])) {
+			$message = self::$errorMessages[$code];
+		} else {
+			$message = 'Unknown error code: "'.$code.'"';
+		}
+		
+		return $message;
+	}
+	
+	public static function buildLogMessageFor($code, $additionalInformation) {
+		$logMessage = self::getMessageFor($code);
 		
 		// Set additional information
 		if (!empty($additionalInformation)) {
@@ -202,17 +229,13 @@ class ShopgateLibraryException extends Exception {
 		
 		// Add tracing information to the message
 		$btrace = debug_backtrace();
-		$btrace = $btrace[1];
+		$btrace = $btrace[2];
 		$logMessage = (isset($btrace["class"])
 			? $btrace["class"]."::"
 			: "")
 		.$btrace["function"]."():".$btrace["line"]." - " . print_r($logMessage, true);
 		
-		// Log the error
-		ShopgateObject::logWrite($code.' - '.$logMessage);
-		
-		// Call default Exception class constructor
-		parent::__construct($message, $code);
+		return $logMessage;
 	}
 }
 
@@ -1299,7 +1322,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 		}
 		
 		if($decodedResponse['error'] != 0) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED, 'Response: '.response);
+			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED, 'Response: '.$response);
 		}
 		
 		return $decodedResponse;
