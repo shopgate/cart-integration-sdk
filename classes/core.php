@@ -1865,11 +1865,11 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 */
 	protected function removeTagsFromString($string, $removeTags = array(), $additionalAllowedTags = array()) {
 		// all tags available
-		$allowedTags = array("ADDRESS", "APPLET", "AREA", "A", "BASE", "BASEFONT", "BIG", "BLOCKQUOTE",
+		$allowedTags = array("ADDRESS", "AREA", "A", "BASE", "BASEFONT", "BIG", "BLOCKQUOTE",
 			"BODY", "BR", "B", "CAPTION", "CENTER", "CITE", "CODE", "DD", "DFN", "DIR", "DIV", "DL", "DT",
 			"EM", "FONT", "FORM", "H1", "H2", "H3", "H4", "H5", "H6", "HEAD", "HR", "HTML", "IMG", "INPUT",
 			"ISINDEX", "I", "KBD", "LINK", "LI", "MAP", "MENU", "META", "OL", "OPTION", "PARAM", "PRE",
-			"P", "SAMP", "SCRIPT", "SELECT", "SMALL", "STRIKE", "STRONG", "STYLE", "SUB", "SUP",
+			"P", "SAMP", "SELECT", "SMALL", "STRIKE", "STRONG", "STYLE", "SUB", "SUP",
 			"TABLE", "TD", "TEXTAREA", "TH", "TITLE", "TR", "TT", "UL", "U", "VAR"
 		);
 		
@@ -1885,10 +1885,10 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		$allowedTags = array_diff($allowedTags, $removeTags);
 		
 		// add HTML brackets
-		foreach ($_Tags as &$t) $t = "<$t>";
+		foreach ($allowedTags as &$t) $t = "<$t>";
 		
 		// let PHP sanitize the string and return it
-		return strip_tags($string, implode(",", $allowedTagsTags));
+		return strip_tags($string, implode(",", $allowedTags));
 	}
 
 	protected $exchangeRate = 1;
