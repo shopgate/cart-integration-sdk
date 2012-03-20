@@ -1244,6 +1244,14 @@ class ShopgatePluginApi extends ShopgateObject {
 		echo $log;
 		exit;
 	}
+	
+	private function getOrders() {
+		$result = array();
+		//$
+		if (!empty($this->params['external_customer_number'])) {
+		//	$
+		}
+	}
 }
 
 class ShopgateMerchantApi extends ShopgateObject {
