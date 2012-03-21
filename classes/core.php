@@ -1125,6 +1125,12 @@ class ShopgatePluginApi extends ShopgateObject {
 		if(!$fp) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$fileName);
 		}
+		
+		while($line = fgets($fp) )
+		{
+			echo $line;
+		}//while end
+		
 		fclose($fp);
 
 		exit;
