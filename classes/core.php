@@ -96,6 +96,7 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_API_NO_ACTION = 20;
 	const PLUGIN_API_UNKNOWN_ACTION = 21;
 	const PLUGIN_API_DISABLED_ACTION = 22;
+	const PLUGIN_API_WRONG_RESPONSE_FORMAT = 23;
 	
 	const PLUGIN_API_NO_ORDER_NUMBER = 30;
 	const PLUGIN_API_NO_USER = 35;
@@ -115,6 +116,8 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_FILE_OPEN_ERROR = 81;
 	const PLUGIN_FILE_EMPTY_BUFFER = 82;
 	const PLUGIN_DATABASE_ERROR = 83;
+	const PLUGIN_UNKNOWN_COUNTRY_CODE = 84;
+	const PLUGIN_UNKNOWN_STATE_CODE = 85;
 	
 	// Merchant API errors
 	const MERCHANT_API_NO_CONNECTION = 100;
@@ -140,6 +143,7 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_API_NO_ACTION => 'no action specified',
 		self::PLUGIN_API_UNKNOWN_ACTION  => 'unkown action requested',
 		self::PLUGIN_API_DISABLED_ACTION => 'disabled action requested',
+		self::PLUGIN_API_WRONG_RESPONSE_FORMAT => 'wrong response format',
 		
 		self::PLUGIN_API_NO_ORDER_NUMBER => 'parameter "order_number" missing',
 		self::PLUGIN_API_NO_USER => 'parameter "user" missing',
@@ -158,6 +162,8 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_FILE_OPEN_ERROR => 'cannot open file',
 		self::PLUGIN_FILE_EMPTY_BUFFER => 'buffer is empty',
 		self::PLUGIN_DATABASE_ERROR => 'database error',
+		self::PLUGIN_UNKNOWN_COUNTRY_CODE => 'unknown country code',
+		self::PLUGIN_UNKNOWN_STATE_CODE => 'unknown state code',
 		
 		// Merchant API errors
 		self::MERCHANT_API_NO_CONNECTION => 'no connection to server',
@@ -1066,7 +1072,7 @@ class ShopgatePluginApi extends ShopgateObject {
 		// Die Userdaten über das Plugin auslesen
 		$customer = $this->plugin->getCustomer($this->params['user'], $this->params['pass']);
 		if (!is_object($customer) || !($customer instanceof ShopgateCustomer)) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_REPONSE_FORMAT);
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, 'Plugin Response: '.var_export($customer, true));
 		}
 
 		// Daten als JSON zurückliefern
