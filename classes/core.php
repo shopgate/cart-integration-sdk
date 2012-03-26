@@ -150,7 +150,7 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_API_NO_PASS => 'parameter "pass" missing',
 		self::PLUGIN_API_NO_PAYMENT => 'parameter "payment" missing',
 		self::PLUGIN_API_UNKNOWN_LOGTYPE => 'unknown logtype',
-	
+		
 		// Plugin errors
 		self::PLUGIN_DUPLICATE_ORDER => 'duplicate order',
 		self::PLUGIN_ORDER_NOT_FOUND => 'order not found',
