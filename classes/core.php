@@ -1238,10 +1238,7 @@ class ShopgatePluginApi extends ShopgateObject {
 	 *
 	 */
 	private function getLogFile() {
-		if (isset($this->params['log_type'])) {
-			$type = $this->params['log_type'];
-		}
-		
+		$type = (empty($this->params['log_type'])) ? ShopgateObject::LOGTYPE_ERROR : $this->params['log_type'];
 		$lines = (!isset($this->params['lines'])) ? null : $this->params['lines'];
 		
 		try {
