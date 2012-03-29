@@ -74,7 +74,20 @@ class ShopgateCustomer extends ShopgateContainer {
 	 * @throws ShopgateLibraryException
 	 * @todo Exception werfen
 	 */
-	public function setBirthday($value) { $this->birthday = $value; }
+	public function setBirthday($value) {
+		if (empty($value)) {
+			$this->birthday = null;
+			return;
+		}
+		
+		$timestamp = strtotime($value);
+		
+		if (($timestamp === false) || ($timestamp == -1)) {
+			throw new ShopgateLibraryException('$value is not parsable bei strtotime: "'.$value.'"');
+		}
+		
+		$this->birthday = date('Y-m-d', $timestamp);
+	}
 	
 	/**
 	 * @param string $value
@@ -288,7 +301,18 @@ class ShopgateAddress extends ShopgateContainer {
 	 * @param string $value Format: yyyy-mm-dd (1983-02-17)
 	 */
 	public function setBirthday($value) {
-		$this->birthday = $value;
+		if (empty($value)) {
+			$this->birthday = null;
+			return;
+		}
+		
+		$timestamp = strtotime($value);
+		
+		if (($timestamp === false) || ($timestamp == -1)) {
+			throw new ShopgateLibraryException('$value is not parsable bei strtotime: "'.$value.'"');
+		}
+		
+		$this->birthday = date('Y-m-d', $timestamp);
 	}
 	
 	/**
