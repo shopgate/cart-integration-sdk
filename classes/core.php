@@ -683,7 +683,7 @@ class ShopgateObject {
 	}
 }
 
-class ShopgateContainer extends ShopgateObject {
+abstract class ShopgateContainer extends ShopgateObject {
 	/**
 	 * @param array $data An array containing the container's data as defined at our wiki
 	 * @see http://wiki.shopgate.com/........
@@ -695,7 +695,6 @@ class ShopgateContainer extends ShopgateObject {
 			foreach ($data as $key => $value) {
 				$setter = 'set'.$this->camelize($key, true);
 				if (!in_array($setter, $methods)) {
-					//$this->log(__CLASS__.'::__construct(): Unbekanntes Attribut "'.$key.'" übergeben.');
 					continue;
 				}
 				$this->$setter($value);
@@ -710,6 +709,9 @@ class ShopgateContainer extends ShopgateObject {
 	 * @return mixed[]
 	 */
 	public function toArray($boolToInt = true) {
+// 		$visitor = new ShopgateToArrayVisitor();
+// 		return $visitor->visitContainer($this);
+		
 		$attributes = get_object_vars($this);
 		$array = array();
 		foreach ($attributes as $attribute => $value) {
@@ -732,7 +734,7 @@ class ShopgateContainer extends ShopgateObject {
 				$array[$attribute]->toArray($boolToInt);
 			}
 		}
-
+		
 		return $array;
 	}
 
@@ -740,6 +742,19 @@ class ShopgateContainer extends ShopgateObject {
 		if (is_object($value) && ($value instanceof ShopgateContainer)) {
 			$value = $value->toArray($boolToInt);
 		}
+	}
+	
+	public function acceptToArrayVisitor(ShopgateToArrayVisitor $v) {
+		$properties = get_object_vars($this);
+		$filteredProperties = array();
+		
+		// only properties that have getters should be extracted
+		foreach ($properties as $property => $value) {
+			$getter = 'get'.$this->camelize($property, true);
+			$filteredProperties[$attribute] = $this->{$getter}();
+		}
+		
+		return $v->visitArray($filteredProperties);
 	}
 }
 
@@ -854,6 +869,9 @@ class ShopgatePluginApi extends ShopgateObject {
 		
 // 		$valServ = new ShopgateAuthentificationService();
 // 		$valServ->checkValidAuthentification();
+		
+		// incoming request, save the trace id
+		$this->traceId = $this->params['trace_id'];
 
 		try {
 			// Load config
@@ -885,6 +903,7 @@ class ShopgatePluginApi extends ShopgateObject {
 			$this->response['error'] = $e->getCode();
 			$this->response['error_text'] = $e->getMessage();
 		} catch (Exception $e) {
+			// new ShopgateLibraryException to build proper error message and perform logging
 			$se = new ShopgateLibraryException($e->getMessage());
 			$this->response['error'] = $se->getCode();
 			$this->response['error_text'] = $se->getMessage();
@@ -893,6 +912,7 @@ class ShopgatePluginApi extends ShopgateObject {
 		// Print out the response
 		header("HTTP/1.0 200 OK");
 		header('Content-Type: application/json');
+		die(sg_json_encode($this->response));
 		echo sg_json_encode($this->response);
 		
 		// Return true or false
@@ -1270,17 +1290,12 @@ class ShopgateMerchantApi extends ShopgateObject {
 	private static $singleton;
 	
 	private $config;
-
-	/**
-	 * Der Konstruktor der ShopgateMerchantApi-Klasse.
-	 * Lädt die angegebene Config.
-	 *
-	 * ShopgateConfig
-	 */
-	public function __construct() {
-		
-	}
 	
+	/**
+	 * @var int
+	 */
+	private $traceId;
+
 	/**
 	 * @return ShopgateMerchantApi
 	 */
@@ -1305,6 +1320,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	private function sendRequest($data) {
 		if(empty($this->config)) $this->config = ShopgateConfig::validateAndReturnConfig();
 		
+		$data['trace_id'] = 'spa-'.uniqid();
 		$data['shop_number'] = $this->config["shop_number"];
 		
 		$url = $this->config["api_url"];
@@ -1333,6 +1349,10 @@ class ShopgateMerchantApi extends ShopgateObject {
 		
 		if($decodedResponse['error'] != 0) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED, 'Response: '.$response);
+		}
+		
+		if ($data['trace_id'] != $decodedResponse['trace_id']) {
+			// TODO: Exception?
 		}
 		
 		return $decodedResponse;
@@ -1474,14 +1494,14 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @var int
 	 */
 	private $bufferCounter = 0;
-
+	
 	/**
 	 * Die Konfiguration des Plugins.
 	 *
 	 * @var array
 	 */
 	protected $config;
-
+	
 	/**
 	 * Wenn der Buffer größer als dieser Wert ist,
 	 * werden alle Datensätze in die Datei geschrieben.
@@ -2079,5 +2099,42 @@ class ShopgateAuthentificationService extends ShopgateObject {
 		}
 
 		return $valid;
+	}
+}
+
+abstract class ShopgateVisitor {
+	public abstract function visitSimpleVar($v);
+	public abstract function visitArray(array $a);
+}
+
+class ShopgateToArrayVisitor extends ShopgateVisitor {
+	public function visitSimpleVar($v) {
+		if (is_int($v)) {
+			return (int) $v;
+		} elseif (is_bool($v)) {
+			return (int) $v;
+		} elseif (is_string($v)) {
+			return mb_convert_encoding($v, 'UTF-8', mb_detect_encoding($v));
+		}
+	}
+	
+	public function visitArray(array $a) {
+		$array = array();
+		
+		foreach ($a as $key => $value) {
+			if (is_array($value)) {
+				$array[$key] = $this->visitArray($value);
+			} elseif (is_object($value) && ($value instanceof ShopgateContainer)) {
+				$array[$key] = $this->visitContainer($value);
+			} else {
+				$array[$key] = $this->visitSimpleVar($value);
+			}
+		}
+		
+		return $array;
+	}
+	
+	public function visitContainer(ShopgateContainer $c) {
+		return $c->acceptToArrayVisitor($this);
 	}
 }
