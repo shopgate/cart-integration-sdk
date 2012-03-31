@@ -26,7 +26,7 @@ class ShopgateCustomer extends ShopgateContainer {
 	/**
 	 * @param string $value
 	 */
-	public function setCustomerNumber($value) { $this->customerNumber = $value; }
+	public function setCustomerNumber($value) { $this->customer_number = $value; }
 	
 	/**
 	 * @param string $value
