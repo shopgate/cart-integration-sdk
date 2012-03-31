@@ -555,9 +555,16 @@ class ShopgateObject {
 			if (empty($handle)) {
 				$path = ShopgateConfig::getLogFilePath($type);
 				$newHandle = @fopen($path, 'a+');
+				
+				// if log files are not writeable abort with complete error message (since it can't be logged)
 				if ($newHandle === false) {
-					throw new ShopgateLibraryException(ShopgateLibraryException::INIT_LOGFILE_OPEN_ERROR, 'File: '.$path);
+					$response['error'] = ShopgateLibraryException::INIT_LOGFILE_OPEN_ERROR;
+					$response['error_text'] = ShopgateLibraryException::buildLogMessageFor(ShopgateLibraryException::INIT_LOGFILE_OPEN_ERROR, 'File: '.$path, false);
+					header("HTTP/1.0 200 OK");
+					header('Content-Type: application/json');
+					die(sg_json_encode($response));
 				}
+				
 				self::$fileHandles[$type] = $newHandle;
 			}
 		}
@@ -912,7 +919,6 @@ class ShopgatePluginApi extends ShopgateObject {
 		// Print out the response
 		header("HTTP/1.0 200 OK");
 		header('Content-Type: application/json');
-		die(sg_json_encode($this->response));
 		echo sg_json_encode($this->response);
 		
 		// Return true or false
