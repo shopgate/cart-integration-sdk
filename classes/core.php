@@ -562,6 +562,7 @@ class ShopgateObject {
 					$response['error_text'] = ShopgateLibraryException::buildLogMessageFor(ShopgateLibraryException::INIT_LOGFILE_OPEN_ERROR, 'File: '.$path, false);
 					header("HTTP/1.0 200 OK");
 					header('Content-Type: application/json');
+					header('Content-Encoding: utf-8');
 					die(sg_json_encode($response));
 				}
 				
@@ -716,52 +717,33 @@ abstract class ShopgateContainer extends ShopgateObject {
 	 * @return mixed[]
 	 */
 	public function toArray($boolToInt = true) {
-// 		$visitor = new ShopgateToArrayVisitor();
-// 		return $visitor->visitContainer($this);
-		
-		$attributes = get_object_vars($this);
-		$array = array();
-		foreach ($attributes as $attribute => $value) {
-			$getter = 'get'.$this->camelize($attribute, true);
-			$array[$attribute] = $this->{$getter}();
-
-			// Ggf. Booleans zu Integers konvertieren
-			if ($boolToInt) {
-				if ($array[$attribute] === false) $array[$attribute] = 0;
-				if ($array[$attribute] === true)  $array[$attribute] = 1;
-			}
-
-			// Ggf. enthaltene Listen rekursiv durchlaufen und in den Listen enthaltene Container-Objekte in Arrays umwandeln
-			if (is_array($array[$attribute])) {
-				array_walk_recursive($array[$attribute], array(&$this, 'containerListToArray'), $boolToInt);
-			}
-
-			// Ggf. enthaltene Container-Objekte zu Arrays umwandeln
-			if (is_object($array[$attribute]) && ($array[$attribute] instanceof ShopgateContainer)) {
-				$array[$attribute]->toArray($boolToInt);
-			}
-		}
-		
-		return $array;
-	}
-
-	protected function containerListToArray(&$value, $key, $boolToInt = true) {
-		if (is_object($value) && ($value instanceof ShopgateContainer)) {
-			$value = $value->toArray($boolToInt);
-		}
+ 		$visitor = new ShopgateToArrayVisitor();
+ 		return $visitor->visitContainer($this);
 	}
 	
-	public function acceptToArrayVisitor(ShopgateToArrayVisitor $v) {
+	/**
+	 * Creates an array of all properties that have setters 
+	 * 
+	 * return mixed[] 
+	 */
+	public function getProperties() {
 		$properties = get_object_vars($this);
 		$filteredProperties = array();
 		
 		// only properties that have getters should be extracted
 		foreach ($properties as $property => $value) {
 			$getter = 'get'.$this->camelize($property, true);
-			$filteredProperties[$attribute] = $this->{$getter}();
+			$filteredProperties[$property] = $this->{$getter}();
 		}
 		
-		return $v->visitArray($filteredProperties);
+		return $filteredProperties;
+	}
+	
+	/**
+	 * @param ShopgateToArrayVisitor $v
+	 */
+	public function acceptToArrayVisitor(ShopgateToArrayVisitor $v) {
+		$v->visit($this);
 	}
 }
 
@@ -919,6 +901,7 @@ class ShopgatePluginApi extends ShopgateObject {
 		// Print out the response
 		header("HTTP/1.0 200 OK");
 		header('Content-Type: application/json');
+		header('Content-Encoding: utf-8');
 		echo sg_json_encode($this->response);
 		
 		// Return true or false
@@ -2108,19 +2091,17 @@ class ShopgateAuthentificationService extends ShopgateObject {
 	}
 }
 
-abstract class ShopgateVisitor {
-	public abstract function visitSimpleVar($v);
-	public abstract function visitArray(array $a);
-}
-
-class ShopgateToArrayVisitor extends ShopgateVisitor {
+/**
+ * Turns a ShopgateContainer or an array of ShopgateContainers into an array.
+ */
+class ShopgateToArrayVisitor {
 	public function visitSimpleVar($v) {
 		if (is_int($v)) {
 			return (int) $v;
 		} elseif (is_bool($v)) {
 			return (int) $v;
 		} elseif (is_string($v)) {
-			return mb_convert_encoding($v, 'UTF-8', mb_detect_encoding($v));
+			return utf8_encode($v);
 		}
 	}
 	
@@ -2141,6 +2122,6 @@ class ShopgateToArrayVisitor extends ShopgateVisitor {
 	}
 	
 	public function visitContainer(ShopgateContainer $c) {
-		return $c->acceptToArrayVisitor($this);
+		return $this->visitArray($c->getProperties());
 	}
 }
