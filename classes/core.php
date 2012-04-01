@@ -25,44 +25,6 @@ define('QR_PNG_MAXIMUM_SIZE',  1024);
 # Helper-Klassen
 ###################################################################################
 
-function debug($debug) {
-	echo "<pre>";
-	var_dump($debug);
-	echo "</pre>";
-}
-
-function sg_json_encode($array) {
-	$string = "";
-	if(function_exists("json_encode")) {
-		$string = json_encode($array);
-	} else {
-		if(!class_exists("Services_JSON"))
-			require_once dirname(__FILE__).'/../vendors/JSON.php';
-		$json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
-		$string = $json->encode($array);
-	}
-
-	return $string;
-}
-
-function sg_json_decode($json, $assoc = false) {
-	$array = "";
-	if(function_exists("json_encode")) {
-		$array = json_decode($json, $assoc);
-	} else {
-		if(!class_exists("Services_JSON"))
-			require_once dirname(__FILE__).'/../vendors/JSON.php';
-
-		$jsonUse = SERVICES_JSON_IN_OBJ;
-		if($assoc) $jsonUse = SERVICES_JSON_LOOSE_TYPE;
-
-		$oJson = new Services_JSON($jsonUse);
-		$array = $oJson->decode($json);
-	}
-
-	return $array;
-}
-
 function ShopgateErrorHandler($errno, $errstr, $errfile, $errline) {
 	//no difference between excpetions and E_WARNING
 	$msg = "Fatal PHP Error [Nr. $errno : $errfile / $errline] ";
@@ -514,7 +476,7 @@ if (isset($shopgate_config) && is_array($shopgate_config)) {
 			"error"=>true,
 			"error_text"=>$e->getMessage(),
 		);
-		echo sg_json_encode($response);
+		// TODO: echo sg_json_encode($response);
 		exit;
 	}
 }
@@ -563,7 +525,7 @@ class ShopgateObject {
 					header("HTTP/1.0 200 OK");
 					header('Content-Type: application/json');
 					header('Content-Encoding: utf-8');
-					die(sg_json_encode($response));
+					die($this->jsonEncode($response));
 				}
 				
 				self::$fileHandles[$type] = $newHandle;
@@ -627,7 +589,7 @@ class ShopgateObject {
 		
 		// uninitialize if neccessary
 		self::unInit();
-	}
+	} 
 
 	/**
 	 * Converts a an underscored string to a camelized one.
@@ -646,6 +608,54 @@ class ShopgateObject {
 		}
 		$func = create_function('$c', 'return strtoupper($c[1]);');
 		return preg_replace_callback('/_([a-z0-9])/', $func, $str);
+	}
+	
+	/**
+	 * Creates a JSON string from any passed value.
+	 * 
+	 * If json_encode() exists it's done by that, otherwise an external class provided with the Shopgate Library is used.
+	 * 
+	 * @param mixed $value
+	 * @return string
+	 */
+	public function jsonEncode($value) {
+		// if json_encode exists use that
+		if (function_exists("json_encode")) {
+			return $string = json_encode($value);
+		}
+		
+		// if not check if external class is loaded
+		if (!class_exists("Services_JSON")) {
+			require_once dirname(__FILE__).'/../vendors/JSON.php';
+		}
+		
+		// encode via external class
+		$jsonService = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
+		return $jsonClass->encode($value);
+	}
+	
+	/**
+	 * Creates a variable, array or object from any passed JSON string.
+	 * 
+	 * If json_encode() exists it's done by that, otherwise an external class provided with the Shopgate Library is used.
+	 * 
+	 * @param string $value
+	 * @return mixed
+	 */
+	public function jsonDecode($json, $assoc = false) {
+		// if json_decode exists use that
+		if (function_exists("json_decode")) {
+			return json_decode($json, $assoc);
+		}
+		
+		// if not check if external class is loaded
+		if (!class_exists("Services_JSON")) {
+			require_once dirname(__FILE__).'/../vendors/JSON.php';
+		}
+		
+		// decode via external class
+		$jsonService = new Services_JSON(($assoc) ? SERVICES_JSON_LOOSE_TYPE : SERVICES_JSON_IN_OBJ);
+		return $jsonService->decode($json);
 	}
 
 	/**
@@ -902,7 +912,7 @@ class ShopgatePluginApi extends ShopgateObject {
 		header("HTTP/1.0 200 OK");
 		header('Content-Type: application/json');
 		header('Content-Encoding: utf-8');
-		echo sg_json_encode($this->response);
+		echo $this->jsonEncode($this->response);
 		
 		// Return true or false
 		return !(isset($this->response["error"]) && $this->response["error"] > 0);
