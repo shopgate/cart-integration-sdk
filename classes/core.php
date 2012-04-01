@@ -1340,7 +1340,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 		
 		if (!$response) throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_NO_CONNECTION);
 		
-		$decodedResponse = sg_json_decode($response, true);
+		$decodedResponse = $this->jsonDecode($response, true);
 		
 		if (empty($decodedResponse)) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE, 'Response: '.$response);
