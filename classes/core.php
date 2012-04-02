@@ -133,7 +133,7 @@ class ShopgateLibraryException extends Exception {
 		self::MERCHANT_API_ERROR_RECEIVED => 'error code received',
 		
 		// Authentification errors
-		self::AUTHENTIFICATION_FAILED => 'authentifictation failed',
+		self::AUTHENTIFICATION_FAILED => 'authentification failed',
 	);
 	
 	/**
