@@ -80,7 +80,7 @@ class ShopgateCustomer extends ShopgateContainer {
 			return;
 		}
 		
-		if (!preg_match('/^[0-9]{4}\-{0-9}{2}\-[0-9]{2}$/', $value)) {
+		if (!preg_match('/^[0-9]{4}\-[0-9]{2}\-[0-9]{2}$/', $value)) {
 			throw new ShopgateLibraryException('$value is not parsable: "'.$value.'"');
 		}
 		
