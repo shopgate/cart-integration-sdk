@@ -2109,7 +2109,11 @@ class ShopgateToArrayVisitor {
 		} elseif (is_bool($v)) {
 			return (int) $v;
 		} elseif (is_string($v)) {
-			return utf8_encode($v);
+			if (mb_detect_encoding($v, null, true) == 'UTF-8') {
+				return $v;
+			} else {
+				return utf8_encode($v);
+			}
 		}
 	}
 	
