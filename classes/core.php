@@ -87,7 +87,7 @@ class ShopgateLibraryException extends Exception {
 	const MERCHANT_API_ERROR_RECEIVED = 102;
 	
 	// Authentification errors
-	const AUTHENTIFICATION_INVALID_USERNAME = 120;
+	const AUTHENTIFICATION_FAILED = 120;
 	
 	// Unknown error code (the value passed as code gets to be the message)
 	const UNKNOWN_ERROR_CODE = 999;
@@ -133,7 +133,7 @@ class ShopgateLibraryException extends Exception {
 		self::MERCHANT_API_ERROR_RECEIVED => 'error code received',
 		
 		// Authentification errors
-		self::AUTHENTIFICATION_INVALID_USERNAME => 'invalid username',
+		self::AUTHENTIFICATION_FAILED => 'authentifictation failed',
 	);
 	
 	/**
@@ -589,7 +589,7 @@ class ShopgateObject {
 		
 		// uninitialize if neccessary
 		self::unInit();
-	} 
+	}
 
 	/**
 	 * Converts a an underscored string to a camelized one.
@@ -612,9 +612,9 @@ class ShopgateObject {
 	
 	/**
 	 * Creates a JSON string from any passed value.
-	 * 
+	 *
 	 * If json_encode() exists it's done by that, otherwise an external class provided with the Shopgate Library is used.
-	 * 
+	 *
 	 * @param mixed $value
 	 * @return string
 	 */
@@ -636,9 +636,9 @@ class ShopgateObject {
 	
 	/**
 	 * Creates a variable, array or object from any passed JSON string.
-	 * 
+	 *
 	 * If json_encode() exists it's done by that, otherwise an external class provided with the Shopgate Library is used.
-	 * 
+	 *
 	 * @param string $value
 	 * @return mixed
 	 */
@@ -732,9 +732,9 @@ abstract class ShopgateContainer extends ShopgateObject {
 	}
 	
 	/**
-	 * Creates an array of all properties that have setters 
-	 * 
-	 * return mixed[] 
+	 * Creates an array of all properties that have setters
+	 *
+	 * return mixed[]
 	 */
 	public function getProperties() {
 		$properties = get_object_vars($this);
@@ -2066,38 +2066,36 @@ class ShopgateAuthentificationService extends ShopgateObject {
 	 * @return boolean
 	 */
 	public function checkValidAuthentification() {
-		if(empty($_SERVER['PHP_AUTH_USER']) || empty($_SERVER['PHP_AUTH_PW'])){
+		if (empty($_SERVER['PHP_AUTH_USER']) || empty($_SERVER['PHP_AUTH_PW'])){
 			header('WWW-Authenticate: Basic realm="Shopgate Merchant API"');
 		    header('HTTP/1.0 401 Unauthorized');
 		    echo "Insert Valid Login Data";
 		    exit;
 		}
 
-	    // Extraxt customer-number and Timestamp from username
+	    // extract customer number and timestamp from username
 		$matches = array();
 	 	if (!preg_match('/(?<customer_number>[1-9][0-9]+)-(?<timestamp>[1-9][0-9]+)/', $_SERVER['PHP_AUTH_USER'], $matches)){
-	 		throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTIFICATION_INVALID_USERNAME);
+	 		throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTIFICATION_FAILED, 'Cannot parse: '.$_SERVER['PHP_AUTH_USER']);
    		}
 
    		$customer_number = $matches["customer_number"];
    		$timestamp = $matches["timestamp"];
+   		
+   		// request shouldn't be older than 30 minutes
+   		if ((time() - $timestamp) < (30*60)) {
+   			throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTIFICATION_FAILED, 'Request too old.');
+   		}
 
    		// create the authentification-password
 		$generatedPassword = sha1("SPA-{$customer_number}-{$timestamp}-{$this->apiKey}");
 
-
-		$valid = false;
-
 		// Compare customer-number and auth-password
-		if($customer_number === $this->customerNumber && $_SERVER["PHP_AUTH_PW"] === $generatedPassword)
-			$valid = true;
-
-		// If not valid => Error
-		if(!$valid) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTIFICATION_INVALID_USERNAME);
+		if (!($customer_number === $this->customerNumber) && !($_SERVER["PHP_AUTH_PW"] === $generatedPassword)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTIFICATION_FAILED);
 		}
 
-		return $valid;
+		return true;
 	}
 }
 
