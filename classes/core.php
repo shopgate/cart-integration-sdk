@@ -866,13 +866,14 @@ class ShopgatePluginApi extends ShopgateObject {
 	public function handleRequest($data) {
 		$this->params = $data;
 		
-// 		$valServ = new ShopgateAuthentificationService();
-// 		$valServ->checkValidAuthentification();
-		
 		// incoming request, save the trace id
 		$this->traceId = $this->params['trace_id'];
 
 		try {
+			
+	 		$valServ = new ShopgateAuthentificationService();
+	 		$valServ->checkValidAuthentification();
+ 		
 			// Load config
 			// TODO: again??
 			$this->config = ShopgateConfig::validateAndReturnConfig();
@@ -2083,7 +2084,7 @@ class ShopgateAuthentificationService extends ShopgateObject {
    		$timestamp = $matches["timestamp"];
    		
    		// request shouldn't be older than 30 minutes
-   		if ((time() - $timestamp) < (30*60)) {
+   		if ((time() - $timestamp) >= (30*60)) {
    			throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTIFICATION_FAILED, 'Request too old.');
    		}
 
