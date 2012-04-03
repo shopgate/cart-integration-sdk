@@ -189,6 +189,9 @@ class ShopgateOrder extends ShopgateContainer {
 	 */
 	public function setPaymentTransactionNumber($value) { $this->payment_transaction_number = $value; }
 
+	/**
+	 * @param mixed[] $value An array of additional information about the payment depending on the payment type
+	 */
 	public function setPaymentInfos($value) { $this->payment_infos = $value; }
 
 	/**
