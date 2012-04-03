@@ -239,7 +239,7 @@ class ShopgateConfig extends ShopgateObject {
 	 * @var array
 	 */
 	private static $config =  array(
-		'api_url' => 'https://api.shopgate.com/merchant_api/',
+		'api_url' => 'https://api.shopgate.com/merchant/',
 		'customer_number' => 'THE_CUSTOMER_NUMBER',
 		'shop_number' => 'THE_SHOP_NUMBER',
 		'apikey' => 'THE_API_KEY',
@@ -401,14 +401,14 @@ class ShopgateConfig extends ShopgateObject {
 		////////////////////////////////////////////////////////////////////////
 		if(!empty($newConfig["server"]) && $newConfig["server"] === "pg") {
 			// Playground?
-			self::$config["api_url"] = "https://api.shopgatepg.com/merchant_api/";
+			self::$config["api_url"] = "https://api.shopgatepg.com/merchant/";
 		} else if(!empty($newConfig["server"]) && $newConfig["server"] === "custom"
 		&& !empty($newConfig["server_custom_url"])) {
 			// Eigener Test-Server?
 			self::$config["api_url"] = $newConfig["server_custom_url"];
 		} else {
 			// Live-Server?
-			self::$config["api_url"] = "https://api.shopgate.com/merchant_api/";
+			self::$config["api_url"] = "https://api.shopgate.com/merchant/";
 		}
 	}
 
