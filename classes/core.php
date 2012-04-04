@@ -1211,8 +1211,9 @@ class ShopgatePluginApi extends ShopgateObject {
 
 		$fileName = ShopgateConfig::getReviewsCsvFilePath();
 
-		$Plugin = ShopgatePluginCore::newInstance($this->config);
-		$Plugin->startGetReviewsCsv();
+// 		$Plugin = ShopgatePluginCore::newInstance($this->config);
+// 		$Plugin->startGetReviewsCsv();
+		$this->plugin->startGetReviewsCsv();
 
 		if(!file_exists($fileName)) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$fileName);
