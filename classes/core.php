@@ -1207,20 +1207,14 @@ class ShopgatePluginApi extends ShopgateObject {
 	 * @throws ShopgateLibraryException
 	 */
 	private function getReviewsCsv() {
-		//$this->__checkApiKey();
-
 		$fileName = ShopgateConfig::getReviewsCsvFilePath();
-
-// 		$Plugin = ShopgatePluginCore::newInstance($this->config);
-// 		$Plugin->startGetReviewsCsv();
 		$this->plugin->startGetReviewsCsv();
 
-		if(!file_exists($fileName)) {
+		if (!file_exists($fileName)) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$fileName);
 		}
-
+		
 		// Inhalt der Datei an den Browser zurückgeben
-
 		header("HTTP/1.0 200 OK");
 		header('Content-Type: text/csv');
 		header('Content-Disposition: attachment; filename="reviews.csv"');
