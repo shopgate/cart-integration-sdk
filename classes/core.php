@@ -1330,6 +1330,8 @@ class ShopgateMerchantApi extends ShopgateObject {
 		curl_setopt($curl, CURLOPT_USERAGENT, "ShopgatePlugin/" . SHOPGATE_PLUGIN_VERSION);
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($curl, CURLOPT_HTTPHEADER, array('X-Shopgate-Library-Version'=> SHOPGATE_LIBRARY_VERSION));
+		curl_setopt($curl, CURLOPT_HTTPHEADER, array('X-Shopgate-Plugin-Version'=> SHOPGATE_PLUGIN_VERSION));
 		curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 		curl_setopt($curl, CURLOPT_USERPWD, ShopgateAuthentificationService::getCurlAuthentificationString());
 		curl_setopt($curl, CURLOPT_POST, true);
