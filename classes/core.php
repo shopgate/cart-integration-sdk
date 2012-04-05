@@ -752,8 +752,9 @@ abstract class ShopgateContainer extends ShopgateObject {
 	 * @return mixed[]
 	 */
 	public function toArray($boolToInt = true) {
- 		$visitor = new ShopgateToArrayVisitor();
- 		return $visitor->visitContainer($this);
+ 		$visitor = new ShopgateContainerToArrayVisitor();
+ 		$visitor->visitContainer($this);
+ 		return $visitor->getArray();
 	}
 	
 	/**
@@ -761,7 +762,7 @@ abstract class ShopgateContainer extends ShopgateObject {
 	 *
 	 * return mixed[]
 	 */
-	public function getProperties() {
+	public function buildProperties() {
 		$properties = get_object_vars($this);
 		$filteredProperties = array();
 		
@@ -775,10 +776,10 @@ abstract class ShopgateContainer extends ShopgateObject {
 	}
 	
 	/**
-	 * @param ShopgateToArrayVisitor $v
+	 * @param ShopgateContainerVisitor $v
 	 */
-	public function acceptToArrayVisitor(ShopgateToArrayVisitor $v) {
-		$v->visit($this);
+	public function accept(ShopgateContainerVisitor $v) {
+		echo 'lala';
 	}
 }
 
@@ -2122,11 +2123,226 @@ class ShopgateAuthentificationService extends ShopgateObject {
 	}
 }
 
+interface ShopgateContainerVisitor {
+	public function visitContainer(ShopgateContainer $c);
+	public function visitCustomer(ShopgateCustomer $c);
+	public function visitAddress(ShopgateAddress $a);
+	public function visitOrder(ShopgateOrder $o);
+	public function visitOrderItem(ShopgateOrderItem $i);
+	public function visitOrderItemOption(ShopgateOrderItemOption $o);
+	public function visitOrderDeliveryNote(ShopgateDeliveryNote $d);
+}
+
+class ShopgateUtf8DecodeVisitor implements ShopgateContainerVisitor {
+	protected $object;
+	
+	public function getObject() {
+		return $this->object;
+	}
+	
+	public function visitContainer(ShopgateContainer $c) {
+		$c->accept($this);
+	}
+	
+	public function visitCustomer(ShopgateCustomer $c) {
+		// get properties
+		$properties = $c->buildProperties();
+		
+		// iterate the simple variables
+		$this->iterateSimpleProperties($properties);
+		
+		// iterate ShopgateAddress objects
+		$properties['addresses'] = $this->iterateObjectList($properties['addresses']);
+		
+		// create new object with utf-8 decoded data
+		try {
+			$this->object = new ShopgateCustomer($properties);
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+	
+	public function visitAddress(ShopgateAddress $a) {
+		// create new object with utf-8 decoded data
+		try {
+			$this->object = new ShopgateAddress($this->iterateSimpleProperties($a->buildProperties()));
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+	
+	public function visitOrder(ShopgateOrder $o) {
+		// get properties
+		$properties = $o->buildProperties();
+		
+		// iterate the simple variables
+		$this->iterateSimpleProperties($properties);
+		
+		// iterate the payment_method information
+		$this->iterateSimpleProperties($properties['payment_method']);
+		
+		// visit delivery_address
+		$properties['delivery_address']->accept($this);
+		$properties['delivery_address'] = $this->object;
+		
+		// visit invoice_address
+		$properties['invoice_address']->accept($this);
+		$properties['invoice_address'] = $this->object;
+		
+		// iterate lists of referred objects
+		$properties['items'] = $this->iterateObjectList($properties['items']);
+		$properties['delivery_notes'] = $this->iterateObjectList($properties['delivery_notes']);
+		
+		// create new object with utf-8 decoded data
+		try {
+			$this->object = new ShopgateOrder($properties);
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+	
+	public function visitOrderItem(ShopgateOrderItem $i) {
+		// get properties
+		$properties = $o->buildProperties();
+		
+		// iterate the simple variables
+		$this->iterateSimpleProperties($properties);
+		
+		// iterate lists of referred objects
+		$properties['options'] = $this->iterateObjectList($properties['options']);
+		// TODO: $properties['inputs'] = $this->iterateObjectList($properties['inputs']);
+		
+		// create new object with utf-8 decoded data
+		try {
+			$this->object = new ShopgateOrderItem($properties);
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+	
+	public function visitOrderItemOption(ShopgateOrderItemOption $o) {
+		// iterate the simple variables
+		try {
+			$this->object = new ShopgateOrderItemOption($this->iterateSimpleProperties($o->buildProperties()));
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+	
+	public function visitOrderDeliveryNote(ShopgateDeliveryNote $d) {
+		// create new object with utf-8 decoded data
+		try {
+			$this->object = new ShopgateDeliveryNote($this->iterateSimpleProperties($d->buildProperties()));
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+	
+	protected function iterateSimpleProperties(array &$properties) {
+		foreach ($properties as $key => &$value) {
+			// we only want the simple types
+			if (is_object($value) || is_array($value)) continue;
+			
+			$value = utf8_decode($value);
+		}
+	}
+	
+	protected function iterateObjectList(array $list = null) {
+		if (!empty($list)) {
+			$newList = array();
+			foreach ($list as $object) {
+				if (!($object instanceof ShopgateContainer)) {
+					ShopgateObject::logWrite('Encountered unknown type in what is supposed to be a list of ShopgateContainer objects: '.var_export($object, true));
+					continue;
+				}
+				
+				$object->accept($this);
+				$newList[] = $this->object;
+			}
+		}
+		
+		return $newList;
+	}
+}
+
 /**
  * Turns a ShopgateContainer or an array of ShopgateContainers into an array.
  */
-class ShopgateToArrayVisitor {
-	public function visitSimpleVar($v) {
+class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
+	protected $array;
+	
+	public function getArray() {
+		return $this->array;
+	}
+	
+	public function visitContainer(ShopgateContainer $c) {
+		$c->accept($this);
+	}
+	
+	public function visitCustomer(ShopgateCustomer $c) {
+		// get properties
+		$properties = $c->buildProperties();
+		
+		// iterate the simple variables
+		$properties = $this->iterateSimpleProperties($properties);
+		
+		// iterate ShopgateAddress objects
+		$properties['addresses'] = $this->iterateObjectList($properties['addresses']);
+		
+		// set last value to converted array
+		$this->array = $properties;
+	}
+	
+	public function visitAddress(ShopgateAddress $a) {
+		// get properties and iterate (no complex types in ShopgateAddress objects)
+		$this->array = $this->iterateSimpleProperties($a->buildProperties());
+	}
+	
+	public function visitOrder(ShopgateOrder $o) {
+		
+	}
+	
+	public function visitOrderItem(ShopgateOrderItem $i) {
+		
+	}
+	
+	public function visitOrderItemOption(ShopgateOrderItemOption $o) {
+		
+	}
+	
+	public function visitOrderDeliveryNote(ShopgateDeliveryNote $d) {
+		
+	}
+	
+	protected function iterateSimpleProperties(array $properties) {
+		foreach ($properties as $key => &$value) {
+			// we only want the simple types
+			if (is_object($value) || is_array($value)) continue;
+			
+			$value = $this->sanitizeSimpleVar($value);
+		}
+		
+		return $properties;
+	}
+	
+	protected function iterateObjectList(array $list = null) {
+		if (!empty($list)) {
+			$newList = array();
+			foreach ($list as $object) {
+				if (!($object instanceof ShopgateContainer)) {
+					ShopgateObject::logWrite('Encountered unknown type in what is supposed to be a list of ShopgateContainer objects: '.var_export($object, true));
+					continue;
+				}
+				
+				$object->accept($this);
+				$newList[] = $this->array;
+			}
+		}
+		
+		return $newList;
+	}
+	
+	public function sanitizeSimpleVar($v) {
 		if (is_int($v)) {
 			return (int) $v;
 		} elseif (is_bool($v)) {
@@ -2138,25 +2354,5 @@ class ShopgateToArrayVisitor {
 				return utf8_encode($v);
 			}
 		}
-	}
-	
-	public function visitArray(array $a) {
-		$array = array();
-		
-		foreach ($a as $key => $value) {
-			if (is_array($value)) {
-				$array[$key] = $this->visitArray($value);
-			} elseif (is_object($value) && ($value instanceof ShopgateContainer)) {
-				$array[$key] = $this->visitContainer($value);
-			} else {
-				$array[$key] = $this->visitSimpleVar($value);
-			}
-		}
-		
-		return $array;
-	}
-	
-	public function visitContainer(ShopgateContainer $c) {
-		return $this->visitArray($c->getProperties());
 	}
 }

@@ -624,6 +624,10 @@ class ShopgateOrder extends ShopgateContainer {
 	 * @return ShopgateOrderDeliveryNote[]
 	 */
 	public function getDeliveryNotes() { return $this->delivery_notes; }
+	
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitOrder($this);
+	}
 }
 
 class ShopgateOrderItem extends ShopgateContainer {
@@ -839,6 +843,11 @@ class ShopgateOrderItem extends ShopgateContainer {
 	public function getInputs($value) {
 		return $this->inputs;
 	}
+
+	
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitOrderItem($this);
+	}
 }
 
 class ShopgateOrderItemOption extends ShopgateContainer {
@@ -947,6 +956,11 @@ class ShopgateOrderItemOption extends ShopgateContainer {
 	public function getOptionNumber() {
 		return $this->option_number;
 	}
+
+	
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitOrderItemOption($this);
+	}
 }
 
 class ShopgateDeliveryNote extends ShopgateContainer {
@@ -1027,5 +1041,10 @@ class ShopgateDeliveryNote extends ShopgateContainer {
 	 */
 	public function getShippingTime() {
 		return $this->tracking_number;
+	}
+
+	
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitOrderDeliveryNote($this);
 	}
 }

@@ -195,6 +195,10 @@ class ShopgateCustomer extends ShopgateContainer {
 		
 		return $addresses;
 	}
+	
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitCustomer($this);
+	}
 }
 
 class ShopgateAddress extends ShopgateContainer {
@@ -510,4 +514,8 @@ class ShopgateAddress extends ShopgateContainer {
 	 * @return string
 	 */
 	public function getMail() { return $this->mail; }
+	
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitAddress($this);
+	}
 }
