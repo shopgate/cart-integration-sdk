@@ -3,6 +3,7 @@ class ShopgateOrder extends ShopgateContainer {
 	const SHOPGATE = "SHOPGATE";
 	const PREPAY = "PREPAY";
 	const CC = "CC";
+	const DT_CC = "DT_CC";
 	const INVOICE = "INVOICE";
 	const DEBIT = "DEBIT";
 	const COD = "COD";

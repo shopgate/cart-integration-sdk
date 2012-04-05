@@ -46,6 +46,9 @@ function ShopgateErrorHandler($errno, $errstr, $errfile, $errline) {
  *
  */
 class ShopgateLibraryException extends Exception {
+	
+	private $additionalInformation;
+	
 	// Initizialization / instantiation of plugin failure
 	//const INIT_EMPTY_CONFIG = 1;
 	const INIT_LOGFILE_OPEN_ERROR = 2;
@@ -136,6 +139,7 @@ class ShopgateLibraryException extends Exception {
 		self::AUTHENTIFICATION_FAILED => 'authentification failed',
 	);
 	
+	
 	/**
 	 * Exception type for errors within the Shopgate plugin and library.
 	 *
@@ -158,11 +162,23 @@ class ShopgateLibraryException extends Exception {
 			$code = self::UNKNOWN_ERROR_CODE;
 		}
 		
+		// Save additional information
+		$this->additionalInformation = $additionalInformation;
+		
 		// Log the error
-		ShopgateObject::logWrite($code.' - '.$logMessage);
+		if(ShopgateObject::logWrite($code.' - '.$logMessage) === false){
+			$message .= ' (unable to log)';
+		}
 		
 		// Call default Exception class constructor
 		parent::__construct($message, $code);
+	}
+	
+	/**
+	 * Returns the saved additional information
+	 */
+	public function getAdditionalInformation(){
+		return (!is_null($this->additionalInformation) ? $this->additionalInformation : '');
 	}
 	
 	/**
@@ -520,12 +536,13 @@ class ShopgateObject {
 				
 				// if log files are not writeable abort with complete error message (since it can't be logged)
 				if ($newHandle === false) {
-					$response['error'] = ShopgateLibraryException::INIT_LOGFILE_OPEN_ERROR;
-					$response['error_text'] = ShopgateLibraryException::buildLogMessageFor(ShopgateLibraryException::INIT_LOGFILE_OPEN_ERROR, 'File: '.$path, false);
-					header("HTTP/1.0 200 OK");
-					header('Content-Type: application/json');
-					header('Content-Encoding: utf-8');
-					die($this->jsonEncode($response));
+// 					$response['error'] = ShopgateLibraryException::INIT_LOGFILE_OPEN_ERROR;
+// 					$response['error_text'] = ShopgateLibraryException::buildLogMessageFor(ShopgateLibraryException::INIT_LOGFILE_OPEN_ERROR, 'File: '.$path, false);
+// 					header("HTTP/1.0 200 OK");
+// 					header('Content-Type: application/json');
+// 					header('Content-Encoding: utf-8');
+// 					die($this->jsonEncode($response));
+					continue;
 				}
 				
 				self::$fileHandles[$type] = $newHandle;
@@ -585,10 +602,18 @@ class ShopgateObject {
 			case self::LOGTYPE_ACCESS:
 		}
 		
-		fwrite(self::$fileHandles[$type], $msg);
+		// try to log
+		$success = false;
+		if(!empty(self::$fileHandles[$type])){
+			if(fwrite(self::$fileHandles[$type], $msg) !== false){
+				$success = true;
+			}
+		}
 		
 		// uninitialize if neccessary
 		self::unInit();
+		
+		return $success;
 	}
 
 	/**
@@ -1345,7 +1370,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 		}
 		
 		if($decodedResponse['error'] != 0) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED, 'Response: '.$response);
+			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED, $decodedResponse['error_text']);
 		}
 		
 		if ($data['trace_id'] != $decodedResponse['trace_id']) {
