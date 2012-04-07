@@ -748,13 +748,23 @@ abstract class ShopgateContainer extends ShopgateObject {
 	/**
 	 * Converts the Container object recursively to an associative array.
 	 *
-	 * @param int $boolToInt Set true to convert boolean true to 1 and boolean false to 0 or false otherwise.
 	 * @return mixed[]
 	 */
-	public function toArray($boolToInt = true) {
+	public function toArray() {
  		$visitor = new ShopgateContainerToArrayVisitor();
  		$visitor->visitContainer($this);
  		return $visitor->getArray();
+	}
+	
+	/**
+	 * Creates a new object of the same type with every value recursively utf-8 decoded.
+	 * 
+	 * @return ShopgateContainer The new object with utf-8 decoded values.
+	 */
+	public function utf8Decode() {
+		$visitor = new ShopgateUtf8DecodeVisitor();
+		$visitor->visitContainer($this);
+		return $visitor->getObject();
 	}
 	
 	/**
@@ -2164,8 +2174,11 @@ class ShopgateUtf8DecodeVisitor implements ShopgateContainerVisitor {
 	
 	public function visitAddress(ShopgateAddress $a) {
 		// create new object with utf-8 decoded data
+		$properties = $a->buildProperties();
+		$this->iterateSimpleProperties($properties);
+		
 		try {
-			$this->object = new ShopgateAddress($this->iterateSimpleProperties($a->buildProperties()));
+			$this->object = new ShopgateAddress($properties);
 		} catch (ShopgateLibraryException $e) {
 			$this->object = null;
 		}
@@ -2178,16 +2191,22 @@ class ShopgateUtf8DecodeVisitor implements ShopgateContainerVisitor {
 		// iterate the simple variables
 		$this->iterateSimpleProperties($properties);
 		
-		// iterate the payment_method information
-		$this->iterateSimpleProperties($properties['payment_method']);
+		// iterate the order's payment_infos
+		if (!empty($properties['payment_infos']) && is_array($properties['payment_infos'])) {
+			$this->iterateSimpleProperties($properties['payment_infos']);
+		}
 		
 		// visit delivery_address
-		$properties['delivery_address']->accept($this);
-		$properties['delivery_address'] = $this->object;
+		if (!empty($properties['delivery_address']) && ($properties['delivery_address'] instanceof ShopgateAddress)) {
+			$properties['delivery_address']->accept($this);
+			$properties['delivery_address'] = $this->object;
+		}
 		
 		// visit invoice_address
-		$properties['invoice_address']->accept($this);
-		$properties['invoice_address'] = $this->object;
+		if (!empty($properties['invoice_address']) && ($properties['invoice_address'] instanceof ShopgateAddress)) {
+			$properties['invoice_address']->accept($this);
+			$properties['invoice_address'] = $this->object;
+		}
 		
 		// iterate lists of referred objects
 		$properties['items'] = $this->iterateObjectList($properties['items']);
@@ -2203,7 +2222,7 @@ class ShopgateUtf8DecodeVisitor implements ShopgateContainerVisitor {
 	
 	public function visitOrderItem(ShopgateOrderItem $i) {
 		// get properties
-		$properties = $o->buildProperties();
+		$properties = $i->buildProperties();
 		
 		// iterate the simple variables
 		$this->iterateSimpleProperties($properties);
@@ -2221,18 +2240,24 @@ class ShopgateUtf8DecodeVisitor implements ShopgateContainerVisitor {
 	}
 	
 	public function visitOrderItemOption(ShopgateOrderItemOption $o) {
-		// iterate the simple variables
+			// create new object with utf-8 decoded data
+		$properties = $o->buildProperties();
+		$this->iterateSimpleProperties($properties);
+		
 		try {
-			$this->object = new ShopgateOrderItemOption($this->iterateSimpleProperties($o->buildProperties()));
+			$this->object = new ShopgateOrderItemOption($properties);
 		} catch (ShopgateLibraryException $e) {
 			$this->object = null;
 		}
 	}
 	
 	public function visitOrderDeliveryNote(ShopgateDeliveryNote $d) {
-		// create new object with utf-8 decoded data
+			// create new object with utf-8 decoded data
+		$properties = $d->buildProperties();
+		$this->iterateSimpleProperties($properties);
+		
 		try {
-			$this->object = new ShopgateDeliveryNote($this->iterateSimpleProperties($d->buildProperties()));
+			$this->object = new ShopgateDeliveryNote($properties);
 		} catch (ShopgateLibraryException $e) {
 			$this->object = null;
 		}
@@ -2247,8 +2272,8 @@ class ShopgateUtf8DecodeVisitor implements ShopgateContainerVisitor {
 		}
 	}
 	
-	protected function iterateObjectList(array $list = null) {
-		if (!empty($list)) {
+	protected function iterateObjectList($list = null) {
+		if (!empty($list) && is_array($list)) {
 			$newList = array();
 			foreach ($list as $object) {
 				if (!($object instanceof ShopgateContainer)) {
@@ -2259,9 +2284,8 @@ class ShopgateUtf8DecodeVisitor implements ShopgateContainerVisitor {
 				$object->accept($this);
 				$newList[] = $this->object;
 			}
+			return $newList;
 		}
-		
-		return $newList;
 	}
 }
 
@@ -2299,20 +2323,62 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 	}
 	
 	public function visitOrder(ShopgateOrder $o) {
+		// get properties
+		$properties = $o->buildProperties();
 		
+		// iterate the simple variables
+		$properties = $this->iterateSimpleProperties($properties);
+		
+		// iterate the order's payment_infos
+		if (!empty($properties['payment_infos']) && is_array($properties['payment_infos'])) {
+			$properties['payment_infos'] = $this->iterateSimpleProperties($properties['payment_infos']);
+		}
+		
+		// visit invoice address
+		if (!empty($properties['invoice_address']) && ($properties['invoice_address'] instanceof ShopgateAddress)) {
+			$properties['invoice_address']->accept($this);
+			$properties['invoice_address'] = $this->array;
+		}
+		
+		// visit delivery address
+		if (!empty($properties['delivery_address']) && ($properties['delivery_address'] instanceof ShopgateAddress)) {
+			$properties['delivery_address']->accept($this);
+			$properties['delivery_address'] = $this->array;
+		}
+		
+		// visit the items and delivery notes arrays
+		$properties['items'] = $this->iterateObjectList($properties['items']);
+		$properties['delivery_notes'] = $this->iterateObjectList($properties['delivery_notes']);
+		
+		// set last value to converted array
+		$this->array = $properties;
 	}
 	
 	public function visitOrderItem(ShopgateOrderItem $i) {
+		// get properties
+		$properties = $i->buildProperties();
 		
+		// iterate the simple variables
+		$properties = $this->iterateSimpleProperties($properties);
+		
+		// iterate ShopgateAddress objects
+		$properties['options'] = $this->iterateObjectList($properties['options']);
+		// TODO: $properties['inputs'] = $this->iterateObjectList($properties['inputs']);
+		
+		// set last value to converted array
+		$this->array = $properties;
 	}
 	
 	public function visitOrderItemOption(ShopgateOrderItemOption $o) {
-		
+		// get properties and iterate (no complex types in ShopgateOrderItemOption objects)
+		$this->array = $this->iterateSimpleProperties($o->buildProperties());
 	}
 	
 	public function visitOrderDeliveryNote(ShopgateDeliveryNote $d) {
-		
+		// get properties and iterate (no complex types in ShopgateDeliveryNote objects)
+		$this->array = $this->iterateSimpleProperties($d->buildProperties());
 	}
+	
 	
 	protected function iterateSimpleProperties(array $properties) {
 		foreach ($properties as $key => &$value) {
@@ -2325,9 +2391,9 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 		return $properties;
 	}
 	
-	protected function iterateObjectList(array $list = null) {
-		if (!empty($list)) {
-			$newList = array();
+	protected function iterateObjectList($list = null) {
+		$newList = array();
+		if (!empty($list) && is_array($list)) {
 			foreach ($list as $object) {
 				if (!($object instanceof ShopgateContainer)) {
 					ShopgateObject::logWrite('Encountered unknown type in what is supposed to be a list of ShopgateContainer objects: '.var_export($object, true));

@@ -280,7 +280,7 @@ class ShopgateOrder extends ShopgateContainer {
 	 * @param ShopgateAddress|mixed[] $value
 	 */
 	public function setInvoiceAddress($value) {
-		if (!is_object($element) && !($element instanceof ShopgateAddress) && !is_array($value)) {
+		if (!is_object($value) && !($value instanceof ShopgateAddress) && !is_array($value)) {
 			throw new ShopgateLibraryException('Invalid value: '.var_export($value, true));
 		}
 
@@ -297,7 +297,7 @@ class ShopgateOrder extends ShopgateContainer {
 	 * @param ShopgateAddress|mixed[] $value
 	 */
 	public function setDeliveryAddress($value) {
-		if (!is_object($element) && !($element instanceof ShopgateAddress) && !is_array($value)) {
+		if (!is_object($value) && !($value instanceof ShopgateAddress) && !is_array($value)) {
 			throw new ShopgateLibraryException('Invalid value: '.var_export($value, true));
 		}
 
@@ -319,7 +319,7 @@ class ShopgateOrder extends ShopgateContainer {
 		}
 
 		foreach ($value as &$element) {
-			if (is_object($element) && ($element instanceof ShopgateOrderItem) || !is_array($element)) {
+			if ((!is_object($element) || !($element instanceof ShopgateOrderItem)) && !is_array($element)) {
 				throw new ShopgateLibraryException('Invalid value in array: '.var_export($value, true));
 			}
 
@@ -337,12 +337,17 @@ class ShopgateOrder extends ShopgateContainer {
 	 * @param ShopgateDeliveryNote[]|mixed[][] $value
 	 */
 	public function setDeliveryNotes($value) {
+		if (empty($value)) {
+			$this->delivery_notes = null;
+			return;
+		}
+		
 		if (!is_array($value)) {
 			throw new ShopgateLibraryException('Invalid value: '.var_export($value, true));
 		}
 
 		foreach ($value as &$element) {
-			if (is_object($element) && ($element instanceof ShopgateDeliveryNote) || !is_array($element)) {
+			if ((!is_object($element) || !($element instanceof ShopgateDeliveryNote)) && !is_array($element)) {
 				throw new ShopgateLibraryException('Invalid value in array: '.var_export($value, true));
 			}
 
@@ -621,7 +626,7 @@ class ShopgateOrder extends ShopgateContainer {
 	/**
 	 * The list of delivery Notes of the order
 	 *
-	 * @return ShopgateOrderDeliveryNote[]
+	 * @return ShopgateDeliveryNote[]
 	 */
 	public function getDeliveryNotes() { return $this->delivery_notes; }
 	
@@ -731,12 +736,17 @@ class ShopgateOrderItem extends ShopgateContainer {
 	 * @param ShopgateOrderItemOption[]|mixed[][] $value
 	 */
 	public function setOptions($value) {
+		if (empty($value)) {
+			$this->internal_order_info = null;
+			return;
+		}
+		
 		if (!is_array($value)) {
 			throw new ShopgateLibraryException('Invalid value: '.var_export($value, true));
 		}
 
 		foreach ($value as &$element) {
-			if (is_object($element) && ($element instanceof ShopgateOrderItemOption) || !is_array($element)) {
+			if ((!is_object($element) || !($element instanceof ShopgateOrderItemOption)) && !is_array($element)) {
 				throw new ShopgateLibraryException('Invalid value in array: '.var_export($value, true));
 			}
 
@@ -745,7 +755,7 @@ class ShopgateOrderItem extends ShopgateContainer {
 			}
 		}
 
-		$this->items = $value;
+		$this->internal_order_info = $value;
 	}
 
 	/**
@@ -840,7 +850,7 @@ class ShopgateOrderItem extends ShopgateContainer {
 	* @param unknown_type $value
 	* @todo IMPLEMENTIEREN
 	*/
-	public function getInputs($value) {
+	public function getInputs() {
 		return $this->inputs;
 	}
 
@@ -976,7 +986,7 @@ class ShopgateDeliveryNote extends ShopgateContainer {
 	const TOF = "TOF"; // Trnas-o-Flex
 	const UPS = "UPS"; // UPS
 
-	protected $shipping_service_id = ShopgateOrderDeliveryNote::DHL;
+	protected $shipping_service_id = ShopgateDeliveryNote::DHL;
 	protected $tracking_number = "";
 	protected $shipping_time = null;
 
@@ -989,8 +999,8 @@ class ShopgateDeliveryNote extends ShopgateContainer {
 	 *
 	 * @param string $value
 	 */
-	public function setShippingType($value) {
-		$this->shipping_type = $value;
+	public function setShippingServiceId($value) {
+		$this->shipping_service_id = $value;
 	}
 
 	/**
@@ -1021,8 +1031,8 @@ class ShopgateDeliveryNote extends ShopgateContainer {
 	 *
 	 * @return string
 	 */
-	public function getShippingType() {
-		return $this->shipping_type;
+	public function getShippingServiceId() {
+		return $this->shipping_service_id;
 	}
 
 	/**
