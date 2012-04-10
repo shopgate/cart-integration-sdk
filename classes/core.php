@@ -513,9 +513,12 @@ class ShopgateObject {
 	
 	private static $instanceCount = 0;
 	
-	public function __construct() {
+	public final function __construct() {
 		self::$instanceCount++;
 		self::init();
+		
+		// call the initLibrary() callback and pass arguments
+		call_user_func_array(array($this, 'initLibrary'), func_get_args());
 	}
 	
 	/**
@@ -527,6 +530,9 @@ class ShopgateObject {
 		self::unInit();
 	}
 	
+	/**
+	 * Initializes the file handles for logging if necessary.
+	 */
 	protected static function init() {
 		// initialize file handlers if neccessary
 		foreach (self::$fileHandles as $type => $handle) {
@@ -550,6 +556,16 @@ class ShopgateObject {
 		}
 	}
 	
+	/**
+	 * Callback function for initialization by subclasses.
+	 */
+	protected function initLibrary() {
+		// does nothing here but should not be abstract to avoid empty methods in sub classes that don't need it
+	}
+	
+	/**
+	 * Unsets the file handles for logging if set and no instance of ShopgateObject exists anymore.
+	 */
 	protected static function unInit() {
 		if (self::$instanceCount > 0) return;
 		
@@ -732,7 +748,7 @@ abstract class ShopgateContainer extends ShopgateObject {
 	 * @see http://wiki.shopgate.com/........
 	 * @todo Link aktualisieren
 	 */
-	public function __construct($data = null) {
+	protected final function initLibrary($data = array()) {
 		if (is_array($data)) {
 			$methods = get_class_methods($this);
 			foreach ($data as $key => $value) {
@@ -906,9 +922,7 @@ class ShopgatePluginApi extends ShopgateObject {
 		$this->traceId = $this->params['trace_id'];
 
 		try {
-			
-	 		$valServ = new ShopgateAuthentificationService();
-	 		$valServ->checkValidAuthentification();
+	 		ShopgateAuthentificationService::getInstance()->checkAuthentification();
  		
 			// Load config
 			// TODO: again??
@@ -1338,7 +1352,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 		
 		return self::$singleton;
 	}
-
+	
 	/**
 	 * Führt alle Abfragen an der ShopgateMerchantApi durch.
 	 *
@@ -1363,8 +1377,8 @@ class ShopgateMerchantApi extends ShopgateObject {
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($curl, CURLOPT_HTTPHEADER, array('X-Shopgate-Library-Version'=> SHOPGATE_LIBRARY_VERSION));
 		curl_setopt($curl, CURLOPT_HTTPHEADER, array('X-Shopgate-Plugin-Version'=> SHOPGATE_PLUGIN_VERSION));
-		curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-		curl_setopt($curl, CURLOPT_USERPWD, ShopgateAuthentificationService::getCurlAuthentificationString());
+		curl_setopt($curl, CURLOPT_HTTPHEADER, ShopgateAuthentificationService::getInstance()->buildAuthUserHeader());
+		curl_setopt($curl, CURLOPT_HTTPHEADER, ShopgateAuthentificationService::getInstance()->buildAuthTokenHeader());
 		curl_setopt($curl, CURLOPT_POST, true);
 		curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
 		
@@ -1549,9 +1563,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 
 	public $splittetExport = false;
 
-	final public function __construct() {
-		parent::__construct();
-		
+	final protected function initLibrary() {
 		// Load configuration
 		try {
 			$this->setConfig(ShopgateConfig::validateAndReturnConfig());
@@ -2053,66 +2065,68 @@ abstract class ShopgatePlugin extends ShopgateObject {
 
 
 class ShopgateAuthentificationService extends ShopgateObject {
+	private static $singleton;
+	
+	const HEADER_X_SHOPGATE_AUTH_USER  = 'X-Shopgate-Auth-User';
+	const HEADER_X_SHOPGATE_AUTH_TOKEN = 'X-Shopgate-Auth-Token';
+	const PHP_X_SHOPGATE_AUTH_USER  = 'HTTP_X_SHOPGATE_AUTH_USER';
+	const PHP_X_SHOPGATE_AUTH_TOKEN = 'HTTP_X_SHOPGATE_AUTH_TOKEN';
+	
 	private $customerNumber;
 	private $apiKey;
 	private $timestamp;
-
-	public function __construct() {
-		parent::__construct();
+	
+	protected final function initLibrary() {
 		$config = ShopgateConfig::getConfig();
 		$this->customerNumber = $config["customer_number"];
 		$this->apiKey = $config["apikey"];
 		$this->timestamp = time();
 	}
-
-	public function getRequestUsername() {
-		$userName = "{$this->customerNumber}-{$this->timestamp}";
-		return $userName;
-	}
-
+	
 	/**
-	 * Generate the Password for requests to shopgate
-	 *
-	 * Format: SMA-<customer_number>-<unix_timestamp>-<api_key>
-	 *
-	 * @return string
+	 * @return ShopgateAuthentificationService
 	 */
-	public function getRequestPassword() {
-		$password = sha1("SMA-{$this->customerNumber}-{$this->timestamp}-{$this->apiKey}");
-		return $password;
-	}
-
-	/**
-	 * Generates the http-basic auth string <user>:<password>
-	 *
-	 * @return string
-	 */
-	public static function getCurlAuthentificationString() {
-		$obj = new ShopgateAuthentificationService();
-		$string = "{$obj->getRequestUsername()}:{$obj->getRequestPassword()}";
-		return $string;
-	}
-
-	/**
-	 * Login Check
-	 *
-	 * @throws ShopgateLibraryException
-	 * @return boolean
-	 */
-	public function checkValidAuthentification() {
-		if (empty($_SERVER['PHP_AUTH_USER']) || empty($_SERVER['PHP_AUTH_PW'])){
-			header('WWW-Authenticate: Basic realm="Shopgate Merchant API"');
-		    header('HTTP/1.0 401 Unauthorized');
-		    echo "Insert Valid Login Data";
-		    exit;
+	public static function getInstance() {
+		if (empty(self::$singleton)) {
+			self::$singleton = new self();
 		}
+		
+		return self::$singleton;
+	}
+	
+	/**
+	 * @return array array('header field name' => 'auth user string')
+	 */
+	public function buildAuthUserHeader() {
+		return array(self::X_SHOPGATE_AUTH_USER => "{$this->customerNumber}-{$this->timestamp}");
+	}
+	
+	/**
+	 * @return array array('header field name' => 'auth token string')
+	 */
+	public function buildAuthTokenHeader() {
+		return array(self::X_SHOPGATE_AUTH_TOKEN => sha1("SMA-{$this->customerNumber}-{$this->timestamp}-{$this->apiKey}"));
+	}
+
+	/**
+	 * @throws ShopgateLibraryException if authentication fails
+	 */
+	public function checkAuthentification() {
+		if (empty($_SERVER[self::PHP_X_SHOPGATE_AUTH_USER]) || empty($_SERVER[self::PHP_X_SHOPGATE_AUTH_TOKEN])){
+			throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTIFICATION_FAILED, 'No authentication data present.');
+		}
+		
+		// for convenience
+		$name = $_SERVER[self::PHP_X_SHOPGATE_AUTH_USER];
+		$token = $_SERVER[self::PHP_X_SHOPGATE_AUTH_TOKEN];
 
 	    // extract customer number and timestamp from username
 		$matches = array();
-	 	if (!preg_match('/(?<customer_number>[1-9][0-9]+)-(?<timestamp>[1-9][0-9]+)/', $_SERVER['PHP_AUTH_USER'], $matches)){
-	 		throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTIFICATION_FAILED, 'Cannot parse: '.$_SERVER['PHP_AUTH_USER']);
+	 	if (!preg_match('/(?<customer_number>[1-9][0-9]+)-(?<timestamp>[1-9][0-9]+)/', $name, $matches)){
+	 		throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTIFICATION_FAILED, 'Cannot parse: '.$name.'.');
    		}
-
+		
+   		// for convenience
    		$customer_number = $matches["customer_number"];
    		$timestamp = $matches["timestamp"];
    		
@@ -2124,12 +2138,10 @@ class ShopgateAuthentificationService extends ShopgateObject {
    		// create the authentification-password
 		$generatedPassword = sha1("SPA-{$customer_number}-{$timestamp}-{$this->apiKey}");
 
-		// Compare customer-number and auth-password
-		if (!($customer_number === $this->customerNumber) && !($_SERVER["PHP_AUTH_PW"] === $generatedPassword)) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTIFICATION_FAILED);
+		// compare customer-number and auth-password
+		if (($customer_number != $this->customerNumber) || ($token != $generatedPassword)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTIFICATION_FAILED, 'Invalid authentication data.');
 		}
-
-		return true;
 	}
 }
 
