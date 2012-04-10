@@ -151,8 +151,9 @@ class ShopgateLibraryException extends Exception {
 	 *
 	 * @param int $code One of the constants defined in ShopgateLibraryException.
 	 * @param string $additionalInformation More detailed information on what exactly went wrong.
+	 * @param boolean $appendAdditionalInformationOnMessage appends the variable $additionalInformation at the end of the error message
 	 */
-	public function __construct($code, $additionalInformation = null) {
+	public function __construct($code, $additionalInformation = null, $appendAdditionalInformationOnMessage = false) {
 		// Set code and message
 		$logMessage = self::buildLogMessageFor($code, $additionalInformation);
 		if (isset(self::$errorMessages[$code])) {
@@ -160,6 +161,10 @@ class ShopgateLibraryException extends Exception {
 		} else {
 			$message = 'Unknown error code: "'.$code.'"';
 			$code = self::UNKNOWN_ERROR_CODE;
+		}
+		
+		if($appendAdditionalInformationOnMessage){
+			$message .= ': '.$additionalInformation;
 		}
 		
 		// Save additional information
@@ -1395,7 +1400,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 		}
 		
 		if($decodedResponse['error'] != 0) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED, $decodedResponse['error_text']);
+			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED, $decodedResponse['error_text'], true);
 		}
 		
 		if ($data['trace_id'] != $decodedResponse['trace_id']) {
