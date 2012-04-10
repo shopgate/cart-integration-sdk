@@ -758,7 +758,7 @@ abstract class ShopgateContainer extends ShopgateObject {
 	
 	/**
 	 * Creates a new object of the same type with every value recursively utf-8 decoded.
-	 * 
+	 *
 	 * @return ShopgateContainer The new object with utf-8 decoded values.
 	 */
 	public function utf8Decode() {
@@ -2408,7 +2408,7 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 		return $newList;
 	}
 	
-	public function sanitizeSimpleVar($v) {
+	protected function sanitizeSimpleVar($v) {
 		if (is_int($v)) {
 			return (int) $v;
 		} elseif (is_bool($v)) {
