@@ -297,7 +297,8 @@ class ShopgateOrder extends ShopgateContainer {
 	 */
 	public function setInvoiceAddress($value) {
 		if (!is_object($value) && !($value instanceof ShopgateAddress) && !is_array($value)) {
-			throw new ShopgateLibraryException('Invalid value: '.var_export($value, true));
+			$this->invoice_address = null;
+			return;
 		}
 
 		if (is_array($value)) {
@@ -314,7 +315,8 @@ class ShopgateOrder extends ShopgateContainer {
 	 */
 	public function setDeliveryAddress($value) {
 		if (!is_object($value) && !($value instanceof ShopgateAddress) && !is_array($value)) {
-			throw new ShopgateLibraryException('Invalid value: '.var_export($value, true));
+			$this->delivery_address = null;
+			return;
 		}
 
 		if (is_array($value)) {
@@ -331,12 +333,14 @@ class ShopgateOrder extends ShopgateContainer {
 	 */
 	public function setItems($value) {
 		if (!is_array($value)) {
-			throw new ShopgateLibraryException('Invalid value: '.var_export($value, true));
+			$this->items = null;
+			return;
 		}
 
-		foreach ($value as &$element) {
+		foreach ($value as $index => &$element) {
 			if ((!is_object($element) || !($element instanceof ShopgateOrderItem)) && !is_array($element)) {
-				throw new ShopgateLibraryException('Invalid value in array: '.var_export($value, true));
+				unset($value[$index]);
+				continue;
 			}
 
 			if (is_array($element)) {
@@ -359,12 +363,14 @@ class ShopgateOrder extends ShopgateContainer {
 		}
 		
 		if (!is_array($value)) {
-			throw new ShopgateLibraryException('Invalid value: '.var_export($value, true));
+			$this->delivery_notes = null;
+			return;
 		}
 
-		foreach ($value as &$element) {
+		foreach ($value as $index => &$element) {
 			if ((!is_object($element) || !($element instanceof ShopgateDeliveryNote)) && !is_array($element)) {
-				throw new ShopgateLibraryException('Invalid value in array: '.var_export($value, true));
+				unset($value[$index]);
+				continue;
 			}
 
 			if (is_array($element)) {
@@ -770,12 +776,14 @@ class ShopgateOrderItem extends ShopgateContainer {
 		}
 		
 		if (!is_array($value)) {
-			throw new ShopgateLibraryException('Invalid value: '.var_export($value, true));
+			$this->internal_order_info = null;
+			return;
 		}
 
-		foreach ($value as &$element) {
+		foreach ($value as $index => &$element) {
 			if ((!is_object($element) || !($element instanceof ShopgateOrderItemOption)) && !is_array($element)) {
-				throw new ShopgateLibraryException('Invalid value in array: '.var_export($value, true));
+				unset($value[$index]);
+				continue;
 			}
 
 			if (is_array($element)) {

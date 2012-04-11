@@ -35,13 +35,12 @@ class ShopgateCustomer extends ShopgateContainer {
 	
 	/**
 	 * @param id $value
-	 * @throws ShopgateLibraryException if a non-integer is passed
 	 */
 	public function setCustomerGroupId($value) {
 		if (is_numeric($value)) {
 			$this->customer_group_id = (int) $value;
 		} else {
-			throw new ShopgateLibraryException("Non-numeric value passed to setCustomerGroupId");
+			$this->customer_group_id = null;
 		}
 	}
 	
@@ -57,22 +56,19 @@ class ShopgateCustomer extends ShopgateContainer {
 	
 	/**
 	 * @param string $value <ul><li>"m" = Male</li><li>"f" = Female</li></ul>
-	 * @throws ShopgateLibraryException if a value other than "m" or "f" is passed.
 	 */
 	public function setGender($value) {
 		if (empty($value)) return;
 		
 		if (($value != "m") && ($value != "f")) {
-			throw new ShopgateLibraryException('ShopgateAddress::setGender(): Invalid value: '.var_export($value, true));
+			$this->gender = null;
+		} else {
+			$this->gender = $value;
 		}
-		
-		$this->gender = $value;
 	}
 	
 	/**
 	 * @param string $value Format: yyyy-mm-dd (1983-02-17)
-	 * @throws ShopgateLibraryException
-	 * @todo Exception werfen
 	 */
 	public function setBirthday($value) {
 		if (empty($value)) {
@@ -81,10 +77,10 @@ class ShopgateCustomer extends ShopgateContainer {
 		}
 		
 		if (!preg_match('/^[0-9]{4}\-[0-9]{2}\-[0-9]{2}$/', $value)) {
-			throw new ShopgateLibraryException('$value is not parsable: "'.$value.'"');
+			$this->birthday = null;
+		} else {
+			$this->birthday = $value;
 		}
-		
-		$this->birthday = $value;
 	}
 	
 	/**
@@ -99,22 +95,16 @@ class ShopgateCustomer extends ShopgateContainer {
 	
 	/**
 	 * @param string $value
-	 * @throws ShopgateLibraryException
-	 * @todo Exception werfen
 	 */
 	public function setMail($value) { $this->mail = $value; }
 	
 	/**
 	 * @param bool $value
-	 * @throws ShopgateLibraryException
-	 * @todo Exception werfen
 	 */
 	public function setNewsletterSubscription($value) { $this->newsletter_subscription = $value; }
 	
 	/**
 	 * @param ShopgateAddress[] $value List of customer's addresses.
-	 * @throws ShopgateLibraryException
-	 * @todo Exception werfen
 	 */
 	public function setAddresses($value) {
 		$this->addresses = $value;
@@ -242,17 +232,8 @@ class ShopgateAddress extends ShopgateContainer {
 	
 	/**
 	 * @param int $value ShopgateAddress::BOTH or ShopgateAddress::INVOICE or ShopgateAddress::DELIVERY
-	 * @throws ShopgateLibraryException
 	 */
 	public function setAddressType($value) {
-		if (
-			$value != self::INVOICE &&
-			$value != self::DELIVERY &&
-			$value != self::BOTH
-		) {
-			throw new ShopgateLibraryException('ShopgateAddress::setAddressType(): Ungültiger Wert.');
-		}
-		
 		$this->is_invoice_address  = (bool) ($value & self::INVOICE);
 		$this->is_delivery_address = (bool) ($value & self::DELIVERY);
 	}
@@ -287,16 +268,15 @@ class ShopgateAddress extends ShopgateContainer {
 	
 	/**
 	 * @param string $value <ul><li>"m" = Male</li><li>"f" = Female</li></ul>
-	 * @throws ShopgateLibraryException
 	 */
 	public function setGender($value = null) {
 		if (empty($value)) return;
 		
 		if (($value != "m") && ($value != "f")) {
-			throw new ShopgateLibraryException('ShopgateAddress::setGender(): Invalid value: '.var_export($value, true));
+			$this->gender = null;
+		} else {
+			$this->gender = $value;
 		}
-		
-		$this->gender = $value;
 	}
 	
 	/**
@@ -311,10 +291,10 @@ class ShopgateAddress extends ShopgateContainer {
 		$timestamp = strtotime($value);
 		
 		if (($timestamp === false) || ($timestamp == -1)) {
-			throw new ShopgateLibraryException('$value is not parsable bei strtotime: "'.$value.'"');
+			$this->birthday = null;
+		} else {
+			$this->birthday = date('Y-m-d', $timestamp);
 		}
-		
-		$this->birthday = date('Y-m-d', $timestamp);
 	}
 	
 	/**
