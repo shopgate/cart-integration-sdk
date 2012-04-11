@@ -47,7 +47,7 @@ function ShopgateErrorHandler($errno, $errstr, $errfile, $errline) {
  * code 999 (unknown error code) with the message appended. Error code, message, time, additional information
  * and part of the stack trace will be logged automatically on construction of a ShopgateLibraryException.
  *
- * @author Shopgate GmbH, 35510 Butzbach
+ * @author Shopgate GmbH, 35510 Butzbach, DE
  */
 class ShopgateLibraryException extends Exception {
 	/**
@@ -477,7 +477,7 @@ class ShopgateConfig extends ShopgateObject {
 		}
 
 		$message = "";
-		$handle = fopen(dirname(__FILE__).'/../config/myconfig.php', 'w+');
+		$handle = @fopen(dirname(__FILE__).'/../config/myconfig.php', 'w+');
 		if($handle == false){
 			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR);
 			fclose($handle);
@@ -526,7 +526,7 @@ if (isset($shopgate_config) && is_array($shopgate_config)) {
  * <br />
  * All classes of the ShopgateLibrary except ShopgateLibraryException are derived from this class.
  *
- * @author Shopgate GmbH, 35510 Butzbach
+ * @author Shopgate GmbH, 35510 Butzbach, DE
  */
 abstract class ShopgateObject {
 	const LOGTYPE_ACCESS = 'access';
@@ -784,7 +784,7 @@ abstract class ShopgateObject {
  *
  * It provides initialization with an array, conversion to an array, utf-8 decoding of the container's properties etc.
  *
- * @author Shopgate GmbH, 35510 Butzbach
+ * @author Shopgate GmbH, 35510 Butzbach, DE
  */
 abstract class ShopgateContainer extends ShopgateObject {
 	/**
@@ -861,7 +861,7 @@ abstract class ShopgateContainer extends ShopgateObject {
  * as singleton.
  *
  * @see http://wiki.shopgate.com/Shopgate_Plugin_API/de
- * @author Shopgate GmbH, 35510 Butzbach
+ * @author Shopgate GmbH, 35510 Butzbach, DE
  */
 class ShopgatePluginApi extends ShopgateObject {
 	/**
@@ -926,7 +926,7 @@ class ShopgatePluginApi extends ShopgateObject {
 		// prepare the response
 		$this->response = array(
 			'error' => 0,
-			'error_text' => '',
+			'error_text' => null,
 			'version' => SHOPGATE_LIBRARY_VERSION,
 			'trace_id' => null,
 		);
@@ -1188,7 +1188,7 @@ class ShopgatePluginApi extends ShopgateObject {
 		if (isset($this->params["limit"]) && isset($this->params["offset"])) {
 			$this->plugin->exportLimit = (string) $this->params["limit"];
 			$this->plugin->exportOffset = (string) $this->params["offset"];
-			$this->plugin->splittetExport = true;
+			$this->plugin->splittedExport = true;
 		}
 
 		// generate / update items csv file if requested
@@ -1201,7 +1201,7 @@ class ShopgatePluginApi extends ShopgateObject {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$fileName);
 		}
 		
-		$fp = fopen($fileName, "r");
+		$fp = @fopen($fileName, "r");
 		if (!$fp) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$fileName);
 		}
@@ -1234,7 +1234,7 @@ class ShopgatePluginApi extends ShopgateObject {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$fileName);
 		}
 		
-		$fp = fopen($fileName, "r");
+		$fp = @fopen($fileName, "r");
 		if (!$fp) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$fileName);
 		}
@@ -1267,7 +1267,7 @@ class ShopgatePluginApi extends ShopgateObject {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$fileName);
 		}
 		
-		$fp = fopen($fileName, "r");
+		$fp = @fopen($fileName, "r");
 		if (!$fp) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$fileName);
 		}
@@ -1297,7 +1297,7 @@ class ShopgatePluginApi extends ShopgateObject {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$fileName);
 		}
 
-		$fp = fopen($fileName, "r");
+		$fp = @fopen($fileName, "r");
 		if (!$fp) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$fileName);
 		}
@@ -1353,7 +1353,7 @@ class ShopgatePluginApi extends ShopgateObject {
  *
  * It provides all available actions, calls to the configured API, retrieves, parses and formats the data. It acts as singleton.
  *
- * @author Shopgate GmbH, 35510 Butzbach
+ * @author Shopgate GmbH, 35510 Butzbach, DE
  */
 class ShopgateMerchantApi extends ShopgateObject {
 	/**
@@ -1460,7 +1460,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 		}
 
 		$orders = array();
-		foreach($result["orders"] as $order) {
+		foreach ($result["orders"] as $order) {
 			$orders[] = new ShopgateOrder($order);
 		}
 
@@ -1474,7 +1474,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	 * @param string $shippingServiceId
 	 * @param int $trackingNumber
 	 * @param bool $markAsCompleted
-	 * @return mixed[]
+	 * @return mixed[] The Shopgate Merchant API's decoded response.
 	 *
 	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_add_order_delivery_note/de
 	 */
@@ -1491,60 +1491,50 @@ class ShopgateMerchantApi extends ShopgateObject {
 	}
 
 	/**
-	 * Eine Bestellung als abgeschlossen markieren
+	 * Represents the "set_order_shipping_completed" action.
 	 *
-	 * @param String $orderNumber
-	 * @return mixed[]
+	 * @param ShopgateOrder $order
+	 * @return mixed[] The Shopgate Merchant API's decoded response.
+	 *
+	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_set_order_shipping_completed/de
 	 */
-	public function setOrderShippingCompleted($orderNumber) {
+	public function setOrderShippingCompleted(ShopgateOrder $order) {
 		$data = array(
-			'action'=>'set_order_shipping_completed',
-			'order_number'=>$orderNumber,
+			'action' => 'set_order_shipping_completed',
+			'order_number' => $order->getOrderNumber(),
 		);
 
 		return $this->sendRequest($data);
 	}
 
 	/**
-	 * Eine Nachricht an den Kunden der Bestellung schicken.
+	 * Represents the "set_order_shipping_completed" action.
 	 *
-	 * @param ShopgateOrder $order	Die Bestellung in einem ShopgateOrder-Objekt
-	 * @param string $message	Die Nachricht an den Kunden
+	 * @param ShopgateOrder $order
+	 * @param string $message
+	 * @return mixed[] The Shopgate Merchant API's decoded response.
+	 *
+	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_add_order_delivery_note/de
 	 */
-	public function sendOrderMessage($order, $message) {
+	public function sendOrderMessage(ShopgateOrder $order, $message) {
 		$data = array(
 			"action" => "send_order_message",
-			"order_number"=>$order->getOrderNumber(),
-			"message"=>$message,
+			"order_number" => $order->getOrderNumber(),
+			"message" => $message,
 		);
-
+		
 		$this->sendRequest($data);
 	}
 
 }
 
 /**
- * The Basic functions of the Framework
+ * This class acts as super class for plugin implementations and provides some basic functionality.
  *
- * The PlugIns must implements the following functions
+ * A plugin implementation using the Shopgate Library must be derived from this class. The abstract methods are callback methods for
+ * shop system specific operations such as retrieval of customer or order information, adding or updating orders etc.
  *
- * <code>
- * class ShopgatePlugin extends ShopgatePluginCore {
- *	public function getUserData($user, $pass) {}
- *	public function getOrders() {}
- *	public function addOrder(ShopgateOrder $order) {}
- *	public function updateOrder(ShopgateOrder $order) {}
- *	protected function createItemsCSV() {}
- *	protected function createCategoriesCSV() {}
- *	protected function createReviewsCSV() {}
- *	protected function createPagesCSV() {}
- *	protected function createCustomer() {}
- *
- * }
- * </code>
- *
- * @author Martin Weber
- * @version 1.0.0
+ * @author Shopgate GmbH, 35510 Butzbach, DE
  */
 abstract class ShopgatePlugin extends ShopgateObject {
 	private $allowedEncodings = array(
@@ -1552,44 +1542,44 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	);
 
 	/**
-	 * Die Handler für die Datei, in die geschrieben werden soll.
-	 *
 	 * @var resource
 	 */
 	protected $fileHandle;
+	
 	/**
-	 * Der Buffer.
-	 *
-	 * @var array
+	 * @var string[]
 	 */
 	private $buffer = array();
+	
 	/**
-	 * Der aktuelle Füllstand des Buffers.
-	 *
 	 * @var int
 	 */
 	private $bufferCounter = 0;
 	
 	/**
-	 * Die Konfiguration des Plugins.
-	 *
-	 * @var array
+	 * @var mixed[]
 	 */
 	protected $config;
 	
 	/**
-	 * Wenn der Buffer größer als dieser Wert ist,
-	 * werden alle Datensätze in die Datei geschrieben.
-	 *
 	 * @var int
 	 */
-	protected $bufferLimit = 100; // Gibt an, nach wievielen Zeilen in die CSV-Datei geschrieben werden soll
+	protected $bufferLimit = 100;
 
+	/**
+	 * @var int
+	 */
 	public $exportLimit = 1000;
 
+	/**
+	 * @var int
+	 */
 	public $exportOffset = 0;
 
-	public $splittetExport = false;
+	/**
+	 * @var bool
+	 */
+	public $splittedExport = false;
 
 	final protected function initLibrary() {
 		// Load configuration
@@ -1614,26 +1604,25 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	}
 
 	/**
-	 * Speichert die Konfiguration.
+	 * Sets the current configuration.
 	 *
-	 * @param array $config
+	 * @param mixed[] $config
 	 */
 	public final function setConfig(array $config = null) {
 		$this->config = $config;
 	}
 
 	/**
-	 * Wird beim Start aufgerufen. Funktion überschreiben um
-	 * hier evtl. eigene Variablen zu initialisieren, oder die
-	 * Verbindung zu einer Datenbank aufzubauen etc..
+	 * Callback function for initialization by plugin implementations.
 	 *
+	 * This method gets called on instantiation of a ShopgatePlugin child class and serves as __construct() replacement.
 	 */
 	public abstract function startup();
 
 	/**
-	 * Wird bei jedem Request aufgerufen und leitet die Anfrage zum Framework weiter,
-	 * damit dieses dann die Anfrage weiter bearbeiten kann.
+	 * Convenience method to call ShopgatePluginApi::handleRequest() from $this.
 	 *
+	 * @param mixed[] $data The incoming request's parameters.
 	 * @return bool false if an error occured, otherwise true.
 	 */
 	public function handleRequest($data = array()) {
@@ -1641,44 +1630,31 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	}
 
 	/**
-	 * Starte das Erstellen der ShopInfo
+	 * Creates a new write buffer for the file under $filePath.
 	 *
-	 * @return unknown
+	 * @param string $filePath Path to the file (the .tmp extension is added automatically).
 	 */
-	public function startCreateShopInfo() {
-		$shopInfo = $this->createShopInfo();
-
-		return $shopInfo;
-	}
-
-	/**
-	 * Erstellt eine neue Datei und einen neuen Buffer für Schreibzugriffe in diese Datei
-	 *
-	 * @param String $filePath   - Der Pfad zu der zuerzeugenden Datei (ohne .tmp)
-	 * @param Boolean $createTempFile  -  Erzeugt eine .tmp
-	 */
-	private final function createBuffer($filePath){
+	private final function createBuffer($filePath) {
 		$timeStart = time();
 		$filePath .= ".tmp";
 
-		$this->log(basename($filePath).' wird erstellt', "access");
+		$this->log('Trying to create "'.basename($filePath).'". ', 'access');
 
 		$this->fileHandle = @fopen($filePath, 'w');
-		if(!$this->fileHandle) {
+		if (!$this->fileHandle) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$filePath);
 		}
+		
 		$this->buffer = array();
 	}
 
 	/**
-	 * Schließt die Datei und leert den Buffer
+	 * Closes the file and flushes the buffer.
 	 *
-	 * @param String $filePath  Der Pfad der zu erzeugten Datei (ohne .tmp)
-	 * @param Boolean $isTempFile  Es handelt sich um eine .tmp - Datei. Die Datei wird umbenannt von $filePath.tmp in $filePath
-	 * @param Boolean $saveOldFile
+	 * @param string $filePath Path to the file (the .tmp extension is added automatically).
 	 */
-	private final function finishBuffer($filePath){
-		$this->flushBuffer(); // Evtl. noch nicht gespeicherte Daten im Buffer schreiben
+	private final function finishBuffer($filePath) {
+		$this->flushBuffer();
 		fclose($this->fileHandle);
 
 		rename($filePath.".tmp", $filePath);
@@ -1689,58 +1665,53 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	}
 
 	/**
-	 * Starte das Erstellen der items.csv.
-	 *
-	 * Stellt sicher, dass die Datei beschrieben werden kann und das der Buffer
-	 * geleert wird.
+	 * Takes care of buffer and file handlers and calls ShopgatePlugin::createItemsCsv().
 	 *
 	 * @throws ShopgateLibraryException
 	 */
 	public final function startGetItemsCsv() {
 		$this->createBuffer(ShopgateConfig::getItemsCsvFilePath());
-		$this->createItemsCsv(); // CSV-Datei mit Buffer schreiben
+		$this->createItemsCsv();
 		$this->finishBuffer(ShopgateConfig::getItemsCsvFilePath());
 	}
 
+	/**
+	 * Takes care of buffer and file handlers and calls ShopgatePlugin::createCategoriesCsv().
+	 *
+	 * @throws ShopgateLibraryException
+	 */
 	public final function startGetCategoriesCsv() {
 		$this->createBuffer(ShopgateConfig::getCategoriesCsvFilePath());
-		$this->createCategoriesCsv(); // CSV-Datei mit Buffer schreiben
+		$this->createCategoriesCsv();
 		$this->finishBuffer(ShopgateConfig::getCategoriesCsvFilePath());
 	}
 
 	/**
-	 * Starte das Erstellen der reviews.csv.
-	 *
-	 * Stellt sicher, dass die Datei beschrieben werden kann und das der Buffer
-	 * geleert wird.
+	 * Takes care of buffer and file handlers and calls ShopgatePlugin::createReviewsCsv().
 	 *
 	 * @throws ShopgateLibraryException
 	 */
 	public final function startGetReviewsCsv() {
 		$this->createBuffer(ShopgateConfig::getReviewsCsvFilePath());
-		$this->createReviewsCsv(); // CSV-Datei mit Buffer schreiben
+		$this->createReviewsCsv();
 		$this->finishBuffer(ShopgateConfig::getReviewsCsvFilePath());
 	}
 
 	/**
-	 * Starte das Erstellen der pages.csv.
-	 *
-	 * Stellt sicher, dass die Datei beschrieben werden kann und das der Buffer
-	 * geleert wird.
+	 * Takes care of buffer and file handlers and calls ShopgatePlugin::createPagesCsv().
 	 *
 	 * @throws ShopgateLibraryException
-	 *
 	 */
 	public final function startGetPagesCsv() {
 		$this->createBuffer(ShopgateConfig::getPagesCsvFilePath());
-		$this->createPagesCsv(); // CSV-Datei mit Buffer schreiben
+		$this->createPagesCsv();
 		$this->finishBuffer(ShopgateConfig::getReviewsCsvFilePath());
 	}
 
 	/**
-	 * Zeile in die CSV-Datei schreiben (gebuffert)
+	 * Adds a line to the csv file buffer.
 	 *
-	 * @param array $itemArr
+	 * @param mixed[] $itemArr
 	 */
 	protected final function addItem($itemArr) {
 		// Item Buffern, evtl. Buffer schreiben
