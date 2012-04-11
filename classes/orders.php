@@ -164,7 +164,7 @@ class ShopgateOrder extends ShopgateContainer {
 	 * @param string $value
 	 */
 	public function setPaymentGroup($value) {
-		$this->payment_method = $value;
+		$this->payment_group = $value;
 	}
 	
 	/**
