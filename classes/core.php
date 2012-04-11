@@ -885,7 +885,7 @@ class ShopgatePluginApi extends ShopgateObject {
 			self::$singleton->params = $_REQUEST;
 			
 			self::$singleton->response["error"] = 0;
-			self::$singleton->response["error_text"] = "";
+			self::$singleton->response["error_text"] = null;
 			// 		self::$singleton->response["version"] = SHOPGATE_PLUGIN_VERSION;
 			self::$singleton->response["trace_id"] = isset(self::$singleton->params["trace_id"]) ? self::$singleton->params["trace_id"] : null;
 		}
