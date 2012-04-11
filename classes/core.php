@@ -1,35 +1,37 @@
 <?php
 
 ###################################################################################
-# Defines
+# define constants
 ###################################################################################
-
 define('SHOPGATE_LIBRARY_VERSION', "2.0.0");
-
 define('SHOPGATE_BASE_DIR', realpath(dirname(__FILE__).'/../'));
 define('SHOPGATE_ITUNES_URL', 'http://itunes.apple.com/de/app/shopgate-eine-app-alle-shops/id365287459?mt=8');
 
 ## QR-Code Config - Start
-define('QR_CACHEABLE', false);
-define('QR_CACHE_DIR', false);
-define('QR_LOG_DIR', dirname(__FILE__).'/../temp/');
-define('QR_FIND_BEST_MASK', true);
-define('QR_FIND_FROM_RANDOM', 2);
-define('QR_DEFAULT_MASK', 2);
-define('QR_PNG_MAXIMUM_SIZE',  1024);
+if (!defined('QR_CACHEABLE'))			define('QR_CACHEABLE', false);
+if (!defined('QR_CACHE_DIR'))			define('QR_CACHE_DIR', false);
+if (!defined('QR_LOG_DIR'))				define('QR_LOG_DIR', dirname(__FILE__).'/../temp/');
+if (!defined('QR_FIND_BEST_MASK'))		define('QR_FIND_BEST_MASK', true);
+if (!defined('QR_FIND_FROM_RANDOM'))	define('QR_FIND_FROM_RANDOM', 2);
+if (!defined('QR_DEFAULT_MASK'))		define('QR_DEFAULT_MASK', 2);
+if (!defined('QR_PNG_MAXIMUM_SIZE'))	define('QR_PNG_MAXIMUM_SIZE',  1024);
 ## QR-Code Config - End
 
-
-
-###################################################################################
-# Helper-Klassen
-###################################################################################
-
+/**
+ * Error handler for PHP errors.
+ *
+ * To use the Shopgate error handler it must be activated in your configuration.
+ *
+ * @param int $errno
+ * @param string $errstr
+ * @param string $errfile
+ * @param int $errline
+ * @see http://php.net/manual/en/function.set-error-handler.php
+ */
 function ShopgateErrorHandler($errno, $errstr, $errfile, $errline) {
-	//no difference between excpetions and E_WARNING
+	// make no difference between exceptions and E_WARNING
 	$msg = "Fatal PHP Error [Nr. $errno : $errfile / $errline] ";
 	$msg .= "$errstr";
-
 	$msg .= "\n". print_r(debug_backtrace(false), true);
 
 	ShopgateObject::logWrite($msg);
@@ -38,15 +40,19 @@ function ShopgateErrorHandler($errno, $errstr, $errfile, $errline) {
 }
 
 /**
- * Diese Exception wird in einem Fehlerfall von der Shopgate Library geworfen.
- * Alle Fehler werden im Log mitprotokolliert.
+ * Exception type for errors within the Shopgate Library.
  *
- * @author Martin Weber
- * @version 1.0.$Rev: 81 $
+ * This is used by the Shopgate Library and should be used by plugins and their components. Predefined error
+ * codes and messages should be used. If not suitable, a custom message can be passed which results in error
+ * code 999 (unknown error code) with the message appended. Error code, message, time, additional information
+ * and part of the stack trace will be logged automatically on construction of a ShopgateLibraryException.
  *
+ * @author Shopgate GmbH, 35510 Butzbach
  */
 class ShopgateLibraryException extends Exception {
-	
+	/**
+	 * @var string
+	 */
 	private $additionalInformation;
 	
 	// Initizialization / instantiation of plugin failure
@@ -144,14 +150,14 @@ class ShopgateLibraryException extends Exception {
 	 * Exception type for errors within the Shopgate plugin and library.
 	 *
 	 * The general exception message is determined by the error code, the additionalInformation
-	 * argument, if set, is appended.
-	 *
+	 * argument, if set, is appended.<br />
+	 * <br />
 	 * For compatiblity reasons, if an unknown error code is passed, the value is used as message
 	 * and the code 999 (Unknown error code) is assigned. This should not be used anymore, though.
 	 *
 	 * @param int $code One of the constants defined in ShopgateLibraryException.
 	 * @param string $additionalInformation More detailed information on what exactly went wrong.
-	 * @param boolean $appendAdditionalInformationOnMessage appends the variable $additionalInformation at the end of the error message
+	 * @param boolean $appendAdditionalInformationOnMessage Set true to output the additional information to the response. Set false to log it silently.
 	 */
 	public function __construct($code, $additionalInformation = null, $appendAdditionalInformationOnMessage = false) {
 		// Set code and message
@@ -180,7 +186,9 @@ class ShopgateLibraryException extends Exception {
 	}
 	
 	/**
-	 * Returns the saved additional information
+	 * Returns the saved additional information.
+	 *
+	 * @return string
 	 */
 	public function getAdditionalInformation(){
 		return (!is_null($this->additionalInformation) ? $this->additionalInformation : '');
@@ -201,6 +209,15 @@ class ShopgateLibraryException extends Exception {
 		return $message;
 	}
 	
+	/**
+	 * Builds the message that would be logged if a ShopgateLibraryException was thrown with the same parameters and returns it.
+	 *
+	 * This is a convenience method for cases where logging is desired but the script should not abort. By using this function an empty
+	 * try-catch-statement can be avoided. Just pass the returned string to ShopgateObject::logWrite().
+	 *
+	 * @param int $code One of the constants defined in ShopgateLibraryException.
+	 * @param string $additionalInformation More detailed information on what exactly went wrong.
+	 */
 	public static function buildLogMessageFor($code, $additionalInformation) {
 		$logMessage = self::getMessageFor($code);
 		
@@ -502,13 +519,20 @@ if (isset($shopgate_config) && is_array($shopgate_config)) {
 	}
 }
 
-class ShopgateObject {
+/**
+ * ShopgateObject acts as root class of the Shopgate Library.
+ *
+ * It provides basic functionality like logging, camelization of strings, JSON de- and encoding etc.<br />
+ * <br />
+ * All classes of the ShopgateLibrary except ShopgateLibraryException are derived from this class.
+ *
+ * @author Shopgate GmbH, 35510 Butzbach
+ */
+abstract class ShopgateObject {
 	const LOGTYPE_ACCESS = 'access';
 	const LOGTYPE_ERROR = 'error';
 
 	/**
-	 * Der FileHandler für die Fehler-Log-Datei.
-	 *
 	 * @var resource[]
 	 */
 	private static $fileHandles = array(
@@ -516,8 +540,19 @@ class ShopgateObject {
 		self::LOGTYPE_ERROR => null,
 	);
 	
+	/**
+	 * @var int
+	 */
 	private static $instanceCount = 0;
 	
+	/**
+	 * Takes care of file handle initialization and the instance count of ShopgateObjects.
+	 *
+	 * This cannot be overridden. Subclasses that are part of the Shopgate Library should implement initLibrary() for initialization
+	 * stuff. Take a look at the ShopgatePlugin class for the very similar startup() construct that plugin implementations can use.<br />
+	 * <br />
+	 * All parameters this method is called with are passed in the same way to initLibrary().
+	 */
 	public final function __construct() {
 		self::$instanceCount++;
 		self::init();
@@ -527,12 +562,18 @@ class ShopgateObject {
 	}
 	
 	/**
-	* Sorgt am Ende für das Schließen der Log-Datei,
-	* falls diese noch offen sein sollte.
-	*/
-	public function __destruct() {
+	 * Takes care of the instance count of ShopgateObjects and uninitializes the file handles on destruction of the last object.
+	 */
+	public final function __destruct() {
 		self::$instanceCount--;
 		self::unInit();
+	}
+	
+	/**
+	 * Callback function for initialization by subclasses.
+	 */
+	protected function initLibrary() {
+		// does nothing here but should not be abstract to avoid empty methods in sub classes that don't need it
 	}
 	
 	/**
@@ -545,27 +586,14 @@ class ShopgateObject {
 				$path = ShopgateConfig::getLogFilePath($type);
 				$newHandle = @fopen($path, 'a+');
 				
-				// if log files are not writeable abort with complete error message (since it can't be logged)
-				if ($newHandle === false) {
-// 					$response['error'] = ShopgateLibraryException::INIT_LOGFILE_OPEN_ERROR;
-// 					$response['error_text'] = ShopgateLibraryException::buildLogMessageFor(ShopgateLibraryException::INIT_LOGFILE_OPEN_ERROR, 'File: '.$path, false);
-// 					header("HTTP/1.0 200 OK");
-// 					header('Content-Type: application/json');
-// 					header('Content-Encoding: utf-8');
-// 					die($this->jsonEncode($response));
-					continue;
-				}
+				// if log files are not writeable continue silently to the next handler
+				// TODO: This seems a bit too silent... How could we get notice of the error?
+				if ($newHandle === false) continue;
 				
+				// set the file handler
 				self::$fileHandles[$type] = $newHandle;
 			}
 		}
-	}
-	
-	/**
-	 * Callback function for initialization by subclasses.
-	 */
-	protected function initLibrary() {
-		// does nothing here but should not be abstract to avoid empty methods in sub classes that don't need it
 	}
 	
 	/**
@@ -584,27 +612,31 @@ class ShopgateObject {
 	}
 	
 	/**
-	 * Leitet die geloggten Daten an logWrite weiter
+	 * Convenience method for logging with $this
 	 *
-	 * @see lib/ShopgateObject::logWrite($msg)
-	 * @param string $msg
+	 * This just passes the argument to the static ShopgateObject::logWrite() method.
+	 *
+	 * @see ShopgateObject::logWrite($msg, $type)
+	 * @param string $msg The error message.
+	 * @param string $type The log type, that would be one of the ShopgateObject::LOGTYPE_* constants.
+	 * @return bool True on success, false on error.
 	 */
-	public function log($msg, $type="error") {
-		self::logWrite($msg, $type);
+	public function log($msg, $type = self::LOGTYPE_ERROR) {
+		return self::logWrite($msg, $type);
 	}
 
 	/**
-	 * Schreibt die Nachricht in die Log-Datei.
-	 * Wenn die Datei noch nicht existiert, wird diese
-	 * automatisch erstellt.
+	 * Logs a message to the according log file.
 	 *
-	 * Der Speicherort dieser Datei ist temp/shopgate_framework.log.
-	 * Alternativ kann man einen Pfad in dr config.php angeben
-	 * <code>
-	 * $shopgate_config['path_to_log_file'] = "/path/to/file.log";
-	 * </code>
+	 * This produces a log entry of the form<br />
+	 * <br />
+	 * [date] [time]: [message]\n<br />
+	 * <br />
+	 * to the selected log file. If an unknown log type is passed the message will be logged to the error log file.
 	 *
-	 * @param string $msg
+	 * @param string $msg The error message.
+	 * @param string $type The log type, that would be one of the ShopgateObject::LOGTYPE_* constants.
+	 * @return bool True on success, false on error.
 	 */
 	public static function logWrite($msg, $type = self::LOGTYPE_ERROR) {
 		// initialize if neccessary
@@ -625,8 +657,8 @@ class ShopgateObject {
 		
 		// try to log
 		$success = false;
-		if(!empty(self::$fileHandles[$type])){
-			if(fwrite(self::$fileHandles[$type], $msg) !== false){
+		if (!empty(self::$fileHandles[$type])) {
+			if (fwrite(self::$fileHandles[$type], $msg) !== false) {
 				$success = true;
 			}
 		}
@@ -645,11 +677,11 @@ class ShopgateObject {
 	 * $this->camelize("shopgate_library", true) returns "ShopgateLibrary"<br />
 	 *
 	 * @param string $str The underscored string.
-	 * @param bool $capitalize_first Set true to capitalize the first letter (e.g. for class names). Default: false.
+	 * @param bool $capitalizeFirst Set true to capitalize the first letter (e.g. for class names). Default: false.
 	 * @return string The camelized string.
 	 */
-	public function camelize($str, $capitalize_first = false) {
-		if($capitalize_first) {
+	public function camelize($str, $capitalizeFirst = false) {
+		if($capitalizeFirst) {
 			$str[0] = strtoupper($str[0]);
 		}
 		$func = create_function('$c', 'return strtoupper($c[1]);');
@@ -705,7 +737,7 @@ class ShopgateObject {
 	}
 
 	/**
-	 * Returns the requested number of lines of the requested log file's end
+	 * Returns the requested number of lines of the requested log file's end.
 	 *
 	 * @param string $type The log file to be read
 	 * @param int $lines Number of lines to return
@@ -747,11 +779,21 @@ class ShopgateObject {
 	}
 }
 
+/**
+ * This class provides basic functionality for the Shopgate Library's container objects.
+ *
+ * It provides initialization with an array, conversion to an array, utf-8 decoding of the container's properties etc.
+ *
+ * @author Shopgate GmbH, 35510 Butzbach
+ */
 abstract class ShopgateContainer extends ShopgateObject {
 	/**
-	 * @param array $data An array containing the container's data as defined at our wiki
-	 * @see http://wiki.shopgate.com/........
-	 * @todo Link aktualisieren
+	 * Initializes the object with the passed data.
+	 *
+	 * If no data is passed, an empty object is created. The passed data must be an array, it's indices must be the un-camelized,
+	 * underscored names of the set* methods of the created object.
+	 *
+	 * @param array $data The data the container should be initialized with.
 	 */
 	protected final function initLibrary($data = array()) {
 		if (is_array($data)) {
@@ -789,9 +831,9 @@ abstract class ShopgateContainer extends ShopgateObject {
 	}
 	
 	/**
-	 * Creates an array of all properties that have setters
+	 * Creates an array of all properties that have getters.
 	 *
-	 * return mixed[]
+	 * @return mixed[]
 	 */
 	public function buildProperties() {
 		$properties = get_object_vars($this);
@@ -809,94 +851,91 @@ abstract class ShopgateContainer extends ShopgateObject {
 	/**
 	 * @param ShopgateContainerVisitor $v
 	 */
-	public function accept(ShopgateContainerVisitor $v) {
-		echo 'lala';
-	}
+	public abstract function accept(ShopgateContainerVisitor $v);
 }
 
+/**
+ * This class represents the Shopgate Plugin API as described in our wiki.
+ *
+ * It provides all available actions and calls the plugin implementation's callback methods for data retrieval if necessary. It acts
+ * as singleton.
+ *
+ * @see http://wiki.shopgate.com/Shopgate_Plugin_API/de
+ * @author Shopgate GmbH, 35510 Butzbach
+ */
 class ShopgatePluginApi extends ShopgateObject {
+	/**
+	 * @var ShopgatePluginApi
+	 */
 	private static $singleton;
 
 	/**
-	 * Konfiguration des Frameworks.
-	 *
-	 * @var array
+	 * @var mixed[]
 	 */
 	protected $config;
 
 	/**
-	 * Das Plugin für das jeweilige Shopping-System, das passende
-	 * Plugin wird entsprechend der Config geladen.
-	 *
 	 * @var ShopgatePlugin
 	 */
 	private $plugin;
 
 	/**
-	 * Die übergebenen POST- und GET-Parameter.
+	 * Parameters passed along the action (usually per POST)
 	 *
-	 * @var array
+	 * @var mixed[]
 	 */
 	private $params;
 
 	/**
-	 * Die Klasse für die Kommunikation mit der ShopgateMerchantApi.
-	 *
-	 * @var ShopgateMerchantApi
+	 * @var string[]
 	 */
-	private $shopgateMerchantApi;
+	private  $actionWhitelist;
 
 	/**
-	 * Die erlaubten Funktionen, die aufgerufen werden können.
-	 *
-	 * @var array
+	 * @var mixed[]
 	 */
-	private  $actionWhitelist = array(
-		'ping',
-		'add_order',
-		'update_order',
-		'get_customer',
-		'get_items_csv',
-		'get_categories_csv',
-		'get_reviews_csv',
-		'get_pages_csv',
-		'get_log_file',
-		'check_coupon',
-		'redeem_coupon'
-	);
-
-	/**
-	 * Die Daten, die zurück an Shopgate gehen. Dieses Array wird beim
-	 * Beenden der Startfunktion als json-Array zurückgegeben
-	 *
-	 * @var array
-	 */
-	private $response = array();
-
+	private $response;
+	
 	/**
 	 * @return ShopgatePluginApi
 	 */
 	public static function &getInstance() {
 		if (empty(self::$singleton)) {
 			self::$singleton = new self();
-			
-			// Übergebene Parameter importieren
-			// TODO in $_POST ändern. Zum testen $_REQUEST
-			self::$singleton->params = $_REQUEST;
-			
-			self::$singleton->response["error"] = 0;
-			self::$singleton->response["error_text"] = null;
-			// 		self::$singleton->response["version"] = SHOPGATE_PLUGIN_VERSION;
-			self::$singleton->response["trace_id"] = isset(self::$singleton->params["trace_id"]) ? self::$singleton->params["trace_id"] : null;
 		}
 
 		return self::$singleton;
 	}
 	
+	protected final function initLibrary() {
+		// initialize action whitelist
+		$this->actionWhitelist = array(
+			'ping',
+			'add_order',
+			'update_order',
+			'get_customer',
+			'get_items_csv',
+			'get_categories_csv',
+			'get_reviews_csv',
+			'get_pages_csv',
+			'get_log_file',
+			'check_coupon',
+			'redeem_coupon'
+		);
+		
+		// prepare the response
+		$this->response = array(
+			'error' => 0,
+			'error_text' => '',
+			'version' => SHOPGATE_LIBRARY_VERSION,
+			'trace_id' => null,
+		);
+	}
+
 	/**
 	 * Registers the current ShopgatePlugin instance for callbacks.
 	 *
-	 * This is usually done by ShopgatePlugin::__construct() as soon as you instantiate your plugin implementation.
+	 * This is usually done by ShopgatePlugin::initLibrary() as soon as you instantiate your plugin implementation.
 	 * The registered instance is the one whose callback methods (e.g. ShopgatePlugin::addOrder()) get called on incoming
 	 * requests.
 	 *
@@ -906,39 +945,48 @@ class ShopgatePluginApi extends ShopgateObject {
 		$this->plugin = $shopgatePlugin;
 	}
 
+	/**
+	 * Initializes the plugin configuration.
+	 *
+	 * @param ShopgateConfig $config
+	 */
 	public function setConfig(ShopgateConfig $config) {
 		$this->config = $config->getConfig();
 	}
 
 	/**
-	 * Dies ist der Einstiegspunkt des Frameworks. Es werden die Konfigurationen
-	 * ausgelesen und gesetzt. Vor dem Aufrufen der eigentlichen Aktion wird
-	 * geprüft, ob diese in der Konfiguration auch freigegeben wurde.
+	 * Inspects an incoming request, performs the requested actions, prepares and prints out the response to the requesting entity.
 	 *
-	 * Eventuell aufgetretene Fehler werden hier abgefangen und an den Server
-	 * zurückgegeben.
+	 * Note that the method usually returns true or false on completion, depending on the success of the operation. However, some actions such as
+	 * the get_*_csv actions, might stop the script after execution to prevent invalid data being appended to the output.
 	 *
 	 * @return bool false if an error occured, otherwise true.
 	 */
 	public function handleRequest($data) {
+		// log incoming request
+		$this->log("add_order(\n".print_r($data, true), ShopgateObject::LOGTYPE_ACCESS);
+		
+		// save the params
 		$this->params = $data;
 		
-		// incoming request, save the trace id
-		$this->traceId = $this->params['trace_id'];
-
+		// add trace id to response
+		if (isset($this->params['trace_id'])) {
+			$this->response['trace_id'] = $this->params['trace_id'];
+		}
+		
 		try {
 	 		ShopgateAuthentificationService::getInstance()->checkAuthentification();
  		
-			// Load config
+			// load config
 			// TODO: again??
 			$this->config = ShopgateConfig::validateAndReturnConfig();
 			
-			// Set error handler to Shopgate's handler if requested
+			// set error handler to Shopgate's handler if requested
 			if (!empty($this->params["use_errorhandler"])) {
 				set_error_handler('ShopgateErrorHandler');
 			}
 			
-			// Check if an action to call has been passed, is known and enabled
+			// check if an action to call has been passed, is known and enabled
 			if (empty($this->params['action'])) {
 				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ACTION, 'Passed parameters: '.var_export($data, true));
 			}
@@ -951,8 +999,8 @@ class ShopgatePluginApi extends ShopgateObject {
 				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_DISABLED_ACTION, "'{$this->params['action']}'");
 			}
 			
-			// Call the action
-			$action = $this->__toCamelCase($this->params['action']);
+			// call the action
+			$action = $this->camelize($this->params['action']);
 			$this->{$action}();
 		} catch (ShopgateLibraryException $e) {
 			$this->response['error'] = $e->getCode();
@@ -964,46 +1012,28 @@ class ShopgatePluginApi extends ShopgateObject {
 			$this->response['error_text'] = $se->getMessage();
 		}
 		
-		// Print out the response
+		// print out the response
 		header("HTTP/1.0 200 OK");
 		header('Content-Type: application/json');
 		header('Content-Encoding: utf-8');
 		echo $this->jsonEncode($this->response);
 		
-		// Return true or false
+		// return true or false
 		return !(isset($this->response["error"]) && $this->response["error"] > 0);
 	}
 
-	/**
-	 * Erzeugt aus get_items_csv => getItemsCSV
-	 *
-	 * @param string $str
-	 * @param bool $capitalise_first_char
-	 */
-	private function __toCamelCase($str, $capitalise_first_char = false) {
-		if($capitalise_first_char) {
-			$str[0] = strtoupper($str[0]);
-		}
-		$func = create_function('$c', 'return strtoupper($c[1]);');
-		return preg_replace_callback('/_([a-z])/', $func, $str);
-	}
-
 	
-	/****************************************
-	 * Actions die Aufgerufen werden können
-	 ****************************************/
+	/******************************************************************
+	 * Following methods represent the Shopgate Plugin API's actions: *
+	 ******************************************************************/
 
 	/**
-	 * Liefert mindestens einen "pong=OK" zurück.
+	 * Represents the "ping" action.
 	 *
-	 * Wenn der API-Key und die Customer-Number stimmen, werden Informationen
-	 * zum Server zurückgegeben. U.a, welche Server-Version und welche Plugins
-	 * installiert sind.
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_ping/de
 	 */
 	private function ping() {
 		$this->response["pong"] = "OK";
-
-		// Statusmeldung ausgeben
 
 		function getSettings() {
 			$settingDetails = array();
@@ -1076,15 +1106,12 @@ class ShopgatePluginApi extends ShopgateObject {
 	}
 
 	/**
-	 * Informiere das Framework über neue Meldungen wie z.B. eine neue
-	 * Bestellung eingegangen.
+	 * Represents the "add_order" action.
 	 *
 	 * @throws ShopgateLibraryException
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_add_order/de
 	 */
 	private function addOrder() {
-		$this->log("Bestellung mit folgenden Parametern wurde übergeben:\n".print_r($this->params,true), 'access');
-
-		// Benachrichtigung über neue Bestellung oder sonstige Benachrichtigung
 		if (!isset($this->params['order_number'])) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ORDER_NUMBER);
 		}
@@ -1098,19 +1125,16 @@ class ShopgatePluginApi extends ShopgateObject {
 	}
 
 	/**
-	 * Informiere das Framework über neue Meldungen wie z.B. eine neue
-	 * Bestellung eingegangen.
+	 * Represents the "update_order" action.
 	 *
 	 * @throws ShopgateLibraryException
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_update_order/de
 	 */
 	private function updateOrder() {
-		//$this->__checkApiKey();
-
-		$this->log("Bestellung mit folgenden Parametern wurde übergeben:\n".print_r($this->params,true), 'access');
-
 		if(!isset($this->params['order_number'])) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ORDER_NUMBER);
 		}
+		
 		if (!isset($this->params['payment'])) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_PAYMENT);
 		}
@@ -1125,17 +1149,12 @@ class ShopgatePluginApi extends ShopgateObject {
 	}
 
 	/**
-	 * ShopgateConnect
-	 * Verbindet einen ShopgateAccount mit einem ShopAccount.
+	 * Represents the "get_customer" action.
 	 *
 	 * @throws ShopgateLibraryException
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_customer/de
 	 */
 	private function getCustomer() {
-		$this->log("Call ShopgateConnect", "access");
-		//$this->__checkApiKey();
-
-		// Shopgate-Connect
-		// GET-Parameter: user, pass
 		if (!isset($this->params['user'])) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_USER);
 		}
@@ -1144,13 +1163,11 @@ class ShopgatePluginApi extends ShopgateObject {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_PASS);
 		}
 
-		// Die Userdaten über das Plugin auslesen
 		$customer = $this->plugin->getCustomer($this->params['user'], $this->params['pass']);
 		if (!is_object($customer) || !($customer instanceof ShopgateCustomer)) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, 'Plugin Response: '.var_export($customer, true));
 		}
 
-		// Daten als JSON zurückliefern
 		$customerData = $customer->toArray();
 		$addressList = $customerData['addresses'];
 		unset($customerData['addresses']);
@@ -1160,162 +1177,155 @@ class ShopgatePluginApi extends ShopgateObject {
 	}
 
 	/**
-	 * Liefert die generierte items.csv-Datei an Shopgate zurück.
-	 *
-	 * Nach der Ausgabe wird das Skript sofort beendet.
+	 * Represents the "get_items_csv" action.
 	 *
 	 * @throws ShopgateLibraryException
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_items_csv/de
 	 */
 	private function getItemsCsv() {
-		//$this->__checkApiKey();
+		$generate_csv = ($this->config["generate_items_csv_on_the_fly"] || isset($this->params["generate_items_csv_on_the_fly"]));
 
-		$generate_csv = $this->config["generate_items_csv_on_the_fly"];
-
-		if(isset($this->params["generate_items_csv_on_the_fly"]))
-		$generate_csv = $this->params["generate_items_csv_on_the_fly"];
-
-		$this->log("Parameter: " . print_r($this->params, true), "access");
-
-		if(isset($this->params["limit"]) && isset($this->params["offset"])) {
-
+		if (isset($this->params["limit"]) && isset($this->params["offset"])) {
 			$this->plugin->exportLimit = (string) $this->params["limit"];
 			$this->plugin->exportOffset = (string) $this->params["offset"];
 			$this->plugin->splittetExport = true;
-
 		}
 
-		$fileName = ShopgateConfig::getItemsCsvFilePath();
-
-		if($generate_csv) {
-			// CSV-Datei erstellen/updaten
+		// generate / update items csv file if requested
+		if ($generate_csv) {
 			$this->plugin->startGetItemsCsv();
 		}
 
-		if(!file_exists($fileName)) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$fileName);
-		}
-
-		// Inhalt der Datei zurückgeben
-
-		header("HTTP/1.0 200 OK");
-		header('Content-Type: text/csv');
-		header('Content-Disposition: attachment; filename="items.csv"');
-
-		$fp = fopen($fileName, "r");
-
-		if(!$fp) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$fileName);
-		}
-		
-		while($line = fgets($fp) )
-		{
-			echo $line;
-		}//while end
-		
-		fclose($fp);
-
-		exit;
-	}
-
-	private function getCategoriesCsv() {
-		//$this->__checkApiKey();
-
-		$fileName = ShopgateConfig::getCategoriesCsvFilePath();
-
-		// Plugin-Klasse initialisieren
-// 		$this->plugin = ShopgatePluginCore::newInstance($this->config);
-
-		// CSV-Datei erstellen/updaten
-		$this->plugin->startGetCategoriesCsv();
-
-		if(!file_exists($fileName)) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$fileName);
-		}
-
-		// Inhalt der Datei zurückgeben
-
-		header("HTTP/1.0 200 OK");
-		header('Content-Type: text/csv');
-		header('Content-Disposition: attachment; filename="categories.csv"');
-
-		$fp = fopen($fileName, "r");
-
-		if(!$fp) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$fileName);
-		}
-
-		while($line = fgets($fp) )
-		{
-			echo $line;
-		}//while end
-
-		fclose($fp);
-
-		exit;
-	}
-
-	/**
-	 * Liefert die generierte reviews.csv Datei an Shopgate zurück.
-	 *
-	 * Nach der Ausgabe wird das Skript sofort beendet.
-	 *
-	 * @throws ShopgateLibraryException
-	 */
-	private function getReviewsCsv() {
-		$fileName = ShopgateConfig::getReviewsCsvFilePath();
-		$this->plugin->startGetReviewsCsv();
-
+		$fileName = ShopgateConfig::getItemsCsvFilePath();
 		if (!file_exists($fileName)) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$fileName);
 		}
 		
-		// Inhalt der Datei an den Browser zurückgeben
+		$fp = fopen($fileName, "r");
+		if (!$fp) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$fileName);
+		}
+		
+		// output headers ...
+		header("HTTP/1.0 200 OK");
+		header('Content-Type: text/csv');
+		header('Content-Disposition: attachment; filename="items.csv"');
+		
+		// ... and csv file
+		while ($line = fgets($fp)) echo $line;
+		
+		// clean up and leave
+		fclose($fp);
+		exit;
+	}
+
+	/**
+	 * Represents the "get_categories_csv" action.
+	 *
+	 * @throws ShopgateLibraryException
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_categories_csv/de
+	 */
+	 private function getCategoriesCsv() {
+		// generate / update categories csv file
+		$this->plugin->startGetCategoriesCsv();
+
+		$fileName = ShopgateConfig::getCategoriesCsvFilePath();
+		if (!file_exists($fileName)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$fileName);
+		}
+		
+		$fp = fopen($fileName, "r");
+		if (!$fp) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$fileName);
+		}
+		
+		// output headers ...
+		header("HTTP/1.0 200 OK");
+		header('Content-Type: text/csv');
+		header('Content-Disposition: attachment; filename="categories.csv"');
+		
+		// ... and csv file
+		while ($line = fgets($fp)) echo $line;
+		
+		// clean up and leave
+		fclose($fp);
+		exit;
+	}
+
+	/**
+	 * Represents the "get_reviews_csv" action.
+	 *
+	 * @throws ShopgateLibraryException
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_reviews_csv/de
+	 */
+	private function getReviewsCsv() {
+		// generate / update reviews csv file
+		$this->plugin->startGetReviewsCsv();
+		
+		$fileName = ShopgateConfig::getReviewsCsvFilePath();
+		if (!file_exists($fileName)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$fileName);
+		}
+		
+		$fp = fopen($fileName, "r");
+		if (!$fp) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$fileName);
+		}
+		
+		// output headers ...
 		header("HTTP/1.0 200 OK");
 		header('Content-Type: text/csv');
 		header('Content-Disposition: attachment; filename="reviews.csv"');
-		readfile($fileName);
+		
+		// ... and csv file
+		while ($line = fgets($fp)) echo $line;
+		
+		// clean up and leave
+		fclose($fp);
 		exit;
 	}
 
 	/**
-	 * Liefert die generierte pages.csv-Datei an Shopgate zurück.
-	 *
-	 * Nach der Ausgabe wird das Skript sofort beendet.
+	 * Represents the "get_pages_csv" action.
 	 *
 	 * @throws ShopgateLibraryException
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_pages_csv/de
 	 */
 	private function getPagesCsv() {
-		//$this->__checkApiKey();
-
 		$fileName = ShopgateConfig::getPagesCsvFilePath();
-
-		if(!file_exists($fileName)) {
+		if (!file_exists($fileName)) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$fileName);
 		}
 
-		// Inhalt der Datei an den Browser zurückgeben
-
+		$fp = fopen($fileName, "r");
+		if (!$fp) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$fileName);
+		}
+		
+		// output headers ...
 		header("HTTP/1.0 200 OK");
 		header('Content-Type: text/csv');
 		header('Content-Disposition: attachment; filename="pages.csv"');
-		readfile($fileName);
+		
+		// ... and csv file
+		while ($line = fgets($fp)) echo $line;
+		
+		// clean up and leave
+		fclose($fp);
 		exit;
 	}
-
+	
 	/**
-	 * Parameter "kilobyte" muss gesetzt sein. Liefert dann die
-	 * letzten x Kilobyte der Log-Datei zurück.
+	 * Represents the "get_log_file" action.
 	 *
+	 * @throws ShopgateLibraryException
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_log_file/de
 	 */
-	private function getLogFile() {
+	 private function getLogFile() {
 		$type = (empty($this->params['log_type'])) ? ShopgateObject::LOGTYPE_ERROR : $this->params['log_type'];
 		$lines = (!isset($this->params['lines'])) ? null : $this->params['lines'];
 		
-		try {
-			$log = $this->tail($type, $lines);
-		} catch (ShopgateLibraryException $e) {
-			throw $e; // let handleRequest build the error message
-		}
+		$log = $this->tail($type, $lines);
 		
 		// return the requested log file content and end the script
 		header("HTTP/1.0 200 OK");
@@ -1324,54 +1334,63 @@ class ShopgatePluginApi extends ShopgateObject {
 		exit;
 	}
 	
-	private function getOrders() {
-		$result = array();
-		//$
-		if (!empty($this->params['external_customer_number'])) {
-		//	$
-		}
+	/**
+	 * Represents the "get_orders" action.
+	 *
+	 * @throws ShopgateLibraryException
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_orders/de
+	 * @todo
+	 */
+	 private function getOrders() {
+		/**** not yet implemented ****/
+	 	
+		//if (!empty($this->params['external_customer_number'])) {
 	}
 }
 
+/**
+ * This class represents the Shopgate Merchant API as described in our wiki.
+ *
+ * It provides all available actions, calls to the configured API, retrieves, parses and formats the data. It acts as singleton.
+ *
+ * @author Shopgate GmbH, 35510 Butzbach
+ */
 class ShopgateMerchantApi extends ShopgateObject {
 	/**
 	 * @var ShopgateMerchantApi
 	 */
 	private static $singleton;
 	
+	/**
+	 * @var mixed[]
+	 */
 	private $config;
 	
-	/**
-	 * @var int
-	 */
-	private $traceId;
-
 	/**
 	 * @return ShopgateMerchantApi
 	 */
 	public static function getInstance() {
 		if (empty(self::$singleton)) {
 			self::$singleton = new self();
-			self::$singleton->config = ShopgateConfig::validateAndReturnConfig();
 		}
 		
 		return self::$singleton;
 	}
 	
+	protected final function initLibrary() {
+		$this->config = ShopgateConfig::validateAndReturnConfig();
+	}
+	
 	/**
-	 * Führt alle Abfragen an der ShopgateMerchantApi durch.
+	 * Prepares the request and sends it to the configured Shopgate Merchant API.
 	 *
-	 * @access private
-	 *
-	 * @param array $data  	Die POST-Parameter der aufgerufenen Funktion.
-	 *
+	 * @param mixed[] $data The parameters to send.
+	 * @return mixed The JSON decoded response.
 	 * @throws ShopgateLibraryException
 	 */
 	private function sendRequest($data) {
-		if(empty($this->config)) $this->config = ShopgateConfig::validateAndReturnConfig();
-		
-		$data['trace_id'] = 'spa-'.uniqid();
 		$data['shop_number'] = $this->config["shop_number"];
+		$data['trace_id'] = 'spa-'.uniqid();
 		
 		$url = $this->config["api_url"];
 		$curl = curl_init($url);
@@ -1381,7 +1400,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-			'X-Shopgate-Library-Version: '. SHOPGATE_LIBRARY_VERSION, 
+			'X-Shopgate-Library-Version: '. SHOPGATE_LIBRARY_VERSION,
 			'X-Shopgate-Plugin-Version: '.SHOPGATE_PLUGIN_VERSION,
 			ShopgateAuthentificationService::getInstance()->buildAuthUserHeader(),
 			ShopgateAuthentificationService::getInstance()->buildAuthTokenHeader()
@@ -1393,7 +1412,10 @@ class ShopgateMerchantApi extends ShopgateObject {
 		$info = curl_getinfo($curl);
 		curl_close($curl);
 		
-		if (!$response) throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_NO_CONNECTION);
+		// check the result
+		if (!$response) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_NO_CONNECTION);
+		}
 		
 		$decodedResponse = $this->jsonDecode($response, true);
 		
@@ -1401,27 +1423,22 @@ class ShopgateMerchantApi extends ShopgateObject {
 			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE, 'Response: '.$response);
 		}
 		
-		if($decodedResponse['error'] != 0) {
+		if ($decodedResponse['error'] != 0) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED, $decodedResponse['error_text'], true);
-		}
-		
-		if ($data['trace_id'] != $decodedResponse['trace_id']) {
-			// TODO: Exception?
 		}
 		
 		return $decodedResponse;
 	}
-
+	
+	
+	/********************************************************************
+	 * Following methods represent the Shopgate Merchant API's actions: *
+	 ********************************************************************/
+	
 	/**
-	 * Die Details einer Bestellung von Shopgate mit der Bestellnummer abholen.
-	 * Es wird ein Objekt mit den kompletten Bestellinformationen zurückgegeben.
+	 * Represents the "get_orders" action.
 	 *
-	 * @tutorial <a href="https://www.shopgate.com/apidoc/function_details/9">
-	 * https://www.shopgate.com/apidoc/function_details/9</a>
-	 *
-	 * @param mixed[] $parameter	Sucheinschränkungen können über diesen Parameter eingestellt werden.
-	 * @throws ShopgateLibraryException
-	 * @return ShopgateOrder[] 	Die Bestellung in einem ShopgateOrder-Objekt
+	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_get_orders/de
 	 */
 	public function getOrders($parameter) {
 		$data["action"] = "get_orders";
