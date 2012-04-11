@@ -1438,13 +1438,18 @@ class ShopgateMerchantApi extends ShopgateObject {
 	/**
 	 * Represents the "get_orders" action.
 	 *
+	 * @param mixed[] $parameters
+	 * @return ShopgateOrder[]
+	 *
 	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_get_orders/de
 	 */
-	public function getOrders($parameter) {
-		$data["action"] = "get_orders";
-		$data["with_items"] = 1;
+	public function getOrders($parameters) {
+		$data = array(
+			'action' => "get_orders",
+			'with_items' => 1,
+		);
 
-		$data = array_merge($data, $parameter);
+		$data = array_merge($data, $parameters);
 		$result = $this->sendRequest($data);
 
 		if (empty($result["orders"])) {
@@ -1456,41 +1461,40 @@ class ShopgateMerchantApi extends ShopgateObject {
 
 		$orders = array();
 		foreach($result["orders"] as $order) {
-			$orders[] = new ShopgateOrder( $order );
+			$orders[] = new ShopgateOrder($order);
 		}
 
 		return $orders;
 	}
 
 	/**
-	 * Fügt einer Bestellung von Shopgate einen Lieferschein hinzu.
+	 * Represents the "add_order_delivery_note" action.
 	 *
 	 * @param ShopgateOrder $order
-	 * @param String $shippingServiceId
-	 * @param Integer $trackingNumber
-	 * @param Boolean $markAsCompleted
+	 * @param string $shippingServiceId
+	 * @param int $trackingNumber
+	 * @param bool $markAsCompleted
 	 * @return mixed[]
+	 *
+	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_add_order_delivery_note/de
 	 */
 	public function addOrderDeliveryNote(ShopgateOrder $order, $shippingServiceId, $trackingNumber, $markAsCompleted = false) {
-		if(is_object($order) && get_class($order) == "ShopgateOrder")
-			$order = $order->getOrderNumber();
-
 		$data = array(
-			"action" => "addOrderDeliveryNote",
-			"order_number" => $order,
+			"action" => "add_order_delivery_note",
+			"order_number" => $order->getOrderNumber(),
 			"shipping_service_id" => $shippingServiceId,
 			"tracking_number" => (string) $trackingNumber,
 			"mark_as_completed" => $markAsCompleted,
 		);
 
-		return $this->_execute($data);
+		return $this->sendRequest($data);
 	}
 
 	/**
 	 * Eine Bestellung als abgeschlossen markieren
 	 *
 	 * @param String $orderNumber
-	 * @return mixed []
+	 * @return mixed[]
 	 */
 	public function setOrderShippingCompleted($orderNumber) {
 		$data = array(
