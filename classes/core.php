@@ -820,12 +820,23 @@ abstract class ShopgateContainer extends ShopgateObject {
 	}
 	
 	/**
+	 * Creates a new object of the same type with every value recursively utf-8 encoded.
+	 *
+	 * @return ShopgateContainer The new object with utf-8 encoded values.
+	 */
+	public function utf8Encode() {
+		$visitor = new ShopgateUtf8Visitor(ShopgateUtf8Visitor::MODE_ENCODE);
+		$visitor->visitContainer($this);
+		return $visitor->getObject();
+	}
+	
+	/**
 	 * Creates a new object of the same type with every value recursively utf-8 decoded.
 	 *
 	 * @return ShopgateContainer The new object with utf-8 decoded values.
 	 */
 	public function utf8Decode() {
-		$visitor = new ShopgateUtf8DecodeVisitor();
+		$visitor = new ShopgateUtf8Visitor(ShopgateUtf8Visitor::MODE_DECODE);
 		$visitor->visitContainer($this);
 		return $visitor->getObject();
 	}
@@ -1613,13 +1624,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	}
 
 	/**
-	 * Callback function for initialization by plugin implementations.
-	 *
-	 * This method gets called on instantiation of a ShopgatePlugin child class and serves as __construct() replacement.
-	 */
-	public abstract function startup();
-
-	/**
 	 * Convenience method to call ShopgatePluginApi::handleRequest() from $this.
 	 *
 	 * @param mixed[] $data The incoming request's parameters.
@@ -1714,41 +1718,36 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @param mixed[] $itemArr
 	 */
 	protected final function addItem($itemArr) {
-		// Item Buffern, evtl. Buffer schreiben
 		$this->buffer[] = $itemArr;
 		$this->bufferCounter++;
 
-		if($this->bufferCounter > $this->bufferLimit
-		|| isset($this->config["flush_buffer_size"]) && $this->config["flush_buffer_size"] <= $this->bufferCounter) {
+		if (
+			$this->bufferCounter > $this->bufferLimit ||
+			isset($this->config["flush_buffer_size"]) &&
+			$this->config["flush_buffer_size"] <= $this->bufferCounter
+		) {
 			$this->flushBuffer();
 		}
 	}
 
 	/**
-	 * Flush Buffer to file if $this->bufferLimit is exceeded.
-	 * The content is converted to UTF-8 if necessary.
+	 * Flushes buffer to the currently opened file handle in $this->fileHandle.
 	 *
+	 * The data is converted to utf-8 if mb_convert_encoding() exists
 	 */
 	private final function flushBuffer() {
-		// Buffer leerschreiben
-		$c = "\"";
-		$string = '';
-
-		if (empty($this->buffer) && ftell($this->fileHandle) == 0)
+		if (empty($this->buffer) && ftell($this->fileHandle) == 0) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_EMPTY_BUFFER);
+		}
 
-
-		// Wenn noch am Anfang der CSV-Datei, schreibe die Kopfzeile
-		if(ftell($this->fileHandle) == 0) {
+		// write headline if it's the beginning of the file
+		if (ftell($this->fileHandle) == 0) {
 			fputcsv($this->fileHandle, array_keys($this->buffer[0]), ';', '"');
 		}
 
-		// Schreibe jeden Datensatz nach $string
-		foreach($this->buffer as $item) {
-			// Konvertiere nach UTF-8
-			if(function_exists("mb_convert_encoding")) {
-				foreach($item as &$field) {
-// 					if(mb_detect_encoding($field, $this->allowedEncodings) != "UTF-8")
+		foreach ($this->buffer as $item) {
+			if (function_exists("mb_convert_encoding")) {
+				foreach ($item as &$field) {
 					$field = mb_convert_encoding($field, "UTF-8", $this->allowedEncodings);
 				}
 			}
@@ -1756,16 +1755,13 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			fputcsv($this->fileHandle, $item, ";", "\"");
 		}
 
-		$this->buffer = array(); // Leere den Buffer
-		$this->bufferCounter = 0; // Setze zähler auf
+		$this->buffer = array();
+		$this->bufferCounter = 0;
 	}
 	
 	/**
-	 *
-	 * Build a full Category-Array with default values
-	 *
-	 * @see http://www.shopgate.com/csvdoc/csv_docu_categories/
-	 * @return array
+	 * @return string[] An array with the csv file field names as indices and empty strings as values.
+	 * @see http://wiki.shopgate.com/CSV_File_Categories/de
 	 */
 	protected function buildDefaultCategoryRow() {
 		$row = array(
@@ -1782,11 +1778,8 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	}
 
 	/**
-	 *
-	 * Build a full-Array with default values
-	 *
-	 * @see http://www.shopgate.com/csvdoc
-	 * @return array
+	 * @return string[] An array with the csv file field names as indices and empty strings as values.
+	 * @see http://wiki.shopgate.com/CSV_File_Items/de
 	 */
 	protected function buildDefaultProductRow() {
 		$row = array(
@@ -1919,6 +1912,14 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		return $row;
 	}
 
+	/**
+	 * Rounds and formats a price.
+	 *
+	 * @param float $price The price of an item.
+	 * @param int $digits The number of digits after the decimal separator.
+	 * @param string $decimalPoint The decimal separator.
+	 * @param string $thousandPoints The thousands separator.
+	 */
 	protected function formatPriceNumber($price, $digits = 2, $decimalPoint = ".", $thousandPoints = "") {
 		$price = round($price, $digits);
 		$price = number_format($price, $digits, $decimalPoint, $thousandPoints);
@@ -1926,7 +1927,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	}
 
 	/**
-	 * Removes all html disallowed HTML tags from a given string.
+	 * Removes all disallowed HTML tags from a given string.
 	 *
 	 * By default the following are allowed:
 	 *
@@ -1974,95 +1975,95 @@ abstract class ShopgatePlugin extends ShopgateObject {
 
 	protected $exchangeRate = 1;
 
-	///////////////////////////////////////////////////////////////////////////
-	// Die Folgenden Funktionen müssen in der                                //
-	// abgeleiteten Klasse implementiert werden                              //
-	///////////////////////////////////////////////////////////////////////////
+	
+	/*******************************************************************************
+	 * Following methods are the callbacks that need to be implemented by plugins. *
+	 *******************************************************************************/
+	
+	/**
+	 * Callback function for initialization by plugin implementations.
+	 *
+	 * This method gets called on instantiation of a ShopgatePlugin child class and serves as __construct() replacement.
+	 */
+	public abstract function startup();
 
 	/**
-	 * Vergleicht $user und $pass mit den Daten in der Datenbank und gibt die
-	 * Benutzerdaten als ShopgateShopCustomer-Objekt zurück.
+	 * This performs the necessary queries to build a ShopgateCustomer object for the given log in credentials.
 	 *
-	 *  Diese Funktion muss in der ShopgatePlugin-Klasse implementiert werden!
+	 * The method should not abort on soft errors like when the street or phone number of a customer can't be found.
 	 *
-	 * @param String $user
-	 * @param String $pass
-	 * @return ShopgateCustomer
+	 * @param string $user The user name the customer entered at Shopgate Connect.
+	 * @param string $pass The password the customer entered at Shopgate Connect.
+	 * @return ShopgateCustomer A ShopgateCustomer object.
+	 * @throws ShopgateLibraryException on invalid log in data or hard errors like database failure.
 	 */
 	public abstract function getCustomer($user, $pass);
 
 	/**
-	 * <p>Diese Funktion speichert eine Bestellung in Ihre Datenbank. Das Object $order enthält alle
-	 * relevanten Daten und die bestellten Artikel. Zudem werden auch Lieferanschrift,
-	 * Rechnungsanschrift und Kundenanschrift mit übergeben.</p>
+	 * Performs the necessary queries to add an order to the shop system's database.
 	 *
-	 * <p>Die Produkte können über die Funktion $order->getOrderItems() als Array
-	 * abgerufen werden. Jedes Element ist ein Objelt vom Typ ShopgateOrderItem,
-	 * welches die Wichtigsten Informationen zu dem jeweiligen Produkt enthält.</p>
-	 *
-	 * <code>
-	 * foreach($order->getOrderItems() as $orderItem) {
-	 *
-	 * }
-	 * </code>
-	 *
-	 * <p>Die Addressdaten sind vom Typ ShopgateOrderAddress und enthalten jeweils die
-	 * Kunden-, Liefer-, oder Rechnungsanschrift.</p>
-	 * <ul>
-	 * <li><b>Die Adresse des Kunden:</b><br/>
-	 *        $order->getCustomerAddress();</li>
-	 * <li><b>Die Lieferadresse:</b><br />
-	 *        $order->getDeliveryAddress();</li>
-	 * <li><b>Die Rechungsadresse:</b><br />
-	 *        $order->getInvoiceAddress();</li>
-	 * </ul>
-	 *
-	 * @param ShopgateOrder $order
+	 * @param ShopgateOrder $order The ShopgateOrder object to be added to the shop system's database.
+	 * @throws ShopgateLibraryException if an error occurs.
 	 */
 	public abstract function addOrder(ShopgateOrder $order);
-
+	
+	/**
+	 * Performs the necessary queries to update an order in the shop system's database.
+	 *
+	 * @param ShopgateOrder $order The ShopgateOrder object to be update in the shop system's database.
+	 * @param bool $payment True if the payment status of an order should be updated, false otherwise.
+	 * @throws ShopgateLibraryException if an error occurs.
+	 */
 	public abstract function updateOrder(ShopgateOrder $order, $payment);
 
 	/**
-	 * Diese Funktion soll die Daten aus der Datenbank laden und mittels der
-	 * Funktion addItem() der CSV-Datei hinzufügen
+	 * Loads the products of the shop system's database and passes them to the buffer.
 	 *
-	 * Die Dukumentation zum aufbau der CSV-Datei steht unter
-	 * <a href="https://www.shopgate.com/csvdoc">https://www.shopgate.com/csvdoc</a>
+	 * User ShopgatePlugin::buildDefaultProductRow() to get the correct indices for the field names in a Shopgate items csv and
+	 * use ShopgatePlugin::addItem() to add it to the output buffer.
 	 *
 	 * @throws ShopgateLibraryException
-	 * @example plugins/plugin_example.inc.php
 	 */
 	protected abstract function createItemsCsv();
 
-	protected abstract function createCategoriesCsv();
-
 	/**
-	 * Erzeugt die CSV-Datei mit den Produktberwertungen
+	 * Loads the product categories of the shop system's database and passes them to the buffer.
+	 *
+	 * User ShopgatePlugin::buildDefaultProductRow() to get the correct indices for the field names in a Shopgate categories csv and
+	 * use ShopgatePlugin::addItem() to add it to the output buffer.
 	 *
 	 * @throws ShopgateLibraryException
-	 * @example plugins/plugin_example.inc.php
+	 */	protected abstract function createCategoriesCsv();
+
+	/**
+	 * Loads the product reviews of the shop system's database and passes them to the buffer.
+	 *
+	 * User ShopgatePlugin::buildDefaultCategoriesRow() to get the correct indices for the field names in a Shopgate reviews csv and
+	 * use ShopgatePlugin::addItem() to add it to the output buffer.
+	 *
+	 * @throws ShopgateLibraryException
 	 */
 	protected abstract function createReviewsCsv();
 
 	/**
-	 * Erzeugt die CSV-Datei mit den Zusatztexten für Produkte
+	 * Loads the product pages of the shop system's database and passes them to the buffer.
 	 *
 	 * @throws ShopgateLibraryException
-	 * @example plugins/plugin_example.inc.php
 	 */
 	//protected abstract function getPagesCsv();
-
-	/**
-	 * Erstellt Informationen ueber das verwendete Shopsystem
-	 *
-	 * @throws ShopgateLibraryException
-	 * @example plugins/plugin_example.inc.php
-	 */
-	//protected abstract function createShopInfo();
 }
 
-
+/**
+ * This class provides methods to check and generate authentification strings.
+ *
+ * It acts as Singleton and is usually only used internally by the Shopgate Library to send requests or check incoming
+ * requests.
+ *
+ * To check authentication on incoming request it accesses the $_SERVER variable which should contain the required X header fields for
+ * authentication.
+ *
+ * @author Shopgate GmbH, 35510 Butzbach, DE
+ */
 class ShopgateAuthentificationService extends ShopgateObject {
 	private static $singleton;
 	
@@ -2094,14 +2095,14 @@ class ShopgateAuthentificationService extends ShopgateObject {
 	}
 	
 	/**
-	 * @return array array('header field name' => 'auth user string')
+	 * @return string The X-Shopgate-Auth-User HTTP header for an outgoing request.
 	 */
 	public function buildAuthUserHeader() {
 		return self::HEADER_X_SHOPGATE_AUTH_USER .': '. $this->customerNumber.'-'.$this->timestamp;
 	}
 	
 	/**
-	 * @return array array('header field name' => 'auth token string')
+	 * @return string The X-Shopgate-Auth-Token HTTP header for an outgoing request.
 	 */
 	public function buildAuthTokenHeader() {
 		return self::HEADER_X_SHOPGATE_AUTH_TOKEN.': '.sha1("SMA-{$this->customerNumber}-{$this->timestamp}-{$this->apiKey}");
@@ -2144,6 +2145,11 @@ class ShopgateAuthentificationService extends ShopgateObject {
 	}
 }
 
+/**
+ * Interface for visitors of ShopgateContainer objects.
+ *
+ * @author Shopgate GmbH, 35510 Butzbach, DE
+ */
 interface ShopgateContainerVisitor {
 	public function visitContainer(ShopgateContainer $c);
 	public function visitCustomer(ShopgateCustomer $c);
@@ -2154,8 +2160,32 @@ interface ShopgateContainerVisitor {
 	public function visitOrderDeliveryNote(ShopgateDeliveryNote $d);
 }
 
-class ShopgateUtf8DecodeVisitor implements ShopgateContainerVisitor {
+/**
+ * Creates a new object with every value inside utf-8 de- / encoded.
+ *
+ * @author Shopgate GmbH, 35510 Butzbach, DE
+ */
+class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
+	const MODE_ENCODE = 1;
+	const MODE_DECODE = 2;
+	
 	protected $object;
+	protected $mode;
+	
+	/**
+	 * @param int $mode Set mode to one of the two class constants. Default is MODE_DECODE.
+	 */
+	public function __construct($mode = self::MODE_DECODE) {
+		switch ($mode) {
+			// default mode
+			default: $mode = self::MODE_DECODE;
+			
+			// allowed modes
+			case self::MODE_ENCODE: case self::MODE_DECODE:
+				$this->mode = $mode;
+			break;
+		}
+	}
 	
 	public function getObject() {
 		return $this->object;
@@ -2279,7 +2309,10 @@ class ShopgateUtf8DecodeVisitor implements ShopgateContainerVisitor {
 			// we only want the simple types
 			if (is_object($value) || is_array($value)) continue;
 			
-			$value = utf8_decode($value);
+			switch ($this->mode) {
+				case self::MODE_ENCODE: $value = utf8_encode($value); break;
+				case self::MODE_DECODE: $value = utf8_decode($value); break;
+			}
 		}
 	}
 	
@@ -2302,6 +2335,8 @@ class ShopgateUtf8DecodeVisitor implements ShopgateContainerVisitor {
 
 /**
  * Turns a ShopgateContainer or an array of ShopgateContainers into an array.
+ *
+ * @author Shopgate GmbH, 35510 Butzbach, DE
  */
 class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 	protected $array;
@@ -2425,11 +2460,7 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 		} elseif (is_bool($v)) {
 			return (int) $v;
 		} elseif (is_string($v)) {
-			if (mb_detect_encoding($v, null, true) == 'UTF-8') {
-				return $v;
-			} else {
-				return utf8_encode($v);
-			}
+			return $v;
 		}
 	}
 }
