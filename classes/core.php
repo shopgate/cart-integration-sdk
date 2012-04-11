@@ -1380,10 +1380,12 @@ class ShopgateMerchantApi extends ShopgateObject {
 		curl_setopt($curl, CURLOPT_USERAGENT, "ShopgatePlugin/" . SHOPGATE_PLUGIN_VERSION);
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($curl, CURLOPT_HTTPHEADER, array('X-Shopgate-Library-Version'=> SHOPGATE_LIBRARY_VERSION));
-		curl_setopt($curl, CURLOPT_HTTPHEADER, array('X-Shopgate-Plugin-Version'=> SHOPGATE_PLUGIN_VERSION));
-		curl_setopt($curl, CURLOPT_HTTPHEADER, ShopgateAuthentificationService::getInstance()->buildAuthUserHeader());
-		curl_setopt($curl, CURLOPT_HTTPHEADER, ShopgateAuthentificationService::getInstance()->buildAuthTokenHeader());
+		curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+			'X-Shopgate-Library-Version: '. SHOPGATE_LIBRARY_VERSION, 
+			'X-Shopgate-Plugin-Version: '.SHOPGATE_PLUGIN_VERSION,
+			ShopgateAuthentificationService::getInstance()->buildAuthUserHeader(),
+			ShopgateAuthentificationService::getInstance()->buildAuthTokenHeader()
+		));
 		curl_setopt($curl, CURLOPT_POST, true);
 		curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
 		
@@ -2103,14 +2105,14 @@ class ShopgateAuthentificationService extends ShopgateObject {
 	 * @return array array('header field name' => 'auth user string')
 	 */
 	public function buildAuthUserHeader() {
-		return array(self::X_SHOPGATE_AUTH_USER => "{$this->customerNumber}-{$this->timestamp}");
+		return self::HEADER_X_SHOPGATE_AUTH_USER .': '. $this->customerNumber.'-'.$this->timestamp;
 	}
 	
 	/**
 	 * @return array array('header field name' => 'auth token string')
 	 */
 	public function buildAuthTokenHeader() {
-		return array(self::X_SHOPGATE_AUTH_TOKEN => sha1("SMA-{$this->customerNumber}-{$this->timestamp}-{$this->apiKey}"));
+		return self::HEADER_X_SHOPGATE_AUTH_TOKEN.': '.sha1("SMA-{$this->customerNumber}-{$this->timestamp}-{$this->apiKey}");
 	}
 
 	/**
