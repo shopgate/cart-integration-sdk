@@ -8,6 +8,9 @@ class ShopgateOrder extends ShopgateContainer {
 	const DEBIT = "DEBIT";
 	const COD = "COD";
 	const PAYPAL = "PAYPAL";
+	const KLARNA_INV = "KLARNA_INV";
+	const BILLSAFE = "BILLSAFE";
+	
 
 	protected $order_number;
 	protected $customer_number;
@@ -25,8 +28,9 @@ class ShopgateOrder extends ShopgateContainer {
 	protected $confirm_shipping_url;
 
 	protected $created_time;
-
+	
 	protected $payment_method;
+	protected $payment_group;
 
 	protected $is_paid;
 
@@ -150,11 +154,23 @@ class ShopgateOrder extends ShopgateContainer {
 	 * @param string $value
 	 */
 	public function setCreatedTime($value) { $this->created_time = $value; }
-
+	
+	/**
+	 * The payment group for the order
+	 *
+	 * Sample: <ul><li>SHOPGATE</li><li>PREPAY</li><li>CC</li><li>INVOICE</li><li>DEBIT</li><li>COD</li><li>PAYPAL</li></ul>
+	 *
+	 * @see http://wiki.shopgate.com/Merchant_API_payment_infos/de
+	 * @param string $value
+	 */
+	public function setPaymentGroup($value) {
+		$this->payment_method = $value;
+	}
+	
 	/**
 	 * The payment method for the order
 	 *
-	 * Sample: <ul><li>DEBIT</li><li>SHOPGATE</li><li>PREPAY</li><li>CC</li><li>INVOICE</li><li>DEBIT</li><li>COD</li><li>PAYPAL</li></ul>
+	 * Sample: <ul><li>SHOPGATE</li><li>PREPAY</li><li>DT_CC</li><li>KLARNA_INV</li><li>BILLSAFE</li><li>DEBIT</li><li>COD</li><li>PAYPAL</li></ul>
 	 *
 	 * @see http://wiki.shopgate.com/Merchant_API_payment_infos/de
 	 * @param string $value
@@ -465,16 +481,28 @@ class ShopgateOrder extends ShopgateContainer {
 
 		return $time;
 	}
-
+	
 	/**
 	 * The payment method for the order
 	 *
-	 * Sample: <ul><li>DEBIT</li><li>SHOPGATE</li><li>PREPAY</li><li>CC</li><li>INVOICE</li><li>DEBIT</li><li>COD</li><li>PAYPAL</li></ul>
+	 * Sample: <ul><li>SHOPGATE</li><li>PREPAY</li><li>CC</li><li>INVOICE</li><li>DEBIT</li><li>COD</li><li>PAYPAL</li></ul>
 	 *
 	 * @see http://wiki.shopgate.com/Merchant_API_payment_infos/de
 	 * @return string
 	 */
-	public function getPaymentMethod() { return $this->payment_method; }
+	public function getPaymentMethod() {
+		return $this->payment_method;
+	}
+	
+	/**
+	 * The payment group for the order
+	 *
+	 * Sample: <ul><li>SHOPGATE</li><li>PREPAY</li><li>DT_CC</li><li>BILLSAFE</li><li>KLARNA_INV</li><li>DEBIT</li><li>COD</li><li>PAYPAL</li></ul>
+	 *
+	 * @see http://wiki.shopgate.com/Merchant_API_payment_infos/de
+	 * @return string
+	 */
+	public function getPaymentGroup() { return $this->payment_group; }
 
 	/**
 	 * Is the order is payed
