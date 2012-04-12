@@ -1481,7 +1481,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	/**
 	 * Represents the "add_order_delivery_note" action.
 	 *
-	 * @param string $order_number
+	 * @param string $orderNumber
 	 * @param string $shippingServiceId
 	 * @param int $trackingNumber
 	 * @param bool $markAsCompleted
@@ -1489,10 +1489,10 @@ class ShopgateMerchantApi extends ShopgateObject {
 	 *
 	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_add_order_delivery_note/de
 	 */
-	public function addOrderDeliveryNote($order_number, $shippingServiceId, $trackingNumber, $markAsCompleted = false) {
+	public function addOrderDeliveryNote($orderNumber, $shippingServiceId, $trackingNumber, $markAsCompleted = false) {
 		$data = array(
 			"action" => "add_order_delivery_note",
-			"order_number" => $order_number,
+			"order_number" => $orderNumber,
 			"shipping_service_id" => $shippingServiceId,
 			"tracking_number" => (string) $trackingNumber,
 			"mark_as_completed" => $markAsCompleted,
@@ -1504,15 +1504,15 @@ class ShopgateMerchantApi extends ShopgateObject {
 	/**
 	 * Represents the "set_order_shipping_completed" action.
 	 *
-	 * @param string $order_number
+	 * @param string $orderNumber
 	 * @return mixed[] The Shopgate Merchant API's decoded response.
 	 *
 	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_set_order_shipping_completed/de
 	 */
-	public function setOrderShippingCompleted($order_number) {
+	public function setOrderShippingCompleted($orderNumber) {
 		$data = array(
 			'action' => 'set_order_shipping_completed',
-			'order_number' => $order_number,
+			'order_number' => $orderNumber,
 		);
 
 		return $this->sendRequest($data);
@@ -1521,16 +1521,16 @@ class ShopgateMerchantApi extends ShopgateObject {
 	/**
 	 * Represents the "set_order_shipping_completed" action.
 	 *
-	 * @param string $order_number
+	 * @param string $orderNumber
 	 * @param string $message
 	 * @return mixed[] The Shopgate Merchant API's decoded response.
 	 *
 	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_add_order_delivery_note/de
 	 */
-	public function sendOrderMessage($order_number, $message) {
+	public function sendOrderMessage($orderNumber, $message) {
 		$data = array(
 			"action" => "send_order_message",
-			"order_number" => $order_number,
+			"order_number" => $orderNumber,
 			"message" => $message,
 		);
 
