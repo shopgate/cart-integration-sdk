@@ -118,7 +118,7 @@ class ShopgateCustomer extends ShopgateContainer {
 	/**
 	 * @return string
 	 */
-	public function getCustomerNumber() { return $this->customerNumber; }
+	public function getCustomerNumber() { return $this->customer_number; }
 	
 	/**
 	 * @return string
