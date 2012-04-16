@@ -1,5 +1,6 @@
 <?php
 class ShopgateCustomer extends ShopgateContainer {
+	protected $customer_id;
 	protected $customer_number;
 	protected $customer_group;
 	protected $customer_group_id;
@@ -22,6 +23,11 @@ class ShopgateCustomer extends ShopgateContainer {
 	/**********
 	 * Setter *
 	 **********/
+	
+	/**
+	 * @param int $value
+	 */
+	public function setCustomerId($value) { $this->customer_id = $value; }
 	
 	/**
 	 * @param string $value
@@ -114,6 +120,11 @@ class ShopgateCustomer extends ShopgateContainer {
 	/**********
 	 * Getter *
 	 **********/
+	
+	/**
+	 * @return int
+	 */
+	public function getCustomerId() { return (int) $this->customer_id; }
 	
 	/**
 	 * @return string
