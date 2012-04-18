@@ -975,7 +975,7 @@ class ShopgatePluginApi extends ShopgateObject {
 	 */
 	public function handleRequest($data) {
 		// log incoming request
-		$this->log("add_order(\n".print_r($data, true), ShopgateObject::LOGTYPE_ACCESS);
+		$this->log(print_r($data, true), ShopgateObject::LOGTYPE_ACCESS."\n");
 
 		// save the params
 		$this->params = $data;
