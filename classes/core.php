@@ -427,7 +427,7 @@ class ShopgateConfig extends ShopgateObject {
 				"Field 'customer_number' contains invalid value '{$newConfig['customer_number']}'."
 			);
 		}
-		if (!preg_match("/^\d{5}$/", $newConfig['shop_number'])) {
+		if (!preg_match("/^\d{5,}$/", $newConfig['shop_number'])) {
 			throw new ShopgateLibraryException(
 				ShopgateLibraryException::CONFIG_INVALID_VALUE,
 				"Field 'shop_number' contains invalid value '{$newConfig['shop_number']}'."
