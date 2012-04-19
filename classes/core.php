@@ -2317,8 +2317,9 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 	}
 
 	protected function iterateObjectList($list = null) {
+		$newList = array();
+		
 		if (!empty($list) && is_array($list)) {
-			$newList = array();
 			foreach ($list as $object) {
 				if (!($object instanceof ShopgateContainer)) {
 					ShopgateObject::logWrite('Encountered unknown type in what is supposed to be a list of ShopgateContainer objects: '.var_export($object, true));
@@ -2328,8 +2329,9 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 				$object->accept($this);
 				$newList[] = $this->object;
 			}
-			return $newList;
 		}
+		
+		return $newList;
 	}
 }
 
@@ -2439,6 +2441,7 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 
 	protected function iterateObjectList($list = null) {
 		$newList = array();
+		
 		if (!empty($list) && is_array($list)) {
 			foreach ($list as $object) {
 				if (!($object instanceof ShopgateContainer)) {
