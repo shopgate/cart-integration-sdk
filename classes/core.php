@@ -558,7 +558,8 @@ abstract class ShopgateObject {
 		self::init();
 
 		// call the initLibrary() callback and pass arguments
-		call_user_func_array(array($this, 'initLibrary'), func_get_args());
+		$args = func_get_args();
+		call_user_func_array(array($this, 'initLibrary'), $args);
 	}
 
 	/**
