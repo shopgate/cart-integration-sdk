@@ -1237,7 +1237,7 @@ class ShopgatePluginApi extends ShopgateObject {
 	 * @throws ShopgateLibraryException
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_categories_csv/de
 	 */
-	 private function getCategoriesCsv() {
+	private function getCategoriesCsv() {
 		// generate / update categories csv file
 		$this->plugin->startGetCategoriesCsv();
 
@@ -1333,7 +1333,7 @@ class ShopgatePluginApi extends ShopgateObject {
 	 * @throws ShopgateLibraryException
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_log_file/de
 	 */
-	 private function getLogFile() {
+	private function getLogFile() {
 		$type = (empty($this->params['log_type'])) ? ShopgateObject::LOGTYPE_ERROR : $this->params['log_type'];
 		$lines = (!isset($this->params['lines'])) ? null : $this->params['lines'];
 
@@ -1353,7 +1353,7 @@ class ShopgatePluginApi extends ShopgateObject {
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_orders/de
 	 * @todo
 	 */
-	 private function getOrders() {
+	private function getOrders() {
 		/**** not yet implemented ****/
 
 		//if (!empty($this->params['external_customer_number'])) {
@@ -1914,6 +1914,24 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	}
 
 	/**
+	 * @return string[] An array with the csv file field names as indices and empty strings as values.
+	 * @see http://wiki.shopgate.com/CSV_File_Reviews/de
+	 */
+	protected function buildDefaultReviewsRow() {
+		$row = array(
+			"item_number" => '',
+			"update_review_id" => '',
+			"score" => '',
+			"name" => '',
+			"date" => '',
+			"title" => '',
+			"text" => '',
+		);
+		
+		return $row;
+	}
+	
+	/**
 	 * Rounds and formats a price.
 	 *
 	 * @param float $price The price of an item.
@@ -2004,6 +2022,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * Performs the necessary queries to add an order to the shop system's database.
 	 *
 	 * @param ShopgateOrder $order The ShopgateOrder object to be added to the shop system's database.
+	 * @return int The ID of the added order in your shop system's database.
 	 * @throws ShopgateLibraryException if an error occurs.
 	 */
 	public abstract function addOrder(ShopgateOrder $order);
@@ -2013,6 +2032,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @param ShopgateOrder $order The ShopgateOrder object to be update in the shop system's database.
 	 * @param bool $payment True if the payment status of an order should be updated, false otherwise.
+	 * @return int The ID of the added order in your shop system's database.
 	 * @throws ShopgateLibraryException if an error occurs.
 	 */
 	public abstract function updateOrder(ShopgateOrder $order, $payment);
