@@ -39,6 +39,7 @@ function ShopgateErrorHandler($errno, $errstr, $errfile, $errline) {
 	return true;
 }
 
+
 /**
  * Exception type for errors within the Shopgate Library.
  *
@@ -244,7 +245,6 @@ class ShopgateLibraryException extends Exception {
  *
  * @author Daniel Aigner
  * @version 1.0.0
- *
  */
 class ShopgateConfig extends ShopgateObject {
 
@@ -1398,7 +1398,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	 *
 	 * @param mixed[] $data The parameters to send.
 	 * @return mixed The JSON decoded response.
-	 * @throws ShopgateLibraryException
+	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
 	 */
 	private function sendRequest($data) {
 		$data['shop_number'] = $this->config["shop_number"];
@@ -1452,6 +1452,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	 *
 	 * @param mixed[] $parameters
 	 * @return ShopgateOrder[]
+	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
 	 *
 	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_get_orders/de
 	 */
@@ -1486,7 +1487,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	 * @param string $shippingServiceId
 	 * @param int $trackingNumber
 	 * @param bool $markAsCompleted
-	 * @return mixed[] The Shopgate Merchant API's decoded response.
+	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
 	 *
 	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_add_order_delivery_note/de
 	 */
@@ -1498,15 +1499,12 @@ class ShopgateMerchantApi extends ShopgateObject {
 			"tracking_number" => (string) $trackingNumber,
 			"mark_as_completed" => $markAsCompleted,
 		);
-
-		return $this->sendRequest($data);
 	}
 
 	/**
 	 * Represents the "set_order_shipping_completed" action.
 	 *
 	 * @param string $orderNumber
-	 * @return mixed[] The Shopgate Merchant API's decoded response.
 	 *
 	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_set_order_shipping_completed/de
 	 */
@@ -1515,29 +1513,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 			'action' => 'set_order_shipping_completed',
 			'order_number' => $orderNumber,
 		);
-
-		return $this->sendRequest($data);
 	}
-
-	/**
-	 * Represents the "set_order_shipping_completed" action.
-	 *
-	 * @param string $orderNumber
-	 * @param string $message
-	 * @return mixed[] The Shopgate Merchant API's decoded response.
-	 *
-	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_add_order_delivery_note/de
-	 */
-	public function sendOrderMessage($orderNumber, $message) {
-		$data = array(
-			"action" => "send_order_message",
-			"order_number" => $orderNumber,
-			"message" => $message,
-		);
-
-		$this->sendRequest($data);
-	}
-
 }
 
 /**
