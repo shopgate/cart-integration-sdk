@@ -979,7 +979,7 @@ class ShopgatePluginApi extends ShopgateObject {
 	 */
 	public function handleRequest($data = array()) {
 		// log incoming request
-		$this->log($this->cleanParamsForLog($data), ShopgateObject::LOGTYPE_ACCESS."\n");
+		$this->log($this->cleanParamsForLog($data)."\n", ShopgateObject::LOGTYPE_ACCESS);
 
 		// save the params
 		$this->params = $data;
