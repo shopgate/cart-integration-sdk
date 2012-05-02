@@ -876,6 +876,8 @@ abstract class ShopgateContainer extends ShopgateObject {
  * @author Shopgate GmbH, 35510 Butzbach, DE
  */
 class ShopgatePluginApi extends ShopgateObject {
+	const OBFUSCATION_STRING = 'XXXXXXXX';
+	
 	/**
 	 * @var ShopgatePluginApi
 	 */
@@ -972,11 +974,12 @@ class ShopgatePluginApi extends ShopgateObject {
 	 * Note that the method usually returns true or false on completion, depending on the success of the operation. However, some actions such as
 	 * the get_*_csv actions, might stop the script after execution to prevent invalid data being appended to the output.
 	 *
+	 * @param mixed[] $data The incoming request's parameters.
 	 * @return bool false if an error occured, otherwise true.
 	 */
-	public function handleRequest($data) {
+	public function handleRequest($data = array()) {
 		// log incoming request
-		$this->log(print_r($data, true), ShopgateObject::LOGTYPE_ACCESS."\n");
+		$this->log($this->cleanParamsForLog($data), ShopgateObject::LOGTYPE_ACCESS."\n");
 
 		// save the params
 		$this->params = $data;
@@ -1032,6 +1035,24 @@ class ShopgatePluginApi extends ShopgateObject {
 
 		// return true or false
 		return !(isset($this->response["error"]) && $this->response["error"] > 0);
+	}
+	
+	/**
+	 * Function to prepare the parameters of an API request for logging.
+	 *
+	 * Strips out critical request data like the password of a get_customer request.
+	 *
+	 * @param mixed[] $data The incoming request's parameters.
+	 * @return string The cleaned parameters as string ready to log.
+	 */
+	protected function cleanParamsForLog($data) {
+		foreach ($data as $key => &$value) {
+			switch ($key) {
+				case 'pass': $value = self::OBFUSCATION_STRING;
+			}
+		}
+		
+		return print_r($data, true);
 	}
 
 
