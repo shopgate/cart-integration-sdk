@@ -1797,6 +1797,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			'manufacturer_item_number' 	=> "",
 			'url_deeplink' 				=> "",
 			/* additional fields */
+			'old_unit_amount'			=> "",
 			'properties'				=> "",
 			'msrp' 						=> "",
 			'shipping_costs_per_order' 	=> "0",
