@@ -56,6 +56,11 @@ class ShopgateOrder extends ShopgateContainer {
 	protected $items;
 
 	protected $delivery_notes;
+	
+	/**
+	 * Status for updates
+	 */
+	protected $update_payment = false;
 
 
 	/**********
@@ -290,6 +295,16 @@ class ShopgateOrder extends ShopgateContainer {
 	 */
 	public function setIsStorno($value) { $this->is_storno = $value; }
 
+	/**
+	 * Is this flag is set to 1 the payment of the order must be updated
+	 *
+	 * @param bool $value
+	 */
+	public function setUpdatePayment($value) {
+		$this->update_payment = $value;
+	}
+	
+	
 	/**
 	 * The invoice address of the customer
 	 *
@@ -636,6 +651,17 @@ class ShopgateOrder extends ShopgateContainer {
 	 */
 	public function getIsStorno() { return (bool) $this->is_storno; }
 
+	
+	/**
+	 * Is this flag is set to 1 the payment of the order must be updated
+	 *
+	 * @return bool
+	 */
+	public function getUpdatePayment() {
+		return (bool) $this->update_payment;
+	}
+	
+	
 	/**
 	 * The invoice address of the customer
 	 *
