@@ -74,8 +74,8 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_API_NO_USER = 35;
 	const PLUGIN_API_NO_PASS = 36;
 	const PLUGIN_API_NO_PAYMENT = 37;
-
 	const PLUGIN_API_UNKNOWN_LOGTYPE = 38;
+	const PLUGIN_API_NO_SHIPPING = 39;
 
 	// Plugin errors
 	const PLUGIN_DUPLICATE_ORDER = 60;
@@ -121,6 +121,7 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_API_NO_USER => 'parameter "user" missing',
 		self::PLUGIN_API_NO_PASS => 'parameter "pass" missing',
 		self::PLUGIN_API_NO_PAYMENT => 'parameter "payment" missing',
+		self::PLUGIN_API_NO_SHIPPING => 'parameter "shipping" missing',
 		self::PLUGIN_API_UNKNOWN_LOGTYPE => 'unknown logtype',
 
 		// Plugin errors
@@ -1172,10 +1173,18 @@ class ShopgatePluginApi extends ShopgateObject {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_PAYMENT);
 		}
 
+		if (!isset($this->params['shipping'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_SHIPPING);
+		}
+
 		$orders = ShopgateMerchantApi::getInstance()->getOrders(array('order_numbers[0]'=>$this->params['order_number']));
 		$payment = (bool) $this->params['payment'];
+		$shipping = (bool) $this->params['shipping'];
+		
 		foreach ($orders as $order) {
-			$orderId = $this->plugin->updateOrder($order, $payment);
+			$order->setUpdatePayment($payment);
+			$order->setUpdateShipping($shipping);
+			$orderId = $this->plugin->updateOrder($order);
 		}
 
 		$this->response["external_order_number"] = $orderId;

@@ -60,7 +60,7 @@ class ShopgateOrder extends ShopgateContainer {
 	/**
 	 * Status for updates
 	 */
-	protected $update_payment = false;
+	protected $update_shipping = false;
 
 
 	/**********
@@ -294,7 +294,7 @@ class ShopgateOrder extends ShopgateContainer {
 	 * @param bool $value
 	 */
 	public function setIsStorno($value) { $this->is_storno = $value; }
-
+	
 	/**
 	 * Is this flag is set to 1 the payment of the order must be updated
 	 *
@@ -302,6 +302,15 @@ class ShopgateOrder extends ShopgateContainer {
 	 */
 	public function setUpdatePayment($value) {
 		$this->update_payment = $value;
+	}
+	
+	/**
+	 * Is this flag is set to 1 the shipping of the order must be updated
+	 *
+	 * @param bool $value
+	 */
+	public function setUpdateShipping($value) {
+		$this->update_shipping = $value;
 	}
 	
 	
@@ -659,6 +668,15 @@ class ShopgateOrder extends ShopgateContainer {
 	 */
 	public function getUpdatePayment() {
 		return (bool) $this->update_payment;
+	}
+	
+	/**
+	 * Is this flag is set to 1 the shipping of the order must be updated
+	 *
+	 * @return bool
+	 */
+	public function getUpdateShipping() {
+		return (bool) $this->update_shipping;
 	}
 	
 	
