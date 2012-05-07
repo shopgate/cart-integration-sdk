@@ -2042,7 +2042,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @return int The ID of the added order in your shop system's database.
 	 * @throws ShopgateLibraryException if an error occurs.
 	 */
-	public abstract function updateOrder(ShopgateOrder $order, $payment);
+	public abstract function updateOrder(ShopgateOrder $order);
 
 	/**
 	 * Loads the products of the shop system's database and passes them to the buffer.
