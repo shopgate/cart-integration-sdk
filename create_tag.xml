@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="CreateShopgateLibraryTag" basedir="." default="createTag">
+
+	<!-- Projektsettings -->
+	<property name="svn.lib.dir" location="svnant-lib/" />
+	<property name="svn.url"
+		value="https://svn.localdev.cc/svn/shopgate_plugin_library" />
+
+	<!-- SVN -->
+	<path id="path.svnant">
+		<pathelement location="svnant.jar" />
+		<pathelement location="svnClientAdapter.jar" />
+		<pathelement location="svnjavahl.jar" />
+	</path>
+	<typedef resource="org/tigris/subversion/svnant/svnantlib.xml"
+		classpathref="path.svnant" />
+
+	<!-- SVN Properties -->
+	<svnSetting javahl="false" svnkit="false"
+		username="${svnant.repository.user}" password="${svnant.repository.passwd}"
+		id="svn.settings" />
+
+	<!-- Erstellt einen Tag -->
+	<target name="createTag" description="creates a tag">
+		<available resource="org/tigris/subversion/svnant/svnantlib.xml"
+			classpathref="path.svnant" property="available.svnant" />
+		<echo message="SVN-ANT is available = ${available.svnant}" />
+
+		<!-- Hole die Tag-Versionen -->
+		<svn refid="svn.settings">
+			<list property="tag.versions" url="${svn.url}/tags/" delimiter=","
+				onlyNames="true" />
+		</svn>
+
+		<!-- Extrahiere die letzte Version -->
+		<script language="javascript"> <![CDATA[
+	
+	        versions = project.getProperty("tag.versions").split(',');
+			
+			actualTagVersion = versions[versions.length-1];
+			project.setProperty("tag.version.actual", actualTagVersion);
+			splittedVersion = actualTagVersion.split('\\.');
+			
+			newTagVersion = splittedVersion[0]+"."+splittedVersion[1]+"."+(parseInt(splittedVersion[2])+1);
+			
+	        // store the result in a new property
+	        project.setProperty("tag.version.new",newTagVersion);
+	
+	    ]]>
+		</script>
+		<echo message="Die neuste Tag-Version ist: ${tag.version.actual}" />
+		<echo message="Erstelle neue Tag-Version: ${tag.version.new} ...." />
+
+		<!-- Tag erstellen -->
+		<svn refid="svn.settings">
+			<copy makeParents="true" srcUrl="${svn.url}/trunk"
+				destUrl="${svn.url}/tags/${tag.version.new}/release" message="Shopgate Library Version: ${tag.version.new}" />
+		</svn>
+
+	</target>
+</project>
