@@ -51,8 +51,6 @@
 		<echo message="Die neuste Tag-Version ist: ${tag.version.actual}" />
 		<echo message="Erstelle neue Tag-Version: ${tag.version.new} ...." />
 
-		<replace file="classes/core.php" token="@VERSION" value="${tag.version.new}"/>
-		
 		<!-- Tag erstellen -->
 		<svn refid="svn.settings">
 			<copy makeParents="true" srcUrl="${svn.url}/trunk"
