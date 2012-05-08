@@ -3,7 +3,7 @@
 ###################################################################################
 # define constants
 ###################################################################################
-define('SHOPGATE_LIBRARY_VERSION', "2.0.5");
+define('SHOPGATE_LIBRARY_VERSION', "2.0.7");
 define('SHOPGATE_BASE_DIR', realpath(dirname(__FILE__).'/../'));
 define('SHOPGATE_ITUNES_URL', 'http://itunes.apple.com/de/app/shopgate-eine-app-alle-shops/id365287459?mt=8');
 
@@ -73,9 +73,7 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_API_NO_ORDER_NUMBER = 30;
 	const PLUGIN_API_NO_USER = 35;
 	const PLUGIN_API_NO_PASS = 36;
-	const PLUGIN_API_NO_PAYMENT = 37;
 	const PLUGIN_API_UNKNOWN_LOGTYPE = 38;
-	const PLUGIN_API_NO_SHIPPING = 39;
 
 	// Plugin errors
 	const PLUGIN_DUPLICATE_ORDER = 60;
@@ -120,8 +118,6 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_API_NO_ORDER_NUMBER => 'parameter "order_number" missing',
 		self::PLUGIN_API_NO_USER => 'parameter "user" missing',
 		self::PLUGIN_API_NO_PASS => 'parameter "pass" missing',
-		self::PLUGIN_API_NO_PAYMENT => 'parameter "payment" missing',
-		self::PLUGIN_API_NO_SHIPPING => 'parameter "shipping" missing',
 		self::PLUGIN_API_UNKNOWN_LOGTYPE => 'unknown logtype',
 
 		// Plugin errors
@@ -1169,17 +1165,17 @@ class ShopgatePluginApi extends ShopgateObject {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ORDER_NUMBER);
 		}
 
-		if (!isset($this->params['payment'])) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_PAYMENT);
-		}
-
-		if (!isset($this->params['shipping'])) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_SHIPPING);
-		}
-
 		$orders = ShopgateMerchantApi::getInstance()->getOrders(array('order_numbers[0]'=>$this->params['order_number']));
-		$payment = (bool) $this->params['payment'];
-		$shipping = (bool) $this->params['shipping'];
+		
+		$payment = 0;
+		$shipping = 0;
+		
+		if(isset($this->params['payment'])){
+			$payment = (bool) $this->params['payment'];
+		}
+		if(isset($this->params['shipping'])){
+			$shipping = (bool) $this->params['shipping'];
+		}
 		
 		foreach ($orders as $order) {
 			$order->setUpdatePayment($payment);
