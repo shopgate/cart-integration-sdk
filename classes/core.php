@@ -95,7 +95,7 @@ class ShopgateLibraryException extends Exception {
 	const MERCHANT_API_ERROR_RECEIVED = 102;
 
 	// Authentification errors
-	const AUTHENTIFICATION_FAILED = 120;
+	const AUTHENTICATION_FAILED = 120;
 
 	// Unknown error code (the value passed as code gets to be the message)
 	const UNKNOWN_ERROR_CODE = 999;
@@ -140,7 +140,7 @@ class ShopgateLibraryException extends Exception {
 		self::MERCHANT_API_ERROR_RECEIVED => 'error code received',
 
 		// Authentification errors
-		self::AUTHENTIFICATION_FAILED => 'authentification failed',
+		self::AUTHENTICATION_FAILED => 'authentication failed',
 	);
 
 
@@ -2137,34 +2137,34 @@ class ShopgateAuthentificationService extends ShopgateObject {
 	 */
 	public function checkAuthentification() {
 		if (empty($_SERVER[self::PHP_X_SHOPGATE_AUTH_USER]) || empty($_SERVER[self::PHP_X_SHOPGATE_AUTH_TOKEN])){
-			throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTIFICATION_FAILED, 'No authentication data present.');
+			throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTICATION_FAILED, 'No authentication data present.');
 		}
 
 		// for convenience
 		$name = $_SERVER[self::PHP_X_SHOPGATE_AUTH_USER];
 		$token = $_SERVER[self::PHP_X_SHOPGATE_AUTH_TOKEN];
 
-	    // extract customer number and timestamp from username
+		// extract customer number and timestamp from username
 		$matches = array();
-	 	if (!preg_match('/(?<customer_number>[1-9][0-9]+)-(?<timestamp>[1-9][0-9]+)/', $name, $matches)){
-	 		throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTIFICATION_FAILED, 'Cannot parse: '.$name.'.');
-   		}
+		if (!preg_match('/(?<customer_number>[1-9][0-9]+)-(?<timestamp>[1-9][0-9]+)/', $name, $matches)){
+			throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTICATION_FAILED, 'Cannot parse: '.$name.'.');
+		}
 
-   		// for convenience
-   		$customer_number = $matches["customer_number"];
-   		$timestamp = $matches["timestamp"];
+		// for convenience
+		$customer_number = $matches["customer_number"];
+		$timestamp = $matches["timestamp"];
 
-   		// request shouldn't be older than 30 minutes
-   		if ((time() - $timestamp) >= (30*60)) {
-   			throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTIFICATION_FAILED, 'Request too old.');
-   		}
+		// request shouldn't be older than 30 minutes
+		if ((time() - $timestamp) >= (30*60)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTICATION_FAILED, 'Request too old.');
+		}
 
-   		// create the authentification-password
+		// create the authentification-password
 		$generatedPassword = sha1("SPA-{$customer_number}-{$timestamp}-{$this->apiKey}");
 
 		// compare customer-number and auth-password
 		if (($customer_number != $this->customerNumber) || ($token != $generatedPassword)) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTIFICATION_FAILED, 'Invalid authentication data.');
+			throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTICATION_FAILED, 'Invalid authentication data.');
 		}
 	}
 }
