@@ -344,19 +344,16 @@ class ShopgateConfig extends ShopgateObject {
 	 * Gibt den Pfad zur Error-Log-Datei zurück.
 	 * Für diese Datei sollten Schreib- und leserechte gewährt werden.
 	 */
-	public static final function getLogFilePath($type="error") {
-		if($type==="access") {
-			if(isset(self::$config['path_to_access_log_file'])) {
-				return self::$config['path_to_access_log_file'];
-			} else {
-				return SHOPGATE_BASE_DIR.'/temp/logs/access.log';
-			}
+	public static final function getLogFilePath($type = ShopgateObject::LOGTYPE_ERROR) {
+		switch (strtolower($type)) {
+			default: $type = 'error';
+			case "access": case "request": case "request":
+		}
+		
+		if(isset(self::$config['path_to_'.strtolower($type).'access_log_file'])) {
+			return self::$config['path_to_'.strtolower($type).'_log_file'];
 		} else {
-			if(isset(self::$config['path_to_error_log_file'])) {
-				return self::$config['path_to_error_log_file'];
-			} else {
-				return SHOPGATE_BASE_DIR.'/temp/logs/error.log';
-			}
+			return SHOPGATE_BASE_DIR.'/temp/logs/'.strtolower($type).'.log';
 		}
 	}
 
@@ -527,6 +524,7 @@ if (isset($shopgate_config) && is_array($shopgate_config)) {
  */
 abstract class ShopgateObject {
 	const LOGTYPE_ACCESS = 'access';
+	const LOGTYPE_REQUEST = 'request';
 	const LOGTYPE_ERROR = 'error';
 
 	/**
@@ -535,6 +533,7 @@ abstract class ShopgateObject {
 	private static $fileHandles = array(
 		self::LOGTYPE_ACCESS => null,
 		self::LOGTYPE_ERROR => null,
+		self::LOGTYPE_REQUEST => null,
 	);
 
 	/**
@@ -651,6 +650,7 @@ abstract class ShopgateObject {
 			// allowed types:
 			case self::LOGTYPE_ERROR:
 			case self::LOGTYPE_ACCESS:
+			case self::LOGTYPE_REQUEST:
 		}
 
 		// try to log
@@ -665,6 +665,24 @@ abstract class ShopgateObject {
 		self::unInit();
 
 		return $success;
+	}
+	
+	/**
+	 * Function to prepare the parameters of an API request for logging.
+	 *
+	 * Strips out critical request data like the password of a get_customer request.
+	 *
+	 * @param mixed[] $data The incoming request's parameters.
+	 * @return string The cleaned parameters as string ready to log.
+	 */
+	protected function cleanParamsForLog($data) {
+		foreach ($data as $key => &$value) {
+			switch ($key) {
+				case 'pass': $value = self::OBFUSCATION_STRING;
+			}
+		}
+		
+		return print_r($data, true);
 	}
 
 	/**
@@ -1032,24 +1050,6 @@ class ShopgatePluginApi extends ShopgateObject {
 
 		// return true or false
 		return !(isset($this->response["error"]) && $this->response["error"] > 0);
-	}
-	
-	/**
-	 * Function to prepare the parameters of an API request for logging.
-	 *
-	 * Strips out critical request data like the password of a get_customer request.
-	 *
-	 * @param mixed[] $data The incoming request's parameters.
-	 * @return string The cleaned parameters as string ready to log.
-	 */
-	protected function cleanParamsForLog($data) {
-		foreach ($data as $key => &$value) {
-			switch ($key) {
-				case 'pass': $value = self::OBFUSCATION_STRING;
-			}
-		}
-		
-		return print_r($data, true);
 	}
 
 
@@ -1429,10 +1429,11 @@ class ShopgateMerchantApi extends ShopgateObject {
 	private function sendRequest($data) {
 		$data['shop_number'] = $this->config["shop_number"];
 		$data['trace_id'] = 'spa-'.uniqid();
-
 		$url = $this->config["api_url"];
+		
+		$this->log('Sending request to "'.$url.'": '.$this->cleanParamsForLog($data), ShopgateObject::LOGTYPE_REQUEST);
+		
 		$curl = curl_init($url);
-
 		curl_setopt($curl, CURLOPT_HEADER, false);
 		curl_setopt($curl, CURLOPT_USERAGENT, "ShopgatePlugin/" . SHOPGATE_PLUGIN_VERSION);
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
