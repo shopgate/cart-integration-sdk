@@ -528,7 +528,9 @@ abstract class ShopgateObject {
 	const LOGTYPE_ACCESS = 'access';
 	const LOGTYPE_REQUEST = 'request';
 	const LOGTYPE_ERROR = 'error';
-
+	
+	const OBFUSCATION_STRING = 'XXXXXXXX';
+	
 	/**
 	 * @var resource[]
 	 */
@@ -893,8 +895,6 @@ abstract class ShopgateContainer extends ShopgateObject {
  * @author Shopgate GmbH, 35510 Butzbach, DE
  */
 class ShopgatePluginApi extends ShopgateObject {
-	const OBFUSCATION_STRING = 'XXXXXXXX';
-	
 	/**
 	 * @var ShopgatePluginApi
 	 */
