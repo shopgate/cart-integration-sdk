@@ -78,6 +78,7 @@ class ShopgateLibraryException extends Exception {
 	// Plugin errors
 	const PLUGIN_DUPLICATE_ORDER = 60;
 	const PLUGIN_ORDER_NOT_FOUND = 61;
+	const PLUGIN_NO_CUSTOMER_GROUP_FOUND = 62;
 
 	const PLUGIN_NO_ADDRESSES_FOUND = 70;
 	const PLUGIN_WRONG_USERNAME_OR_PASSWORD = 71;
@@ -123,6 +124,7 @@ class ShopgateLibraryException extends Exception {
 		// Plugin errors
 		self::PLUGIN_DUPLICATE_ORDER => 'duplicate order',
 		self::PLUGIN_ORDER_NOT_FOUND => 'order not found',
+		self::PLUGIN_NO_CUSTOMER_GROUP_FOUND => 'no customer group found for customer',
 
 		self::PLUGIN_NO_ADDRESSES_FOUND => 'no addresses found for customer',
 		self::PLUGIN_WRONG_USERNAME_OR_PASSWORD => 'wrong username or password',
@@ -157,7 +159,7 @@ class ShopgateLibraryException extends Exception {
 	 * @param string $additionalInformation More detailed information on what exactly went wrong.
 	 * @param boolean $appendAdditionalInformationOnMessage Set true to output the additional information to the response. Set false to log it silently.
 	 */
-	public function __construct($code, $additionalInformation = null, $appendAdditionalInformationOnMessage = false) {
+	public function __construct($code, $additionalInformation = null, $appendAdditionalInformationToMessage = false) {
 		// Set code and message
 		$logMessage = self::buildLogMessageFor($code, $additionalInformation);
 		if (isset(self::$errorMessages[$code])) {
@@ -167,7 +169,7 @@ class ShopgateLibraryException extends Exception {
 			$code = self::UNKNOWN_ERROR_CODE;
 		}
 
-		if($appendAdditionalInformationOnMessage){
+		if($appendAdditionalInformationToMessage){
 			$message .= ': '.$additionalInformation;
 		}
 
