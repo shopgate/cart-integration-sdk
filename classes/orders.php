@@ -59,14 +59,14 @@ class ShopgateOrder extends ShopgateContainer {
 	
 	/**
 	 * Set to true if shipping information should be updated.
-	 * 
+	 *
 	 * @var bool
 	 */
 	protected $update_shipping = false;
 	
 	/**
 	 * Set to true if payment information should be updated.
-	 * 
+	 *
 	 * @var bool
 	 */
 	protected $update_payment = false;

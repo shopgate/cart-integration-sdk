@@ -25,7 +25,7 @@ class ShopgateCustomer extends ShopgateContainer {
 	 **********/
 	
 	/**
-	 * @param int $value
+	 * @param string $value
 	 */
 	public function setCustomerId($value) { $this->customer_id = $value; }
 	
@@ -40,7 +40,7 @@ class ShopgateCustomer extends ShopgateContainer {
 	public function setCustomerGroup($value) { $this->customer_group = $value; }
 	
 	/**
-	 * @param id $value
+	 * @param string $value
 	 */
 	public function setCustomerGroupId($value) {
 		if (is_numeric($value)) {
@@ -122,9 +122,9 @@ class ShopgateCustomer extends ShopgateContainer {
 	 **********/
 	
 	/**
-	 * @return int
+	 * @return string
 	 */
-	public function getCustomerId() { return (int) $this->customer_id; }
+	public function getCustomerId() { return $this->customer_id; }
 	
 	/**
 	 * @return string
@@ -137,9 +137,9 @@ class ShopgateCustomer extends ShopgateContainer {
 	public function getCustomerGroup() { return $this->customer_group; }
 	
 	/**
-	 * @return int
+	 * @return string
 	 */
-	public function getCustomerGroupId() { return (int) $this->customer_group_id; }
+	public function getCustomerGroupId() { return $this->customer_group_id; }
 	
 	/**
 	 * @return string
@@ -235,7 +235,7 @@ class ShopgateAddress extends ShopgateContainer {
 	 **********/
 	
 	/**
-	 * @param int $value
+	 * @param string $value
 	 */
 	public function setId($value) {
 		$this->id = $value;
@@ -398,9 +398,9 @@ class ShopgateAddress extends ShopgateContainer {
 	 **********/
 	
 	/**
-	 * @return int
+	 * @return string
 	 */
-	public function getId() { return (int) $this->id; }
+	public function getId() { return $this->id; }
 	
 	/**
 	* @return bool
