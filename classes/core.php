@@ -3,7 +3,7 @@
 ###################################################################################
 # define constants
 ###################################################################################
-define('SHOPGATE_LIBRARY_VERSION', "2.0.7");
+define('SHOPGATE_LIBRARY_VERSION', "2.0.8");
 define('SHOPGATE_BASE_DIR', realpath(dirname(__FILE__).'/../'));
 define('SHOPGATE_ITUNES_URL', 'http://itunes.apple.com/de/app/shopgate-eine-app-alle-shops/id365287459?mt=8');
 
@@ -1534,6 +1534,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	 * Represents the "set_order_shipping_completed" action.
 	 *
 	 * @param string $orderNumber
+	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
 	 *
 	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_set_order_shipping_completed/de
 	 */
@@ -1542,6 +1543,8 @@ class ShopgateMerchantApi extends ShopgateObject {
 			'action' => 'set_order_shipping_completed',
 			'order_number' => $orderNumber,
 		);
+		
+		$this->sendRequest($data);
 	}
 }
 
