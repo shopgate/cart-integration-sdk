@@ -1135,6 +1135,7 @@ class ShopgatePluginApi extends ShopgateObject {
 		$this->response["php_curl"] = function_exists("curl_version") ? curl_version() : "No PHP-CURL installed";
 		$this->response["php_extensions"] = get_loaded_extensions();
 		$this->response["shopgate_library_version"] = SHOPGATE_LIBRARY_VERSION;
+		$this->response["plugin_version"] = defined("SHOPGATE_PLUGIN_VERSION")?SHOPGATE_PLUGIN_VERSION:"UNKNOWN";
 	}
 
 	/**
