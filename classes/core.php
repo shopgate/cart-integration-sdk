@@ -351,7 +351,7 @@ class ShopgateConfig extends ShopgateObject {
 			default: $type = 'error';
 			case "access": case "request": case "request":
 		}
-		
+
 		if(isset(self::$config['path_to_'.strtolower($type).'access_log_file'])) {
 			return self::$config['path_to_'.strtolower($type).'_log_file'];
 		} else {
@@ -528,9 +528,9 @@ abstract class ShopgateObject {
 	const LOGTYPE_ACCESS = 'access';
 	const LOGTYPE_REQUEST = 'request';
 	const LOGTYPE_ERROR = 'error';
-	
+
 	const OBFUSCATION_STRING = 'XXXXXXXX';
-	
+
 	/**
 	 * @var resource[]
 	 */
@@ -670,7 +670,7 @@ abstract class ShopgateObject {
 
 		return $success;
 	}
-	
+
 	/**
 	 * Function to prepare the parameters of an API request for logging.
 	 *
@@ -685,7 +685,7 @@ abstract class ShopgateObject {
 				case 'pass': $value = self::OBFUSCATION_STRING;
 			}
 		}
-		
+
 		return print_r($data, true);
 	}
 
@@ -1168,17 +1168,17 @@ class ShopgatePluginApi extends ShopgateObject {
 		}
 
 		$orders = ShopgateMerchantApi::getInstance()->getOrders(array('order_numbers[0]'=>$this->params['order_number']));
-		
+
 		$payment = 0;
 		$shipping = 0;
-		
+
 		if(isset($this->params['payment'])){
 			$payment = (bool) $this->params['payment'];
 		}
 		if(isset($this->params['shipping'])){
 			$shipping = (bool) $this->params['shipping'];
 		}
-		
+
 		foreach ($orders as $order) {
 			$order->setUpdatePayment($payment);
 			$order->setUpdateShipping($shipping);
@@ -1432,9 +1432,9 @@ class ShopgateMerchantApi extends ShopgateObject {
 		$data['shop_number'] = $this->config["shop_number"];
 		$data['trace_id'] = 'spa-'.uniqid();
 		$url = $this->config["api_url"];
-		
+
 		$this->log('Sending request to "'.$url.'": '.$this->cleanParamsForLog($data), ShopgateObject::LOGTYPE_REQUEST);
-		
+
 		$curl = curl_init($url);
 		curl_setopt($curl, CURLOPT_HEADER, false);
 		curl_setopt($curl, CURLOPT_USERAGENT, "ShopgatePlugin/" . SHOPGATE_PLUGIN_VERSION);
@@ -1938,10 +1938,10 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			"title" => '',
 			"text" => '',
 		);
-		
+
 		return $row;
 	}
-	
+
 	/**
 	 * Rounds and formats a price.
 	 *
@@ -2144,6 +2144,8 @@ class ShopgateAuthentificationService extends ShopgateObject {
 	 * @throws ShopgateLibraryException if authentication fails
 	 */
 	public function checkAuthentification() {
+		if(defined("SHOPGATE_DEBUG") && SHOPGATE_DEBUG === 1) return;
+
 		if (empty($_SERVER[self::PHP_X_SHOPGATE_AUTH_USER]) || empty($_SERVER[self::PHP_X_SHOPGATE_AUTH_TOKEN])){
 			throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTICATION_FAILED, 'No authentication data present.');
 		}
@@ -2350,7 +2352,7 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 
 	protected function iterateObjectList($list = null) {
 		$newList = array();
-		
+
 		if (!empty($list) && is_array($list)) {
 			foreach ($list as $object) {
 				if (!($object instanceof ShopgateContainer)) {
@@ -2362,7 +2364,7 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 				$newList[] = $this->object;
 			}
 		}
-		
+
 		return $newList;
 	}
 }
@@ -2473,7 +2475,7 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 
 	protected function iterateObjectList($list = null) {
 		$newList = array();
-		
+
 		if (!empty($list) && is_array($list)) {
 			foreach ($list as $object) {
 				if (!($object instanceof ShopgateContainer)) {
