@@ -1528,6 +1528,8 @@ class ShopgateMerchantApi extends ShopgateObject {
 			"tracking_number" => (string) $trackingNumber,
 			"mark_as_completed" => $markAsCompleted,
 		);
+		
+		$this->sendRequest($data);
 	}
 
 	/**
