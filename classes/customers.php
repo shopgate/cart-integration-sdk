@@ -81,7 +81,8 @@ class ShopgateCustomer extends ShopgateContainer {
 			$this->birthday = null;
 			return;
 		}
-
+		
+		$matches = null;
 		if (!preg_match('/^([0-9]{4}\-[0-9]{2}\-[0-9]{2})/', $value, $matches)) {
 			$this->birthday = null;
 		} else {
@@ -299,12 +300,11 @@ class ShopgateAddress extends ShopgateContainer {
 			return;
 		}
 
-		$timestamp = strtotime($value);
-
-		if (($timestamp === false) || ($timestamp == -1)) {
+		$matches = null;
+		if (!preg_match('/^([0-9]{4}\-[0-9]{2}\-[0-9]{2})/', $value, $matches)) {
 			$this->birthday = null;
 		} else {
-			$this->birthday = date('Y-m-d', $timestamp);
+			$this->birthday = $matches[1];
 		}
 	}
 
