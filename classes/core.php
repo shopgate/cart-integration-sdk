@@ -1651,7 +1651,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @param string $filePath Path to the file (the .tmp extension is added automatically).
 	 */
 	private final function createBuffer($filePath) {
-		$timeStart = time();
+		$this->timeStart = time();
 		$filePath .= ".tmp";
 
 		$this->log('Trying to create "'.basename($filePath).'". ', 'access');
@@ -1676,7 +1676,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		rename($filePath.".tmp", $filePath);
 
 		$this->log('Fertig, '.basename($filePath).' wurde erfolgreich erstellt', "access");
-		$duration = time() - $timeStart;
+		$duration = time() - $this->timeStart;
 		$this->log("Dauer: $duration Sekunden", "access");
 	}
 
