@@ -10,7 +10,7 @@ class ShopgateOrder extends ShopgateContainer {
 	const PAYPAL = "PAYPAL";
 	const KLARNA_INV = "KLARNA_INV";
 	const BILLSAFE = "BILLSAFE";
-	
+
 
 	protected $order_number;
 	protected $customer_number;
@@ -28,7 +28,7 @@ class ShopgateOrder extends ShopgateContainer {
 	protected $confirm_shipping_url;
 
 	protected $created_time;
-	
+
 	protected $payment_method;
 	protected $payment_group;
 
@@ -56,14 +56,14 @@ class ShopgateOrder extends ShopgateContainer {
 	protected $items;
 
 	protected $delivery_notes;
-	
+
 	/**
 	 * Set to true if shipping information should be updated.
 	 *
 	 * @var bool
 	 */
 	protected $update_shipping = false;
-	
+
 	/**
 	 * Set to true if payment information should be updated.
 	 *
@@ -168,7 +168,7 @@ class ShopgateOrder extends ShopgateContainer {
 	 * @param string $value
 	 */
 	public function setCreatedTime($value) { $this->created_time = $value; }
-	
+
 	/**
 	 * The payment group for the order
 	 *
@@ -180,7 +180,7 @@ class ShopgateOrder extends ShopgateContainer {
 	public function setPaymentGroup($value) {
 		$this->payment_group = $value;
 	}
-	
+
 	/**
 	 * The payment method for the order
 	 *
@@ -303,7 +303,7 @@ class ShopgateOrder extends ShopgateContainer {
 	 * @param bool $value
 	 */
 	public function setIsStorno($value) { $this->is_storno = $value; }
-	
+
 	/**
 	 * Is this flag is set to 1 the payment of the order must be updated
 	 *
@@ -312,7 +312,7 @@ class ShopgateOrder extends ShopgateContainer {
 	public function setUpdatePayment($value) {
 		$this->update_payment = $value;
 	}
-	
+
 	/**
 	 * Is this flag is set to 1 the shipping of the order must be updated
 	 *
@@ -321,8 +321,8 @@ class ShopgateOrder extends ShopgateContainer {
 	public function setUpdateShipping($value) {
 		$this->update_shipping = $value;
 	}
-	
-	
+
+
 	/**
 	 * The invoice address of the customer
 	 *
@@ -394,7 +394,7 @@ class ShopgateOrder extends ShopgateContainer {
 			$this->delivery_notes = null;
 			return;
 		}
-		
+
 		if (!is_array($value)) {
 			$this->delivery_notes = null;
 			return;
@@ -410,7 +410,7 @@ class ShopgateOrder extends ShopgateContainer {
 				$element = new ShopgateDeliveryNote($element);
 			}
 		}
-		
+
 		$this->delivery_notes = $value;
 	}
 
@@ -520,7 +520,7 @@ class ShopgateOrder extends ShopgateContainer {
 
 		return $time;
 	}
-	
+
 	/**
 	 * The payment method for the order
 	 *
@@ -532,7 +532,7 @@ class ShopgateOrder extends ShopgateContainer {
 	public function getPaymentMethod() {
 		return $this->payment_method;
 	}
-	
+
 	/**
 	 * The payment group for the order
 	 *
@@ -669,7 +669,7 @@ class ShopgateOrder extends ShopgateContainer {
 	 */
 	public function getIsStorno() { return (bool) $this->is_storno; }
 
-	
+
 	/**
 	 * Is this flag is set to 1 the payment of the order must be updated
 	 *
@@ -678,7 +678,7 @@ class ShopgateOrder extends ShopgateContainer {
 	public function getUpdatePayment() {
 		return (bool) $this->update_payment;
 	}
-	
+
 	/**
 	 * Is this flag is set to 1 the shipping of the order must be updated
 	 *
@@ -687,8 +687,8 @@ class ShopgateOrder extends ShopgateContainer {
 	public function getUpdateShipping() {
 		return (bool) $this->update_shipping;
 	}
-	
-	
+
+
 	/**
 	 * The invoice address of the customer
 	 *
@@ -716,7 +716,7 @@ class ShopgateOrder extends ShopgateContainer {
 	 * @return ShopgateDeliveryNote[]
 	 */
 	public function getDeliveryNotes() { return $this->delivery_notes; }
-	
+
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitOrder($this);
 	}
@@ -824,12 +824,12 @@ class ShopgateOrderItem extends ShopgateContainer {
 	 */
 	public function setOptions($value) {
 		if (empty($value)) {
-			$this->internal_order_info = null;
+			$this->options = null;
 			return;
 		}
-		
+
 		if (!is_array($value)) {
-			$this->internal_order_info = null;
+			$this->options = null;
 			return;
 		}
 
@@ -943,7 +943,7 @@ class ShopgateOrderItem extends ShopgateContainer {
 		return $this->inputs;
 	}
 
-	
+
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitOrderItem($this);
 	}
@@ -1056,7 +1056,7 @@ class ShopgateOrderItemOption extends ShopgateContainer {
 		return $this->option_number;
 	}
 
-	
+
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitOrderItemOption($this);
 	}
@@ -1142,7 +1142,7 @@ class ShopgateDeliveryNote extends ShopgateContainer {
 		return $this->tracking_number;
 	}
 
-	
+
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitOrderDeliveryNote($this);
 	}
