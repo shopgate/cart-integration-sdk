@@ -1027,7 +1027,7 @@ class ShopgatePluginApi extends ShopgateObject {
 				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_UNKNOWN_ACTION, "'{$this->params['action']}'");
 			}
 
-			if ($this->config['enable_'.$this->params['action']] !== true) {
+			if (empty($this->config['enable_'.$this->params['action']])) {
 				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_DISABLED_ACTION, "'{$this->params['action']}'");
 			}
 
