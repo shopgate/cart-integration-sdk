@@ -1549,6 +1549,22 @@ class ShopgateMerchantApi extends ShopgateObject {
 		
 		$this->sendRequest($data);
 	}
+
+	/**
+	 * Represents the "get_mobile_redirect_keywords" action.
+	 *
+	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
+	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_get_mobile_redirect_keywords/de
+	 */
+	public function getMobileRedirectKeywords(){
+		$data = array(
+			'action' => 'get_mobile_redirect_keywords',
+		);
+		
+		$response = $this->sendRequest($data);
+		
+		return $response['keywords'];
+	}
 }
 
 /**
