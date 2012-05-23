@@ -23,6 +23,7 @@
 
 		<copy todir="${output-folder}">
 			<fileset dir="${project-root}" followsymlinks="false">
+				<include name="assets/" />
 				<include name="classes/" />
 				<include name="temp/" />
 				<include name="vendors/" />
