@@ -282,7 +282,6 @@ class ShopgateConfig extends ShopgateObject {
 		'apikey' => 'THE_API_KEY',
 		'alias' => 'my-shop',
 		'cname' => 'm.my-shop.de',
-		'' => '',
 		'server' => 'live',
 		'plugin' => 'example',
 		'plugin_language' => 'DE',
