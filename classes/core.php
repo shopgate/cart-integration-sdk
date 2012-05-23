@@ -354,7 +354,7 @@ class ShopgateConfig extends ShopgateObject {
 			case "access": case "request": case "request":
 		}
 
-		if(isset(self::$config['path_to_'.strtolower($type).'access_log_file'])) {
+		if(isset(self::$config['path_to_'.strtolower($type).'_log_file'])) {
 			return self::$config['path_to_'.strtolower($type).'_log_file'];
 		} else {
 			return SHOPGATE_BASE_DIR.'/temp/logs/'.strtolower($type).'.log';
@@ -1531,7 +1531,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 			"tracking_number" => (string) $trackingNumber,
 			"mark_as_completed" => $markAsCompleted,
 		);
-		
+
 		$this->sendRequest($data);
 	}
 
@@ -1548,7 +1548,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 			'action' => 'set_order_shipping_completed',
 			'order_number' => $orderNumber,
 		);
-		
+
 		$this->sendRequest($data);
 	}
 
@@ -1562,9 +1562,9 @@ class ShopgateMerchantApi extends ShopgateObject {
 		$data = array(
 			'action' => 'get_mobile_redirect_keywords',
 		);
-		
+
 		$response = $this->sendRequest($data);
-		
+
 		return $response['keywords'];
 	}
 }
@@ -1611,7 +1611,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @var int (timestamp) starting time of export
 	 */
 	protected $timeStart;
-	
+
 	/**
 	 * @var int
 	 */
