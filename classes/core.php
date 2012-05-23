@@ -1608,6 +1608,11 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	protected $bufferLimit = 100;
 
 	/**
+	 * @var int (timestamp) starting time of export
+	 */
+	protected $timeStart;
+	
+	/**
 	 * @var int
 	 */
 	public $exportLimit = 1000;
