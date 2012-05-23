@@ -14,13 +14,8 @@
 	}
 	
 	function ShopgateRedirect() {
-		var webappUrl = "",
-			backLinkRegex = new RegExp("(\\?*||\\&*)(shopgate_redirect=)(1|0)"),
-			documentUrl = "",
-			queryString = "?",
-			ignoredParams = ["webapp_c_name", "shop_alias", "host", "debug", "debug_platform"];
-		
-		documentUrl = document.location.href.replace(backLinkRegex, "");
+		var backLinkRegex = new RegExp("(\\?*||\\&*)(shopgate_redirect=)(1|0)");
+		var documentUrl = document.location.href.replace(backLinkRegex, "");
 		
 		window.location.replace(documentUrl);
 	}
