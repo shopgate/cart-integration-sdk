@@ -1,7 +1,12 @@
 <?php
 /**
+ * Helper class for redirection from shop system to mobile webpage.
  *
- * Enter description here ...
+ * Provides analyzation of the client's user agent, creation of redirection links for
+ * different redirects (e.g. product, category, search), keyword updating and caching,
+ * javascript for the "on/off" switch and sending the redirect headers to the client's
+ * browser.
+ *
  * @author Shopgate GmbH, 35510 Butzbach, DE
  *
  */
@@ -70,66 +75,30 @@ class ShopgateMobileRedirect extends ShopgateObject {
 	 */
 	protected $useSecureConnection;
 	
-	
 	/**
 	 * @var string
 	 */
-	protected $redirectScriptFilePath;
+	protected $mobileHeaderTemplatePath;
 	
 	/**
-	 * @var string name of the cookie that indicates deactivation of the redirect
+	 * @var string expiration date of the cookie as defined in http://www.ietf.org/rfc/rfc2109.txt
 	 */
-	protected $jsCookieName;
-	
-	/**
-	 * @var int time (in days) after which the cookie expires
-	 */
-	protected $jsCookieLife;
-	
-	/**
-	 * @var string 'true' <==> mobile header is displayed below page content; 'false' <==> mobile header is displayed above page content
-	 */
-	protected $jsDisplayBelowContent;
-	
-	/**
-	 * @var string html id of the mobile header container
-	 */
-	protected $jsMobileHeaderId;
-	
-	/**
-	 * @var string html id of the button container
-	 */
-	protected $jsButtonWrapperId;
+	protected $cookieLife;
 	
 	/**
 	 * @var string url to the image for the "switched on" button
 	 */
-	protected $jsButtonOnImageSource;
+	protected $buttonOnImageSource;
 	
 	/**
 	 * @var string url to the image for the "switched off" button
 	 */
-	protected $jsButtonOffImageSource;
-	
-	/**
-	 * @var string name of the class for the "switched on" button
-	 */
-	protected $jsButtonOnCssClass;
-	
-	/**
-	* @var string name of the class for the "switched off" button
-	*/
-	protected $jsButtonOffCssClass;
-	
-	/**
-	 * @var a JQuery style selector for the parent element the header is attached to
-	 */
-	protected $jsHeaderParentSelector;
+	protected $buttonOffImageSource;
 	
 	/**
 	 * @var string description to be displayed to the left of the button
 	 */
-	protected $jsButtonDescription;
+	protected $buttonDescription;
 	
 	public function initLibrary() {
 		$this->updateRedirectKeywords = false;
@@ -137,25 +106,28 @@ class ShopgateMobileRedirect extends ShopgateObject {
 		$this->cacheFile = dirname(__FILE__).'/../temp/cache/redirect_keywords.txt';
 		$this->useSecureConnection = isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] === "on" || $_SERVER["HTTPS"] == "1");
 		
-		// javascript mobile header options
-		$this->redirectScriptFilePath = dirname(__FILE__).'/../assets/mobile_header_min.js';
-		$this->jsCookieName = self::COOKIE_NAME;
-		$this->jsCookieLife = 7;
-		$this->jsDisplayBelowContent = 'false';
-		$this->jsMobileHeaderId = 'shopgate_mobile_header';
-		$this->jsButtonWrapperId = 'shopgate_mobile_button';
-		$this->jsButtonOnImageSource = (($this->useSecureConnection) ? self::SHOPGATE_STATIC_SSL : self::SHOPGATE_STATIC).'/api/mobile_header/button_on.png';
-		$this->jsButtonOffImageSource = (($this->useSecureConnection) ? self::SHOPGATE_STATIC_SSL : self::SHOPGATE_STATIC).'/api/mobile_header/button_off.png';
-		$this->jsButtonOnCssClass = 'sg_mobile_button_on';
-		$this->jsButtonOffCssClass = 'sg_mobile_button_off';
-		$this->jsHeaderParentSelector = 'body';
-		$this->jsButtonDescription = 'Mobile Webseite aktivieren';
+		// mobile header options
+		$this->mobileHeaderTemplatePath = dirname(__FILE__).'/../assets/mobile_header.html';
+		$this->cookieLife = gmdate('D, d-M-Y H:i:s T', time());
+		$this->buttonOnImageSource = (($this->useSecureConnection) ? self::SHOPGATE_STATIC_SSL : self::SHOPGATE_STATIC).'/api/mobile_header/button_on.png';
+		$this->buttonOffImageSource = (($this->useSecureConnection) ? self::SHOPGATE_STATIC_SSL : self::SHOPGATE_STATIC).'/api/mobile_header/button_off.png';
+		$this->buttonDescription = 'Mobile Webseite aktivieren';
 	}
 	
 	
 	####################
 	# general settings #
 	####################
+	
+	
+	/**
+	 * Sets the description to be displayed to the left of the button.
+	 *
+	 * @param string $description
+	 */
+	public function setButtonDescription($description) {
+		if (!empty($description)) $this->buttonDescription = $description;
+	}
 	
 	/**
 	 * Sets the alias of the Shopgate shop
@@ -305,57 +277,27 @@ class ShopgateMobileRedirect extends ShopgateObject {
 	}
 	
 	/**
-	 * Fetches contents of the java script file, replaces the variable strings with $this->js* settings and returns the script
-	 * inside script tags.
+	 * Returns the javascript and HTML for the mobile redirect button
 	 *
 	 * @return string
 	 */
-	public function getJavascript() {
-		if (!file_exists($this->redirectScriptFilePath)) {
+	public function getMobileHeader() {
+		if (!file_exists($this->mobileHeaderTemplatePath)) {
 			return '';
 		}
 		
-		$script = @file_get_contents($this->redirectScriptFilePath);
-		if (empty($script)) {
+		$html = @file_get_contents($this->mobileHeaderTemplatePath);
+		if (empty($html)) {
 			return '';
 		}
 		
 		// set parameters
-		foreach (get_object_vars($this) as $attribute => $value) {
-			$script = str_replace('{$'.$attribute.'}', $value, $script);
-		}
+		$html = str_replace('{$cookieName}', self::COOKIE_NAME, $html);
+		$html = str_replace('{$buttonOnImageSource}',  $this->buttonOnImageSource,  $html);
+		$html = str_replace('{$buttonOffImageSource}', $this->buttonOffImageSource, $html);
+		$html = str_replace('{$buttonDescription}', $this->buttonDescription, $html);
 		
-		return '<script type="text/javascript">'.$script.'</script>';
-	}
-	
-	
-	#######################
-	# javascript settings #
-	#######################
-	
-	/**
-	 * Call to display mobile header below page content.
-	 */
-	public function setDisplayBelowContent() {
-		$this->jsDisplayBelowContent = 'true';
-	}
-	
-	/**
-	 * Sets the parent element for the mobile header (default: 'body').
-	 *
-	 * @param string $selector a JQuery style selector to identify the desired parent element
-	 */
-	public function setHeaderParentSelector($selector) {
-		$this->jsHeaderParentSelector = $selector;
-	}
-	
-	/**
-	 * Sets the description to be displayed to the left of the button.
-	 *
-	 * @param string $description
-	 */
-	public function setButtonDescription($description) {
-		$this->jsButtonDescription = description;
+		return $html;
 	}
 	
 	
