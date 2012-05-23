@@ -844,7 +844,7 @@ class ShopgateOrderItem extends ShopgateContainer {
 			}
 		}
 
-		$this->internal_order_info = $value;
+		$this->options = $value;
 	}
 
 	/**
