@@ -24,4 +24,4 @@ $shopgate_config["shop_is_active"] = false;
 $shopgate_config["background_color"] = "#333";
 $shopgate_config["foreground_color"] = "#3d3d3d";
 $shopgate_config["alias"] = "my-shop";
-$shopgate_config["cname"] = "https://m.my-shop.com";
+$shopgate_config["cname"] = "";
