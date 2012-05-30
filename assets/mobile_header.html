@@ -8,7 +8,7 @@
 		} else if (button.className == "sg_mobile_button_off") {
 			button.className = "sg_mobile_button_on";
 			button.src = "{$buttonOnImageSource}";
-			document.cookie = "{$cookieName}=; expires=Thu, 01-01-1970 00:00:01 GMT";
+			document.cookie = "{$cookieName}=; expires=Thu, 01-01-1970 00:00:01 GMT; path=/";
 			window.setTimeout(function() { ShopgateRedirect(); }, 500);
 		}
 	}

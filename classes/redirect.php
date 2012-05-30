@@ -15,9 +15,14 @@ class ShopgateMobileRedirect extends ShopgateObject {
 	const SHOPGATE_STATIC_SSL = 'https://static-ssl.shopgate.com';
 	
 	/**
-	 * @var string the URL that is appended to the end of a shop alias (aka subdomain)
+	 * @var string the URL that is appended to the end of a shop alias (aka subdomain) if the shop is live
 	 */
-	const SHOPGATE_ALIAS = '.shopgate.com';
+	const SHOPGATE_LIVE_ALIAS = '.shopgate.com';
+	
+	/**
+	 * @var string the URL that is appended to the end of a shop alias (aka subdomain) if the shop is on playground
+	 */
+	const SHOPGATE_PG_ALIAS = '.shopgatepg.com';
 	
 	/**
 	 * @var string name of the cookie to set in case a customer turns of mobile redirect
@@ -58,7 +63,7 @@ class ShopgateMobileRedirect extends ShopgateObject {
 	/**
 	 * @var string
 	 */
-	protected $cacheFilePath;
+	protected $cacheFile;
 	
 	/**
 	 * @var bool
@@ -112,6 +117,9 @@ class ShopgateMobileRedirect extends ShopgateObject {
 		$this->buttonOnImageSource = (($this->useSecureConnection) ? self::SHOPGATE_STATIC_SSL : self::SHOPGATE_STATIC).'/api/mobile_header/button_on.png';
 		$this->buttonOffImageSource = (($this->useSecureConnection) ? self::SHOPGATE_STATIC_SSL : self::SHOPGATE_STATIC).'/api/mobile_header/button_off.png';
 		$this->buttonDescription = 'Mobile Webseite aktivieren';
+		
+		// update keywords if enabled
+		$this->updateRedirectKeywords();
 	}
 	
 	
@@ -151,15 +159,15 @@ class ShopgateMobileRedirect extends ShopgateObject {
 	 * @param int $cacheTime Time the keywords are cached in hours. Will be set to at least self::MIN_CACHE_TIME.
 	 */
 	public function enableKeywordUpdate($cacheTime = self::DEFAULT_CACHE_TIME) {
-		$this->updateKeywords = true;
-		$this->keywordCacheTime = ($cacheTime >= self::MIN_CACHE_TIME) ? $cacheTime : self::MIN_CACHE_TIME;
+		$this->updateRedirectKeywords = true;
+		$this->redirectKeywordCacheTime = ($cacheTime >= self::MIN_CACHE_TIME) ? $cacheTime : self::MIN_CACHE_TIME;
 	}
 	
 	/**
 	 * Disables updating of the keywords that identify mobile devices from Shopgate Merchant API.
 	 */
 	public function disableKeywordUpdate() {
-		$this->updateKeywords = false;
+		$this->updateRedirectKeywords = false;
 	}
 	
 	/**
@@ -230,9 +238,6 @@ class ShopgateMobileRedirect extends ShopgateObject {
 			return false;
 		}
 		
-		// update keywords if enabled
-		$this->updateRedirectKeywords();
-		
 		// check user agent for redirection keywords and skip redirection keywords and return the result
 		return
 			(!empty($this->redirectKeywords)     ?  preg_match('/'.implode('|', $this->redirectKeywords).'/', $userAgent)     : false) &&
@@ -247,7 +252,7 @@ class ShopgateMobileRedirect extends ShopgateObject {
 	public function isRedirectAllowed() {
 		// if GET parameter is set create cookie and do not redirect
 		if (!empty($_GET['shopgate_redirect'])) {
-			setcookie(self::COOKIE_NAME, 1);
+			setcookie(self::COOKIE_NAME, 1, time() + 604800, '/'); // expires after 7 days
 			return false;
 		}
 		
@@ -312,7 +317,26 @@ class ShopgateMobileRedirect extends ShopgateObject {
 		if(!empty($this->cname)){
 			return $this->cname;
 		} elseif(!empty($this->alias)){
-			return 'https://'.$this->alias.self::SHOPGATE_ALIAS;
+			return 'https://'.$this->alias.$this->getShopgateUrl();
+		}
+	}
+	
+	/**
+	 * Returns the URL to be appended to the alias of a shop.
+	 *
+	 * The method determines this by the "server" setting in ShopgateConfig. If it's set to
+	 * "custom", localdev.cc will be used for Shopgate local development and testing.
+	 *
+	 * @return string The URL that can be appended to the alias, e.g. ".shopgate.com"
+	 */
+	private function getShopgateUrl() {
+		$serverType = ShopgateConfig::getConfigField('server');
+		
+		switch ($serverType) {
+			default: // fall through to "live"
+			case 'live':	return self::SHOPGATE_LIVE_ALIAS;
+			case 'pg':		return self::SHOPGATE_PG_ALIAS;
+			case 'custom':	return '.localdev.cc/php/shopgate/index.php'; // for Shopgate development & testing
 		}
 	}
 	
@@ -320,13 +344,12 @@ class ShopgateMobileRedirect extends ShopgateObject {
 	 * Updates the keywords array from cache file or Shopgate Merchant API if enabled.
 	 */
 	protected function updateRedirectKeywords() {
-		if (!$this->updateKeywords) return;
-		
+		if (!$this->updateRedirectKeywords) return;
 		$saveKeywords = false;
 		
-		if(file_exists($this->cacheFilePath)){
+		if(file_exists($this->cacheFile)){
 			
-			$fp = @fopen($this->cacheFilePath);
+			$fp = @fopen($this->cacheFile, 'r');
 			
 			if(!$fp){
 				return;
@@ -339,7 +362,7 @@ class ShopgateMobileRedirect extends ShopgateObject {
 				if($firstLine){
 					$lastRedirectKeywordsUpdate = $line;
 					$firstLine = false;
-					if ((time() - ($lastRedirectKeywordsUpdate + $this->keywordCacheTime) > 0)) {
+					if ((time() - ($lastRedirectKeywordsUpdate + ($this->redirectKeywordCacheTime * 3600)) > 0)) {
 						try{
 							$redirectKeywords = ShopgateMerchantApi::getInstance()->getMobileRedirectKeywords();
 							
@@ -366,15 +389,13 @@ class ShopgateMobileRedirect extends ShopgateObject {
 				$saveKeywords = true;
 				
 				$this->redirectKeywords = $redirectKeywords;
-					
-				break;
 			} catch(Exception $ex){
 			}
 		}
 		
 		if($saveKeywords){
 			// Save the keywords in cache
-			$fp = @fopen($this->cacheFilePath, 'w');
+			$fp = @fopen($this->cacheFile, 'w');
 			
 			if(!$fp){
 				return false;
