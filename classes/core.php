@@ -2095,7 +2095,8 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * use ShopgatePlugin::addItem() to add it to the output buffer.
 	 *
 	 * @throws ShopgateLibraryException
-	 */	protected abstract function createCategoriesCsv();
+	 */
+	protected abstract function createCategoriesCsv();
 
 	/**
 	 * Loads the product reviews of the shop system's database and passes them to the buffer.
