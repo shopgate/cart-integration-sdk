@@ -2100,7 +2100,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	/**
 	 * Loads the product reviews of the shop system's database and passes them to the buffer.
 	 *
-	 * User ShopgatePlugin::buildDefaultCategoriesRow() to get the correct indices for the field names in a Shopgate reviews csv and
+	 * User ShopgatePlugin::buildDefaultCategoryRow() to get the correct indices for the field names in a Shopgate reviews csv and
 	 * use ShopgatePlugin::addItem() to add it to the output buffer.
 	 *
 	 * @throws ShopgateLibraryException
