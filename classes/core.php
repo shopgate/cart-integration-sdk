@@ -79,6 +79,7 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_DUPLICATE_ORDER = 60;
 	const PLUGIN_ORDER_NOT_FOUND = 61;
 	const PLUGIN_NO_CUSTOMER_GROUP_FOUND = 62;
+	const PLUGIN_ORDER_ITEM_NOT_FOUND = 63;
 
 	const PLUGIN_NO_ADDRESSES_FOUND = 70;
 	const PLUGIN_WRONG_USERNAME_OR_PASSWORD = 71;
@@ -125,6 +126,7 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_DUPLICATE_ORDER => 'duplicate order',
 		self::PLUGIN_ORDER_NOT_FOUND => 'order not found',
 		self::PLUGIN_NO_CUSTOMER_GROUP_FOUND => 'no customer group found for customer',
+		self::PLUGIN_ORDER_ITEM_NOT_FOUND => 'order item not found',
 
 		self::PLUGIN_NO_ADDRESSES_FOUND => 'no addresses found for customer',
 		self::PLUGIN_WRONG_USERNAME_OR_PASSWORD => 'wrong username or password',
@@ -844,10 +846,12 @@ abstract class ShopgateContainer extends ShopgateObject {
 	/**
 	 * Creates a new object of the same type with every value recursively utf-8 encoded.
 	 *
+	 * @param String $sourceEncoding The source Encoding of the strings
+	 *
 	 * @return ShopgateContainer The new object with utf-8 encoded values.
 	 */
-	public function utf8Encode() {
-		$visitor = new ShopgateUtf8Visitor(ShopgateUtf8Visitor::MODE_ENCODE);
+	public function utf8Encode($sourceEncoding = 'ISO-8859-15') {
+		$visitor = new ShopgateUtf8Visitor(ShopgateUtf8Visitor::MODE_ENCODE, $sourceEncoding);
 		$visitor->visitContainer($this);
 		return $visitor->getObject();
 	}
@@ -855,10 +859,12 @@ abstract class ShopgateContainer extends ShopgateObject {
 	/**
 	 * Creates a new object of the same type with every value recursively utf-8 decoded.
 	 *
+	 * @param String $destinationEncoding The destination Encoding for the strings
+	 *
 	 * @return ShopgateContainer The new object with utf-8 decoded values.
 	 */
-	public function utf8Decode() {
-		$visitor = new ShopgateUtf8Visitor(ShopgateUtf8Visitor::MODE_DECODE);
+	public function utf8Decode($destinationEncoding) {
+		$visitor = new ShopgateUtf8Visitor(ShopgateUtf8Visitor::MODE_DECODE, $destinationEncoding);
 		$visitor->visitContainer($this);
 		return $visitor->getObject();
 	}
@@ -2229,11 +2235,12 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 
 	protected $object;
 	protected $mode;
+	protected $encoding;
 
 	/**
 	 * @param int $mode Set mode to one of the two class constants. Default is MODE_DECODE.
 	 */
-	public function __construct($mode = self::MODE_DECODE) {
+	public function __construct($mode = self::MODE_DECODE, $encoding = 'ISO-8859-15') {
 		switch ($mode) {
 			// default mode
 			default: $mode = self::MODE_DECODE;
@@ -2243,6 +2250,7 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 				$this->mode = $mode;
 			break;
 		}
+		$this->encoding = $encoding;
 	}
 
 	public function getObject() {
@@ -2368,8 +2376,8 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 			if (is_object($value) || is_array($value)) continue;
 
 			switch ($this->mode) {
-				case self::MODE_ENCODE: $value = utf8_encode($value); break;
-				case self::MODE_DECODE: $value = utf8_decode($value); break;
+				case self::MODE_ENCODE: $value = mb_convert_encoding($value, 'UTF-8', $this->encoding); break;
+				case self::MODE_DECODE: $value = mb_convert_encoding($value, $this->encoding, 'UTF-8'); break;
 			}
 		}
 	}
