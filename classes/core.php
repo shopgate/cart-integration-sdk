@@ -240,6 +240,21 @@ class ShopgateLibraryException extends Exception {
 	}
 }
 
+/**
+ *
+ * @author Shopgate GmbH, 35510 Butzbach, DE
+ *
+ */
+class ShopgateMerchantApiException extends Exception {
+	public function __construct($code, $additionalInformation = null) {
+		$message = $additionalInformation;
+
+		if(ShopgateObject::logWrite($code.' - '.$additionalInformation) === false){
+			$message .= ' (unable to log)';
+		}
+		parent::__construct($message, $code);
+	}
+}
 
 /**
  * Einstellungen für das Framework
@@ -1045,9 +1060,18 @@ class ShopgatePluginApi extends ShopgateObject {
 		} catch (ShopgateLibraryException $e) {
 			$this->response['error'] = $e->getCode();
 			$this->response['error_text'] = $e->getMessage();
+		} catch (ShopgateMerchantApiException $e) {
+			$this->response['error'] = ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED;
+			$this->response['error_text'] = $e->getCode() . " - " . $e->getMessage();
 		} catch (Exception $e) {
+			$message  = "";
+			$message .= "Unknown Exception\n";
+			$message .= "Exception: " . get_class( $e ) . "\n";
+			$message .= "Code: " . $e->getCode() . "\n";
+			$message .= "Message: " . $e->getMessage() . "\n";
+
 			// new ShopgateLibraryException to build proper error message and perform logging
-			$se = new ShopgateLibraryException($e->getMessage());
+			$se = new ShopgateLibraryException($message);
 			$this->response['error'] = $se->getCode();
 			$this->response['error_text'] = $se->getMessage();
 		}
@@ -1157,7 +1181,16 @@ class ShopgatePluginApi extends ShopgateObject {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ORDER_NUMBER);
 		}
 
-		$orders = ShopgateMerchantApi::getInstance()->getOrders(array('order_numbers[0]'=>$this->params['order_number']));
+		$_orders = ShopgateMerchantApi::getInstance()->getOrders( array('order_numbers[0]'=>$this->params['order_number'], 'with_items' => 1	));
+		$orders = $_orders->getData();
+
+		if (empty($orders)) {
+			throw new ShopgateLibraryException(
+				ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE,
+				'"order" not set. Response: '.var_export($_orders, true)
+			);
+		}
+
 		foreach ($orders as $order) {
 			$orderId = $this->plugin->addOrder($order);
 		}
@@ -1176,7 +1209,15 @@ class ShopgatePluginApi extends ShopgateObject {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ORDER_NUMBER);
 		}
 
-		$orders = ShopgateMerchantApi::getInstance()->getOrders(array('order_numbers[0]'=>$this->params['order_number']));
+		$_orders = ShopgateMerchantApi::getInstance()->getOrders(array('order_numbers[0]'=>$this->params['order_number']));
+		$orders = $_orders->getData();
+
+		if (empty($orders)) {
+			throw new ShopgateLibraryException(
+				ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE,
+				'"order" not set. Response: '.var_export($_orders, true)
+			);
+		}
 
 		$payment = 0;
 		$shipping = 0;
@@ -1398,6 +1439,155 @@ class ShopgatePluginApi extends ShopgateObject {
 }
 
 /**
+ * Shopgate Responsecontainer for MerchantApi requests
+ *
+ * Use the getData()-Function to get the received Data.
+ *
+ * @author Shopgate GmbH, 35510 Butzbach, DE
+ *
+ */
+class ShopgateMerchantApiResponse extends ShopgateObject {
+	private $sma_version = null;
+	private $trace_id = null;
+	private $limit = 1;
+	private $offset = 1;
+	private $has_more_results = false;
+
+	private $data = null;
+
+	protected final function initLibrary($data = array()) {
+		if (is_array($data)) {
+			$methods = get_class_methods($this);
+			foreach ($data as $key => $value) {
+				$setter = 'set'.$this->camelize($key, true);
+				if (!in_array($setter, $methods)) {
+					continue;
+				}
+				$this->{$setter}($value);
+			}
+		}
+	}
+
+	/**
+	 *
+	 * @param $sma_version
+	 */
+	private function setSmaVersion($sma_version)
+	{
+	    $this->sma_version = $sma_version;
+	}
+
+	/**
+	 *
+	 * @param $trace_id
+	 */
+	private function setTraceId($trace_id)
+	{
+	    $this->trace_id = $trace_id;
+	}
+
+	/**
+	 *
+	 * @param $limit
+	 */
+	private function setLimit($limit)
+	{
+	    $this->limit = $limit;
+	}
+
+	/**
+	 *
+	 * @param $offset
+	 */
+	private function setOffset($offset)
+	{
+	    $this->offset = $offset;
+	}
+
+	/**
+	 *
+	 * @param $has_more_results
+	 */
+	private function setHasMoreResults($has_more_results)
+	{
+	    $this->has_more_results = $has_more_results;
+	}
+
+	/**
+	 *
+	 * @param $data
+	 */
+	public function setData($data)
+	{
+	    $this->data = $data;
+	}
+
+	/**
+	 * The Shopgate-Merchant-API-Version (SMA-Version)
+	 *
+	 * If Shopgate released a new API-Version the Version-Number increased
+	 *
+	 * @return string
+	 */
+	public function getSmaVersion()
+	{
+	    return $this->sma_version;
+	}
+
+	/**
+	 * The Trace-ID for the currend Request
+	 *
+	 * On Errors it will helb to find them
+	 *
+	 * @return string
+	 */
+	public function getTraceId()
+	{
+	    return $this->trace_id;
+	}
+
+	/**
+	 * The limit of the request
+	 *
+	 * @return integer
+	 */
+	public function getLimit()
+	{
+	    return $this->limit;
+	}
+
+	/**
+	 * The offset of the request
+	 *
+	 * @return integer
+	 */
+	public function getOffset()
+	{
+	    return $this->offset;
+	}
+
+	/**
+	 * Are there more results to fetch from Shopgate
+	 *
+	 * @return boolean
+	 */
+	public function getHasMoreResults()
+	{
+	    return $this->has_more_results;
+	}
+
+	/**
+	 * The received data
+	 *
+	 * @return ShopgateContainer|mixed
+	 */
+	public function getData()
+	{
+	    return $this->data;
+	}
+}
+
+/**
  * This class represents the Shopgate Merchant API as described in our wiki.
  *
  * It provides all available actions, calls to the configured API, retrieves, parses and formats the data. It acts as singleton.
@@ -1474,7 +1664,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 		}
 
 		if ($decodedResponse['error'] != 0) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED, $decodedResponse['error_text'], true);
+			throw new ShopgateMerchantApiException($decodedResponse['error'], $decodedResponse['error_text']);
 		}
 
 		return $decodedResponse;
@@ -1483,6 +1673,10 @@ class ShopgateMerchantApi extends ShopgateObject {
 
 	/********************************************************************
 	 * Following methods represent the Shopgate Merchant API's actions: *
+	 ********************************************************************/
+
+	/********************************************************************
+	 * Orders                                                           *
 	 ********************************************************************/
 
 	/**
@@ -1497,25 +1691,20 @@ class ShopgateMerchantApi extends ShopgateObject {
 	public function getOrders($parameters) {
 		$data = array(
 			'action' => "get_orders",
-			'with_items' => 1,
 		);
 
 		$data = array_merge($data, $parameters);
-		$result = $this->sendRequest($data);
-
-		if (empty($result["orders"])) {
-			throw new ShopgateLibraryException(
-				ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE,
-				'"order" not set. Response: '.var_export($result, true)
-			);
-		}
+		$response = $this->sendRequest($data);
 
 		$orders = array();
-		foreach ($result["orders"] as $order) {
+		foreach ($response["orders"] as $order) {
 			$orders[] = new ShopgateOrder($order);
 		}
 
-		return $orders;
+		$oResponse = new ShopgateMerchantApiResponse($response);
+		$oResponse->setData( $orders );
+
+		return $oResponse;
 	}
 
 	/**
@@ -1538,7 +1727,10 @@ class ShopgateMerchantApi extends ShopgateObject {
 			"mark_as_completed" => $markAsCompleted,
 		);
 
-		$this->sendRequest($data);
+		$response = $this->sendRequest($data);
+		$oResponse = new ShopgateMerchantApiResponse($response);
+
+		return $oResponse;
 	}
 
 	/**
@@ -1555,7 +1747,10 @@ class ShopgateMerchantApi extends ShopgateObject {
 			'order_number' => $orderNumber,
 		);
 
-		$this->sendRequest($data);
+		$response = $this->sendRequest($data);
+		$oResponse = new ShopgateMerchantApiResponse($response);
+
+		return $oResponse;
 	}
 
 	/**
@@ -1572,6 +1767,197 @@ class ShopgateMerchantApi extends ShopgateObject {
 		$response = $this->sendRequest($data);
 
 		return $response['keywords'];
+	}
+
+	/********************************************************************
+	 * Items                                                            *
+	 ********************************************************************/
+	/**
+	 *
+	 * @param mixed[] $data
+	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
+	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_get_items/de
+	 */
+	public function getItems($data) {
+		$data['action'] = 'get_items';
+
+		$response = $this->sendRequest($data);
+		$oResponse = new ShopgateMerchantApiResponse($response);
+
+		$items = array();
+		foreach($response["items"] as $_item) {
+			$items[] = new ShopgateItem($_item);
+		}
+
+		$oResponse->setData($items);
+		return $oResponse;
+	}
+
+	/**
+	 *
+	 * @param mixed[] $data
+	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
+	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_add_item/de
+	 */
+	public function addItem($data) {
+		$data['action'] = 'add_item';
+
+		$reponse = $this->sendRequest($data);
+		$oResponse = new ShopgateMerchantApiResponse($response);
+		return $oResponse;
+	}
+
+	/**
+	 *
+	 * @param mixed[] $data
+	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
+	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_update_item/de
+	 */
+	public function updateItem($data) {
+		$data['action'] = 'update_item';
+
+		$response->sendRequest($data);
+		$oResponse = new ShopgateMerchantApiResponse($response);
+		return $oResponse;
+	}
+
+	/**
+	 * Delete a Item by given item_number
+	 *
+	 * @param string $item_number
+	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
+	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_delete_item/de
+	 */
+	public function deleteItem($item_number) {
+		$data = array(
+			'item_number' => $item_number,
+			'action' => 'delete_item',
+		);
+
+		$reponse = $this->sendRequest($data);
+		$oResponse = new ShopgateMerchantApiResponse($response);
+		return $oResponse;
+	}
+
+	/********************************************************************
+	 * Categories                                                       *
+	 ********************************************************************/
+	/**
+	 *
+	 * @param mixed[] $data
+	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
+	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_get_categories/de
+	 */
+	public function getCategories($data) {
+		$data['action'] = 'get_categories';
+
+		$aCategories = array();
+
+		$response = $this->sendRequest($data);
+		$oResponse = new ShopgateMerchantApiResponse($response);
+
+		foreach($response["categories"] as $aCategory) {
+			$aCategories[] = new ShopgateCategory($aCategory);
+
+		}
+		$oResponse->setData($aCategories);
+
+		return $oResponse;
+	}
+
+	/**
+	 *
+	 * @param mixed[] $data
+	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
+	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_add_category/de
+	 */
+	public function addCategory( $data ) {
+		if($data instanceof ShopgateCategory) {
+			$data = $data->toArray();
+		}
+		$data['action'] = 'add_category';
+
+		$response = $this->sendRequest($data);
+		$oResponse = new ShopgateMerchantApiResponse($response);
+
+		return $oResponse;
+	}
+
+	/**
+	 *
+	 * @param mixed[] $data
+	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
+	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_update_category/de
+	 */
+	public function updateCategory($data) {
+		if($data instanceof ShopgateCategory) {
+			$data = $data->toArray();
+		}
+		$data['action'] = 'update_category';
+
+		$response = $this->sendRequest($data);
+		$oResponse = new ShopgateMerchantApiResponse($response);
+
+		return $oResponse;
+	}
+
+	/**
+	 *
+	 * @param mixed[] $data
+	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
+	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_delete_category/de
+	 */
+	public function deleteCategory($catefory_number, $delete_subcategories = false, $delete_items = false) {
+		$data = array(
+			'action' => 'delete_category',
+			'category_number' => $catefory_number,
+			'delete_subcategories' => $delete_subcategories?1:0,
+			'delete_items' => $delete_items?1:0,
+		);
+
+		$response = $this->sendRequest($data);
+		$oResponse = new ShopgateMerchantApiResponse($response);
+
+		return $oResponse;
+	}
+
+	/**
+	 *
+	 * @param mixed[] $data
+	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
+	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_add_item_to_category/de
+	 */
+	public function addItemToCategory($item_number, $category_number, $order_index = null) {
+		$data = array();
+		$data['action'] = 'add_item_to_category';
+		$data['category_number'] = $category_number;
+		$data['item_number'] = $item_number;
+
+		if(isset($order_index))
+			$data['order_index'] = $order_index;
+
+		$response = $this->sendRequest($data);
+		$oResponse = new ShopgateMerchantApiResponse($response);
+
+		return $oResponse;
+	}
+
+	/**
+	 *
+	 * @param mixed[] $data
+	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
+	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_delete_item_from_category/de
+	 */
+	public function deleteItemFromCategory($item_number, $category_number) {
+		$data = array();
+		$data['action'] = 'delete_item_from_category';
+		$data['category_number'] = $category_number;
+		$data['item_number'] = $item_number;
+
+		$response = $this->sendRequest($data);
+		$oResponse = new ShopgateMerchantApiResponse($response);
+
+		return $oResponse;
 	}
 }
 
@@ -2223,6 +2609,11 @@ interface ShopgateContainerVisitor {
 	public function visitOrderItem(ShopgateOrderItem $i);
 	public function visitOrderItemOption(ShopgateOrderItemOption $o);
 	public function visitOrderDeliveryNote(ShopgateDeliveryNote $d);
+	public function visitShopgateCategory(ShopgateCategory $d);
+	public function visitShopgateItem(ShopgateItem $i);
+	public function visitShopgateItemOption(ShopgateItemOption $i);
+	public function visitShopgateItemOptionValue(ShopgateItemOptionValue $i);
+	public function visitShopgateItemInput(ShopgateItemInput $i);
 }
 
 /**
@@ -2371,6 +2762,75 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 		}
 	}
 
+	public function visitShopgateCategory(ShopgateCategory $c) {
+		$properties = $c->buildProperties();
+
+		// iterate the simple variables
+		$this->iterateSimpleProperties($properties);
+
+		try {
+			$this->object = new ShopgateCategory($properties);
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+
+	public function visitShopgateItem(ShopgateItem $i) {
+		$properties = $i->buildProperties();
+
+		// iterate the simple variables
+		$this->iterateSimpleProperties($properties);
+
+		$properties['options'] = $this->iterateObjectList($properties['options']);
+
+		try {
+			$this->object = new ShopgateItem($properties);
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+
+	public function visitShopgateItemOption(ShopgateItemOption $i) {
+		$properties = $i->buildProperties();
+
+		// iterate the simple variables
+		$this->iterateSimpleProperties($properties);
+
+		$properties['option_values'] = $this->iterateObjectList($properties['option_values']);
+
+		try {
+			$this->object = new ShopgateItemOption($properties);
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+
+	public function visitShopgateItemOptionValue(ShopgateItemOptionValue $i) {
+		$properties = $i->buildProperties();
+
+		// iterate the simple variables
+		$this->iterateSimpleProperties($properties);
+
+		try {
+			$this->object = new ShopgateItemOptionValue($properties);
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+
+	public function visitShopgateItemInput(ShopgateItemInput $i) {
+		$properties = $i->buildProperties();
+
+		// iterate the simple variables
+		$this->iterateSimpleProperties($properties);
+
+		try {
+			$this->object = new ShopgateItemInput($properties);
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+
 	protected function iterateSimpleProperties(array &$properties) {
 		foreach ($properties as $key => &$value) {
 			// we only want the simple types
@@ -2494,6 +2954,48 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 		$this->array = $this->iterateSimpleProperties($d->buildProperties());
 	}
 
+	public function visitShopgateCategory(ShopgateCategory $d) {
+		$this->array = $this->iterateSimpleProperties($d->buildProperties());
+	}
+
+	public function visitShopgateItem(ShopgateItem $i) {
+		// get properties
+		$properties = $i->buildProperties();
+
+		// iterate the simple variables
+		$properties = $this->iterateSimpleProperties($properties);
+
+		// iterate ShopgateAddress objects
+		$properties['options'] = $this->iterateObjectList($properties['options']);
+		// TODO: $properties['inputs'] = $this->iterateObjectList($properties['inputs']);
+
+		// set last value to converted array
+		$this->array = $properties;
+	}
+
+	public function visitShopgateItemOption(ShopgateItemOption $i) {
+		// get properties
+		$properties = $i->buildProperties();
+
+		// iterate the simple variables
+		$properties = $this->iterateSimpleProperties($properties);
+
+		// iterate ShopgateAddress objects
+		$properties['option_values'] = $this->iterateObjectList($properties['option_values']);
+		// TODO: $properties['inputs'] = $this->iterateObjectList($properties['inputs']);
+
+		// set last value to converted array
+		$this->array = $properties;
+	}
+
+	public function visitShopgateItemOptionValue(ShopgateItemOptionValue $i) {
+		$this->array = $this->iterateSimpleProperties($i->buildProperties());
+	}
+
+	public function visitShopgateItemInput(ShopgateItemInput $d) {
+		// get properties and iterate (no complex types in ShopgateDeliveryNote objects)
+		$this->array = $this->iterateSimpleProperties($d->buildProperties());
+	}
 
 	protected function iterateSimpleProperties(array $properties) {
 		foreach ($properties as $key => &$value) {
