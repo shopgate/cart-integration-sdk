@@ -878,7 +878,7 @@ abstract class ShopgateContainer extends ShopgateObject {
 	 *
 	 * @return ShopgateContainer The new object with utf-8 decoded values.
 	 */
-	public function utf8Decode($destinationEncoding) {
+	public function utf8Decode($destinationEncoding = 'ISO-8859-15') {
 		$visitor = new ShopgateUtf8Visitor(ShopgateUtf8Visitor::MODE_DECODE, $destinationEncoding);
 		$visitor->visitContainer($this);
 		return $visitor->getObject();
