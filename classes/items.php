@@ -1305,7 +1305,7 @@ class ShopgateItemInput extends ShopgateContainer {
 	private $is_required = null;
 
 	public function accept(ShopgateContainerVisitor $v) {
-		$v->visitShopgateShopgateItemInput($this);
+		$v->visitShopgateItemInput($this);
 	}
 
 	/**

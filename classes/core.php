@@ -2802,9 +2802,10 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 		// iterate the simple variables
 		$this->iterateSimpleProperties($properties);
 
-		// iterate the item options
+		// iterate the item options and inputs
 		$properties['options'] = $this->iterateObjectList($properties['options']);
-
+		$properties['inputs'] = $this->iterateObjectList($properties['inputs']);
+		
 		// create new object with utf-8 en- / decoded data
 		try {
 			$this->object = new ShopgateItem($properties);
@@ -3001,7 +3002,7 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 
 		// iterate ShopgateAddress objects
 		$properties['options'] = $this->iterateObjectList($properties['options']);
-		// TODO: $properties['inputs'] = $this->iterateObjectList($properties['inputs']);
+		$properties['inputs'] = $this->iterateObjectList($properties['inputs']);
 
 		// set last value to converted array
 		$this->array = $properties;
