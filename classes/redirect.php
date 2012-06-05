@@ -317,7 +317,7 @@ class ShopgateMobileRedirect extends ShopgateObject {
 		if(!empty($this->cname)){
 			return $this->cname;
 		} elseif(!empty($this->alias)){
-			return 'http://'.$this->alias.$this->getShopgateUrl();
+			return 'https://'.$this->alias.$this->getShopgateUrl();
 		}
 	}
 
@@ -336,8 +336,7 @@ class ShopgateMobileRedirect extends ShopgateObject {
 			default: // fall through to "live"
 			case 'live':	return self::SHOPGATE_LIVE_ALIAS;
 			case 'pg':		return self::SHOPGATE_PG_ALIAS;
-// 			case 'custom':	return '.localdev.cc/php/shopgate/index.php'; // for Shopgate development & testing
-			case 'custom':	return '.shopgate.lh'; // for Shopgate development & testing
+			case 'custom':	return '.localdev.cc/php/shopgate/index.php'; // for Shopgate development & testing
 		}
 	}
 
