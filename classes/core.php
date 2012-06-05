@@ -3,7 +3,7 @@
 ###################################################################################
 # define constants
 ###################################################################################
-define('SHOPGATE_LIBRARY_VERSION', "2.0.11");
+define('SHOPGATE_LIBRARY_VERSION', "2.0.12");
 define('SHOPGATE_BASE_DIR', realpath(dirname(__FILE__).'/../'));
 define('SHOPGATE_ITUNES_URL', 'http://itunes.apple.com/de/app/shopgate-eine-app-alle-shops/id365287459?mt=8');
 
@@ -1702,7 +1702,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 				'"orders" is not an array. Response: '.var_export($response, true)
 			);
 		}
-		
+
 		$orders = array();
 		foreach ($response["orders"] as $order) {
 			$orders[] = new ShopgateOrder($order);
@@ -1797,7 +1797,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 				'"items" is not an array. Response: '.var_export($response, true)
 			);
 		}
-		
+
 		$items = array();
 		foreach($response["items"] as $_item) {
 			$items[] = new ShopgateItem($_item);
@@ -1874,7 +1874,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 				'"categories" is not an array. Response: '.var_export($response, true)
 			);
 		}
-		
+
 		$aCategories = array();
 		foreach($response["categories"] as $aCategory) {
 			$aCategories[] = new ShopgateCategory($aCategory);
@@ -2805,7 +2805,7 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 		// iterate the item options and inputs
 		$properties['options'] = $this->iterateObjectList($properties['options']);
 		$properties['inputs'] = $this->iterateObjectList($properties['inputs']);
-		
+
 		// create new object with utf-8 en- / decoded data
 		try {
 			$this->object = new ShopgateItem($properties);
@@ -2862,10 +2862,10 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 	protected function iterateSimpleProperties(array &$properties) {
 		foreach ($properties as $key => &$value) {
 			if (empty($value)) continue;
-			
+
 			// we only want the simple types
 			if (is_object($value)) continue;
-			
+
 			// iterate through arrays recursively
 			if (is_array($value)) {
 				$this->iterateSimpleProperties($value);
@@ -3035,7 +3035,7 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 	protected function iterateSimpleProperties(array $properties) {
 		foreach ($properties as $key => &$value) {
 			if (empty($value)) continue;
-			
+
 			// we only want the simple types
 			if (is_object($value)) continue;
 
