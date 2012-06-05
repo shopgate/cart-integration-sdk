@@ -580,7 +580,7 @@ class ShopgateOrder extends ShopgateContainer {
 	public function getPaymentTransactionNumber() { return $this->payment_transaction_number; }
 
 	/**
-	 * Returned Informations about the selected Payment-Type
+	 * Information about the selected payment type (like e.g. bank account number)
 	 *
 	 * @return mixed[]
 	 */

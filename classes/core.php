@@ -1696,6 +1696,13 @@ class ShopgateMerchantApi extends ShopgateObject {
 		$data = array_merge($data, $parameters);
 		$response = $this->sendRequest($data);
 
+		if (!is_array($response["orders"])) {
+			throw new ShopgateLibraryException(
+				ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE,
+				'"orders" is not an array. Response: '.var_export($response, true)
+			);
+		}
+		
 		$orders = array();
 		foreach ($response["orders"] as $order) {
 			$orders[] = new ShopgateOrder($order);
@@ -1784,6 +1791,13 @@ class ShopgateMerchantApi extends ShopgateObject {
 		$response = $this->sendRequest($data);
 		$oResponse = new ShopgateMerchantApiResponse($response);
 
+		if (!is_array($response["items"])) {
+			throw new ShopgateLibraryException(
+				ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE,
+				'"items" is not an array. Response: '.var_export($response, true)
+			);
+		}
+		
 		$items = array();
 		foreach($response["items"] as $_item) {
 			$items[] = new ShopgateItem($_item);
@@ -1851,11 +1865,17 @@ class ShopgateMerchantApi extends ShopgateObject {
 	public function getCategories($data) {
 		$data['action'] = 'get_categories';
 
-		$aCategories = array();
-
 		$response = $this->sendRequest($data);
 		$oResponse = new ShopgateMerchantApiResponse($response);
 
+		if (!is_array($response["categories"])) {
+			throw new ShopgateLibraryException(
+				ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE,
+				'"categories" is not an array. Response: '.var_export($response, true)
+			);
+		}
+		
+		$aCategories = array();
 		foreach($response["categories"] as $aCategory) {
 			$aCategories[] = new ShopgateCategory($aCategory);
 
@@ -1907,12 +1927,12 @@ class ShopgateMerchantApi extends ShopgateObject {
 	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
 	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_delete_category/de
 	 */
-	public function deleteCategory($catefory_number, $delete_subcategories = false, $delete_items = false) {
+	public function deleteCategory($category_number, $delete_subcategories = false, $delete_items = false) {
 		$data = array(
 			'action' => 'delete_category',
-			'category_number' => $catefory_number,
-			'delete_subcategories' => $delete_subcategories?1:0,
-			'delete_items' => $delete_items?1:0,
+			'category_number' => $category_number,
+			'delete_subcategories' => $delete_subcategories ? 1 : 0,
+			'delete_items' => $delete_items ? 1 : 0,
 		);
 
 		$response = $this->sendRequest($data);
@@ -2631,6 +2651,8 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 
 	/**
 	 * @param int $mode Set mode to one of the two class constants. Default is MODE_DECODE.
+	 * @param string $encoding The source or destination encoding according to PHP's mb_convert_encoding().
+	 * @see http://www.php.net/manual/en/function.mb-convert-encoding.php
 	 */
 	public function __construct($mode = self::MODE_DECODE, $encoding = 'ISO-8859-15') {
 		switch ($mode) {
@@ -2645,6 +2667,9 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 		$this->encoding = $encoding;
 	}
 
+	/**
+	 * @return ShopgateContainer the utf-8 de- / encoded newly built object.
+	 */
 	public function getObject() {
 		return $this->object;
 	}
@@ -2663,7 +2688,7 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 		// iterate ShopgateAddress objects
 		$properties['addresses'] = $this->iterateObjectList($properties['addresses']);
 
-		// create new object with utf-8 decoded data
+		// create new object with utf-8 en- / decoded data
 		try {
 			$this->object = new ShopgateCustomer($properties);
 		} catch (ShopgateLibraryException $e) {
@@ -2672,10 +2697,10 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 	}
 
 	public function visitAddress(ShopgateAddress $a) {
-		// create new object with utf-8 decoded data
 		$properties = $a->buildProperties();
 		$this->iterateSimpleProperties($properties);
 
+		// create new object with utf-8 en- / decoded data
 		try {
 			$this->object = new ShopgateAddress($properties);
 		} catch (ShopgateLibraryException $e) {
@@ -2687,13 +2712,8 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 		// get properties
 		$properties = $o->buildProperties();
 
-		// iterate the simple variables
+		// iterate the simple variables and arrays with simple variables recursively
 		$this->iterateSimpleProperties($properties);
-
-		// iterate the order's payment_infos
-		if (!empty($properties['payment_infos']) && is_array($properties['payment_infos'])) {
-			$this->iterateSimpleProperties($properties['payment_infos']);
-		}
 
 		// visit delivery_address
 		if (!empty($properties['delivery_address']) && ($properties['delivery_address'] instanceof ShopgateAddress)) {
@@ -2711,7 +2731,7 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 		$properties['items'] = $this->iterateObjectList($properties['items']);
 		$properties['delivery_notes'] = $this->iterateObjectList($properties['delivery_notes']);
 
-		// create new object with utf-8 decoded data
+		// create new object with utf-8 en- / decoded data
 		try {
 			$this->object = new ShopgateOrder($properties);
 		} catch (ShopgateLibraryException $e) {
@@ -2730,7 +2750,7 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 		$properties['options'] = $this->iterateObjectList($properties['options']);
 		// TODO: $properties['inputs'] = $this->iterateObjectList($properties['inputs']);
 
-		// create new object with utf-8 decoded data
+		// create new object with utf-8 en- / decoded data
 		try {
 			$this->object = new ShopgateOrderItem($properties);
 		} catch (ShopgateLibraryException $e) {
@@ -2739,10 +2759,10 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 	}
 
 	public function visitOrderItemOption(ShopgateOrderItemOption $o) {
-			// create new object with utf-8 decoded data
 		$properties = $o->buildProperties();
 		$this->iterateSimpleProperties($properties);
 
+		// create new object with utf-8 en- / decoded data
 		try {
 			$this->object = new ShopgateOrderItemOption($properties);
 		} catch (ShopgateLibraryException $e) {
@@ -2751,10 +2771,10 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 	}
 
 	public function visitOrderDeliveryNote(ShopgateDeliveryNote $d) {
-			// create new object with utf-8 decoded data
 		$properties = $d->buildProperties();
 		$this->iterateSimpleProperties($properties);
 
+		// create new object with utf-8 en- / decoded data
 		try {
 			$this->object = new ShopgateDeliveryNote($properties);
 		} catch (ShopgateLibraryException $e) {
@@ -2768,6 +2788,7 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 		// iterate the simple variables
 		$this->iterateSimpleProperties($properties);
 
+		// create new object with utf-8 en- / decoded data
 		try {
 			$this->object = new ShopgateCategory($properties);
 		} catch (ShopgateLibraryException $e) {
@@ -2781,8 +2802,10 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 		// iterate the simple variables
 		$this->iterateSimpleProperties($properties);
 
+		// iterate the item options
 		$properties['options'] = $this->iterateObjectList($properties['options']);
 
+		// create new object with utf-8 en- / decoded data
 		try {
 			$this->object = new ShopgateItem($properties);
 		} catch (ShopgateLibraryException $e) {
@@ -2796,8 +2819,10 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 		// iterate the simple variables
 		$this->iterateSimpleProperties($properties);
 
+		// iterate the item option values
 		$properties['option_values'] = $this->iterateObjectList($properties['option_values']);
 
+		// create new object with utf-8 en- / decoded data
 		try {
 			$this->object = new ShopgateItemOption($properties);
 		} catch (ShopgateLibraryException $e) {
@@ -2811,6 +2836,7 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 		// iterate the simple variables
 		$this->iterateSimpleProperties($properties);
 
+		// create new object with utf-8 en- / decoded data
 		try {
 			$this->object = new ShopgateItemOptionValue($properties);
 		} catch (ShopgateLibraryException $e) {
@@ -2824,6 +2850,7 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 		// iterate the simple variables
 		$this->iterateSimpleProperties($properties);
 
+		// create new object with utf-8 en- / decoded data
 		try {
 			$this->object = new ShopgateItemInput($properties);
 		} catch (ShopgateLibraryException $e) {
@@ -2833,9 +2860,18 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 
 	protected function iterateSimpleProperties(array &$properties) {
 		foreach ($properties as $key => &$value) {
+			if (empty($value)) continue;
+			
 			// we only want the simple types
-			if (is_object($value) || is_array($value)) continue;
+			if (is_object($value)) continue;
+			
+			// iterate through arrays recursively
+			if (is_array($value)) {
+				$this->iterateSimpleProperties($value);
+				continue;
+			}
 
+			// perform encoding / decoding on simple types
 			switch ($this->mode) {
 				case self::MODE_ENCODE: $value = mb_convert_encoding($value, 'UTF-8', $this->encoding); break;
 				case self::MODE_DECODE: $value = mb_convert_encoding($value, $this->encoding, 'UTF-8'); break;
@@ -2870,6 +2906,9 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 	protected $array;
 
+	/**
+	 * mixed[] The array-turned object
+	 */
 	public function getArray() {
 		return $this->array;
 	}
@@ -2903,11 +2942,6 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 
 		// iterate the simple variables
 		$properties = $this->iterateSimpleProperties($properties);
-
-		// iterate the order's payment_infos
-		if (!empty($properties['payment_infos']) && is_array($properties['payment_infos'])) {
-			$properties['payment_infos'] = $this->iterateSimpleProperties($properties['payment_infos']);
-		}
 
 		// visit invoice address
 		if (!empty($properties['invoice_address']) && ($properties['invoice_address'] instanceof ShopgateAddress)) {
@@ -2980,7 +3014,7 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 		// iterate the simple variables
 		$properties = $this->iterateSimpleProperties($properties);
 
-		// iterate ShopgateAddress objects
+		// iterate item option values
 		$properties['option_values'] = $this->iterateObjectList($properties['option_values']);
 		// TODO: $properties['inputs'] = $this->iterateObjectList($properties['inputs']);
 
@@ -2999,8 +3033,16 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 
 	protected function iterateSimpleProperties(array $properties) {
 		foreach ($properties as $key => &$value) {
+			if (empty($value)) continue;
+			
 			// we only want the simple types
-			if (is_object($value) || is_array($value)) continue;
+			if (is_object($value)) continue;
+
+			// iterate through arrays recursively
+			if (is_array($value)) {
+				$this->iterateSimpleProperties($value);
+				continue;
+			}
 
 			$value = $this->sanitizeSimpleVar($value);
 		}
