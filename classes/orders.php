@@ -44,7 +44,8 @@ class ShopgateOrder extends ShopgateContainer {
 
 	protected $amount_items;
 	protected $amount_shipping;
-	protected $amount_payment;
+	protected $amount_shop_payment;
+	protected $amount_shopgate_payment;
 	protected $amount_complete;
 	protected $currency;
 	protected $is_test;
@@ -265,12 +266,19 @@ class ShopgateOrder extends ShopgateContainer {
 	public function setAmountShipping($value) { $this->amount_shipping = $value; }
 
 	/**
-	 * Amount for Payment
+	 * Amount for Shop Payment
 	 *
 	 * @param float $value
 	 */
-	public function setAmountPayment($value) { $this->amount_payment = $value; }
-
+	public function setAmountShopPayment($value) { $this->amount_shop_payment = $value; }
+	
+	/**
+	 * Amount for Shopgate Payment
+	 *
+	 * @param float $value
+	 */
+	public function setAmountShopgatePayment($value) { $this->amount_shopgate_payment = $value; }
+	
 	/**
 	 * Complete amount for the order
 	 *
@@ -635,11 +643,18 @@ class ShopgateOrder extends ShopgateContainer {
 	public function getAmountShipping() { return $this->amount_shipping; }
 
 	/**
+	 * Amount for Shop Payment
+	 *
+	 * @return float
+	 */
+	public function getAmountShopPayment() { return $this->amount_shop_payment; }
+
+	/**
 	 * Amount for Payment
 	 *
 	 * @return float
 	 */
-	public function getAmountPayment() { return $this->amount_payment; }
+	public function getAmountShopgatePayment() { return $this->amount_shopgate_payment; }
 
 	/**
 	 * Complete amount for the order
