@@ -3,7 +3,7 @@
 ###################################################################################
 # define constants
 ###################################################################################
-define('SHOPGATE_LIBRARY_VERSION', "2.0.12");
+define('SHOPGATE_LIBRARY_VERSION', "2.0.12/new_config");
 define('SHOPGATE_BASE_DIR', realpath(dirname(__FILE__).'/../'));
 define('SHOPGATE_ITUNES_URL', 'http://itunes.apple.com/de/app/shopgate-eine-app-alle-shops/id365287459?mt=8');
 
@@ -253,6 +253,67 @@ class ShopgateMerchantApiException extends Exception {
 			$message .= ' (unable to log)';
 		}
 		parent::__construct($message, $code);
+	}
+}
+
+class ShopgateConfigNew extends ShopgateContainer {
+	const SHOPGATE_API_URL_LIVE = 'https://api.shopgate.com/merchant/';
+	const SHOPGATE_API_URL_PG   = 'https://api.shopgatepg.com/merchant/';
+	
+	/**
+	 * @var array<string, string> List of field names (index) that must have a value according to its validation (value)
+	 */
+	protected $coreValidations = array(
+		'customer_number' => '/^[0-9]{5,}$/', // at least 5 digits
+		'shop_number' => '/^[0-9]{5,}$/', // at least 5 digits
+		'api_key' => '/^[0-9a-f]{20}$/', // exactly 20 hexadecimal digits
+		'alias' => '/^[0-9a-zA-Z]+(\-+[0-9a-zA-Z]+)*$/', // start and end with alpha-numerical characters, dashes in between are ok
+		'server' => '/^(live|pg|custom)$/', // "live" or "pg" or "custom"
+		'api_url' => '/^http(s?)\:\/\/\S+$/', // begin with "http://" or "https://" followed by any number of non-whitespace characters
+	);
+	
+	/**
+	 *
+	 * @var unknown_type
+	 */
+	protected $use_custom_error_handler;
+	
+	protected $customer_number;
+	protected $shop_number;
+	protected $api_key;
+	protected $alias;
+	protected $cname;
+	protected $server;
+	protected $api_url;
+	protected $shop_is_active;
+	
+	protected $enable_ping;
+	protected $enable_add_order;
+	protected $enable_update_order;
+	protected $enable_get_orders;
+	protected $enable_get_customer;
+	protected $enable_get_items_csv;
+	protected $enable_get_reviews_csv;
+	protected $enable_get_pages_csv;
+	protected $enable_get_log_file;
+	protected $enable_mobile_website;
+	
+	protected $generate_items_csv_on_the_fly;
+	protected $max_attributes;
+	
+	protected $additionalSettings;
+	
+	public function accept(ShopgateContainerVisitor $v) {
+		// TODO $v->visitAddress($this);
+	}
+	
+	/**
+	 * Loads an array
+	 *
+	 * @
+	 */
+	protected function loadArray($data = array()) {
+		
 	}
 }
 
@@ -835,6 +896,18 @@ abstract class ShopgateContainer extends ShopgateObject {
 	 * @param array $data The data the container should be initialized with.
 	 */
 	protected final function initLibrary($data = array()) {
+		$this->loadArray($data);
+	}
+	
+	/**
+	 * Tries to map an associative array to the object's attributes.
+	 *
+	 * The passed data must be an array, it's indices must be the un-camelized,
+	 * underscored names of the set* methods of the object.
+	 *
+	 * @param array $data The data that should be mapped to the container object.
+	 */
+	protected function loadArray($data = array()) {
 		if (is_array($data)) {
 			$methods = get_class_methods($this);
 			foreach ($data as $key => $value) {
