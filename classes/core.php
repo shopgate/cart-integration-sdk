@@ -261,7 +261,7 @@ class ShopgateConfigNew extends ShopgateContainer {
 	const SHOPGATE_API_URL_PG   = 'https://api.shopgatepg.com/merchant/';
 	
 	/**
-	 * @var array<string, string> List of field names (index) that must have a value according to its validation (value)
+	 * @var array<string, string> List of field names (index) that must have a value according to its validation regex (value)
 	 */
 	protected $coreValidations = array(
 		'customer_number' => '/^[0-9]{5,}$/', // at least 5 digits
@@ -269,38 +269,135 @@ class ShopgateConfigNew extends ShopgateContainer {
 		'api_key' => '/^[0-9a-f]{20}$/', // exactly 20 hexadecimal digits
 		'alias' => '/^[0-9a-zA-Z]+(\-+[0-9a-zA-Z]+)*$/', // start and end with alpha-numerical characters, dashes in between are ok
 		'server' => '/^(live|pg|custom)$/', // "live" or "pg" or "custom"
-		'api_url' => '/^http(s?)\:\/\/\S+$/', // begin with "http://" or "https://" followed by any number of non-whitespace characters
+		'api_url' => '/^(http(s?)\:\/\/\S+)?$/', // empty or a string beginning with "http://" or "https://" followed by any number of non-whitespace characters
 	);
 	
 	/**
-	 *
-	 * @var unknown_type
+	 * @var array<string, string> List of field names for additional settings (index) that must have a value according regex (value)
+	 */
+	protected $additionalValidations = array();
+	
+	/**
+	 * @var bool true to activate the Shopgate error handler
 	 */
 	protected $use_custom_error_handler;
 	
+	
+	##################################################################################
+	### basic shop information necessary for use of the APIs, mobile redirect etc. ###
+	##################################################################################
+	/**
+	 * @var int Shopgate customer number (at least 5 digits)
+	 */
 	protected $customer_number;
+	
+	/**
+	 * @var int Shopgate shop number (at least 5 digits)
+	 */
 	protected $shop_number;
+	
+	/**
+	 * @var string API key (exactly 20 hexadecimal digits)
+	 */
 	protected $api_key;
+	
+	/**
+	 * @var string Alias of a shop for mobile redirect (start and end with alpha-numerical characters, dashes in between are ok)
+	 */
 	protected $alias;
+	
+	/**
+	 * @var string Custom URL that to redirect to if a mobile device visits a shop (begin with "http://" or "https://" followed by any number of non-whitespace characters)
+	 */
 	protected $cname;
+	
+	/**
+	 * @var string The server to use for Shopgate Merchant API communication ("live" or "pg" or "custom")
+	 */
 	protected $server;
+	
+	/**
+	 * @var string If $server is set to custom, Shopgate Merchant API calls will be made to this URL (empty or a string beginning with "http://" or "https://" followed by any number of non-whitespace characters)
+	 */
 	protected $api_url;
+	
+	/**
+	 * @var bool true to indicate a shop has been activated by Shopgate
+	 */
 	protected $shop_is_active;
 	
+	
+	##############################################################
+	### Indicators to (de)activate Shopgate Plugin API actions ###
+	##############################################################
+	/**
+	 * @var bool
+	 */
 	protected $enable_ping;
+	
+	/**
+	 * @var bool
+	 */
 	protected $enable_add_order;
+	
+	/**
+	 * @var bool
+	 */
 	protected $enable_update_order;
+	
+	/**
+	 * @var bool
+	 */
 	protected $enable_get_orders;
+	
+	/**
+	 * @var bool
+	 */
 	protected $enable_get_customer;
+	
+	/**
+	 * @var bool
+	 */
 	protected $enable_get_items_csv;
+	
+	/**
+	 * @var bool
+	 */
 	protected $enable_get_reviews_csv;
+	
+	/**
+	 * @var bool
+	 */
 	protected $enable_get_pages_csv;
+	
+	/**
+	 * @var bool
+	 */
 	protected $enable_get_log_file;
+	
+	/**
+	 * @var bool
+	 */
 	protected $enable_mobile_website;
 	
+	
+	#######################################################
+	### Options regarding shop system specific settings ###
+	#######################################################
+	/**
+	 * @var bool true to create the items CSV file on-the-fly the moment the API gets called
+	 */
 	protected $generate_items_csv_on_the_fly;
+	
+	/**
+	 * @var int
+	 * @todo Description.
+	 */
 	protected $max_attributes;
 	
+	/**
+	 * @var array<string, mixed> Additional shop system specific settings that cannot (or should not) be generalized and thus be defined by a plugin itself
+	 */
 	protected $additionalSettings;
 	
 	public function accept(ShopgateContainerVisitor $v) {
@@ -308,9 +405,15 @@ class ShopgateConfigNew extends ShopgateContainer {
 	}
 	
 	/**
-	 * Loads an array
-	 *
-	 * @
+	 * Tries to assign the values of an array to the configuration fields or load it from a file.
+	 * 
+	 * This overrides ShopgateContainer::loadArray() which is called on object instantiation. It tries to assign
+	 * the values of $data to the class attributes by $data's keys. If a key is not the name of a
+	 * class attribute it's appended to $this->additionalSettings.
+	 * 
+	 * If $data is empty, the method calls $this->loadFile().
+	 * 
+	 * @param $data array<string, mixed> The data to be assigned to the configuration. 
 	 */
 	protected function loadArray($data = array()) {
 		
