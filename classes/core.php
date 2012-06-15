@@ -409,14 +409,116 @@ class ShopgateConfigNew extends ShopgateContainer {
 	 * 
 	 * This overrides ShopgateContainer::loadArray() which is called on object instantiation. It tries to assign
 	 * the values of $data to the class attributes by $data's keys. If a key is not the name of a
-	 * class attribute it's appended to $this->additionalSettings.
-	 * 
-	 * If $data is empty, the method calls $this->loadFile().
+	 * class attribute it's appended to $this->additionalSettings.<br />
+	 * <br />
+	 * If $data is empty or not an array, the method calls $this->loadFile().
 	 * 
 	 * @param $data array<string, mixed> The data to be assigned to the configuration. 
 	 */
 	protected function loadArray($data = array()) {
+		// if no $data was passed try loading the default configuration file
+		if (empty($data) || !is_array($data)) {
+			$this->loadFile();
+			return;
+		}
 		
+		// if data was passed, map via setters
+		$unmappedData = parent::loadArray($data);
+		
+		// put the rest into $this->additionalSettings
+		$this->mapAdditionalSettings($unmappedData);
+	}
+	
+	/**
+	 * Tries to load the configuration from a file.
+	 * 
+	 * If a $path is passed, this method tries to include the file. If that fails an exception is thrown.<br />
+	 * <br />
+	 * If $path is empty it tries to load .../shopgate_library/config/myconfig.php or if that fails,
+	 * .../shopgate_library/config/config.php is tried to be loaded. If that fails too, an exception is
+	 * thrown.<br />
+	 * <br />
+	 * The configuration file must be a PHP script defining an indexed array called $shopgate_config
+	 * containing the desired configuration values to set. If that is not the case, an exception is thrown
+	 * 
+	 * @param string $path The path to the configuration file or nothing to load the default Shopgate Library configuration files.
+	 * @throws ShopgateLibraryException in case a configuration file could not be loaded or the $shopgate_config is not set.
+	 */
+	protected function loadFile($path = null) {
+		global $shopgate_config;
+		
+		// unset $shopgate_config to avoid reading from somehow injected global variables
+		if (isset($shopgate_config)) {
+			unset($shopgate_config);
+		}
+		
+		// try loading files
+		if (!empty($path)) {
+			// try $path
+			$success = $this->includeFile($path);
+			
+			if (!$success) {
+				throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR, 'The passed configuration file "'.$path.'" does not exist or does not define the $shopgate_config variable.');
+			}
+		} else {
+			// try myconfig.php
+			$success = $this->includeFile(SHOPGATE_BASE_DIR.DS.'config'.DS.'myconfig.php');
+			
+			if (!$success) {
+				// try config.php
+				$success = $this->includeFile(SHOPGATE_BASE_DIR.DS.'config'.DS.'config.php');
+				
+				if (!$success) {
+					throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR, 'The default configuration files do not exist or do not define the $shopgate_config variable.');
+				}
+			}
+		}
+		
+		// if we got here, we have a $shopgate_config to load
+		$unmappedData = parent::loadArray($shopgate_config);
+		$this->mapAdditionalSettings($unmappedData);
+	}
+	
+	/**
+	 * Tries to include the specified file and check for $shopgate_config.
+	 * 
+	 * @param string $path The path to the configuration file.
+	 * @return boolean true if the file was included and defined $shopgate_config, false otherwise
+	 */
+	private function includeFile($path) {
+		global $shopgate_config;
+		
+		// unset $shopgate_config to avoid reading from somehow injected global variables
+		if (isset($shopgate_config)) {
+			unset($shopgate_config);
+		}
+		
+		// try including the file
+		if (file_exists($path)) {
+			ob_start();
+			include_once($path);
+			ob_clean();
+		} else {
+			return false;
+		}
+		
+		// check $shopgate_config
+		if (!isset($shopgate_config) || !is_array($shopgate_config)) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	/**
+	 * Maps the passed data to the additional settings array.
+	 * 
+	 * @param array<string, mixed> $data The data to map.
+	 */
+	private function mapAdditionalSettings($data = array()) {
+		foreach ($unmappedData as $key => $value) {
+			$this->additionalSettings[$key] = $value;
+		}
 	}
 }
 
@@ -1007,20 +1109,28 @@ abstract class ShopgateContainer extends ShopgateObject {
 	 *
 	 * The passed data must be an array, it's indices must be the un-camelized,
 	 * underscored names of the set* methods of the object.
+	 * 
+	 * Tha data that couldn't be mapped is returned as an array.
 	 *
 	 * @param array $data The data that should be mapped to the container object.
+	 * @return array The part of the array that couldn't be mapped.
 	 */
 	protected function loadArray($data = array()) {
+		$unmappedData = array();
+		
 		if (is_array($data)) {
 			$methods = get_class_methods($this);
 			foreach ($data as $key => $value) {
 				$setter = 'set'.$this->camelize($key, true);
 				if (!in_array($setter, $methods)) {
+					$unmappedData[$key] = $value;
 					continue;
 				}
 				$this->$setter($value);
 			}
 		}
+		
+		return $unmappedData;
 	}
 
 	/**
