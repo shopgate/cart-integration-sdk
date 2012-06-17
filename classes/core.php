@@ -520,6 +520,102 @@ class ShopgateConfigNew extends ShopgateContainer {
 			$this->additionalSettings[$key] = $value;
 		}
 	}
+	
+	/**
+	 * Saves the desired configuration fields to the specified file or myconfig.php.
+	 * 
+	 * This calls $this->loadFile() with the given $path to load the current configuration. In case that fails, the $shopgate_config
+	 * array is initialized empty. The values defined in $fieldList are then validated (if desired), assigned to $shopgate_config and
+	 * saved to the specified file or myconfig.php.
+	 * 
+	 * In case the file cannot be (over)written or created, an exception with code ShopgateLibrary::CONFIG_READ_WRITE_ERROR is thrown.
+	 * 
+	 * In case the validation fails for one or more fields, an exception with code ShopgateLibrary::CONFIG_ is thrown. The failed
+	 * fields are appended as additional information in form of a comma-separated list.
+	 * 
+	 * @param string[] $fieldList The list of fieldnames that should be saved to the configuration file.
+	 * @param string $path The path to the configuration file or empty to use .../shopgate_library/config/myconfig.php.
+	 * @param bool $validate True to validate the fields that should be set.
+	 * @throws ShopgateLibraryException in case the configuration can't be loaded or saved.
+	 */
+	public function saveFile($fieldList, $path = null, $validate = true) {
+		global $shopgate_config;
+		
+		// if desired, validate before doing anything else
+		if ($validate) {
+			$this->validate($fieldList);
+		}
+		
+		// load the current configuration
+		try {
+			$this->loadFile($path);
+		} catch (ShopgateLibraryException $e) {
+			$shopgate_config = array();
+		}
+		
+		// if necessary point $path to  myconfig.php
+		if (empty($path)) {
+			$path = SHOPGATE_BASE_DIR.DS.'config'.DS.'myconfig.php';
+		}
+		
+		// run through fieldList and assign the values to $shopgate_config
+		$properties = $this->buildProperties();
+		foreach ($fieldList as $field) {
+			if (empty($properties[$field]) && empty($this->additionalSettings[$field])) {
+				continue;
+			} elseif (empty($properties[$field]) && !empty($this->additionalSettings[$field])) {
+				$shopgate_config[$field] = $this->additionalSettings[$field];
+			} else {
+				$shopgate_config[$field] = $properties[$field];
+			}
+		}
+		
+		// create the array definition string and save it to the file
+		$shopgateConfigFile = "<?php\n\$shopgate_config = ".var_export($shopgate_config, true).';';
+		if (!@file_put_contents($path, $shopgateConfigFile)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR, 'The configuration file "'.$path.'" could not be saved.');
+		}
+	}
+	
+	/**
+	 * Validates the configuration values.
+	 * 
+	 * If $fieldList contians values, only these values will be validated. It it's empty, all values that have a validation
+	 * rule will be validated.
+	 * 
+	 * In case one or more validations fail an exception is thrown. The failed fields are appended as additonal information
+	 * in form of a comma-separated list.
+	 * 
+	 * @param string[] $fieldList The list of fields to be validated or empty, to validate all fields.
+	 */
+	public function validate($fieldList = array()) {
+		$properties = $this->buildProperties();
+		
+		if (empty($fieldList)) {
+			$coreFields = array_keys($properties);
+			$additionalFields = array_keys($this->additionalSettings);
+			$fieldList = array_merge($coreFields, $additionalFields);
+		}
+		
+		$failedFields = array();
+		foreach ($fieldList as $field) {
+			if (empty($properties[$field]) && empty($this->additionalSettings[$field])) {
+				continue;
+			} elseif (empty($properties[$field]) && !empty($this->additionalSettings[$field]) && !empty($this->additionalValidations[$field])) {
+				if (!preg_match($this->additionalValidations[$field], $this->additionalSettings[$field])) {
+					$failedFields[] = $field;
+				}
+			} else {
+				if (!empty($this->coreValidations[$field]) && !preg_match($this->coreValidations[$field], $properties[$field])) {
+					$failedFields[] = $field;
+				}
+			}
+		}
+		
+		if (!empty($failedFields)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_INVALID_VALUE, implode(',', $failedFields));
+		}
+	}
 }
 
 /**
