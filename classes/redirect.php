@@ -104,7 +104,7 @@ class ShopgateMobileRedirect extends ShopgateObject {
 	 * @var string description to be displayed to the left of the button
 	 */
 	protected $buttonDescription;
-
+	
 	public function initLibrary() {
 		$this->updateRedirectKeywords = false;
 		$this->redirectKeywordCacheTime = self::DEFAULT_CACHE_TIME;
@@ -224,6 +224,16 @@ class ShopgateMobileRedirect extends ShopgateObject {
 		$this->skipRedirectKeywords = $skipRedirectKeywords;
 	}
 
+	/**
+	 * Switches to secure connection instead of checking server-side.
+	 *
+	 * This will cause slower download of nonsensitive material (the mobile header button images) from Shopgate.
+	 * Activate only if the secure connection is determined incorrectly (e.g. because of third-party components).
+	 */
+	public function setAlwaysUseSSL() {
+		$this->useSecureConnection = true;
+	}
+	
 	/**
 	 * Detects by redirect keywords (and skip redirect keywords) if a request was sent by a mobile device.
 	 *
