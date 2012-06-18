@@ -1127,7 +1127,7 @@ class ShopgateDeliveryNote extends ShopgateContainer {
 	 * @param string $value
 	 */
 	public function setShippingTime($value) {
-		$this->tracking_number = $value;
+		$this->shipping_time = $value;
 	}
 
 
@@ -1159,7 +1159,7 @@ class ShopgateDeliveryNote extends ShopgateContainer {
 	 * @return string
 	 */
 	public function getShippingTime() {
-		return $this->tracking_number;
+		return $this->shipping_time;
 	}
 
 
