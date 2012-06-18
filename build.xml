@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project name="ShopgateLibrary" basedir=".">
+
 	<description>ShopgateLibrary</description>
+
+	<buildnumber file="build.num" />
+
+	<property file="build.properties"/>
 
 	<property name="project-root" location="./" />
 	<property name="ant-folder" location="./ant/" />
@@ -10,13 +15,40 @@
 	<property name="output-folder" location="${build-folder}/shopgate_library" />
 	<property name="release-folder" location="${ant-folder}/releases" />
 
+	<!-- SVN -->
+	<path id="path.svnant">
+		<pathelement location="/home/arogarth/Downloads/svnant/svnant-1.0.0/lib/svnant.jar" />
+		<pathelement location="/home/arogarth/Downloads/svnant/svnant-1.0.0/lib/svnClientAdapter.jar" />
+		<!--<pathelement location="/home/arogarth/Downloads/svnant/svnant-1.0.0/lib/svnjavahl.jar" />-->
+	</path>
+
+	<typedef resource="svntask.properties" classpathref="path.svnant" />
+
 	<echo>
 		########################################################
 		## BUILD Library
 		########################################################
 	</echo>
 
+	<target name="prepare">
+		<echo message="Set version in classes/core.php to ${plugin.version}" />
+		<replaceregexp file="${project-root}/classes/core.php"
+			match="define\('SHOPGATE_LIBRARY_VERSION', '.+'\);"
+			replace="define('SHOPGATE_LIBRARY_VERSION', '${plugin.version}');"/>
+
+		<echo message="Commit version change in core.php" />
+		<svn>
+			<commit message="Increase Version to ${plugin.version}">
+				<fileset dir="${project-root}">
+					<include name="classes/core.php" />
+				</fileset>
+			</commit>
+		</svn>
+	</target>
+
 	<target name="build">
+		<echo message="Build ZIP-Archive" />
+
 		<delete dir="${ant-folder}" />
 		<mkdir dir="${release-folder}" />
 		<mkdir dir="${output-folder}" />
@@ -38,10 +70,10 @@
 		<delete dir="${ant-folder}" />
 	</target>
 
-	<target name="upload">
+	<target name="upload" depends="prepare, build">
 		<s3cmd command="put" file="${project-root}/shopgate_library.zip" key="s3://shopgate-static/plugins/shopgate_library.zip">
 			<args>
-				<arg value="--acl-public" />
+				<arg value="- -acl-public" />
 			</args>
 		</s3cmd>
 
