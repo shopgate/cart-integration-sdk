@@ -114,8 +114,6 @@ class ShopgateMobileRedirect extends ShopgateObject {
 		// mobile header options
 		$this->mobileHeaderTemplatePath = dirname(__FILE__).'/../assets/mobile_header.html';
 		$this->cookieLife = gmdate('D, d-M-Y H:i:s T', time());
-		$this->buttonOnImageSource = (($this->useSecureConnection) ? self::SHOPGATE_STATIC_SSL : self::SHOPGATE_STATIC).'/api/mobile_header/button_on.png';
-		$this->buttonOffImageSource = (($this->useSecureConnection) ? self::SHOPGATE_STATIC_SSL : self::SHOPGATE_STATIC).'/api/mobile_header/button_off.png';
 		$this->buttonDescription = 'Mobile Webseite aktivieren';
 
 		// update keywords if enabled
@@ -307,11 +305,13 @@ class ShopgateMobileRedirect extends ShopgateObject {
 		}
 
 		// set parameters
+		$this->buttonOnImageSource = (($this->useSecureConnection) ? self::SHOPGATE_STATIC_SSL : self::SHOPGATE_STATIC).'/api/mobile_header/button_on.png';
+		$this->buttonOffImageSource = (($this->useSecureConnection) ? self::SHOPGATE_STATIC_SSL : self::SHOPGATE_STATIC).'/api/mobile_header/button_off.png';
 		$html = str_replace('{$cookieName}', self::COOKIE_NAME, $html);
 		$html = str_replace('{$buttonOnImageSource}',  $this->buttonOnImageSource,  $html);
 		$html = str_replace('{$buttonOffImageSource}', $this->buttonOffImageSource, $html);
 		$html = str_replace('{$buttonDescription}', $this->buttonDescription, $html);
-
+		
 		return $html;
 	}
 
