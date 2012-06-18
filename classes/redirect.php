@@ -423,7 +423,7 @@ class ShopgateMobileRedirect extends ShopgateObject {
 	/**
 	 * Create a mobile-product-url to a item
 	 *
-	 * @param String $itemNumber
+	 * @param string $itemNumber
 	 */
 	public function getItemUrl($itemNumber){
 		return $this->_getMobileUrl().'/item/'.bin2hex($itemNumber);
@@ -432,7 +432,7 @@ class ShopgateMobileRedirect extends ShopgateObject {
 	/**
 	 * Create a mobile-category-url to a category
 	 *
-	 * @param String $categoryNumber
+	 * @param string $categoryNumber
 	 */
 	public function getCategoryUrl($categoryNumber){
 		return $this->_getMobileUrl().'/category/'.bin2hex($categoryNumber);
@@ -441,28 +441,28 @@ class ShopgateMobileRedirect extends ShopgateObject {
 	/**
 	 * Create a mobile-cms-url to a cms-page
 	 *
-	 * @param String $cmsKey
+	 * @param string $key
 	 */
-	public function getCmsUrl($cmsKey){
+	public function getCmsUrl($key){
 		return $this->_getMobileUrl().'/cms/'.$key;
 	}
 
 	/**
 	 * Create a mobile-brand-url to a page with results for a specific manufacturer
 	 *
-	 * @param String $manufacturer
+	 * @param string $manufacturer
 	 */
 	public function getBrandUrl($manufacturerName){
-		return $this->_getMobileUrl().'/brand/'.bin2hex($manufacturerName);
+		return $this->_getMobileUrl().'/brand/?q='.urlencode($manufacturerName);
 	}
 
 	/**
 	 * Create a mobile-search-url to a page with search results
 	 *
-	 * @param unknown_type $searchString
+	 * @param string $searchString
 	 */
 	public function getSearchUrl($searchString){
-		return $this->_getMobileUrl().'/search/'.$searchString;
+		return $this->_getMobileUrl().'/search/?s='.urlencode($searchString);
 	}
 
 }

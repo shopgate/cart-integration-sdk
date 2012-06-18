@@ -80,6 +80,8 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_ORDER_NOT_FOUND = 61;
 	const PLUGIN_NO_CUSTOMER_GROUP_FOUND = 62;
 	const PLUGIN_ORDER_ITEM_NOT_FOUND = 63;
+	const PLUGIN_ORDER_STATUS_IS_SENT = 64;
+	const PLUGIN_ORDER_ALREADY_UP_TO_DATE = 65;
 
 	const PLUGIN_NO_ADDRESSES_FOUND = 70;
 	const PLUGIN_WRONG_USERNAME_OR_PASSWORD = 71;
@@ -127,6 +129,8 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_ORDER_NOT_FOUND => 'order not found',
 		self::PLUGIN_NO_CUSTOMER_GROUP_FOUND => 'no customer group found for customer',
 		self::PLUGIN_ORDER_ITEM_NOT_FOUND => 'order item not found',
+		self::PLUGIN_ORDER_STATUS_IS_SENT => 'order status is "sent"',
+		self::PLUGIN_ORDER_ALREADY_UP_TO_DATE => 'order is already up to date',
 
 		self::PLUGIN_NO_ADDRESSES_FOUND => 'no addresses found for customer',
 		self::PLUGIN_WRONG_USERNAME_OR_PASSWORD => 'wrong username or password',
