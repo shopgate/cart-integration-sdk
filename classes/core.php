@@ -330,6 +330,16 @@ class ShopgateConfigNew extends ShopgateContainer {
 	 */
 	protected $shop_is_active;
 	
+	/**
+	 * @var bool true to always use SSL / HTTPS urls for download of external content (such as graphics for the mobile header button)
+	 */
+	protected $always_use_ssl;
+	
+	/**
+	 * @var int (hours) The update period for keywords that identify mobile devices. Leave empty to download once and then always use the cached keywords
+	 */
+	protected $enable_redirect_keyword_update;
+	
 	
 	##############################################################
 	### Indicators to (de)activate Shopgate Plugin API actions ###
@@ -372,6 +382,11 @@ class ShopgateConfigNew extends ShopgateContainer {
 	/**
 	 * @var bool
 	 */
+	protected $enable_get_categories_csv;
+	
+	/**
+	 * @var bool
+	 */
 	protected $enable_get_pages_csv;
 	
 	/**
@@ -402,7 +417,11 @@ class ShopgateConfigNew extends ShopgateContainer {
 	 * @var array<string, mixed> Additional shop system specific settings that cannot (or should not) be generalized and thus be defined by a plugin itself
 	 */
 	protected $additionalSettings;
+
 	
+	###################################################
+	### Initialization, loading, saving, validating ###
+	###################################################
 	/**
 	 * Tries to assign the values of an array to the configuration fields or load it from a file.
 	 *
@@ -443,7 +462,7 @@ class ShopgateConfigNew extends ShopgateContainer {
 	 * @param string $path The path to the configuration file or nothing to load the default Shopgate Library configuration files.
 	 * @throws ShopgateLibraryException in case a configuration file could not be loaded or the $shopgate_config is not set.
 	 */
-	protected function loadFile($path = null) {
+	public function loadFile($path = null) {
 		global $shopgate_config;
 		
 		// unset $shopgate_config to avoid reading from somehow injected global variables
@@ -476,48 +495,6 @@ class ShopgateConfigNew extends ShopgateContainer {
 		// if we got here, we have a $shopgate_config to load
 		$unmappedData = parent::loadArray($shopgate_config);
 		$this->mapAdditionalSettings($unmappedData);
-	}
-	
-	/**
-	 * Tries to include the specified file and check for $shopgate_config.
-	 *
-	 * @param string $path The path to the configuration file.
-	 * @return boolean true if the file was included and defined $shopgate_config, false otherwise
-	 */
-	private function includeFile($path) {
-		global $shopgate_config;
-		
-		// unset $shopgate_config to avoid reading from somehow injected global variables
-		if (isset($shopgate_config)) {
-			unset($shopgate_config);
-		}
-		
-		// try including the file
-		if (file_exists($path)) {
-			ob_start();
-			include_once($path);
-			ob_clean();
-		} else {
-			return false;
-		}
-		
-		// check $shopgate_config
-		if (!isset($shopgate_config) || !is_array($shopgate_config)) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-	
-	/**
-	 * Maps the passed data to the additional settings array.
-	 *
-	 * @param array<string, mixed> $data The data to map.
-	 */
-	private function mapAdditionalSettings($data = array()) {
-		foreach ($unmappedData as $key => $value) {
-			$this->additionalSettings[$key] = $value;
-		}
 	}
 	
 	/**
@@ -612,6 +589,357 @@ class ShopgateConfigNew extends ShopgateContainer {
 		}
 	}
 	
+	
+	###############
+	### Getters ###
+	###############
+	/**
+	 * @return bool
+	 */
+	public function getUseCustomErrorHandler() {
+		return $this->use_custom_error_handler;
+	}
+	
+	/**
+	 * @return int
+	 */
+	public function getCustomerNumber() {
+		return $this->customer_number;
+	}
+	
+	/**
+	 * @return int
+	 */
+	public function getShopNumber() {
+		return $this->shop_number;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getApiKey() {
+		return $this->api_key;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getAlias() {
+		return $this->alias;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getCname() {
+		return $this->cname;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getServer() {
+		return $this->server;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getApiUrl() {
+		return $this->api_url;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function getShopIsActive() {
+		return $this->shop_is_active;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function getAlwaysUseSsl() {
+		return $this->always_use_ssl;
+	}
+	
+	/**
+	 * @return int
+	 */
+	public function getEnableRedirectKeywordUpdate() {
+		return $this->enable_redirect_keyword_update;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function getEnablePing() {
+		return $this->enable_ping;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function getEnableAddOrder() {
+		return $this->enable_add_order;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function getEnableUpdateOrder() {
+		return $this->enable_update_order;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function getEnableGetOrders() {
+		return $this->enable_get_orders;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function getEnableGetCustomer() {
+		return $this->enable_get_customer;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function getEnableGetItemsCsv() {
+		return $this->enable_get_items_csv;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function getEnableGetCategoriesCsv() {
+		return $this->enable_get_categories_csv;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function getEnableGetReviewsCsv() {
+		return $this->enable_get_reviews_csv;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function getEnableGetPagesCsv() {
+		return $this->enable_get_pages_csv;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function getEnableGetLogFile() {
+		return $this->enable_get_log_file;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function getEnableMobileWebsite() {
+		return $this->enable_mobile_website;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function getGenerateItemsCsvOnTheFly() {
+		return $this->generate_items_csv_on_the_fly;
+	}
+	
+	/**
+	 * @return int
+	 */
+	public function getMaxAttributes() {
+		return $this->max_attributes;
+	}
+	
+	###############
+	### Setters ###
+	###############
+	/**
+	 * @param bool $value
+	 */
+	public function setUseCustomErrorHandler($value) {
+		$this->use_custom_error_handler = $value;
+	}
+	
+	/**
+	 * @param int $value
+	 */
+	public function setCustomerNumber($value) {
+		$this->customer_number = $value;
+	}
+	
+	/**
+	 * @param int $value
+	 */
+	public function setShopNumber($value) {
+		$this->shop_number = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setApiKey($value) {
+		$this->api_key = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setAlias($value) {
+		$this->alias = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setCname($value) {
+		$this->cname = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setServer($value) {
+		$this->server = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setApiUrl($value) {
+		$this->api_url = $value;
+	}
+	
+	/**
+	 * @param bool $value
+	 */
+	public function setShopIsActive($value) {
+		$this->shop_is_active = $value;
+	}
+	
+	/**
+	 * @param bool $value
+	 */
+	public function setAlwaysUseSsl($value) {
+		$this->always_use_ssl = $value;
+	}
+	
+	/**
+	 * @param bool $value
+	 */
+	public function setEnableRedirectKeywordUpdate($value) {
+		$this->enable_redirect_keyword_update = $value;
+	}
+	
+	/**
+	 * @param bool $value
+	 */
+	public function setEnablePing($value) {
+		$this->enable_ping = $value;
+	}
+	
+	/**
+	 * @param bool $value
+	 */
+	public function setEnableAddOrder($value) {
+		$this->enable_add_order = $value;
+	}
+	
+	/**
+	 * @param bool $value
+	 */
+	public function setEnableUpdateOrder($value) {
+		$this->enable_update_order = $value;
+	}
+	
+	/**
+	 * @param bool $value
+	 */
+	public function setEnableGetOrders($value) {
+		$this->enable_get_orders = $value;
+	}
+	
+	/**
+	 * @param bool $value
+	 */
+	public function setEnableGetCustomer($value) {
+		$this->enable_get_customer = $value;
+	}
+	
+	/**
+	 * @param bool $value
+	 */
+	public function setEnableGetItemsCsv($value) {
+		$this->enable_get_items_csv = $value;
+	}
+	
+	/**
+	 * @param bool $value
+	 */
+	public function setEnableGetCategoriesCsv($value) {
+		$this->enable_get_categories_csv = $value;
+	}
+	
+	/**
+	 * @param bool $value
+	 */
+	public function setEnableGetReviewsCsv($value) {
+		$this->enable_get_reviews_csv = $value;
+	}
+	
+	/**
+	 * @param bool $value
+	 */
+	public function setEnableGetPagesCsv($value) {
+		$this->enable_get_pages_csv = $value;
+	}
+	
+	/**
+	 * @param bool $value
+	 */
+	public function setEnableGetLogFile($value) {
+		$this->enable_get_log_file = $value;
+	}
+	
+	/**
+	 * @param bool $value
+	 */
+	public function setEnableMobileWebsite($value) {
+		$this->enable_mobile_website = $value;
+	}
+	
+	/**
+	 * @param bool $value
+	 */
+	public function setGenerateItemsCsvOnTheFly($value) {
+		$this->generate_items_csv_on_the_fly = $value;
+	}
+	
+	/**
+	 * @param int $value
+	 */
+	public function setMaxAttributes($value) {
+		$this->max_attributes = $value;
+	}
+	
+	
+	###############
+	### Helpers ###
+	###############
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitConfig($this);
+	}
+	
 	/**
 	 * Returns the additional settings array.
 	 *
@@ -624,10 +952,47 @@ class ShopgateConfigNew extends ShopgateContainer {
 		return $this->additionalSettings;
 	}
 	
-	public function accept(ShopgateContainerVisitor $v) {
-		$v->visitConfig($this);
+	/**
+	 * Tries to include the specified file and check for $shopgate_config.
+	 *
+	 * @param string $path The path to the configuration file.
+	 * @return boolean true if the file was included and defined $shopgate_config, false otherwise
+	 */
+	private function includeFile($path) {
+		global $shopgate_config;
+		
+		// unset $shopgate_config to avoid reading from somehow injected global variables
+		if (isset($shopgate_config)) {
+			unset($shopgate_config);
+		}
+		
+		// try including the file
+		if (file_exists($path)) {
+			ob_start();
+			include_once($path);
+			ob_clean();
+		} else {
+			return false;
+		}
+		
+		// check $shopgate_config
+		if (!isset($shopgate_config) || !is_array($shopgate_config)) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 	
+	/**
+	 * Maps the passed data to the additional settings array.
+	 *
+	 * @param array<string, mixed> $data The data to map.
+	 */
+	private function mapAdditionalSettings($data = array()) {
+		foreach ($unmappedData as $key => $value) {
+			$this->additionalSettings[$key] = $value;
+		}
+	}
 }
 
 /**
