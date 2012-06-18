@@ -390,8 +390,7 @@ class ShopgateConfigNew extends ShopgateContainer {
 	protected $generate_items_csv_on_the_fly;
 	
 	/**
-	 * @var int
-	 * @todo Description.
+	 * @var int The maximum number of attributes per product that are created. If the number is exceeded, attributes should be converted to options.
 	 */
 	protected $max_attributes;
 	
@@ -400,20 +399,16 @@ class ShopgateConfigNew extends ShopgateContainer {
 	 */
 	protected $additionalSettings;
 	
-	public function accept(ShopgateContainerVisitor $v) {
-		// TODO $v->visitAddress($this);
-	}
-	
 	/**
 	 * Tries to assign the values of an array to the configuration fields or load it from a file.
-	 * 
+	 *
 	 * This overrides ShopgateContainer::loadArray() which is called on object instantiation. It tries to assign
 	 * the values of $data to the class attributes by $data's keys. If a key is not the name of a
 	 * class attribute it's appended to $this->additionalSettings.<br />
 	 * <br />
 	 * If $data is empty or not an array, the method calls $this->loadFile().
-	 * 
-	 * @param $data array<string, mixed> The data to be assigned to the configuration. 
+	 *
+	 * @param $data array<string, mixed> The data to be assigned to the configuration.
 	 */
 	protected function loadArray($data = array()) {
 		// if no $data was passed try loading the default configuration file
@@ -431,7 +426,7 @@ class ShopgateConfigNew extends ShopgateContainer {
 	
 	/**
 	 * Tries to load the configuration from a file.
-	 * 
+	 *
 	 * If a $path is passed, this method tries to include the file. If that fails an exception is thrown.<br />
 	 * <br />
 	 * If $path is empty it tries to load .../shopgate_library/config/myconfig.php or if that fails,
@@ -440,7 +435,7 @@ class ShopgateConfigNew extends ShopgateContainer {
 	 * <br />
 	 * The configuration file must be a PHP script defining an indexed array called $shopgate_config
 	 * containing the desired configuration values to set. If that is not the case, an exception is thrown
-	 * 
+	 *
 	 * @param string $path The path to the configuration file or nothing to load the default Shopgate Library configuration files.
 	 * @throws ShopgateLibraryException in case a configuration file could not be loaded or the $shopgate_config is not set.
 	 */
@@ -481,7 +476,7 @@ class ShopgateConfigNew extends ShopgateContainer {
 	
 	/**
 	 * Tries to include the specified file and check for $shopgate_config.
-	 * 
+	 *
 	 * @param string $path The path to the configuration file.
 	 * @return boolean true if the file was included and defined $shopgate_config, false otherwise
 	 */
@@ -512,7 +507,7 @@ class ShopgateConfigNew extends ShopgateContainer {
 	
 	/**
 	 * Maps the passed data to the additional settings array.
-	 * 
+	 *
 	 * @param array<string, mixed> $data The data to map.
 	 */
 	private function mapAdditionalSettings($data = array()) {
@@ -523,16 +518,16 @@ class ShopgateConfigNew extends ShopgateContainer {
 	
 	/**
 	 * Saves the desired configuration fields to the specified file or myconfig.php.
-	 * 
+	 *
 	 * This calls $this->loadFile() with the given $path to load the current configuration. In case that fails, the $shopgate_config
 	 * array is initialized empty. The values defined in $fieldList are then validated (if desired), assigned to $shopgate_config and
 	 * saved to the specified file or myconfig.php.
-	 * 
+	 *
 	 * In case the file cannot be (over)written or created, an exception with code ShopgateLibrary::CONFIG_READ_WRITE_ERROR is thrown.
-	 * 
+	 *
 	 * In case the validation fails for one or more fields, an exception with code ShopgateLibrary::CONFIG_ is thrown. The failed
 	 * fields are appended as additional information in form of a comma-separated list.
-	 * 
+	 *
 	 * @param string[] $fieldList The list of fieldnames that should be saved to the configuration file.
 	 * @param string $path The path to the configuration file or empty to use .../shopgate_library/config/myconfig.php.
 	 * @param bool $validate True to validate the fields that should be set.
@@ -559,14 +554,10 @@ class ShopgateConfigNew extends ShopgateContainer {
 		}
 		
 		// run through fieldList and assign the values to $shopgate_config
-		$properties = $this->buildProperties();
+		$array = $this->toArray();
 		foreach ($fieldList as $field) {
-			if (empty($properties[$field]) && empty($this->additionalSettings[$field])) {
-				continue;
-			} elseif (empty($properties[$field]) && !empty($this->additionalSettings[$field])) {
-				$shopgate_config[$field] = $this->additionalSettings[$field];
-			} else {
-				$shopgate_config[$field] = $properties[$field];
+			if (!empty($array[$field])) {
+				$shopgate_config[$field] = $array[$field];
 			}
 		}
 		
@@ -579,13 +570,13 @@ class ShopgateConfigNew extends ShopgateContainer {
 	
 	/**
 	 * Validates the configuration values.
-	 * 
+	 *
 	 * If $fieldList contians values, only these values will be validated. It it's empty, all values that have a validation
 	 * rule will be validated.
-	 * 
+	 *
 	 * In case one or more validations fail an exception is thrown. The failed fields are appended as additonal information
 	 * in form of a comma-separated list.
-	 * 
+	 *
 	 * @param string[] $fieldList The list of fields to be validated or empty, to validate all fields.
 	 */
 	public function validate($fieldList = array()) {
@@ -616,6 +607,23 @@ class ShopgateConfigNew extends ShopgateContainer {
 			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_INVALID_VALUE, implode(',', $failedFields));
 		}
 	}
+	
+	/**
+	 * Returns the additional settings array.
+	 *
+	 * The naming of this method doesn't follow the getter/setter naming convention because $this->additionalSettings
+	 * is not a regular property.
+	 *
+	 * @return array<string, mixed> The additional settings a plugin may have defined.
+	 */
+	public function returnAdditionalSettings() {
+		return $this->additionalSettings;
+	}
+	
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitConfig($this);
+	}
+	
 }
 
 /**
@@ -1205,7 +1213,7 @@ abstract class ShopgateContainer extends ShopgateObject {
 	 *
 	 * The passed data must be an array, it's indices must be the un-camelized,
 	 * underscored names of the set* methods of the object.
-	 * 
+	 *
 	 * Tha data that couldn't be mapped is returned as an array.
 	 *
 	 * @param array $data The data that should be mapped to the container object.
@@ -3016,6 +3024,7 @@ interface ShopgateContainerVisitor {
 	public function visitShopgateItemOption(ShopgateItemOption $i);
 	public function visitShopgateItemOptionValue(ShopgateItemOptionValue $i);
 	public function visitShopgateItemInput(ShopgateItemInput $i);
+	public function visitConfig(ShopgateConfigNew $c);
 }
 
 /**
@@ -3240,6 +3249,20 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 			$this->object = null;
 		}
 	}
+	
+	public function visitConfig(ShopgateConfigNew $c) {
+		$properties = $c->buildProperties();
+
+		// iterate the simple variables
+		$this->iterateSimpleProperties($properties);
+
+		// create new object with utf-8 en- / decoded data
+		try {
+			$this->object = new ShopgateConfigNew($properties);
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
 
 	protected function iterateSimpleProperties(array &$properties) {
 		foreach ($properties as $key => &$value) {
@@ -3412,6 +3435,12 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 	public function visitShopgateItemInput(ShopgateItemInput $d) {
 		// get properties and iterate (no complex types in ShopgateDeliveryNote objects)
 		$this->array = $this->iterateSimpleProperties($d->buildProperties());
+	}
+
+	public function visitConfig(ShopgateConfigNew $c) {
+		$properties = $this->iterateSimpleProperties($c->buildProperties());
+		$additionalSettings = $this->iterateSimpleProperties($c->returnAdditionalSettings());
+		$this->array = array_merge($properties, $additionalSettings);
 	}
 
 	protected function iterateSimpleProperties(array $properties) {
