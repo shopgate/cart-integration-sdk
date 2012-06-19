@@ -57,7 +57,7 @@
 		<echo message="Create SVN-Tag for Version ${plugin.version}" />
 		<svn>
 			<copy makeParents="true" srcUrl="${svn.url}/trunk"
-				destUrl="${svn.url}/tags/${plugin.version}/release" message="Shopgate Library Version: ${plugin.version}" />
+				destUrl="${svn.url}/branches/${plugin.version}/release" message="Shopgate Library Version: ${plugin.version}" />
 		</svn>
 	</target>
 
