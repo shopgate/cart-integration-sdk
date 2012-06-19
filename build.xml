@@ -4,9 +4,8 @@
 
 	<description>ShopgateLibrary</description>
 
-	<buildnumber file="build.num" />
-
 	<property file="build.properties"/>
+	<property file="build.num"/>
 
 	<property name="project-root" location="./" />
 	<property name="ant-folder" location="./ant/" />
@@ -16,12 +15,11 @@
 	<property name="release-folder" location="${ant-folder}/releases" />
 
 	<!-- SVN -->
+	<!-- Use the SVN credentials from the project -->
 	<path id="path.svnant">
-		<pathelement location="/home/arogarth/Downloads/svnant/svnant-1.0.0/lib/svnant.jar" />
-		<pathelement location="/home/arogarth/Downloads/svnant/svnant-1.0.0/lib/svnClientAdapter.jar" />
-		<!--<pathelement location="/home/arogarth/Downloads/svnant/svnant-1.0.0/lib/svnjavahl.jar" />-->
+		<pathelement location="svnant.jar" />
+		<pathelement location="svnClientAdapter.jar" />
 	</path>
-
 	<typedef resource="svntask.properties" classpathref="path.svnant" />
 
 	<echo>
@@ -30,7 +28,15 @@
 		########################################################
 	</echo>
 
+	<!--
+		Prepare the Project
+
+		Increase the Version-Number and commit the Version-Change
+	-->
 	<target name="prepare">
+		<!-- Handle the Build-Number -->
+		<buildnumber file="build.num" />
+
 		<echo message="Set version in classes/core.php to ${plugin.version}" />
 		<replaceregexp file="${project-root}/classes/core.php"
 			match="define\('SHOPGATE_LIBRARY_VERSION', '.+'\);"
@@ -46,6 +52,18 @@
 		</svn>
 	</target>
 
+	<!-- Create the SVN-Tag for the current Version -->
+	<target name="create_tag">
+		<echo message="Create SVN-Tag for Version ${plugin.version}" />
+		<svn>
+			<copy makeParents="true" srcUrl="${svn.url}/trunk"
+				destUrl="${svn.url}/tags/${plugin.version}/release" message="Shopgate Library Version: ${plugin.version}" />
+		</svn>
+	</target>
+
+	<!--
+		Build the ZIP-File
+	-->
 	<target name="build">
 		<echo message="Build ZIP-Archive" />
 
@@ -70,7 +88,12 @@
 		<delete dir="${ant-folder}" />
 	</target>
 
-	<target name="upload" depends="prepare, build">
+	<!--
+		Upload the the new Version to S3
+
+		Depends on Prepare, create_tag, build
+	-->
+	<target name="upload" depends="prepare, create_tag, build">
 		<s3cmd command="put" file="${project-root}/shopgate_library.zip" key="s3://shopgate-static/plugins/shopgate_library.zip">
 			<args>
 				<arg value="- -acl-public" />
