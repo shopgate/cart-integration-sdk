@@ -70,20 +70,24 @@ Setup:
 
 	<!-- Create the SVN-Tag for the current Version -->
 	<target name="create_tag">
+		<!--
+		Need to copy and then move because on copy it will create trunk-folder in tag.
+		-->
 		<echo message="Create SVN-Tag for Version ${plugin.version}" />
 		<svn>
 			<mkdir
-				url="${svn.url}/tags/{plugin.version}"
-				message="Create Path for Version ${plugin.version}" />
-
-			<mkdir
-				url="${svn.url}/tags/{plugin.version}/release"
+				url="${svn.tags}/${plugin.version}"
 				message="Create Path for Version ${plugin.version}" />
 
 			<copy
-				srcUrl="${svn.url}/trunk"
-				destUrl="${svn.url}/tags/{plugin.version}/release"
+				srcUrl="${svn.url}/trunk/"
+				destUrl="${svn.tags}/${plugin.version}/"
 				message="Shopgate Library Version: ${plugin.version}" />
+
+			<move
+				srcUrl="${svn.tags}/${plugin.version}/trunk/"
+				destUrl="${svn.tags}/${plugin.version}/release/"
+				message="Rename Folder trunk to release in tag" />
 		</svn>
 	</target>
 
@@ -120,11 +124,11 @@ Setup:
 		Depends on Prepare, create_tag, build
 	-->
 	<target name="upload" depends="prepare, create_tag, build">
-		<!--<s3cmd command="put" file="${project-root}/shopgate_library.zip" key="s3://shopgate-static/plugins/shopgate_library.zip">
+		<s3cmd command="put" file="${project-root}/shopgate_library.zip" key="s3://shopgate-static/plugins/shopgate_library.zip">
 			<args>
-				<arg value="- -acl-public" />
+				<arg value="--acl-public" />
 			</args>
-		</s3cmd>-->
+		</s3cmd>
 
 		<echo message="Public-URL: http://static.shopgate.com/plugins/shopgate_library.zip" />
 	</target>
