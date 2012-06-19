@@ -989,7 +989,7 @@ class ShopgateConfigNew extends ShopgateContainer {
 	 * @param array<string, mixed> $data The data to map.
 	 */
 	private function mapAdditionalSettings($data = array()) {
-		foreach ($unmappedData as $key => $value) {
+		foreach ($data as $key => $value) {
 			$this->additionalSettings[$key] = $value;
 		}
 	}
