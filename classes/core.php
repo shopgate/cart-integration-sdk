@@ -260,7 +260,7 @@ class ShopgateMerchantApiException extends Exception {
 	}
 }
 
-class ShopgateConfigNew extends ShopgateContainer {
+class ShopgateConfig extends ShopgateContainer {
 	const SHOPGATE_API_URL_LIVE = 'https://api.shopgate.com/merchant/';
 	const SHOPGATE_API_URL_PG   = 'https://api.shopgatepg.com/merchant/';
 	
@@ -416,7 +416,7 @@ class ShopgateConfigNew extends ShopgateContainer {
 	/**
 	 * @var array<string, mixed> Additional shop system specific settings that cannot (or should not) be generalized and thus be defined by a plugin itself
 	 */
-	protected $additionalSettings;
+	protected $additionalSettings = array();
 
 	
 	###################################################
@@ -993,15 +993,34 @@ class ShopgateConfigNew extends ShopgateContainer {
 			$this->additionalSettings[$key] = $value;
 		}
 	}
+	
+	
+	##################################
+	### Deprecated / Compatibility ###
+	##################################
+	/**
+	 * Routes static calls to ShopgateConfigOld (the former ShopgateConfig class).
+	 *
+	 * This is for compatibility reasons only. The use of ShopgateConfigOld is deprecated!
+	 *
+	 * @param string $name Method name.
+	 * @param mixed[] $arguments Arguments to call the method with.
+	 * @return mixed The return value of the called method.
+	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld.
+	 */
+	public static function __callStatic($name, $arguments) {
+		return call_user_func_array(array('ShopgateConfigOld', $name), $arguments);
+	}
 }
 
 /**
  * Einstellungen für das Framework
  *
- * @author Daniel Aigner
  * @version 1.0.0
+ * @deprecated
+ * @see ShopgateConfig
  */
-class ShopgateConfig extends ShopgateObject {
+class ShopgateConfigOld extends ShopgateObject {
 
 	/**
 	 * Die Standardeinstellungen.
@@ -1649,13 +1668,16 @@ abstract class ShopgateContainer extends ShopgateObject {
 	 * @return mixed[]
 	 */
 	public function buildProperties() {
+		$methods = get_class_methods($this);
 		$properties = get_object_vars($this);
 		$filteredProperties = array();
 
 		// only properties that have getters should be extracted
 		foreach ($properties as $property => $value) {
 			$getter = 'get'.$this->camelize($property, true);
-			$filteredProperties[$property] = $this->{$getter}();
+			if (in_array($getter, $methods)) {
+				$filteredProperties[$property] = $this->{$getter}();
+			}
 		}
 
 		return $filteredProperties;
@@ -3393,7 +3415,7 @@ interface ShopgateContainerVisitor {
 	public function visitShopgateItemOption(ShopgateItemOption $i);
 	public function visitShopgateItemOptionValue(ShopgateItemOptionValue $i);
 	public function visitShopgateItemInput(ShopgateItemInput $i);
-	public function visitConfig(ShopgateConfigNew $c);
+	public function visitConfig(ShopgateConfig $c);
 }
 
 /**
@@ -3619,7 +3641,7 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 		}
 	}
 	
-	public function visitConfig(ShopgateConfigNew $c) {
+	public function visitConfig(ShopgateConfig $c) {
 		$properties = $c->buildProperties();
 
 		// iterate the simple variables
@@ -3627,7 +3649,7 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 
 		// create new object with utf-8 en- / decoded data
 		try {
-			$this->object = new ShopgateConfigNew($properties);
+			$this->object = new ShopgateConfig($properties);
 		} catch (ShopgateLibraryException $e) {
 			$this->object = null;
 		}
@@ -3806,7 +3828,7 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 		$this->array = $this->iterateSimpleProperties($d->buildProperties());
 	}
 
-	public function visitConfig(ShopgateConfigNew $c) {
+	public function visitConfig(ShopgateConfig $c) {
 		$properties = $this->iterateSimpleProperties($c->buildProperties());
 		$additionalSettings = $this->iterateSimpleProperties($c->returnAdditionalSettings());
 		$this->array = array_merge($properties, $additionalSettings);
