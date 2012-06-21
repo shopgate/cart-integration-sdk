@@ -260,9 +260,33 @@ class ShopgateMerchantApiException extends Exception {
 	}
 }
 
+/**
+ * Manages configuration for library _and_ plugin options.
+ *
+ * This class is used to save general library settings and specific settings for your plugin.
+ *
+ * To add your own specific settings
+ *
+ * @author Shopgate GmbH, 35510 Butzbach, DE
+ */
 class ShopgateConfig extends ShopgateContainer {
 	const SHOPGATE_API_URL_LIVE = 'https://api.shopgate.com/merchant/';
 	const SHOPGATE_API_URL_PG   = 'https://api.shopgatepg.com/merchant/';
+	
+	/**
+	 * @var string The name of the class to use. This needs to be overriden by any subclass of ShopgateConfig with the subclass' name.
+	 */
+	protected static $className = 'ShopgateConfig';
+	
+	/**
+	 * @var ShopgateConfig
+	 */
+	private static $singleton;
+	
+	/**
+	 * @var bool
+	 */
+	protected $isSingleton = true;
 	
 	/**
 	 * @var array<string, string> List of field names (index) that must have a value according to its validation regex (value)
@@ -422,6 +446,23 @@ class ShopgateConfig extends ShopgateContainer {
 	###################################################
 	### Initialization, loading, saving, validating ###
 	###################################################
+	
+	/**
+	 * Returns the singleton instance of the ShopgateConfig class.
+	 *
+	 * The $data parameter is only processed on first instantiation.
+	 *
+	 * @param array<string, mixed> $data The data to be assigned to the configuration.
+	 * @return ShopgateConfig
+	 */
+	public static function &getInstance($data = array()) {
+		if (empty(self::$singleton)) {
+			self::$singleton = new ${self::$className}($data);
+		}
+		
+		return self::$singleton;
+	}
+	
 	/**
 	 * Tries to assign the values of an array to the configuration fields or load it from a file.
 	 *
@@ -552,7 +593,7 @@ class ShopgateConfig extends ShopgateContainer {
 	/**
 	 * Validates the configuration values.
 	 *
-	 * If $fieldList contians values, only these values will be validated. It it's empty, all values that have a validation
+	 * If $fieldList contains values, only these values will be validated. It it's empty, all values that have a validation
 	 * rule will be validated.
 	 *
 	 * In case one or more validations fail an exception is thrown. The failed fields are appended as additonal information
@@ -560,7 +601,7 @@ class ShopgateConfig extends ShopgateContainer {
 	 *
 	 * @param string[] $fieldList The list of fields to be validated or empty, to validate all fields.
 	 */
-	public function validate($fieldList = array()) {
+	public final function validate($fieldList = array()) {
 		$properties = $this->buildProperties();
 		
 		if (empty($fieldList)) {
@@ -586,6 +627,31 @@ class ShopgateConfig extends ShopgateContainer {
 		
 		if (!empty($failedFields)) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_INVALID_VALUE, implode(',', $failedFields));
+		}
+	}
+	
+	/**
+	 * Adds or overwrites a the validation for a given additional setting.
+	 *
+	 * Unlike the additional settings themselves these validations are not persistet and have to be set whenever needed.
+	 *
+	 * @param string $fieldName The name of the field in the additional settings that should be validated.
+	 * @param string $regex The regular expression used to validate the setting.
+	 */
+	public function addAdditionalValidation($fieldName, $regex) {
+		$this->additionalValidations[$fieldName] = $regex;
+	}
+	
+	/**
+	 * Adds or overwrites the validations for the given additional settings.
+	 *
+	 * Unlike the additional settings themselves these validations are not persistet and have to be set whenever needed.
+	 *
+	 * @param array<string, string> $validations The field names (index) and regular expressions (value) of the additional settings that should be validated.
+	 */
+	 public function addAdditionalValidations($validations) {
+		foreach ($validations as $fieldName => $regex) {
+			$this->addAdditionalValidation($fieldName, $regex);
 		}
 	}
 	
@@ -1307,6 +1373,7 @@ abstract class ShopgateObject {
 	const LOGTYPE_ERROR = 'error';
 
 	const OBFUSCATION_STRING = 'XXXXXXXX';
+	
 
 	/**
 	 * @var resource[]
@@ -1321,6 +1388,11 @@ abstract class ShopgateObject {
 	 * @var int
 	 */
 	private static $instanceCount = 0;
+	
+	/**
+	 * @var bool
+	 */
+	protected $isSingleton = false;
 
 	/**
 	 * Takes care of file handle initialization and the instance count of ShopgateObjects.
@@ -1331,9 +1403,14 @@ abstract class ShopgateObject {
 	 * All parameters this method is called with are passed in the same way to initLibrary().
 	 */
 	public final function __construct() {
+		if (!empty($this->isSingleton)) {
+			$className = get_class($this);
+			trigger_error('Class '.$className.' is a singleton. Please call '.$className.'::getInstance() to get the singleton instance of the class.', E_USER_ERROR);
+		}
+		
 		self::$instanceCount++;
 		self::init();
-
+		
 		// call the initLibrary() callback and pass arguments
 		$args = func_get_args();
 		call_user_func_array(array($this, 'initLibrary'), $args);
@@ -1595,7 +1672,7 @@ abstract class ShopgateContainer extends ShopgateObject {
 	protected final function initLibrary($data = array()) {
 		$this->loadArray($data);
 	}
-	
+		
 	/**
 	 * Tries to map an associative array to the object's attributes.
 	 *
@@ -1703,6 +1780,11 @@ class ShopgatePluginApi extends ShopgateObject {
 	 * @var ShopgatePluginApi
 	 */
 	private static $singleton;
+	
+	/**
+	 * @var bool
+	 */
+	protected $isSingleton = true;
 
 	/**
 	 * @var mixed[]
@@ -2380,6 +2462,11 @@ class ShopgateMerchantApi extends ShopgateObject {
 	 * @var ShopgateMerchantApi
 	 */
 	private static $singleton;
+	
+	/**
+	 * @var bool
+	 */
+	protected $isSingleton = true;
 
 	/**
 	 * @var mixed[]
@@ -3315,7 +3402,15 @@ abstract class ShopgatePlugin extends ShopgateObject {
  * @author Shopgate GmbH, 35510 Butzbach, DE
  */
 class ShopgateAuthentificationService extends ShopgateObject {
+	/**
+	 * @var ShopgateAuthentificationService
+	 */
 	private static $singleton;
+	
+	/**
+	 * @var bool
+	 */
+	protected $isSingleton = true;
 
 	const HEADER_X_SHOPGATE_AUTH_USER  = 'X-Shopgate-Auth-User';
 	const HEADER_X_SHOPGATE_AUTH_TOKEN = 'X-Shopgate-Auth-Token';
