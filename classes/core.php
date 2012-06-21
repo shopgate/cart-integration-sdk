@@ -1066,7 +1066,7 @@ class ShopgatePluginApi extends ShopgateObject {
 			$this->response['error_text'] = $e->getMessage();
 		} catch (ShopgateMerchantApiException $e) {
 			$this->response['error'] = ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED;
-			$this->response['error_text'] = $e->getCode() . " - " . $e->getMessage();
+			$this->response['error_text'] = ShopgateLibraryException::getMessageFor(ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED).': "'.$e->getCode() . " - " . $e->getMessage().'"';
 		} catch (Exception $e) {
 			$message  = "";
 			$message .= "Unknown Exception\n";
