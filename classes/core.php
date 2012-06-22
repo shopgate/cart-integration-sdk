@@ -284,9 +284,9 @@ class ShopgateConfig extends ShopgateContainer {
 	private static $singleton;
 	
 	/**
-	 * @var bool
+	 * @var bool Enforces instantion through getInstance()
 	 */
-	protected $isSingleton = true;
+	private static $singletonEnforcer = true;
 	
 	/**
 	 * @var array<string, string> List of field names (index) that must have a value according to its validation regex (value)
@@ -447,6 +447,14 @@ class ShopgateConfig extends ShopgateContainer {
 	### Initialization, loading, saving, validating ###
 	###################################################
 	
+	protected function initLibrary(array $data = array()) {
+		if (!empty(self::$singletonEnforcer)) {
+			trigger_error('Class '.__CLASS__.' is a singleton. Please call '.__CLASS__.'::getInstance() to get the singleton instance of the class.', E_USER_ERROR);
+		}
+		
+		$this->loadArray($data);
+	}
+	
 	/**
 	 * Returns the singleton instance of the ShopgateConfig class.
 	 *
@@ -455,10 +463,18 @@ class ShopgateConfig extends ShopgateContainer {
 	 * @param array<string, mixed> $data The data to be assigned to the configuration.
 	 * @return ShopgateConfig
 	 */
-	public static function &getInstance($data = array()) {
+	public static function &getInstance(array $data = array()) {
+		self::$singletonEnforcer = false;
+		
 		if (empty(self::$singleton)) {
-			self::$singleton = new ${self::$className}($data);
+			self::$singleton = new self::$className($data);
+		} else {
+			if (!empty($data)) {
+				self::$singleton->loadArray($data);
+			}
 		}
+		
+		self::$singletonEnforcer = true;
 		
 		return self::$singleton;
 	}
@@ -474,9 +490,9 @@ class ShopgateConfig extends ShopgateContainer {
 	 *
 	 * @param $data array<string, mixed> The data to be assigned to the configuration.
 	 */
-	protected function loadArray($data = array()) {
+	protected function loadArray(array $data = array()) {
 		// if no $data was passed try loading the default configuration file
-		if (empty($data) || !is_array($data)) {
+		if (empty($data)) {
 			$this->loadFile();
 			return;
 		}
@@ -555,7 +571,7 @@ class ShopgateConfig extends ShopgateContainer {
 	 * @param bool $validate True to validate the fields that should be set.
 	 * @throws ShopgateLibraryException in case the configuration can't be loaded or saved.
 	 */
-	public function saveFile($fieldList, $path = null, $validate = true) {
+	public function saveFile(array $fieldList, $path = null, $validate = true) {
 		global $shopgate_config;
 		
 		// if desired, validate before doing anything else
@@ -601,7 +617,7 @@ class ShopgateConfig extends ShopgateContainer {
 	 *
 	 * @param string[] $fieldList The list of fields to be validated or empty, to validate all fields.
 	 */
-	public final function validate($fieldList = array()) {
+	public final function validate(array $fieldList = array()) {
 		$properties = $this->buildProperties();
 		
 		if (empty($fieldList)) {
@@ -649,7 +665,7 @@ class ShopgateConfig extends ShopgateContainer {
 	 *
 	 * @param array<string, string> $validations The field names (index) and regular expressions (value) of the additional settings that should be validated.
 	 */
-	 public function addAdditionalValidations($validations) {
+	public function addAdditionalValidations(array $validations) {
 		foreach ($validations as $fieldName => $regex) {
 			$this->addAdditionalValidation($fieldName, $regex);
 		}
@@ -1390,11 +1406,6 @@ abstract class ShopgateObject {
 	private static $instanceCount = 0;
 	
 	/**
-	 * @var bool
-	 */
-	protected $isSingleton = false;
-
-	/**
 	 * Takes care of file handle initialization and the instance count of ShopgateObjects.
 	 *
 	 * This cannot be overridden. Subclasses that are part of the Shopgate Library should implement initLibrary() for initialization
@@ -1403,11 +1414,6 @@ abstract class ShopgateObject {
 	 * All parameters this method is called with are passed in the same way to initLibrary().
 	 */
 	public final function __construct() {
-		if (!empty($this->isSingleton)) {
-			$className = get_class($this);
-			trigger_error('Class '.$className.' is a singleton. Please call '.$className.'::getInstance() to get the singleton instance of the class.', E_USER_ERROR);
-		}
-		
 		self::$instanceCount++;
 		self::init();
 		
@@ -1669,10 +1675,10 @@ abstract class ShopgateContainer extends ShopgateObject {
 	 *
 	 * @param array $data The data the container should be initialized with.
 	 */
-	protected final function initLibrary($data = array()) {
+	protected function initLibrary($data = array()) {
 		$this->loadArray($data);
 	}
-		
+	
 	/**
 	 * Tries to map an associative array to the object's attributes.
 	 *
@@ -1782,10 +1788,10 @@ class ShopgatePluginApi extends ShopgateObject {
 	private static $singleton;
 	
 	/**
-	 * @var bool
+	 * @var bool Enforces instantion through getInstance()
 	 */
-	protected $isSingleton = true;
-
+	private static $singletonEnforcer = true;
+	
 	/**
 	 * @var mixed[]
 	 */
@@ -1817,14 +1823,22 @@ class ShopgatePluginApi extends ShopgateObject {
 	 * @return ShopgatePluginApi
 	 */
 	public static function &getInstance() {
+		self::$singletonEnforcer = false;
+		
 		if (empty(self::$singleton)) {
 			self::$singleton = new self();
 		}
 
+		self::$singletonEnforcer = true;
+		
 		return self::$singleton;
 	}
 
 	protected final function initLibrary() {
+		if (!empty(self::$singletonEnforcer)) {
+			trigger_error('Class '.__CLASS__.' is a singleton. Please call '.__CLASS__.'::getInstance() to get the singleton instance of the class.', E_USER_ERROR);
+		}
+		
 		// initialize action whitelist
 		$this->actionWhitelist = array(
 			'ping',
@@ -2464,10 +2478,10 @@ class ShopgateMerchantApi extends ShopgateObject {
 	private static $singleton;
 	
 	/**
-	 * @var bool
+	 * @var bool Enforces instantion through getInstance()
 	 */
-	protected $isSingleton = true;
-
+	private static $singletonEnforcer = true;
+	
 	/**
 	 * @var mixed[]
 	 */
@@ -2477,14 +2491,22 @@ class ShopgateMerchantApi extends ShopgateObject {
 	 * @return ShopgateMerchantApi
 	 */
 	public static function getInstance() {
+		self::$singletonEnforcer = false;
+		
 		if (empty(self::$singleton)) {
 			self::$singleton = new self();
 		}
 
+		self::$singletonEnforcer = true;
+		
 		return self::$singleton;
 	}
 
 	protected final function initLibrary() {
+		if (!empty(self::$singletonEnforcer)) {
+			trigger_error('Class '.__CLASS__.' is a singleton. Please call '.__CLASS__.'::getInstance() to get the singleton instance of the class.', E_USER_ERROR);
+		}
+		
 		$this->config = ShopgateConfig::validateAndReturnConfig();
 	}
 
@@ -3408,10 +3430,10 @@ class ShopgateAuthentificationService extends ShopgateObject {
 	private static $singleton;
 	
 	/**
-	 * @var bool
+	 * @var bool Enforces instantion through getInstance()
 	 */
-	protected $isSingleton = true;
-
+	private static $singletonEnforcer = true;
+	
 	const HEADER_X_SHOPGATE_AUTH_USER  = 'X-Shopgate-Auth-User';
 	const HEADER_X_SHOPGATE_AUTH_TOKEN = 'X-Shopgate-Auth-Token';
 	const PHP_X_SHOPGATE_AUTH_USER  = 'HTTP_X_SHOPGATE_AUTH_USER';
@@ -3422,6 +3444,10 @@ class ShopgateAuthentificationService extends ShopgateObject {
 	private $timestamp;
 
 	protected final function initLibrary() {
+		if (!empty(self::$singletonEnforcer)) {
+			trigger_error('Class '.__CLASS__.' is a singleton. Please call '.__CLASS__.'::getInstance() to get the singleton instance of the class.', E_USER_ERROR);
+		}
+		
 		$config = ShopgateConfig::getConfig();
 		$this->customerNumber = $config["customer_number"];
 		$this->apiKey = $config["apikey"];
@@ -3432,9 +3458,13 @@ class ShopgateAuthentificationService extends ShopgateObject {
 	 * @return ShopgateAuthentificationService
 	 */
 	public static function getInstance() {
+		self::$singletonEnforcer = false;
+		
 		if (empty(self::$singleton)) {
 			self::$singleton = new self();
 		}
+		
+		self::$singletonEnforcer = true;
 
 		return self::$singleton;
 	}
