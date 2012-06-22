@@ -1051,7 +1051,7 @@ class ShopgateConfig extends ShopgateContainer {
 		// try including the file
 		if (file_exists($path)) {
 			ob_start();
-			include_once($path);
+			include($path);
 			ob_clean();
 		} else {
 			return false;
