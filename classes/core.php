@@ -1623,7 +1623,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	protected final function initLibrary() {
 		$this->config = ShopgateConfig::validateAndReturnConfig();
 	}
-
+	
 	/**
 	 * Prepares the request and sends it to the configured Shopgate Merchant API.
 	 *
@@ -1650,7 +1650,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 			ShopgateAuthentificationService::getInstance()->buildAuthTokenHeader()
 		));
 		curl_setopt($curl, CURLOPT_POST, true);
-		curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+		curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
 
 		$response = curl_exec($curl);
 		$info = curl_getinfo($curl);
