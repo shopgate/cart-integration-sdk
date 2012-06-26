@@ -1820,7 +1820,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	public function addItem($data) {
 		$data['action'] = 'add_item';
 
-		$reponse = $this->sendRequest($data);
+		$response = $this->sendRequest($data);
 		$oResponse = new ShopgateMerchantApiResponse($response);
 		return $oResponse;
 	}
@@ -1834,7 +1834,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	public function updateItem($data) {
 		$data['action'] = 'update_item';
 
-		$response->sendRequest($data);
+		$response = $this->sendRequest($data);
 		$oResponse = new ShopgateMerchantApiResponse($response);
 		return $oResponse;
 	}
@@ -1852,7 +1852,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 			'action' => 'delete_item',
 		);
 
-		$reponse = $this->sendRequest($data);
+		$response = $this->sendRequest($data);
 		$oResponse = new ShopgateMerchantApiResponse($response);
 		return $oResponse;
 	}
