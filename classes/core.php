@@ -3,7 +3,7 @@
 ###################################################################################
 # define constants
 ###################################################################################
-define('SHOPGATE_LIBRARY_VERSION', '2.0.14/new_config');
+define('SHOPGATE_LIBRARY_VERSION', '2.0.15/new_config');
 define('SHOPGATE_BASE_DIR', realpath(dirname(__FILE__).'/../'));
 define('SHOPGATE_ITUNES_URL', 'http://itunes.apple.com/de/app/shopgate-eine-app-alle-shops/id365287459?mt=8');
 
@@ -2035,9 +2035,16 @@ class ShopgatePluginApi extends ShopgateObject {
 
 			return $permissions;
 		}
-
+		
+		// obfuscate data relevant for authentication
+		$config = $this->config;
+		$config['customer_number']	= ShopgateObject::OBFUSCATION_STRING;
+		$config['shop_number']		= ShopgateObject::OBFUSCATION_STRING;
+		$config['apikey']			= ShopgateObject::OBFUSCATION_STRING;
+		
+		// return the pong object
 		header("Content-Type: application/json");
-		$this->response["configuration"] = $this->config;
+		$this->response["configuration"] = $config;
 		$this->response["permissions"] = getPermissions();
 		$this->response["php_version"] = phpversion();
 		$this->response["php_config"] = getSettings();

@@ -104,7 +104,7 @@ class ShopgateMobileRedirect extends ShopgateObject {
 	 * @var string description to be displayed to the left of the button
 	 */
 	protected $buttonDescription;
-
+	
 	public function initLibrary() {
 		$this->updateRedirectKeywords = false;
 		$this->redirectKeywordCacheTime = self::DEFAULT_CACHE_TIME;
@@ -114,8 +114,6 @@ class ShopgateMobileRedirect extends ShopgateObject {
 		// mobile header options
 		$this->mobileHeaderTemplatePath = dirname(__FILE__).'/../assets/mobile_header.html';
 		$this->cookieLife = gmdate('D, d-M-Y H:i:s T', time());
-		$this->buttonOnImageSource = (($this->useSecureConnection) ? self::SHOPGATE_STATIC_SSL : self::SHOPGATE_STATIC).'/api/mobile_header/button_on.png';
-		$this->buttonOffImageSource = (($this->useSecureConnection) ? self::SHOPGATE_STATIC_SSL : self::SHOPGATE_STATIC).'/api/mobile_header/button_off.png';
 		$this->buttonDescription = 'Mobile Webseite aktivieren';
 
 		// update keywords if enabled
@@ -225,6 +223,16 @@ class ShopgateMobileRedirect extends ShopgateObject {
 	}
 
 	/**
+	 * Switches to secure connection instead of checking server-side.
+	 *
+	 * This will cause slower download of nonsensitive material (the mobile header button images) from Shopgate.
+	 * Activate only if the secure connection is determined incorrectly (e.g. because of third-party components).
+	 */
+	public function setAlwaysUseSSL() {
+		$this->useSecureConnection = true;
+	}
+	
+	/**
 	 * Detects by redirect keywords (and skip redirect keywords) if a request was sent by a mobile device.
 	 *
 	 * @return bool true if a mobile device could be detected, false otherwise.
@@ -297,11 +305,13 @@ class ShopgateMobileRedirect extends ShopgateObject {
 		}
 
 		// set parameters
+		$this->buttonOnImageSource = (($this->useSecureConnection) ? self::SHOPGATE_STATIC_SSL : self::SHOPGATE_STATIC).'/api/mobile_header/button_on.png';
+		$this->buttonOffImageSource = (($this->useSecureConnection) ? self::SHOPGATE_STATIC_SSL : self::SHOPGATE_STATIC).'/api/mobile_header/button_off.png';
 		$html = str_replace('{$cookieName}', self::COOKIE_NAME, $html);
 		$html = str_replace('{$buttonOnImageSource}',  $this->buttonOnImageSource,  $html);
 		$html = str_replace('{$buttonOffImageSource}', $this->buttonOffImageSource, $html);
 		$html = str_replace('{$buttonDescription}', $this->buttonDescription, $html);
-
+		
 		return $html;
 	}
 
