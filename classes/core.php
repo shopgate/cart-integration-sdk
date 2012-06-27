@@ -3,7 +3,7 @@
 ###################################################################################
 # define constants
 ###################################################################################
-define('SHOPGATE_LIBRARY_VERSION', "2.0.12/new_config");
+define('SHOPGATE_LIBRARY_VERSION', '2.0.14/new_config');
 define('SHOPGATE_BASE_DIR', realpath(dirname(__FILE__).'/../'));
 define('SHOPGATE_ITUNES_URL', 'http://itunes.apple.com/de/app/shopgate-eine-app-alle-shops/id365287459?mt=8');
 
@@ -1939,7 +1939,7 @@ class ShopgatePluginApi extends ShopgateObject {
 			$this->response['error_text'] = $e->getMessage();
 		} catch (ShopgateMerchantApiException $e) {
 			$this->response['error'] = ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED;
-			$this->response['error_text'] = $e->getCode() . " - " . $e->getMessage();
+			$this->response['error_text'] = ShopgateLibraryException::getMessageFor(ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED).': "'.$e->getCode() . " - " . $e->getMessage().'"';
 		} catch (Exception $e) {
 			$message  = "";
 			$message .= "Unknown Exception\n";
@@ -2509,7 +2509,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 		
 		$this->config = ShopgateConfig::validateAndReturnConfig();
 	}
-
+	
 	/**
 	 * Prepares the request and sends it to the configured Shopgate Merchant API.
 	 *
@@ -2536,7 +2536,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 			ShopgateAuthentificationService::getInstance()->buildAuthTokenHeader()
 		));
 		curl_setopt($curl, CURLOPT_POST, true);
-		curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+		curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
 
 		$response = curl_exec($curl);
 		$info = curl_getinfo($curl);
@@ -2550,7 +2550,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 		$decodedResponse = $this->jsonDecode($response, true);
 
 		if (empty($decodedResponse)) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE, 'Response: '.$response);
+			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE, 'Response: '.$response, true);
 		}
 
 		if ($decodedResponse['error'] != 0) {
@@ -2706,7 +2706,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	public function addItem($data) {
 		$data['action'] = 'add_item';
 
-		$reponse = $this->sendRequest($data);
+		$response = $this->sendRequest($data);
 		$oResponse = new ShopgateMerchantApiResponse($response);
 		return $oResponse;
 	}
@@ -2720,7 +2720,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	public function updateItem($data) {
 		$data['action'] = 'update_item';
 
-		$response->sendRequest($data);
+		$response = $this->sendRequest($data);
 		$oResponse = new ShopgateMerchantApiResponse($response);
 		return $oResponse;
 	}
@@ -2738,7 +2738,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 			'action' => 'delete_item',
 		);
 
-		$reponse = $this->sendRequest($data);
+		$response = $this->sendRequest($data);
 		$oResponse = new ShopgateMerchantApiResponse($response);
 		return $oResponse;
 	}
