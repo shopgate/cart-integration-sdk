@@ -1162,9 +1162,16 @@ class ShopgatePluginApi extends ShopgateObject {
 
 			return $permissions;
 		}
-
+		
+		// obfuscate data relevant for authentication
+		$config = $this->config;
+		$config['customer_number']	= ShopgateObject::OBFUSCATION_STRING;
+		$config['shop_number']		= ShopgateObject::OBFUSCATION_STRING;
+		$config['apikey']			= ShopgateObject::OBFUSCATION_STRING;
+		
+		// return the pong object
 		header("Content-Type: application/json");
-		$this->response["configuration"] = $this->config;
+		$this->response["configuration"] = $config;
 		$this->response["permissions"] = getPermissions();
 		$this->response["php_version"] = phpversion();
 		$this->response["php_config"] = getSettings();
