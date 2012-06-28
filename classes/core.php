@@ -17,6 +17,7 @@ if (!defined('QR_DEFAULT_MASK'))		define('QR_DEFAULT_MASK', 2);
 if (!defined('QR_PNG_MAXIMUM_SIZE'))	define('QR_PNG_MAXIMUM_SIZE',  1024);
 ## QR-Code Config - End
 
+
 /**
  * Error handler for PHP errors.
  *
@@ -39,6 +40,39 @@ function ShopgateErrorHandler($errno, $errstr, $errfile, $errline) {
 	return true;
 }
 
+
+class ShopgateLibraryFactory {
+	const PLUGIN = 'plugin';
+	const CONFIG = 'config';
+	
+	private static $singleton;
+	
+	
+	private $classes = array(
+		self::PLUGIN => array('name' => 'ShopgatePlugin'),
+		self::CONFIG => array('name' => 'ShopgateConfig', 'singleton' => true, 'instance' => null),
+	);
+	
+	private function __construct() {
+		
+	}
+	
+	public static function getInstance() {
+		if (empty(self::$singleton)) {
+			self::$singleton = new self();
+		}
+		
+		return self::$singleton;
+	}
+	
+	public function setPlugin($className) {
+		$this->classes[self::PLUGIN]['name'] = '';
+	}
+	
+	public function __get() {
+		
+	}
+}
 
 /**
  * Exception type for errors within the Shopgate Library.
@@ -1389,7 +1423,6 @@ abstract class ShopgateObject {
 	const LOGTYPE_ERROR = 'error';
 
 	const OBFUSCATION_STRING = 'XXXXXXXX';
-	
 
 	/**
 	 * @var resource[]
@@ -1399,7 +1432,7 @@ abstract class ShopgateObject {
 		self::LOGTYPE_ERROR => null,
 		self::LOGTYPE_REQUEST => null,
 	);
-
+	
 	/**
 	 * @var int
 	 */
@@ -1793,14 +1826,24 @@ class ShopgatePluginApi extends ShopgateObject {
 	private static $singletonEnforcer = true;
 	
 	/**
-	 * @var mixed[]
-	 */
-	protected $config;
-
-	/**
 	 * @var ShopgatePlugin
 	 */
 	private $plugin;
+
+	/**
+	 * @var ShopgateConfig
+	 */
+	protected $config;
+	
+	/**
+	 * @var ShopgateMerchantApi
+	 */
+	protected $merchantApi;
+	
+	/**
+	 * @var ShopgateAuthentificationService
+	 */
+	protected $authService;
 
 	/**
 	 * Parameters passed along the action (usually per POST)
@@ -1861,19 +1904,6 @@ class ShopgatePluginApi extends ShopgateObject {
 			'version' => SHOPGATE_LIBRARY_VERSION,
 			'trace_id' => null,
 		);
-	}
-
-	/**
-	 * Registers the current ShopgatePlugin instance for callbacks.
-	 *
-	 * This is usually done by ShopgatePlugin::initLibrary() as soon as you instantiate your plugin implementation.
-	 * The registered instance is the one whose callback methods (e.g. ShopgatePlugin::addOrder()) get called on incoming
-	 * requests.
-	 *
-	 * @param ShopgatePlugin $shopgatePlugin
-	 */
-	public function setPlugin(ShopgatePlugin $shopgatePlugin) {
-		$this->plugin = $shopgatePlugin;
 	}
 
 	/**
@@ -2075,8 +2105,10 @@ class ShopgatePluginApi extends ShopgateObject {
 			);
 		}
 
+		$plugin = ShopgateLibraryFactory::getInstance()->getPlugin();
+		
 		foreach ($orders as $order) {
-			$orderId = $this->plugin->addOrder($order);
+			$orderId = $plugin->addOrder($order);
 		}
 
 		$this->response["external_order_number"] = $orderId;
@@ -2113,10 +2145,12 @@ class ShopgatePluginApi extends ShopgateObject {
 			$shipping = (bool) $this->params['shipping'];
 		}
 
+		$plugin = &ShopgateLibraryFactory::getInstance()->getPlugin();
+		
 		foreach ($orders as $order) {
 			$order->setUpdatePayment($payment);
 			$order->setUpdateShipping($shipping);
-			$orderId = $this->plugin->updateOrder($order);
+			$orderId = $plugin->updateOrder($order);
 		}
 
 		$this->response["external_order_number"] = $orderId;
@@ -2137,7 +2171,7 @@ class ShopgatePluginApi extends ShopgateObject {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_PASS);
 		}
 
-		$customer = $this->plugin->getCustomer($this->params['user'], $this->params['pass']);
+		$customer = ShopgateLibraryFactory::getInstance()->getPlugin()->getCustomer($this->params['user'], $this->params['pass']);
 		if (!is_object($customer) || !($customer instanceof ShopgateCustomer)) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, 'Plugin Response: '.var_export($customer, true));
 		}
@@ -2160,14 +2194,14 @@ class ShopgatePluginApi extends ShopgateObject {
 		$generate_csv = ($this->config["generate_items_csv_on_the_fly"] || isset($this->params["generate_items_csv_on_the_fly"]));
 
 		if (isset($this->params["limit"]) && isset($this->params["offset"])) {
-			$this->plugin->exportLimit = (string) $this->params["limit"];
-			$this->plugin->exportOffset = (string) $this->params["offset"];
-			$this->plugin->splittedExport = true;
+			ShopgateLibraryFactory::getInstance()->getPlugin()->exportLimit = (string) $this->params["limit"];
+			ShopgateLibraryFactory::getInstance()->getPlugin()->exportOffset = (string) $this->params["offset"];
+			ShopgateLibraryFactory::getInstance()->getPlugin()->splittedExport = true;
 		}
 
 		// generate / update items csv file if requested
 		if ($generate_csv) {
-			$this->plugin->startGetItemsCsv();
+			ShopgateLibraryFactory::getInstance()->getPlugin()->startGetItemsCsv();
 		}
 
 		$fileName = ShopgateConfig::getItemsCsvFilePath();
@@ -2201,7 +2235,7 @@ class ShopgatePluginApi extends ShopgateObject {
 	 */
 	private function getCategoriesCsv() {
 		// generate / update categories csv file
-		$this->plugin->startGetCategoriesCsv();
+		ShopgateLibraryFactory::getInstance()->getPlugin()->startGetCategoriesCsv();
 
 		$fileName = ShopgateConfig::getCategoriesCsvFilePath();
 		if (!file_exists($fileName)) {
@@ -2234,7 +2268,7 @@ class ShopgatePluginApi extends ShopgateObject {
 	 */
 	private function getReviewsCsv() {
 		// generate / update reviews csv file
-		$this->plugin->startGetReviewsCsv();
+		ShopgateLibraryFactory::getInstance()->getPlugin()->startGetReviewsCsv();
 
 		$fileName = ShopgateConfig::getReviewsCsvFilePath();
 		if (!file_exists($fileName)) {
