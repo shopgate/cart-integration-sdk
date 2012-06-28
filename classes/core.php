@@ -4,6 +4,7 @@
 # define constants
 ###################################################################################
 define('SHOPGATE_LIBRARY_VERSION', '2.0.15/new_config');
+	
 define('SHOPGATE_BASE_DIR', realpath(dirname(__FILE__).'/../'));
 define('SHOPGATE_ITUNES_URL', 'http://itunes.apple.com/de/app/shopgate-eine-app-alle-shops/id365287459?mt=8');
 
@@ -45,19 +46,26 @@ class ShopgateLibraryFactory {
 	const PLUGIN = 'plugin';
 	const CONFIG = 'config';
 	
-	private static $singleton;
+	const PLUGIN_API = 'plugin_api';
+	const MERCHANT_API = 'merchant_api';
+	const AUTH_SERVICE = 'auth_service';
 	
+	private static $singleton;
 	
 	private $classes = array(
 		self::PLUGIN => array('name' => 'ShopgatePlugin'),
 		self::CONFIG => array('name' => 'ShopgateConfig', 'singleton' => true, 'instance' => null),
+		
+		self::PLUGIN_API => array('name' => 'ShopgatePluginApi', 'singleton' => true, 'instance' => null),
+		self::MERCHANT_API => array('name' => 'ShopgateMerchantApi', 'singleton' => true, 'instance' => null),
+		self::AUTH_SERVICE => array('name' => 'ShopgateAuthentificationService', 'singleton' => true, 'instance' => null),
 	);
 	
-	private function __construct() {
-		
-	}
+	private function __construct() {}
+	public function __clone() { trigger_error('ShopgateLibraryFactory is a singleton and cannot be cloned.', E_USER_ERROR); }
+	private function __destruct() {}
 	
-	public static function getInstance() {
+	public static function &getInstance() {
 		if (empty(self::$singleton)) {
 			self::$singleton = new self();
 		}
@@ -65,12 +73,97 @@ class ShopgateLibraryFactory {
 		return self::$singleton;
 	}
 	
+	/**
+	 * @param string $className The name of the class to be used.
+	 * @throws ShopgateLibraryException if the class does not implement ShopgateConfigInterface.
+	 */
+	public function setConfig($className) {
+		$ref = new ReflectionClass($className);
+		//... TODO
+		
+		$this->setClass(self::CONFIG, $className);
+	}
+	
+	/**
+	 * @param string $className The name of the class to be used.
+	 * @throws ShopgateLibraryException if the class is not a subclass of ShopgatePlugin.
+	 */
 	public function setPlugin($className) {
 		$this->classes[self::PLUGIN]['name'] = '';
 	}
 	
-	public function __get() {
+	/**
+	 * @return ShopgateConfigInterface
+	 */
+	public function getConfig() {
+		return $this->getClass(self::CONFIG);
+	}
+	
+	/**
+	 * @return ShopgatePluginInterface An instance of the class, that has been registered as plugin.
+	 */
+	public function getPlugin() {
+		return $this->getClass(self::PLUGIN);
+	}
+	
+	/**
+	 * @return ShopgatePluginApiInterface
+	 */
+	public function getPluginApi() {
+		return $this->getClass(self::PLUGIN_API);
+	}
+	
+	/**
+	 * @return ShopgateMerchantApiInterface
+	 */
+	public function getMerchantApi() {
+		return $this->getClass(self::MERCHANT_API);
+	}
+	
+	/**
+	 * @return ShopgateAuthentificationServiceInterface
+	 */
+	public function getAuthService() {
+		return $this->getClass(self::AUTH_SERVICE);
+	}
+	
+	private function setClass($classType, $className) {
+		if (empty($this->classes[$classType])) {
+			trigger_error('Error setting class: unknown class type "'.$classType.'".', E_USER_ERROR);
+		}
 		
+		if (!class_exists($className)) {
+			trigger_error('Error setting class: "'.$this->classes[$classType]['name'].'" not found.', E_USER_ERROR);
+		}
+		
+		$this->classes[$classType]['name'] = $className;
+		if (isset($this->classes[$classType]['instance'])) {
+			$this->classes[$classType]['instance']->__destruct();
+			$this->classes[$classType]['instance'] = null;
+		}
+	}
+	
+	private function &getClass($classType) {
+		if (empty($this->classes[$classType]) || empty($this->classes[$classType]['name'])) {
+			trigger_error('Error instantiating class: unknown class type "'.$classType.'".', E_USER_ERROR);
+		}
+		
+		if (!class_exists($this->classes[$classType]['name'])) {
+			trigger_error('Error instantiating class: "'.$this->classes[$classType]['name'].'" not found.', E_USER_ERROR);
+		}
+		
+		if (!empty($this->classes[$classType]['singleton'])) {
+			if (empty($this->classes[$classType]['instance'])) {
+				$instance = new ${$this->classes[$classType]['name']}();
+				$this->classes[$classType]['instance'] = &$instance;
+			} else {
+				$instance = &$this->classes[$classType]['instance'];
+			}
+		} else {
+			$instance = new ${$this->classes[$classType]['name']}();
+		}
+		
+		return $instance;
 	}
 }
 
@@ -2971,6 +3064,12 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	public $splittedExport = false;
 
 	final protected function initLibrary() {
+		// TODO
+		// startup laden
+		// prüfen, ob config gesetzt ist
+		// => wenn nicht: config laden
+		// => ansonsten:  prüfen, ob ShopgateLibraryFactory die config kennt, ggf. nachtragen
+		
 		// Load configuration
 		try {
 			$this->setConfig(ShopgateConfig::validateAndReturnConfig());
