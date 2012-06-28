@@ -1162,13 +1162,13 @@ class ShopgatePluginApi extends ShopgateObject {
 
 			return $permissions;
 		}
-		
+
 		// obfuscate data relevant for authentication
 		$config = $this->config;
 		$config['customer_number']	= ShopgateObject::OBFUSCATION_STRING;
 		$config['shop_number']		= ShopgateObject::OBFUSCATION_STRING;
 		$config['apikey']			= ShopgateObject::OBFUSCATION_STRING;
-		
+
 		// return the pong object
 		header("Content-Type: application/json");
 		$this->response["configuration"] = $config;
@@ -1630,7 +1630,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	protected final function initLibrary() {
 		$this->config = ShopgateConfig::validateAndReturnConfig();
 	}
-	
+
 	/**
 	 * Prepares the request and sends it to the configured Shopgate Merchant API.
 	 *
@@ -2257,6 +2257,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			'manufacturer_item_number' 	=> "",
 			'url_deeplink' 				=> "",
 			/* additional fields */
+			'item_number_public'		=> "",
 			'old_unit_amount'			=> "",
 			'properties'				=> "",
 			'msrp' 						=> "",
