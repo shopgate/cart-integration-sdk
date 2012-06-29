@@ -50,20 +50,20 @@ class ShopgateLibraryFactory {
 	const MERCHANT_API = 'merchant_api';
 	const AUTH_SERVICE = 'auth_service';
 	
-	private static $singleton;
-	
 	private $classes = array(
-		self::PLUGIN => array('name' => 'ShopgatePlugin'),
-		self::CONFIG => array('name' => 'ShopgateConfig', 'singleton' => true, 'instance' => null),
+		self::PLUGIN => array('name' => 'ShopgatePlugin', 'is_a' => 'ShopgatePlugin'),
+		self::CONFIG => array('name' => 'ShopgateConfig', 'is_a' => 'ShopgateConfigInterface', 'singleton' => true, 'instance' => null),
 		
-		self::PLUGIN_API => array('name' => 'ShopgatePluginApi', 'singleton' => true, 'instance' => null),
-		self::MERCHANT_API => array('name' => 'ShopgateMerchantApi', 'singleton' => true, 'instance' => null),
-		self::AUTH_SERVICE => array('name' => 'ShopgateAuthentificationService', 'singleton' => true, 'instance' => null),
+		self::PLUGIN_API   => array('name' => 'ShopgatePluginApi', 'is_a' => 'ShopgatePluginApiInterface', 'singleton' => true, 'instance' => null),
+		self::MERCHANT_API => array('name' => 'ShopgateMerchantApi', 'is_a' => 'ShopgateMerchantApiInterface', 'singleton' => true, 'instance' => null),
+		self::AUTH_SERVICE => array('name' => 'ShopgateAuthentificationService', 'is_a' => 'ShopgateAuthentificationServiceInterface', 'singleton' => true, 'instance' => null),
 	);
 	
 	private function __construct() {}
 	public function __clone() { trigger_error('ShopgateLibraryFactory is a singleton and cannot be cloned.', E_USER_ERROR); }
 	private function __destruct() {}
+	
+	private static $singleton;
 	
 	public static function &getInstance() {
 		if (empty(self::$singleton)) {
@@ -78,9 +78,6 @@ class ShopgateLibraryFactory {
 	 * @throws ShopgateLibraryException if the class does not implement ShopgateConfigInterface.
 	 */
 	public function setConfig($className) {
-		$ref = new ReflectionClass($className);
-		//... TODO
-		
 		$this->setClass(self::CONFIG, $className);
 	}
 	
@@ -89,7 +86,31 @@ class ShopgateLibraryFactory {
 	 * @throws ShopgateLibraryException if the class is not a subclass of ShopgatePlugin.
 	 */
 	public function setPlugin($className) {
-		$this->classes[self::PLUGIN]['name'] = '';
+		$this->setClass(self::PLUGIN, $className);
+	}
+	
+	/**
+	 * @param string $className The name of the class to be used.
+	 * @throws ShopgateLibraryException if the class does not implement ShopgatePluginApiInterface.
+	 */
+	public function setPluginApi($className) {
+		$this->setClass(self::PLUGIN_API, $className);
+	}
+	
+	/**
+	 * @param string $className The name of the class to be used.
+	 * @throws ShopgateLibraryException if the class does not implement ShopgateMerchantApiInterface.
+	 */
+	public function setMerchantApi($className) {
+		$this->setClass(self::MERCHANT_API, $className);
+	}
+	
+	/**
+	 * @param string $className The name of the class to be used.
+	 * @throws ShopgateLibraryException if the class does not implement ShopgateAuthentificationServiceInterface.
+	 */
+	public function setAuthService($className) {
+		$this->setClass(self::AUTH_SERVICE, $className);
 	}
 	
 	/**
@@ -136,6 +157,10 @@ class ShopgateLibraryFactory {
 			trigger_error('Error setting class: "'.$this->classes[$classType]['name'].'" not found.', E_USER_ERROR);
 		}
 		
+		if (!$this->getIsA($className, $this->classes[$classType]['name']['is_a'])) {
+			trigger_error('Error setting class: "'.$this->classes[$classType]['is_a'].'" is not a '.$this->classes[$classType]['is_a'].'.', E_USER_ERROR);
+		}
+		
 		$this->classes[$classType]['name'] = $className;
 		if (isset($this->classes[$classType]['instance'])) {
 			$this->classes[$classType]['instance']->__destruct();
@@ -164,6 +189,11 @@ class ShopgateLibraryFactory {
 		}
 		
 		return $instance;
+	}
+	
+	private function getIsA($className, $parentOrInterfaceName) {
+		$reflection = new ReflectionClass($className);
+		return ($reflection->isSubclassOf($parentOrInterfaceName) || $reflection->implementsInterface($parentOrInterfaceName));
 	}
 }
 
