@@ -81,57 +81,57 @@ interface ShopgateConfigInterface {
 	public function addAdditionalValidations(array $validations);
 
 	/**
-	 * @return bool
+	 * @return bool true to activate the Shopgate error handler.
 	 */
 	public function getUseCustomErrorHandler();
 
 	/**
-	 * @return int
+	 * @return int Shopgate customer number (at least 5 digits)
 	 */
 	public function getCustomerNumber();
 
 	/**
-	 * @return int
+	 * @return int Shopgate shop number (at least 5 digits)
 	 */
 	public function getShopNumber();
 	
 	/**
-	 * @return string
+	 * @return string API key (exactly 20 hexadecimal digits)
 	 */
 	public function getApiKey();
 	
 	/**
-	 * @return string
+	 * @return string Alias of a shop for mobile redirect (start and end with alpha-numerical characters, dashes in between are ok)
 	 */
 	public function getAlias();
 	
 	/**
-	 * @return string
+	 * @return string Custom URL that to redirect to if a mobile device visits a shop (begin with "http://" or "https://" followed by any number of non-whitespace characters)
 	 */
 	public function getCname();
 	
 	/**
-	 * @return string
+	 * @return string The server to use for Shopgate Merchant API communication ("live" or "pg" or "custom")
 	 */
 	public function getServer();
 	
 	/**
-	 * @return string
+	 * @return string If $server is set to custom, Shopgate Merchant API calls will be made to this URL (empty or a string beginning with "http://" or "https://" followed by any number of non-whitespace characters)
 	 */
 	public function getApiUrl();
 	
 	/**
-	 * @return bool
+	 * @return bool true to indicate a shop has been activated by Shopgate
 	 */
 	public function getShopIsActive();
 	
 	/**
-	 * @return bool
+	 * @return bool true to always use SSL / HTTPS urls for download of external content (such as graphics for the mobile header button)
 	 */
 	public function getAlwaysUseSsl();
 	
 	/**
-	 * @return int
+	 * @return int (hours) The update period for keywords that identify mobile devices. Leave empty to download once and then always use the cached keywords
 	 */
 	public function getEnableRedirectKeywordUpdate();
 	
@@ -191,69 +191,87 @@ interface ShopgateConfigInterface {
 	public function getEnableMobileWebsite();
 	
 	/**
-	 * @return bool
+	 * @return bool true to create the items CSV file on-the-fly the moment the API gets called.
 	 */
 	public function getGenerateItemsCsvOnTheFly();
 	
 	/**
-	 * @return int
+	 * @return int The maximum number of attributes per product that are created. If the number is exceeded, attributes should be converted to options.
 	 */
 	public function getMaxAttributes();
 	
+	/**
+	 * @return string The path to where the items CSV file is stored and retrieved from.
+	 */
 	public function getItemsCsvPath();
 	
 	/**
-	 * @param bool $value
+	 * @return string The path to where the categories CSV file is stored and retrieved from.
+	 */
+	public function getCategoriesCsvPath();
+	
+	/**
+	 * @return string The path to where the reviews CSV file is stored and retrieved from.
+	 */
+	public function getReviewsCsvPath();
+	
+	/**
+	 * @return string The path to where the pages CSV file is stored and retrieved from.
+	 */
+	public function getPagesCsvPath();
+	
+	/**
+	 * @param bool $value true to activate the Shopgate error handler.
 	 */
 	public function setUseCustomErrorHandler($value);
 	
 	/**
-	 * @param int $value
+	 * @param int $value Shopgate customer number (at least 5 digits)
 	 */
 	public function setCustomerNumber($value);
 	
 	/**
-	 * @param int $value
+	 * @param int $value Shopgate shop number (at least 5 digits)
 	 */
 	public function setShopNumber($value);
 	
 	/**
-	 * @param string $value
+	 * @param string $value API key (exactly 20 hexadecimal digits)
 	 */
 	public function setApiKey($value);
 	
 	/**
-	 * @param string $value
+	 * @param string $value Alias of a shop for mobile redirect (start and end with alpha-numerical characters, dashes in between are ok)
 	 */
 	public function setAlias($value);
 	
 	/**
-	 * @param string $value
+	 * @param string $value Custom URL that to redirect to if a mobile device visits a shop (begin with "http://" or "https://" followed by any number of non-whitespace characters)
 	 */
 	public function setCname($value);
 	
 	/**
-	 * @param string $value
+	 * @param string $value The server to use for Shopgate Merchant API communication ("live" or "pg" or "custom")
 	 */
 	public function setServer($value);
 	
 	/**
-	 * @param string $value
+	 * @param string $value If $server is set to custom, Shopgate Merchant API calls will be made to this URL (empty or a string beginning with "http://" or "https://" followed by any number of non-whitespace characters)
 	 */
 	public function setApiUrl($value);
 	
 	/**
-	 * @param bool $value
+	 * @param bool $value true to indicate a shop has been activated by Shopgate
 	 */
 	public function setShopIsActive($value);
 	
 	/**
-	 * @param bool $value
+	 * @param bool $value true to always use SSL / HTTPS urls for download of external content (such as graphics for the mobile header button)
 	 */
 	public function setAlwaysUseSsl($value);
 	
 	/**
-	 * @param bool $value
+	 * @param bool $value (hours) The update period for keywords that identify mobile devices. Leave empty to download once and then always use the cached keywords
 	 */
 	public function setEnableRedirectKeywordUpdate($value);
 	
@@ -313,14 +331,34 @@ interface ShopgateConfigInterface {
 	public function setEnableMobileWebsite($value);
 	
 	/**
-	 * @param bool $value
+	 * @param bool $value true to create the items CSV file on-the-fly the moment the API gets called.
 	 */
 	public function setGenerateItemsCsvOnTheFly($value);
 	
 	/**
-	 * @param int $value
+	 * @param int $value The maximum number of attributes per product that are created. If the number is exceeded, attributes should be converted to options.
 	 */
 	public function setMaxAttributes($value);
+	
+	/**
+	 * @param string $value The path to where the items CSV file is stored and retrieved from.
+	 */
+	public function setItemsCsvPath($value);
+	
+	/**
+	 * @param string $value The path to where the categories CSV file is stored and retrieved from.
+	 */
+	public function setCategoriesCsvPath($value);
+	
+	/**
+	 * @param string $value The path to where the reviews CSV file is stored and retrieved from.
+	 */
+	public function setReviewsCsvPath($value);
+	
+	/**
+	 * @param string $value The path to where the pages CSV file is stored and retrieved from.
+	 */
+	public function setPagesCsvPath($value);
 	
 	/**
 	 * Returns the additional settings array.
@@ -344,21 +382,6 @@ interface ShopgateConfigInterface {
  */
 class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterface {
 	/**
-	 * @var string The name of the class to use. This needs to be overriden by any subclass of ShopgateConfig with the subclass' name.
-	 */
-	protected static $className = 'ShopgateConfig';
-	
-	/**
-	 * @var ShopgateConfig
-	 */
-	private static $singleton;
-	
-	/**
-	 * @var bool Enforces instantion through getInstance()
-	 */
-	private static $singletonEnforcer = true;
-	
-	/**
 	 * @var array<string, string> List of field names (index) that must have a value according to its validation regex (value)
 	 */
 	protected $coreValidations = array(
@@ -376,7 +399,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	protected $additionalValidations = array();
 	
 	/**
-	 * @var bool true to activate the Shopgate error handler
+	 * @var bool true to activate the Shopgate error handler.
 	 */
 	protected $use_custom_error_handler;
 	
@@ -498,7 +521,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	### Options regarding shop system specific settings ###
 	#######################################################
 	/**
-	 * @var bool true to create the items CSV file on-the-fly the moment the API gets called
+	 * @var bool true to create the items CSV file on-the-fly the moment the API gets called.
 	 */
 	protected $generate_items_csv_on_the_fly;
 	
@@ -508,45 +531,43 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	protected $max_attributes;
 	
 	/**
-	 * @var array<string, mixed> Additional shop system specific settings that cannot (or should not) be generalized and thus be defined by a plugin itself
+	 * @var string The path to where the items CSV file is stored and retrieved from.
+	 */
+	protected $items_csv_path;
+	
+	/**
+	 * @var string The path to where the categories CSV file is stored and retrieved from.
+	 */
+	protected $categories_csv_path;
+	
+	/**
+	 * @var string The path to where the reviews CSV file is stored and retrieved from.
+	 */
+	protected $reviews_csv_path;
+	
+	/**
+	 * @var string The path to where the pages CSV file is stored and retrieved from.
+	 */
+	protected $pages_csv_path;
+
+	/**
+	 * @var array<string, mixed> Additional shop system specific settings that cannot (or should not) be generalized and thus be defined by a plugin itself.
 	 */
 	protected $additionalSettings = array();
-
+	
 	
 	###################################################
 	### Initialization, loading, saving, validating ###
 	###################################################
 	
 	protected function initLibrary(array $data = array()) {
-		if (!empty(self::$singletonEnforcer)) {
-			trigger_error('Class '.__CLASS__.' is a singleton. Please call '.__CLASS__.'::getInstance() to get the singleton instance of the class.', E_USER_ERROR);
-		}
+		ShopgateLibraryFactory::getInstance()->setConfig($className, $this);
+		
+		$this->items_csv_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'items.csv';
+		$this->categories_csv_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'categories.csv';
+		$this->reviews_csv_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'reviews.csv';
 		
 		$this->loadArray($data);
-	}
-	
-	/**
-	 * Returns the singleton instance of the ShopgateConfig class.
-	 *
-	 * The $data parameter is only processed on first instantiation.
-	 *
-	 * @param array<string, mixed> $data The data to be assigned to the configuration.
-	 * @return ShopgateConfig
-	 */
-	public static function &getInstance(array $data = array()) {
-		self::$singletonEnforcer = false;
-		
-		if (empty(self::$singleton)) {
-			self::$singleton = new self::$className($data);
-		} else {
-			if (!empty($data)) {
-				self::$singleton->loadArray($data);
-			}
-		}
-		
-		self::$singletonEnforcer = true;
-		
-		return self::$singleton;
 	}
 	
 	/**
@@ -783,6 +804,22 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->max_attributes;
 	}
 	
+	public function getItemsCsvPath() {
+		return $this->items_csv_path;
+	}
+	
+	public function getCategoriesCsvPath() {
+		return $this->categories_csv_path;
+	}
+	
+	public function getReviewsCsvPath() {
+		return $this->reviews_csv_path;
+	}
+	
+	public function getPagesCsvPath() {
+		return $this->pages_csv_path;
+	}
+	
 	###############
 	### Setters ###
 	###############
@@ -880,6 +917,22 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	
 	public function setMaxAttributes($value) {
 		$this->max_attributes = $value;
+	}
+	
+	public function setItemsCsvPath($value) {
+		$this->items_csv_path = $value;
+	}
+	
+	public function setCategoriesCsvPath($value) {
+		$this->categpories_csv_path = $value;
+	}
+	
+	public function setReviewsCsvPath($value) {
+		$this->reviews_csv_path = $value;
+	}
+	
+	public function setPagesCsvPath($value) {
+		$this->pages_csv_path = $value;
 	}
 	
 	

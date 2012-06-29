@@ -81,8 +81,10 @@ class ShopgateLibraryFactory {
 	 * @param string $className The name of the class to be used.
 	 * @throws ShopgateLibraryException if the class does not implement ShopgateConfigInterface.
 	 */
-	public function setConfig($className) {
+	public function setConfig($className, &$instance) {
 		$this->setClass(self::CONFIG, $className);
+		
+		$this->classes[self::CONFIG]['instance'] = &$instance;
 	}
 	
 	/**
