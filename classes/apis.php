@@ -33,7 +33,7 @@ interface ShopgateMerchantApiInterface {
 	 * Represents the "get_orders" action.
 	 *
 	 * @param mixed[] $parameters
-	 * @return ShopgateOrder[]
+	 * @return ShopgateMerchantResponse
 	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
 	 *
 	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_get_orders/de
@@ -186,17 +186,7 @@ interface ShopgateAuthentificationServiceInterface {
 	public function checkAuthentification();
 }
 
-class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInterface{
-	/**
-	 * @var ShopgatePluginApi
-	 */
-	private static $singleton;
-
-	/**
-	 * @var bool Enforces instantion through getInstance()
-	 */
-	private static $singletonEnforcer = true;
-
+class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInterface {
 	/**
 	 * @var ShopgatePlugin
 	 */
@@ -238,14 +228,17 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 * @return ShopgatePluginApi
 	 */
 	public static function &getInstance() {
-		return new self();
+		return ShopgateLibraryFactory::getInstance()->getPluginApi();
 	}
 
 	protected final function initLibrary() {
-		if (!empty(self::$singletonEnforcer)) {
-			trigger_error('Class '.__CLASS__.' is a singleton. Please call '.__CLASS__.'::getInstance() to get the singleton instance of the class.', E_USER_ERROR);
-		}
-
+		// fetch config, plugin and API instances
+		$factory = &ShopgateLibraryFactory::getInstance();
+		$this->config = &$factory->getConfig();
+		$this->plugin = &$factory->getPlugin();
+		$this->merchantApi = &$factory->getMerchantApi();
+		$this->authService = &$factory->getAuthService();
+		
 		// initialize action whitelist
 		$this->actionWhitelist = array(
 				'ping',
@@ -283,11 +276,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		}
 
 		try {
-			ShopgateAuthentificationService::getInstance()->checkAuthentification();
-
-			// load config
-			// TODO: again??
-			$this->config = ShopgateConfig::validateAndReturnConfig();
+			$this->authService->checkAuthentification();
 
 			// set error handler to Shopgate's handler if requested
 			if (!empty($this->params["use_errorhandler"])) {
@@ -299,11 +288,14 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ACTION, 'Passed parameters: '.var_export($data, true));
 			}
 
+			// check if the action is white-listed
 			if (!in_array($this->params['action'], $this->actionWhitelist)) {
 				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_UNKNOWN_ACTION, "'{$this->params['action']}'");
 			}
 
-			if (empty($this->config['enable_'.$this->params['action']])) {
+			// check if action is enabled in the config
+			$configArray = $this->config->toArray();
+			if (empty($configArray['enable_'.$this->params['action']])) {
 				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_DISABLED_ACTION, "'{$this->params['action']}'");
 			}
 
@@ -350,7 +342,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_ping/de
 	 */
 	private function ping() {
-		$this->response["pong"] = "OK";
+		$this->response["pong"] = 'OK';
 
 		function getSettings() {
 			$settingDetails = array();
@@ -379,15 +371,14 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		function getPermissions() {
 			$permissions = array();
 			$files = array(
-					SHOPGATE_BASE_DIR."/config/config.php",
-					SHOPGATE_BASE_DIR."/config/myconfig.php",
-					SHOPGATE_BASE_DIR."/temp/",
-					SHOPGATE_BASE_DIR."/temp/cache/",
+					SHOPGATE_BASE_DIR.'/config/config.php',
+					SHOPGATE_BASE_DIR.'/config/myconfig.php',
+					SHOPGATE_BASE_DIR.'/temp/',
+					SHOPGATE_BASE_DIR.'/temp/cache/',
+					SHOPGATE_BASE_DIR.'/temp/items.csv',
+					SHOPGATE_BASE_DIR.'/temp/categories.csv',
+					SHOPGATE_BASE_DIR.'/temp/reviews.csv',
 			);
-
-			$files[] = ShopgateConfig::getItemsCsvFilePath();
-			$files[] = ShopgateConfig::getCategoriesCsvFilePath();
-			$files[] = ShopgateConfig::getReviewsCsvFilePath();
 
 			foreach($files as $file) {
 				$permission = array();
@@ -413,7 +404,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		}
 
 		// obfuscate data relevant for authentication
-		$config = $this->config;
+		$config = $this->config->toArray();
 		$config['customer_number']	= ShopgateObject::OBFUSCATION_STRING;
 		$config['shop_number']		= ShopgateObject::OBFUSCATION_STRING;
 		$config['apikey']			= ShopgateObject::OBFUSCATION_STRING;
@@ -424,10 +415,10 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$this->response["permissions"] = getPermissions();
 		$this->response["php_version"] = phpversion();
 		$this->response["php_config"] = getSettings();
-		$this->response["php_curl"] = function_exists("curl_version") ? curl_version() : "No PHP-CURL installed";
+		$this->response["php_curl"] = function_exists('curl_version') ? curl_version() : 'No PHP-CURL installed';
 		$this->response["php_extensions"] = get_loaded_extensions();
 		$this->response["shopgate_library_version"] = SHOPGATE_LIBRARY_VERSION;
-		$this->response["plugin_version"] = defined("SHOPGATE_PLUGIN_VERSION")?SHOPGATE_PLUGIN_VERSION:"UNKNOWN";
+		$this->response["plugin_version"] = defined("SHOPGATE_PLUGIN_VERSION") ? SHOPGATE_PLUGIN_VERSION : 'UNKNOWN';
 	}
 
 	/**
@@ -441,23 +432,16 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ORDER_NUMBER);
 		}
 
-		$_orders = ShopgateMerchantApi::getInstance()->getOrders( array('order_numbers[0]'=>$this->params['order_number'], 'with_items' => 1	));
-		$orders = $_orders->getData();
-
+		$orders = $this->merchantApi->getOrders(array('order_numbers[0]'=>$this->params['order_number'], 'with_items' => 1))->getData();
 		if (empty($orders)) {
-			throw new ShopgateLibraryException(
-					ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE,
-					'"order" not set. Response: '.var_export($_orders, true)
-			);
+			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE, '"order" not set. Response: '.var_export($_orders, true));
+		}
+		
+		if (count($orders) > 1) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE, 'more than one order in response. Response: '.var_export($_orders, true));
 		}
 
-		$plugin = ShopgateLibraryFactory::getInstance()->getPlugin();
-
-		foreach ($orders as $order) {
-			$orderId = $plugin->addOrder($order);
-		}
-
-		$this->response["external_order_number"] = $orderId;
+		$this->response["external_order_number"] = $this->plugin->addOrder($orders[0]);
 	}
 
 	/**
@@ -467,39 +451,34 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_update_order/de
 	 */
 	private function updateOrder() {
-		if(!isset($this->params['order_number'])) {
+		if (!isset($this->params['order_number'])) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ORDER_NUMBER);
 		}
 
-		$_orders = ShopgateMerchantApi::getInstance()->getOrders(array('order_numbers[0]'=>$this->params['order_number']));
-		$orders = $_orders->getData();
+		$orders = $this->merchantApi->getOrders(array('order_numbers[0]'=>$this->params['order_number']))->getData();
 
 		if (empty($orders)) {
-			throw new ShopgateLibraryException(
-					ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE,
-					'"order" not set. Response: '.var_export($_orders, true)
-			);
+			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE, '"order" not set. Response: '.var_export($_orders, true));
 		}
 
+		if (count($orders) > 1) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE, 'more than one order in response. Response: '.var_export($_orders, true));
+		}
+		
 		$payment = 0;
 		$shipping = 0;
 
-		if(isset($this->params['payment'])){
+		if (isset($this->params['payment'])) {
 			$payment = (bool) $this->params['payment'];
 		}
-		if(isset($this->params['shipping'])){
+		if (isset($this->params['shipping'])) {
 			$shipping = (bool) $this->params['shipping'];
 		}
 
-		$plugin = &ShopgateLibraryFactory::getInstance()->getPlugin();
+		$orders[0]->setUpdatePayment($payment);
+		$orders[0]->setUpdateShipping($shipping);
 
-		foreach ($orders as $order) {
-			$order->setUpdatePayment($payment);
-			$order->setUpdateShipping($shipping);
-			$orderId = $plugin->updateOrder($order);
-		}
-
-		$this->response["external_order_number"] = $orderId;
+		$this->response["external_order_number"] = $this->plugin->updateOrder($orders[0]);
 	}
 
 	/**
@@ -517,7 +496,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_PASS);
 		}
 
-		$customer = ShopgateLibraryFactory::getInstance()->getPlugin()->getCustomer($this->params['user'], $this->params['pass']);
+		$customer = $this->plugin->getCustomer($this->params['user'], $this->params['pass']);
 		if (!is_object($customer) || !($customer instanceof ShopgateCustomer)) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, 'Plugin Response: '.var_export($customer, true));
 		}
@@ -537,20 +516,18 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_items_csv/de
 	 */
 	private function getItemsCsv() {
-		$generate_csv = ($this->config["generate_items_csv_on_the_fly"] || isset($this->params["generate_items_csv_on_the_fly"]));
-
 		if (isset($this->params["limit"]) && isset($this->params["offset"])) {
-			ShopgateLibraryFactory::getInstance()->getPlugin()->exportLimit = (string) $this->params["limit"];
-			ShopgateLibraryFactory::getInstance()->getPlugin()->exportOffset = (string) $this->params["offset"];
-			ShopgateLibraryFactory::getInstance()->getPlugin()->splittedExport = true;
+			$this->plugin->exportLimit = (string) $this->params["limit"];
+			$this->plugin->exportOffset = (string) $this->params["offset"];
+			$this->plugin->splittedExport = true;
 		}
 
 		// generate / update items csv file if requested
-		if ($generate_csv) {
-			ShopgateLibraryFactory::getInstance()->getPlugin()->startGetItemsCsv();
+		if ($this->config->getGenerateItemsCsvOnTheFly() || isset($this->params["generate_items_csv_on_the_fly"])) {
+			$this->plugin->startGetItemsCsv();
 		}
 
-		$fileName = ShopgateConfig::getItemsCsvFilePath();
+		$fileName = SHOPGATE_BASE_DIR.DS.'';
 		if (!file_exists($fileName)) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$fileName);
 		}

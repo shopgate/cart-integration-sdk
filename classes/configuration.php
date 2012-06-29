@@ -200,6 +200,8 @@ interface ShopgateConfigInterface {
 	 */
 	public function getMaxAttributes();
 	
+	public function getItemsCsvPath();
+	
 	/**
 	 * @param bool $value
 	 */

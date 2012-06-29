@@ -53,14 +53,14 @@ class ShopgateLibraryFactory {
 	const REDIRECT = 'redirect';
 	
 	private $classes = array(
-		self::PLUGIN => array('name' => 'ShopgatePlugin', 'is_a' => 'ShopgatePlugin'),
-		self::CONFIG => array('name' => 'ShopgateConfig', 'is_a' => 'ShopgateConfigInterface', 'singleton' => true, 'instance' => null),
+		self::PLUGIN => array('name' => 'ShopgatePlugin', 'is_a' => 'ShopgatePlugin', 'instance' => null),
+		self::CONFIG => array('name' => 'ShopgateConfig', 'is_a' => 'ShopgateConfigInterface', 'instance' => null),
 		
-		self::PLUGIN_API   => array('name' => 'ShopgatePluginApi', 'is_a' => 'ShopgatePluginApiInterface', 'singleton' => true, 'instance' => null),
-		self::MERCHANT_API => array('name' => 'ShopgateMerchantApi', 'is_a' => 'ShopgateMerchantApiInterface', 'singleton' => true, 'instance' => null),
-		self::AUTH_SERVICE => array('name' => 'ShopgateAuthentificationService', 'is_a' => 'ShopgateAuthentificationServiceInterface', 'singleton' => true, 'instance' => null),
+		self::PLUGIN_API   => array('name' => 'ShopgatePluginApi', 'is_a' => 'ShopgatePluginApiInterface', 'instance' => null),
+		self::MERCHANT_API => array('name' => 'ShopgateMerchantApi', 'is_a' => 'ShopgateMerchantApiInterface', 'instance' => null),
+		self::AUTH_SERVICE => array('name' => 'ShopgateAuthentificationService', 'is_a' => 'ShopgateAuthentificationServiceInterface', 'instance' => null),
 		
-		self::REDIRECT => array('name' => 'ShopgateMobileRedirect', 'is_a' => 'ShopgateMobileRedirectInterface'),
+		self::REDIRECT => array('name' => 'ShopgateMobileRedirect', 'is_a' => 'ShopgateMobileRedirectInterface', 'instance' => null),
 	);
 	
 	private function __construct() {}
@@ -87,10 +87,13 @@ class ShopgateLibraryFactory {
 	
 	/**
 	 * @param string $className The name of the class to be used.
+	 * @param ShopgatePlugin An instance of a ShopgatePlugin subclass.
 	 * @throws ShopgateLibraryException if the class is not a subclass of ShopgatePlugin.
 	 */
-	public function setPlugin($className) {
+	public function setPlugin($className, &$instance) {
 		$this->setClass(self::PLUGIN, $className);
+		
+		$this->classes[self::PLUGIN]['instance'] = &$instance;
 	}
 	
 	/**
@@ -128,42 +131,42 @@ class ShopgateLibraryFactory {
 	/**
 	 * @return ShopgateConfigInterface
 	 */
-	public function getConfig() {
+	public function &getConfig() {
 		return $this->getClass(self::CONFIG);
 	}
 	
 	/**
 	 * @return ShopgatePluginInterface An instance of the class, that has been registered as plugin.
 	 */
-	public function getPlugin() {
+	public function &getPlugin() {
 		return $this->getClass(self::PLUGIN);
 	}
 	
 	/**
 	 * @return ShopgatePluginApiInterface
 	 */
-	public function getPluginApi() {
+	public function &getPluginApi() {
 		return $this->getClass(self::PLUGIN_API);
 	}
 	
 	/**
 	 * @return ShopgateMerchantApiInterface
 	 */
-	public function getMerchantApi() {
+	public function &getMerchantApi() {
 		return $this->getClass(self::MERCHANT_API);
 	}
 	
 	/**
 	 * @return ShopgateAuthentificationServiceInterface
 	 */
-	public function getAuthService() {
+	public function &getAuthService() {
 		return $this->getClass(self::AUTH_SERVICE);
 	}
 	
 	/**
 	 * @return ShopgateMobileRedirectInterface
 	 */
-	public function getRedirect() {
+	public function &getRedirect() {
 		return $this->getClass(self::REDIRECT);
 	}
 	
@@ -196,15 +199,11 @@ class ShopgateLibraryFactory {
 			trigger_error('Error instantiating class: "'.$this->classes[$classType]['name'].'" not found.', E_USER_ERROR);
 		}
 		
-		if (!empty($this->classes[$classType]['singleton'])) {
-			if (empty($this->classes[$classType]['instance'])) {
-				$instance = new ${$this->classes[$classType]['name']}();
-				$this->classes[$classType]['instance'] = &$instance;
-			} else {
-				$instance = &$this->classes[$classType]['instance'];
-			}
-		} else {
+		if (empty($this->classes[$classType]['instance'])) {
 			$instance = new ${$this->classes[$classType]['name']}();
+			$this->classes[$classType]['instance'] = &$instance;
+		} else {
+			$instance = &$this->classes[$classType]['instance'];
 		}
 		
 		return $instance;
