@@ -373,7 +373,7 @@ class ShopgateLibraryException extends Exception {
 	 *
 	 * @return string
 	 */
-	public function getAdditionalInformation(){
+	public function getAdditionalInformation() {
 		return (!is_null($this->additionalInformation) ? $this->additionalInformation : '');
 	}
 
@@ -476,26 +476,6 @@ if (isset($shopgate_config) && is_array($shopgate_config)) {
  * @author Shopgate GmbH, 35510 Butzbach, DE
  */
 abstract class ShopgateObject {
-	const LOGTYPE_ACCESS = 'access';
-	const LOGTYPE_REQUEST = 'request';
-	const LOGTYPE_ERROR = 'error';
-
-	const OBFUSCATION_STRING = 'XXXXXXXX';
-
-	/**
-	 * @var resource[]
-	 */
-	private static $fileHandles = array(
-		self::LOGTYPE_ACCESS => null,
-		self::LOGTYPE_ERROR => null,
-		self::LOGTYPE_REQUEST => null,
-	);
-	
-	/**
-	 * @var int
-	 */
-	private static $instanceCount = 0;
-	
 	/**
 	 * Takes care of file handle initialization and the instance count of ShopgateObjects.
 	 *
@@ -505,20 +485,9 @@ abstract class ShopgateObject {
 	 * All parameters this method is called with are passed in the same way to initLibrary().
 	 */
 	public final function __construct() {
-		self::$instanceCount++;
-		self::init();
-		
 		// call the initLibrary() callback and pass arguments
 		$args = func_get_args();
 		call_user_func_array(array($this, 'initLibrary'), $args);
-	}
-
-	/**
-	 * Takes care of the instance count of ShopgateObjects and uninitializes the file handles on destruction of the last object.
-	 */
-	public final function __destruct() {
-		self::$instanceCount--;
-		self::unInit();
 	}
 
 	/**
@@ -526,118 +495,6 @@ abstract class ShopgateObject {
 	 */
 	protected function initLibrary() {
 		// does nothing here but should not be abstract to avoid empty methods in sub classes that don't need it
-	}
-
-	/**
-	 * Initializes the file handles for logging if necessary.
-	 */
-	protected static function init() {
-		// initialize file handlers if neccessary
-		foreach (self::$fileHandles as $type => $handle) {
-			if (empty($handle)) {
-				$path = ShopgateConfig::getLogFilePath($type);
-				$newHandle = @fopen($path, 'a+');
-
-				// if log files are not writeable continue silently to the next handler
-				// TODO: This seems a bit too silent... How could we get notice of the error?
-				if ($newHandle === false) continue;
-
-				// set the file handler
-				self::$fileHandles[$type] = $newHandle;
-			}
-		}
-	}
-
-	/**
-	 * Unsets the file handles for logging if set and no instance of ShopgateObject exists anymore.
-	 */
-	protected static function unInit() {
-		if (self::$instanceCount > 0) return;
-
-		// close file handles on destruction of the last object
-		foreach (self::$fileHandles as $type => $handle) {
-			if (!empty($handle)) {
-				fclose($handle);
-				self::$fileHandles[$type] = null;
-			}
-		}
-	}
-
-	/**
-	 * Convenience method for logging with $this
-	 *
-	 * This just passes the argument to the static ShopgateObject::logWrite() method.
-	 *
-	 * @see ShopgateObject::logWrite($msg, $type)
-	 * @param string $msg The error message.
-	 * @param string $type The log type, that would be one of the ShopgateObject::LOGTYPE_* constants.
-	 * @return bool True on success, false on error.
-	 */
-	public function log($msg, $type = self::LOGTYPE_ERROR) {
-		return self::logWrite($msg, $type);
-	}
-
-	/**
-	 * Logs a message to the according log file.
-	 *
-	 * This produces a log entry of the form<br />
-	 * <br />
-	 * [date] [time]: [message]\n<br />
-	 * <br />
-	 * to the selected log file. If an unknown log type is passed the message will be logged to the error log file.
-	 *
-	 * @param string $msg The error message.
-	 * @param string $type The log type, that would be one of the ShopgateObject::LOGTYPE_* constants.
-	 * @return bool True on success, false on error.
-	 */
-	public static function logWrite($msg, $type = self::LOGTYPE_ERROR) {
-		// initialize if neccessary
-		self::init();
-
-		// build log message
-		$msg = gmdate('d-m-Y H:i:s: ').$msg."\n";
-
-		// determine log file type and append message
-		switch (strtolower($type)) {
-			// write to error log if type is unknown
-			default: $type = self::LOGTYPE_ERROR;
-
-			// allowed types:
-			case self::LOGTYPE_ERROR:
-			case self::LOGTYPE_ACCESS:
-			case self::LOGTYPE_REQUEST:
-		}
-
-		// try to log
-		$success = false;
-		if (!empty(self::$fileHandles[$type])) {
-			if (fwrite(self::$fileHandles[$type], $msg) !== false) {
-				$success = true;
-			}
-		}
-
-		// uninitialize if neccessary
-		self::unInit();
-
-		return $success;
-	}
-
-	/**
-	 * Function to prepare the parameters of an API request for logging.
-	 *
-	 * Strips out critical request data like the password of a get_customer request.
-	 *
-	 * @param mixed[] $data The incoming request's parameters.
-	 * @return string The cleaned parameters as string ready to log.
-	 */
-	protected function cleanParamsForLog($data) {
-		foreach ($data as $key => &$value) {
-			switch ($key) {
-				case 'pass': $value = self::OBFUSCATION_STRING;
-			}
-		}
-
-		return print_r($data, true);
 	}
 
 	/**
@@ -707,6 +564,89 @@ abstract class ShopgateObject {
 		return $jsonService->decode($json);
 	}
 
+}
+
+class ShopgateLogger {
+	const LOGTYPE_ACCESS = 'access';
+	const LOGTYPE_REQUEST = 'request';
+	const LOGTYPE_ERROR = 'error';
+
+	const OBFUSCATION_STRING = 'XXXXXXXX';
+
+	/**
+	 * @var resource[]
+	 */
+	private $fileHandles = array(
+		self::LOGTYPE_ACCESS => null,
+		self::LOGTYPE_REQUEST => null,
+		self::LOGTYPE_ERROR => null,
+	);
+	
+	/**
+	 * @var ShopgateLogger
+	 */
+	private static $singleton;
+	
+	private function __construct($accessLogHandler, $requestLogHandler, $errorLogHandler) {
+		$this->fileHandles[self::LOGTYPE_ACCESS] = $accessLogHandler;
+		$this->fileHandles[self::LOGTYPE_REQUEST] = $requestLogHandler;
+		$this->fileHandles[self::LOGTYPE_ERROR] = $errorLogHandler;
+	}
+	
+	private function __clone() { }
+	private function __destruct() { }
+	
+	/**
+	 * @param resource $accessLogHandler
+	 * @param resource $requestLogHandler
+	 * @param resource $errorLogHandler
+	 * @return ShopgateLogger
+	 */
+	public static function getInstance($accessLogHandler = null, $requestLogHandler = null, $errorLogHandler = null) {
+		if (empty(self::$singleton)) {
+			self::$singleton = new self($accessLogHandler, $requestLogHandler, $errorLogHandler);
+		}
+		
+		return self::$singleton;
+	}
+	
+	/**
+	 * Logs a message to the according log file.
+	 *
+	 * This produces a log entry of the form<br />
+	 * <br />
+	 * [date] [time]: [message]\n<br />
+	 * <br />
+	 * to the selected log file. If an unknown log type is passed the message will be logged to the error log file.
+	 *
+	 * @param string $msg The error message.
+	 * @param string $type The log type, that would be one of the ShopgateObject::LOGTYPE_* constants.
+	 * @return bool True on success, false on error.
+	 */
+	public function log($msg, $type = self::LOGTYPE_ERROR) {
+		// build log message
+		$msg = gmdate('d-m-Y H:i:s: ').$msg."\n";
+
+		// determine log file type and append message
+		switch (strtolower($type)) {
+			// write to error log if type is unknown
+			default: $type = self::LOGTYPE_ERROR;
+
+			// allowed types:
+			case self::LOGTYPE_ERROR:
+			case self::LOGTYPE_ACCESS:
+			case self::LOGTYPE_REQUEST:
+		}
+
+		// try to log
+		$success = false;
+		if (!empty($this->fileHandles[$type])) {
+			if (fwrite($this->fileHandles[$type], $msg) !== false) {
+				$success = true;
+			}
+		}
+	}
+
 	/**
 	 * Returns the requested number of lines of the requested log file's end.
 	 *
@@ -716,14 +656,14 @@ abstract class ShopgateObject {
 	 *
 	 * @see http://tekkie.flashbit.net/php/tail-functionality-in-php
 	 */
-	protected function tail($type = self::LOGTYPE_ERROR, $lines = 20) {
-		if (!isset(self::$fileHandles[$type])) {
+	public function tail($type = self::LOGTYPE_ERROR, $lines = 20) {
+		if (!isset($this->fileHandles[$type])) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_UNKNOWN_LOGTYPE, 'Type: '.$type);
 		}
 
 		if (empty($lines)) $lines = 20;
 
-		$handle = self::$fileHandles[$type];
+		$handle = $this->fileHandles[$type];
 		$lineCounter = $lines;
 		$pos = -2;
 		$beginning = false;
@@ -747,6 +687,24 @@ abstract class ShopgateObject {
 		}
 
 		return implode('', array_reverse($text));
+	}
+	
+	/**
+	 * Function to prepare the parameters of an API request for logging.
+	 *
+	 * Strips out critical request data like the password of a get_customer request.
+	 *
+	 * @param mixed[] $data The incoming request's parameters.
+	 * @return string The cleaned parameters as string ready to log.
+	 */
+	protected function cleanParamsForLog($data) {
+		foreach ($data as $key => &$value) {
+			switch ($key) {
+				case 'pass': $value = self::OBFUSCATION_STRING;
+			}
+		}
+
+		return print_r($data, true);
 	}
 }
 
@@ -1331,9 +1289,9 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	protected $exchangeRate = 1;
 
 
-	/*******************************************************************************
-	 * Following methods are the callbacks that need to be implemented by plugins. *
-	 *******************************************************************************/
+	#################################################################################
+	## Following methods are the callbacks that need to be implemented by plugins. ##
+	#################################################################################
 
 	/**
 	 * Callback function for initialization by plugin implementations.
