@@ -1,6 +1,9 @@
 <?php
 if (!defined('DS')) define('DS', '/');
 
+if( file_exists(dirname(__FILE__).DS.'dev.php') )
+	require_once(dirname(__FILE__).DS.'dev.php');
+
 // Library
 require_once(dirname(__FILE__).DS.'classes'.DS.'core.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'customers.php');
