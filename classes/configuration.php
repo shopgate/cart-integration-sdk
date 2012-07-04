@@ -560,8 +560,9 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	### Initialization, loading, saving, validating ###
 	###################################################
 	
-	protected function initLibrary(array $data = array()) {
-		ShopgateLibraryFactory::getInstance()->setConfig($className, $this);
+	public function __construct(array $data = array()) {
+		// parent constructor not called on purpose, because we need special
+		// initialization behaviour here (e.g. loading via array or file)
 		
 		$this->items_csv_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'items.csv';
 		$this->categories_csv_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'categories.csv';

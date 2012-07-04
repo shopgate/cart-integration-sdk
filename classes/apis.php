@@ -200,17 +200,17 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	private $plugin;
 
 	/**
-	 * @var ShopgateConfig
+	 * @var ShopgateConfigInterface
 	 */
 	protected $config;
 
 	/**
-	 * @var ShopgateMerchantApi
+	 * @var ShopgateMerchantApiInterface
 	 */
 	protected $merchantApi;
 
 	/**
-	 * @var ShopgateAuthentificationService
+	 * @var ShopgateAuthentificationServiceInterface
 	 */
 	protected $authService;
 
@@ -231,20 +231,16 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 */
 	private $response;
 
-	/**
-	 * @return ShopgatePluginApi
-	 */
-	public static function &getInstance() {
-		return ShopgateLibraryFactory::getInstance()->getPluginApi();
-	}
-
-	protected final function initLibrary() {
-		// fetch config, plugin and API instances
-		$factory = &ShopgateLibraryFactory::getInstance();
-		$this->config = &$factory->getConfig();
-		$this->plugin = &$factory->getPlugin();
-		$this->merchantApi = &$factory->getMerchantApi();
-		$this->authService = &$factory->getAuthService();
+	public function __construct(
+			ShopgateConfigInterface &$config,
+			ShopgateAuthentificationServiceInterface &$authService,
+			ShopgateMerchantApiInterface &$merchantApi,
+			ShopgatePlugin &$plugin
+	) {
+		$this->config = $config;
+		$this->authService = $authService;
+		$this->merchantApi = $merchantApi;
+		$this->plugin = $plugin;
 		
 		// initialize action whitelist
 		$this->actionWhitelist = array(
@@ -632,28 +628,26 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 
 class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiInterface {
 	/**
-	 * @var ShopgateConfig
-	 */
-	private $config;
-	
-	/**
-	 * @var ShopgateAuthentificationService
+	 * @var ShopgateAuthentificationServiceInterface
 	 */
 	private $authService;
-
+	
 	/**
-	 * @return ShopgateMerchantApi
+	 * @var string
 	 */
-	public static function &getInstance() {
-		return ShopgateLibraryFactory::getInstance()->getMerchantApi();
-	}
+	private $shopNumber;
+	
+	/**
+	 * @var string
+	 */
+	private $apiUrl;
 
-	protected final function initLibrary() {
-		$factory = &ShopgateLibraryFactory::getInstance();
-		$this->config = &$factory->getConfig();
-		$this->authService = &$factory->getAuthService();
+	public function __construct(ShopgateAuthentificationServiceInterface &$authService, $shopNumber, $apiUrl) {
+		$this->authService = $authService;
+		$this->shopNumber = $shopNumber;
+		$this->apiUrl = $apiUrl;
 	}
-
+	
 	/**
 	 * Prepares the request and sends it to the configured Shopgate Merchant API.
 	 *
@@ -662,13 +656,12 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
 	 */
 	private function sendRequest($data) {
-		$data['shop_number'] = $this->config->getShopNumber();
+		$data['shop_number'] = $this->shopNumber;
 		$data['trace_id'] = 'spa-'.uniqid();
-		$url = $this->config->getApiUrl();
 
-		$this->log('Sending request to "'.$url.'": '.$this->cleanParamsForLog($data), ShopgateObject::LOGTYPE_REQUEST);
+		$this->log('Sending request to "'.$this->apiUrl.'": '.$this->cleanParamsForLog($data), ShopgateObject::LOGTYPE_REQUEST);
 
-		$curl = curl_init($url);
+		$curl = curl_init($this->apiUrl);
 		curl_setopt($curl, CURLOPT_HEADER, false);
 		curl_setopt($curl, CURLOPT_USERAGENT, "ShopgatePlugin/" . SHOPGATE_PLUGIN_VERSION);
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
@@ -913,17 +906,9 @@ class ShopgateAuthentificationService extends ShopgateObject implements Shopgate
 	private $apiKey;
 	private $timestamp;
 
-	/**
-	 * @return ShopgateAuthentificationService
-	 */
-	public static function &getInstance() {
-		return ShopgateLibraryFactory::getInstance()->getAuthService();
-	}
-
-	protected final function initLibrary() {
-		$config = &ShopgateLibraryFactory::getInstance()->getConfig();
-		$this->customerNumber = $config->getCustomerNumber();
-		$this->apiKey = $config->getApiKey();
+	public function __construct($customerNumber, $apiKey) {
+		$this->customerNumber = $customerNumber;
+		$this->apiKey = $apiKey;
 		$this->timestamp = time();
 	}
 

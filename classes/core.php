@@ -41,179 +41,71 @@ function ShopgateErrorHandler($errno, $errstr, $errfile, $errline) {
 	return true;
 }
 
-
-class ShopgateLibraryFactory {
-	const PLUGIN = 'plugin';
-	const CONFIG = 'config';
-	
-	const PLUGIN_API = 'plugin_api';
-	const MERCHANT_API = 'merchant_api';
-	const AUTH_SERVICE = 'auth_service';
-	
-	const REDIRECT = 'redirect';
-	
-	private $classes = array(
-		self::PLUGIN => array('name' => 'ShopgatePlugin', 'is_a' => 'ShopgatePlugin', 'instance' => null),
-		self::CONFIG => array('name' => 'ShopgateConfig', 'is_a' => 'ShopgateConfigInterface', 'instance' => null),
-		
-		self::PLUGIN_API   => array('name' => 'ShopgatePluginApi', 'is_a' => 'ShopgatePluginApiInterface', 'instance' => null),
-		self::MERCHANT_API => array('name' => 'ShopgateMerchantApi', 'is_a' => 'ShopgateMerchantApiInterface', 'instance' => null),
-		self::AUTH_SERVICE => array('name' => 'ShopgateAuthentificationService', 'is_a' => 'ShopgateAuthentificationServiceInterface', 'instance' => null),
-		
-		self::REDIRECT => array('name' => 'ShopgateMobileRedirect', 'is_a' => 'ShopgateMobileRedirectInterface', 'instance' => null),
-	);
-	
-	private function __construct() {}
-	public function __clone() { trigger_error('ShopgateLibraryFactory is a singleton and cannot be cloned.', E_USER_ERROR); }
-	private function __destruct() {}
-	
-	private static $singleton;
-	
-	public static function &getInstance() {
-		if (empty(self::$singleton)) {
-			self::$singleton = new self();
-		}
-		
-		return self::$singleton;
-	}
+/**
+ * Builds the Shopgate Library object graphs for different purposes.
+ *
+ * @author Shopgate GmbH, 35510 Butzbach, DE
+ */
+class ShopgateBuilder {
+	/**
+	 * @var ShopgateConfig
+	 */
+	protected $config;
 	
 	/**
-	 * @param string $className The name of the class to be used.
-	 * @throws ShopgateLibraryException if the class does not implement ShopgateConfigInterface.
+	 * Loads configuration and initializes the ShopgateLogger class.
+	 *
+	 * @param ShopgateConfigInterface $config
 	 */
-	public function setConfig($className, &$instance) {
-		$this->setClass(self::CONFIG, $className);
-		
-		$this->classes[self::CONFIG]['instance'] = &$instance;
-	}
-	
-	/**
-	 * @param string $className The name of the class to be used.
-	 * @param ShopgatePlugin An instance of a ShopgatePlugin subclass.
-	 * @throws ShopgateLibraryException if the class is not a subclass of ShopgatePlugin.
-	 */
-	public function setPlugin($className, &$instance) {
-		$this->setClass(self::PLUGIN, $className);
-		
-		$this->classes[self::PLUGIN]['instance'] = &$instance;
-	}
-	
-	/**
-	 * @param string $className The name of the class to be used.
-	 * @throws ShopgateLibraryException if the class does not implement ShopgatePluginApiInterface.
-	 */
-	public function setPluginApi($className) {
-		$this->setClass(self::PLUGIN_API, $className);
-	}
-	
-	/**
-	 * @param string $className The name of the class to be used.
-	 * @throws ShopgateLibraryException if the class does not implement ShopgateMerchantApiInterface.
-	 */
-	public function setMerchantApi($className) {
-		$this->setClass(self::MERCHANT_API, $className);
-	}
-	
-	/**
-	 * @param string $className The name of the class to be used.
-	 * @throws ShopgateLibraryException if the class does not implement ShopgateAuthentificationServiceInterface.
-	 */
-	public function setAuthService($className) {
-		$this->setClass(self::AUTH_SERVICE, $className);
-	}
-	
-	/**
-	 * @param string $className The name of the class to be used.
-	 * @throws ShopgateLibraryException if the class does not implement ShopgateMobileRedirectInterface.
-	 */
-	public function setRedirect($className) {
-		$this->setClass(self::REDIRECT, $className);
-	}
-	
-	/**
-	 * @return ShopgateConfigInterface
-	 */
-	public function &getConfig() {
-		return $this->getClass(self::CONFIG);
-	}
-	
-	/**
-	 * @return ShopgatePluginInterface An instance of the class, that has been registered as plugin.
-	 */
-	public function &getPlugin() {
-		return $this->getClass(self::PLUGIN);
-	}
-	
-	/**
-	 * @return ShopgatePluginApiInterface
-	 */
-	public function &getPluginApi() {
-		return $this->getClass(self::PLUGIN_API);
-	}
-	
-	/**
-	 * @return ShopgateMerchantApiInterface
-	 */
-	public function &getMerchantApi() {
-		return $this->getClass(self::MERCHANT_API);
-	}
-	
-	/**
-	 * @return ShopgateAuthentificationServiceInterface
-	 */
-	public function &getAuthService() {
-		return $this->getClass(self::AUTH_SERVICE);
-	}
-	
-	/**
-	 * @return ShopgateMobileRedirectInterface
-	 */
-	public function &getRedirect() {
-		return $this->getClass(self::REDIRECT);
-	}
-	
-	private function setClass($classType, $className) {
-		if (empty($this->classes[$classType])) {
-			trigger_error('Error setting class: unknown class type "'.$classType.'".', E_USER_ERROR);
-		}
-		
-		if (!class_exists($className)) {
-			trigger_error('Error setting class: "'.$this->classes[$classType]['name'].'" not found.', E_USER_ERROR);
-		}
-		
-		if (!$this->getIsA($className, $this->classes[$classType]['name']['is_a'])) {
-			trigger_error('Error setting class: "'.$this->classes[$classType]['is_a'].'" is not a '.$this->classes[$classType]['is_a'].'.', E_USER_ERROR);
-		}
-		
-		$this->classes[$classType]['name'] = $className;
-		if (isset($this->classes[$classType]['instance'])) {
-			$this->classes[$classType]['instance']->__destruct();
-			$this->classes[$classType]['instance'] = null;
-		}
-	}
-	
-	private function &getClass($classType) {
-		if (empty($this->classes[$classType]) || empty($this->classes[$classType]['name'])) {
-			trigger_error('Error instantiating class: unknown class type "'.$classType.'".', E_USER_ERROR);
-		}
-		
-		if (!class_exists($this->classes[$classType]['name'])) {
-			trigger_error('Error instantiating class: "'.$this->classes[$classType]['name'].'" not found.', E_USER_ERROR);
-		}
-		
-		if (empty($this->classes[$classType]['instance'])) {
-			$instance = new ${$this->classes[$classType]['name']}();
-			$this->classes[$classType]['instance'] = &$instance;
+	public function __construct(ShopgateConfigInterface &$config = null) {
+		if (empty($config)) {
+			$this->config = new ShopgateConfig();
 		} else {
-			$instance = &$this->classes[$classType]['instance'];
+			$this->config = $config;
 		}
 		
-		return $instance;
+		// set up logger
+		$logPath = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs'.DS;
+		ShopgateLogger::getInstance($logPath.'access.log', $logPath.'request.log', $logPath.'error.log');
 	}
 	
-	private function getIsA($className, $parentOrInterfaceName) {
-		$reflection = new ReflectionClass($className);
-		return ($reflection->isSubclassOf($parentOrInterfaceName) || $reflection->implementsInterface($parentOrInterfaceName));
+	/**
+	 * Builds the Shopgate Library object graph for a given ShopgatePlugin object.
+	 *
+	 * This initializes all necessary objects of the library, wires them together and injects them into
+	 * the plugin class via its set* methods.
+	 *
+	 * @param ShopgatePlugin $plugin The ShopgatePlugin instance that should be wired to the framework.
+	 */
+	public function buildLibraryFor(ShopgatePlugin &$plugin) {
+		// set error handler if configured
+		if ($this->config->getUseCustomErrorHandler()) {
+			set_error_handler('ShopgateErrorHandler');
+		}
+		
+		// instantiate API stuff
+		$authService = new ShopgateAuthentificationService($this->config->getCustomerNumber(), $this->config->getApiKey());
+		$merchantApi = new ShopgateMerchantApi($authService, $this->config->getShopNumber(), $this->config->getApiUrl());
+		$pluginApi = new ShopgatePluginApi($this->config, $authService, $merchantApi, $plugin);
+		
+		// inject config and apis into plugin
+		$plugin->setConfig($this->config);
+		$plugin->setPluginApi($pluginApi);
+	}
+	
+	/**
+	 * Builds the Shopgate Library object graph for ShopgateMerchantApi and returns the instance.
+	 *
+	 * This initializes all necessary objects of the library, wires them together and injects them into
+	 * the plugin class via its set* methods.
+	 *
+	 * @return ShopgateMerchantApi
+	 */
+	public function buildMerchantApi() {
+		$authService = new ShopgateAuthentificationService($this->config->getCustomerNumber(), $this->config->getApiKey());
+		$merchantApi = new ShopgateMerchantApi($authService, $this->config->getShopNumber(), $this->config->getApiUrl());
+		
+		return $merchantApi;
 	}
 }
 
@@ -360,7 +252,7 @@ class ShopgateLibraryException extends Exception {
 		$this->additionalInformation = $additionalInformation;
 
 		// Log the error
-		if(ShopgateObject::logWrite($code.' - '.$logMessage) === false){
+		if (ShopgateLogger::getInstance()->log($code.' - '.$logMessage) === false) {
 			$message .= ' (unable to log)';
 		}
 
@@ -422,49 +314,24 @@ class ShopgateLibraryException extends Exception {
 }
 
 /**
+ * Exception type for errors reported by the Shopgate Merchant API.
+ *
+ * @param int $code One of the constants defined in [TODO].
+ * @param string $additionalInformation More detailed information on what exactly went wrong.
  *
  * @author Shopgate GmbH, 35510 Butzbach, DE
- *
  */
 class ShopgateMerchantApiException extends Exception {
 	public function __construct($code, $additionalInformation = null) {
 		$message = $additionalInformation;
 
-		if(ShopgateObject::logWrite($code.' - '.$additionalInformation) === false){
+		if (ShopgateLogger::getInstance()->log($code.' - '.$additionalInformation) === false){
 			$message .= ' (unable to log)';
 		}
 		parent::__construct($message, $code);
 	}
 }
 
-###################################################################################
-# Config Datei
-###################################################################################
-
-if(!isset($shopgate_config)) {
-	if (file_exists(SHOPGATE_BASE_DIR.DS.'config'.DS.'myconfig.php')) {
-		require_once SHOPGATE_BASE_DIR.DS.'config'.DS.'myconfig.php';
-	} else if (file_exists(SHOPGATE_BASE_DIR.DS.'config'.DS.'config.php')) {
-		require_once SHOPGATE_BASE_DIR.DS.'config'.DS.'config.php';
-	}
-}
-
-if (file_exists(SHOPGATE_BASE_DIR.DS.'config'.DS.'/devconfig.php')) {
-	require_once SHOPGATE_BASE_DIR.DS.'config'.DS.'/devconfig.php';
-}
-
-if (isset($shopgate_config) && is_array($shopgate_config)) {
-	try {
-		ShopgateConfig::setConfig($shopgate_config, false);
-	} catch (Exception $e) {
-		$response = array(
-			"error"=>true,
-			"error_text"=>$e->getMessage(),
-		);
-		// TODO: echo sg_json_encode($response);
-		exit;
-	}
-}
 
 /**
  * ShopgateObject acts as root class of the Shopgate Library.
@@ -477,26 +344,15 @@ if (isset($shopgate_config) && is_array($shopgate_config)) {
  */
 abstract class ShopgateObject {
 	/**
-	 * Takes care of file handle initialization and the instance count of ShopgateObjects.
+	 * Convenience method for logging to the ShopgateLogger.
 	 *
-	 * This cannot be overridden. Subclasses that are part of the Shopgate Library should implement initLibrary() for initialization
-	 * stuff. Take a look at the ShopgatePlugin class for the very similar startup() construct that plugin implementations can use.<br />
-	 * <br />
-	 * All parameters this method is called with are passed in the same way to initLibrary().
+	 * @param string $msg The error message.
+	 * @param string $type The log type, that would be one of the ShopgateLogger::LOGTYPE_* constants.
 	 */
-	public final function __construct() {
-		// call the initLibrary() callback and pass arguments
-		$args = func_get_args();
-		call_user_func_array(array($this, 'initLibrary'), $args);
+	public function log($msg, $type = ShopgateLogger::LOGTYPE_ERROR) {
+		return ShopgateLogger::getInstance()->log($msg, $type);
 	}
-
-	/**
-	 * Callback function for initialization by subclasses.
-	 */
-	protected function initLibrary() {
-		// does nothing here but should not be abstract to avoid empty methods in sub classes that don't need it
-	}
-
+	
 	/**
 	 * Converts a an underscored string to a camelized one.
 	 *
@@ -587,24 +443,24 @@ class ShopgateLogger {
 	 */
 	private static $singleton;
 	
-	private function __construct($accessLogHandler, $requestLogHandler, $errorLogHandler) {
-		$this->fileHandles[self::LOGTYPE_ACCESS] = $accessLogHandler;
-		$this->fileHandles[self::LOGTYPE_REQUEST] = $requestLogHandler;
-		$this->fileHandles[self::LOGTYPE_ERROR] = $errorLogHandler;
+	private function __construct($accessLogPath, $requestLogPath, $errorLogPath) {
+		$this->fileHandles[self::LOGTYPE_ACCESS]  = @fopen($accessLogPath, 'a+');
+		$this->fileHandles[self::LOGTYPE_REQUEST] = @fopen($requestLogPath, 'a+');;
+		$this->fileHandles[self::LOGTYPE_ERROR]   = @fopen($errorLogPath, 'a+');;
 	}
 	
 	private function __clone() { }
 	private function __destruct() { }
 	
 	/**
-	 * @param resource $accessLogHandler
-	 * @param resource $requestLogHandler
-	 * @param resource $errorLogHandler
+	 * @param string $accessLogPath
+	 * @param string $requestLogPath
+	 * @param string $errorLogPath
 	 * @return ShopgateLogger
 	 */
-	public static function getInstance($accessLogHandler = null, $requestLogHandler = null, $errorLogHandler = null) {
+	public static function getInstance($accessLogPath = null, $requestLogPath = null, $errorLogPath = null) {
 		if (empty(self::$singleton)) {
-			self::$singleton = new self($accessLogHandler, $requestLogHandler, $errorLogHandler);
+			self::$singleton = new self($accessLogPath, $requestLogPath, $errorLogPath);
 		}
 		
 		return self::$singleton;
@@ -620,7 +476,7 @@ class ShopgateLogger {
 	 * to the selected log file. If an unknown log type is passed the message will be logged to the error log file.
 	 *
 	 * @param string $msg The error message.
-	 * @param string $type The log type, that would be one of the ShopgateObject::LOGTYPE_* constants.
+	 * @param string $type The log type, that would be one of the ShopgateLogger::LOGTYPE_* constants.
 	 * @return bool True on success, false on error.
 	 */
 	public function log($msg, $type = self::LOGTYPE_ERROR) {
@@ -645,6 +501,8 @@ class ShopgateLogger {
 				$success = true;
 			}
 		}
+
+		return $success;
 	}
 
 	/**
@@ -672,17 +530,17 @@ class ShopgateLogger {
 		while ($lineCounter > 0) {
 			$t = '';
 			while ($t !== "\n") {
-				if (fseek($handle, $pos, SEEK_END) == -1) {
+				if (@fseek($handle, $pos, SEEK_END) == -1) {
 					$beginning = true;
 					break;
 				}
-				$t = fgetc($handle);
+				$t = @fgetc($handle);
 				$pos--;
 			}
 
 			$lineCounter--;
-			if ($beginning) rewind($handle);
-			$text[] = fgets($handle);
+			if ($beginning) @rewind($handle);
+			$text[] = @fgets($handle);
 			if ($beginning) break;
 		}
 
@@ -724,7 +582,7 @@ abstract class ShopgateContainer extends ShopgateObject {
 	 *
 	 * @param array $data The data the container should be initialized with.
 	 */
-	protected function initLibrary($data = array()) {
+	public function __construct($data = array()) {
 		$this->loadArray($data);
 	}
 	
@@ -835,11 +693,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	);
 
 	/**
-	 * @var resource
-	 */
-	protected $fileHandle;
-
-	/**
 	 * @var string[]
 	 */
 	private $buffer = array();
@@ -850,19 +703,19 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	private $bufferCounter = 0;
 
 	/**
-	 * @var mixed[]
+	 * @var ShopgateConfigInterface
 	 */
 	protected $config;
+	
+	/**
+	 * @var ShopgatePluginApiInterface
+	 */
+	protected $pluginApi;
 
 	/**
 	 * @var int
 	 */
 	protected $bufferLimit = 100;
-
-	/**
-	 * @var int (timestamp) starting time of export
-	 */
-	protected $timeStart;
 
 	/**
 	 * @var int
@@ -879,41 +732,27 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 */
 	public $splittedExport = false;
 
-	final protected function initLibrary() {
-		// TODO
-		// startup laden
-		// prüfen, ob config gesetzt ist
-		// => wenn nicht: config laden
-		// => ansonsten:  prüfen, ob ShopgateLibraryFactory die config kennt, ggf. nachtragen
+	protected $exchangeRate = 1;
+	
+	public final function __construct(ShopgateBuilder &$builder = null) {
+		// build the object graph and get needed objects injected via set* methods
+		if (empty($builder)) $builder = new ShopgateBuilder();
+		$builder->buildLibraryFor($this);
 		
-		// Load configuration
+		// fire the plugin's startup callback
 		try {
-			$this->setConfig(ShopgateConfig::validateAndReturnConfig());
-		} catch (ShopgateLibraryException $e) {
-			// Logging is done in exception constructor
-		}
-
-		// Set error handler if configured
-		if (isset($this->config["use_custom_error_handler"]) && $this->config["use_custom_error_handler"]) {
-			set_error_handler('ShopgateErrorHandler');
-		}
-
-		// Set plugin instance and fire the plugin's startup callback
-		try {
-			ShopgatePluginApi::getInstance()->setPlugin($this);
 			$this->startup();
 		} catch (ShopgateLibraryException $e) {
-			// Logging is done in exception constructor
+			// logging is done in exception constructor
 		}
 	}
 
-	/**
-	 * Sets the current configuration.
-	 *
-	 * @param mixed[] $config
-	 */
-	public final function setConfig(array $config = null) {
+	public final function setConfig(ShopgateConfigInterface &$config) {
 		$this->config = $config;
+	}
+	
+	public final function setPluginApi(ShopgatePluginApiInterface &$pluginApi) {
+		$this->pluginApi = $pluginApi;
 	}
 
 	/**
@@ -923,42 +762,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @return bool false if an error occured, otherwise true.
 	 */
 	public function handleRequest($data = array()) {
-		return ShopgatePluginApi::getInstance()->handleRequest($data);
-	}
-
-	/**
-	 * Creates a new write buffer for the file under $filePath.
-	 *
-	 * @param string $filePath Path to the file (the .tmp extension is added automatically).
-	 */
-	private final function createBuffer($filePath) {
-		$this->timeStart = time();
-		$filePath .= ".tmp";
-
-		$this->log('Trying to create "'.basename($filePath).'". ', 'access');
-
-		$this->fileHandle = @fopen($filePath, 'w');
-		if (!$this->fileHandle) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$filePath);
-		}
-
-		$this->buffer = array();
-	}
-
-	/**
-	 * Closes the file and flushes the buffer.
-	 *
-	 * @param string $filePath Path to the file (the .tmp extension is added automatically).
-	 */
-	private final function finishBuffer($filePath) {
-		$this->flushBuffer();
-		fclose($this->fileHandle);
-
-		rename($filePath.".tmp", $filePath);
-
-		$this->log('Fertig, '.basename($filePath).' wurde erfolgreich erstellt', "access");
-		$duration = time() - $this->timeStart;
-		$this->log("Dauer: $duration Sekunden", "access");
+		return $this->pluginApi->handleRequest($data);
 	}
 
 	/**
@@ -967,9 +771,9 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @throws ShopgateLibraryException
 	 */
 	public final function startGetItemsCsv() {
-		$this->createBuffer(ShopgateConfig::getItemsCsvFilePath());
+		$this->createBuffer($this->config->getItemsCsvPath());
 		$this->createItemsCsv();
-		$this->finishBuffer(ShopgateConfig::getItemsCsvFilePath());
+		$this->finishBuffer($this->config->getItemsCsvPath());
 	}
 
 	/**
@@ -1003,53 +807,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		$this->createBuffer(ShopgateConfig::getPagesCsvFilePath());
 		$this->createPagesCsv();
 		$this->finishBuffer(ShopgateConfig::getReviewsCsvFilePath());
-	}
-
-	/**
-	 * Adds a line to the csv file buffer.
-	 *
-	 * @param mixed[] $itemArr
-	 */
-	protected final function addItem($itemArr) {
-		$this->buffer[] = $itemArr;
-		$this->bufferCounter++;
-
-		if (
-			$this->bufferCounter > $this->bufferLimit ||
-			isset($this->config["flush_buffer_size"]) &&
-			$this->config["flush_buffer_size"] <= $this->bufferCounter
-		) {
-			$this->flushBuffer();
-		}
-	}
-
-	/**
-	 * Flushes buffer to the currently opened file handle in $this->fileHandle.
-	 *
-	 * The data is converted to utf-8 if mb_convert_encoding() exists
-	 */
-	private final function flushBuffer() {
-		if (empty($this->buffer) && ftell($this->fileHandle) == 0) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_EMPTY_BUFFER);
-		}
-
-		// write headline if it's the beginning of the file
-		if (ftell($this->fileHandle) == 0) {
-			fputcsv($this->fileHandle, array_keys($this->buffer[0]), ';', '"');
-		}
-
-		foreach ($this->buffer as $item) {
-			if (function_exists("mb_convert_encoding")) {
-				foreach ($item as &$field) {
-					$field = mb_convert_encoding($field, "UTF-8", $this->allowedEncodings);
-				}
-			}
-
-			fputcsv($this->fileHandle, $item, ";", "\"");
-		}
-
-		$this->buffer = array();
-		$this->bufferCounter = 0;
 	}
 
 	/**
@@ -1286,8 +1043,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		return strip_tags($string, implode(",", $allowedTags));
 	}
 
-	protected $exchangeRate = 1;
-
 
 	#################################################################################
 	## Following methods are the callbacks that need to be implemented by plugins. ##
@@ -1368,6 +1123,107 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 */
 	//protected abstract function getPagesCsv();
 }
+
+class ShopgateFileBuffer extends ShopgateObject {
+	/**
+	 * @var string
+	 */
+	protected $filePath;
+	
+	/**
+	 * @var resource
+	 */
+	protected $fileHandle;
+
+	/**
+	 * @var int (timestamp) starting time of export
+	 */
+	protected $timeStart;
+	
+	/**
+	 * Creates a new write buffer for the file under "$filePath.tmp".
+	 *
+	 * @param string $filePath Path to the file (the .tmp extension is added automatically).
+	 */
+	public function __construct($filePath) {
+		$this->timeStart = time();
+		$this->filePath = $filePath;
+		$filePath .= ".tmp";
+	
+		$this->log('Trying to create "'.basename($filePath).'". ', 'access');
+	
+		$this->fileHandle = @fopen($filePath, 'w');
+		if (!$this->fileHandle) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$filePath);
+		}
+	
+		$this->buffer = array();
+	}
+
+	/**
+	 * Closes the file and flushes the buffer.
+	 *
+	 * @param string $filePath Path to the file (the .tmp extension is added automatically).
+	 */
+	private final function finishBuffer($filePath) {
+		$this->flushBuffer();
+		fclose($this->fileHandle);
+	
+		rename($filePath.".tmp", $filePath);
+	
+		$this->log('Fertig, '.basename($filePath).' wurde erfolgreich erstellt', "access");
+		$duration = time() - $this->timeStart;
+		$this->log("Dauer: $duration Sekunden", "access");
+	}
+	
+	/**
+	 * Adds a line to the csv file buffer.
+	 *
+	 * @param mixed[] $itemArr
+	 */
+	protected final function addItem($itemArr) {
+		$this->buffer[] = $itemArr;
+		$this->bufferCounter++;
+
+		if (
+			$this->bufferCounter > $this->bufferLimit ||
+			isset($this->config["flush_buffer_size"]) &&
+			$this->config["flush_buffer_size"] <= $this->bufferCounter
+		) {
+			$this->flushBuffer();
+		}
+	}
+
+	/**
+	 * Flushes buffer to the currently opened file handle in $this->fileHandle.
+	 *
+	 * The data is converted to utf-8 if mb_convert_encoding() exists
+	 */
+	private final function flushBuffer() {
+		if (empty($this->buffer) && ftell($this->fileHandle) == 0) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_EMPTY_BUFFER);
+		}
+
+		// write headline if it's the beginning of the file
+		if (ftell($this->fileHandle) == 0) {
+			fputcsv($this->fileHandle, array_keys($this->buffer[0]), ';', '"');
+		}
+
+		foreach ($this->buffer as $item) {
+			if (function_exists("mb_convert_encoding")) {
+				foreach ($item as &$field) {
+					$field = mb_convert_encoding($field, "UTF-8", $this->allowedEncodings);
+				}
+			}
+
+			fputcsv($this->fileHandle, $item, ";", "\"");
+		}
+
+		$this->buffer = array();
+		$this->bufferCounter = 0;
+	}
+}
+
 /**
  * Interface for visitors of ShopgateContainer objects.
  *
