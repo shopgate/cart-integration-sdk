@@ -45,6 +45,7 @@ class ShopgateOrder extends ShopgateContainer {
 	protected $amount_items;
 	protected $amount_shipping;
 	protected $amount_shop_payment;
+	protected $payment_tax_percent;
 	protected $amount_shopgate_payment;
 	protected $amount_complete;
 	protected $currency;
@@ -271,6 +272,13 @@ class ShopgateOrder extends ShopgateContainer {
 	 * @param float $value
 	 */
 	public function setAmountShopPayment($value) { $this->amount_shop_payment = $value; }
+
+	/**
+	 * Tax Percent for AmountShopPayment or AmountShopgatePayment
+	 *
+	 * @param float $value
+	 */
+	public function setPaymentTaxPercent($value) { $this->payment_tax_percent = $value; }
 	
 	/**
 	 * Amount for Shopgate Payment
@@ -648,6 +656,13 @@ class ShopgateOrder extends ShopgateContainer {
 	 * @return float
 	 */
 	public function getAmountShopPayment() { return $this->amount_shop_payment; }
+
+	/**
+	 * Tax Percent for AmountShopPayment or AmountShopgatePayment
+	 *
+	 * @return float
+	 */
+	public function getPaymentTaxPercent() { return $this->payment_tax_percent; }
 
 	/**
 	 * Amount for Payment
