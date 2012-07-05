@@ -36,7 +36,7 @@ function ShopgateErrorHandler($errno, $errstr, $errfile, $errline) {
 	$msg .= "$errstr";
 	$msg .= "\n". print_r(debug_backtrace(false), true);
 
-	ShopgateObject::logWrite($msg);
+	ShopgateLogger::getInstance()->log($msg);
 
 	return true;
 }
@@ -220,7 +220,7 @@ class ShopgateLibraryException extends Exception {
 	 * Builds the message that would be logged if a ShopgateLibraryException was thrown with the same parameters and returns it.
 	 *
 	 * This is a convenience method for cases where logging is desired but the script should not abort. By using this function an empty
-	 * try-catch-statement can be avoided. Just pass the returned string to ShopgateObject::logWrite().
+	 * try-catch-statement can be avoided. Just pass the returned string to ShopgateLogger::log().
 	 *
 	 * @param int $code One of the constants defined in ShopgateLibraryException.
 	 * @param string $additionalInformation More detailed information on what exactly went wrong.
@@ -478,6 +478,11 @@ class ShopgateBuilder {
 		$merchantApi = new ShopgateMerchantApi($authService, $this->config->getShopNumber(), $this->config->getApiUrl());
 		
 		return $merchantApi;
+	}
+	
+	public function buildRedirect() {
+		$merchantApi = $this->buildMerchantApi();
+		$redirect = new ShopgateMobileRedirect($merchantApi, '');
 	}
 }
 
@@ -1589,7 +1594,7 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 		if (!empty($list) && is_array($list)) {
 			foreach ($list as $object) {
 				if (!($object instanceof ShopgateContainer)) {
-					ShopgateObject::logWrite('Encountered unknown type in what is supposed to be a list of ShopgateContainer objects: '.var_export($object, true));
+					ShopgateLogger::getInstance()->log('Encountered unknown type in what is supposed to be a list of ShopgateContainer objects: '.var_export($object, true));
 					continue;
 				}
 
@@ -1766,7 +1771,7 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 		if (!empty($list) && is_array($list)) {
 			foreach ($list as $object) {
 				if (!($object instanceof ShopgateContainer)) {
-					ShopgateObject::logWrite('Encountered unknown type in what is supposed to be a list of ShopgateContainer objects: '.var_export($object, true));
+					ShopgateLogger::getInstance()->log('Encountered unknown type in what is supposed to be a list of ShopgateContainer objects: '.var_export($object, true));
 					continue;
 				}
 

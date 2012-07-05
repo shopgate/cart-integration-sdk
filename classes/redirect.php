@@ -61,9 +61,9 @@ interface ShopgateMobileRedirectInterface {
 	/**
 	 * Enables updating of the keywords that identify mobile devices from Shopgate Merchant API.
 	 *
-	 * @param int $cacheTime Time the keywords are cached in hours. Will be set to at least self::MIN_CACHE_TIME.
+	 * @param int $cacheTime Time the keywords are cached in hours. Will be set to at least ShopgateMobileRedirectInterface::MIN_CACHE_TIME.
 	 */
-	public function enableKeywordUpdate($cacheTime = self::DEFAULT_CACHE_TIME);
+	public function enableKeywordUpdate($cacheTime = ShopgateMobileRedirectInterface::DEFAULT_CACHE_TIME);
 	
 	/**
 	 * Disables updating of the keywords that identify mobile devices from Shopgate Merchant API.
@@ -246,14 +246,14 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	 */
 	protected $buttonDescription;
 	
-	public function initLibrary() {
+	public function __construct(ShopgateMerchantApiInterface $merchantApi) {
 		$this->updateRedirectKeywords = false;
-		$this->redirectKeywordCacheTime = self::DEFAULT_CACHE_TIME;
+		$this->redirectKeywordCacheTime = ShopgateMobileRedirectInterface::DEFAULT_CACHE_TIME;
 		$this->cacheFile = dirname(__FILE__).'/../temp/cache/redirect_keywords.txt';
 		$this->useSecureConnection = isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] === "on" || $_SERVER["HTTPS"] == "1");
 
 		// mobile header options
-		$this->mobileHeaderTemplatePath = dirname(__FILE__).'/../assets/mobile_header.html';
+		$this->mobileHeaderTemplatePath = SHOPGATE_BASE_DIR.DS.'assets'.DS.'mobile_header.html';
 		$this->cookieLife = gmdate('D, d-M-Y H:i:s T', time());
 		$this->buttonDescription = 'Mobile Webseite aktivieren';
 
@@ -278,9 +278,9 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		$this->cname = $cname;
 	}
 
-	public function enableKeywordUpdate($cacheTime = self::DEFAULT_CACHE_TIME) {
+	public function enableKeywordUpdate($cacheTime = ShopgateMobileRedirectInterface::DEFAULT_CACHE_TIME) {
 		$this->updateRedirectKeywords = true;
-		$this->redirectKeywordCacheTime = ($cacheTime >= self::MIN_CACHE_TIME) ? $cacheTime : self::MIN_CACHE_TIME;
+		$this->redirectKeywordCacheTime = ($cacheTime >= ShopgateMobileRedirectInterface::MIN_CACHE_TIME) ? $cacheTime : ShopgateMobileRedirectInterface::MIN_CACHE_TIME;
 	}
 
 	public function disableKeywordUpdate() {
@@ -343,12 +343,12 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	public function isRedirectAllowed() {
 		// if GET parameter is set create cookie and do not redirect
 		if (!empty($_GET['shopgate_redirect'])) {
-			setcookie(self::COOKIE_NAME, 1, time() + 604800, '/'); // expires after 7 days
+			setcookie(ShopgateMobileRedirectInterface::COOKIE_NAME, 1, time() + 604800, '/'); // expires after 7 days
 			return false;
 		}
 
 
-		return empty($_COOKIE[self::COOKIE_NAME]) ? true : false;
+		return empty($_COOKIE[ShopgateMobileRedirectInterface::COOKIE_NAME]) ? true : false;
 	}
 
 	public function redirect($url) {
@@ -373,9 +373,9 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		}
 
 		// set parameters
-		$this->buttonOnImageSource = (($this->useSecureConnection) ? self::SHOPGATE_STATIC_SSL : self::SHOPGATE_STATIC).'/api/mobile_header/button_on.png';
-		$this->buttonOffImageSource = (($this->useSecureConnection) ? self::SHOPGATE_STATIC_SSL : self::SHOPGATE_STATIC).'/api/mobile_header/button_off.png';
-		$html = str_replace('{$cookieName}', self::COOKIE_NAME, $html);
+		$this->buttonOnImageSource = (($this->useSecureConnection) ? ShopgateMobileRedirectInterface::SHOPGATE_STATIC_SSL : ShopgateMobileRedirectInterface::SHOPGATE_STATIC).'/api/mobile_header/button_on.png';
+		$this->buttonOffImageSource = (($this->useSecureConnection) ? ShopgateMobileRedirectInterface::SHOPGATE_STATIC_SSL : ShopgateMobileRedirectInterface::SHOPGATE_STATIC).'/api/mobile_header/button_off.png';
+		$html = str_replace('{$cookieName}', ShopgateMobileRedirectInterface::COOKIE_NAME, $html);
 		$html = str_replace('{$buttonOnImageSource}',  $this->buttonOnImageSource,  $html);
 		$html = str_replace('{$buttonOffImageSource}', $this->buttonOffImageSource, $html);
 		$html = str_replace('{$buttonDescription}', $this->buttonDescription, $html);
@@ -412,8 +412,8 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 
 		switch ($serverType) {
 			default: // fall through to "live"
-			case 'live':	return self::SHOPGATE_LIVE_ALIAS;
-			case 'pg':		return self::SHOPGATE_PG_ALIAS;
+			case 'live':	return ShopgateMobileRedirectInterface::SHOPGATE_LIVE_ALIAS;
+			case 'pg':		return ShopgateMobileRedirectInterface::SHOPGATE_PG_ALIAS;
 			case 'custom':	return '.localdev.cc/php/shopgate/index.php'; // for Shopgate development & testing
 		}
 	}

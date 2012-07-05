@@ -79,6 +79,11 @@ interface ShopgateConfigInterface {
 	 * @param array<string, string> $validations The field names (index) and regular expressions (value) of the additional settings that should be validated.
 	 */
 	public function addAdditionalValidations(array $validations);
+	
+	/**
+	 * @return string The name of the plugin / shop system the plugin is for.
+	 */
+	public function getPluginName();
 
 	/**
 	 * @return bool true to activate the Shopgate error handler.
@@ -241,6 +246,17 @@ interface ShopgateConfigInterface {
 	public function getErrorLogPath();
 	
 	/**
+	 * @return string The path to the cache file for mobile device detection keywords.
+	 */
+	public function getRedirectKeywordCachePath();
+	
+	
+	/**
+	 * @param string $value The name of the plugin / shop system the plugin is for.
+	 */
+	public function setPluginName($value);
+	
+	/**
 	 * @param bool $value true to activate the Shopgate error handler.
 	 */
 	public function setUseCustomErrorHandler($value);
@@ -401,6 +417,11 @@ interface ShopgateConfigInterface {
 	public function setErrorLogPath($value);
 	
 	/**
+	 * @param string $value The path to the cache file for mobile device detection keywords.
+	 */
+	public function setRedirectKeywordCachePath($value);
+	
+	/**
 	 * Returns an additional setting.
 	 *
 	 * @param string $setting The name of the setting.
@@ -444,6 +465,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @var array<string, string> List of field names for additional settings (index) that must have a value according regex (value)
 	 */
 	protected $additionalValidations = array();
+	
+	/**
+	 * @var string The name of the plugin / shop system the plugin is for.
+	 */
+	protected $plugin_name;
 	
 	/**
 	 * @var bool true to activate the Shopgate error handler.
@@ -541,12 +567,12 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	/**
 	 * @var bool
 	 */
-	protected $enable_get_reviews_csv;
+	protected $enable_get_categories_csv;
 	
 	/**
 	 * @var bool
 	 */
-	protected $enable_get_categories_csv;
+	protected $enable_get_reviews_csv;
 	
 	/**
 	 * @var bool
@@ -616,6 +642,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @var string The path to the error log file.
 	 */
 	protected $error_log_path;
+	
+	/**
+	 * @var string The path to the cache file for mobile device detection keywords.
+	 */
+	protected $redirect_keyword_cache_path;
 
 	/**
 	 * @var array<string, mixed> Additional shop system specific settings that cannot (or should not) be generalized and thus be defined by a plugin itself.
@@ -627,11 +658,39 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	### Initialization, loading, saving, validating ###
 	###################################################
 	
-	public function __construct(array $data = array()) {
+	public final function __construct(array $data = array()) {
 		// parent constructor not called on purpose, because we need special
 		// initialization behaviour here (e.g. loading via array or file)
 		
+		// default values
+		$this->plugin_name = 'not set';
+		$this->use_custom_error_handler = 0;
+		$this->customer_number = '12345';
+		$this->shop_number = '12345';
+		$this->apikey = '123456789abcdef01234';
+		$this->alias = 'my-shop';
+		$this->cname = '';
+		$this->server = 'live';
+		$this->api_url = '';
+		$this->shop_is_active = 0;
+		$this->always_use_ssl = 0;
+		
+		$this->enable_redirect_keyword_update = 24;
+		$this->enable_ping = 1;
+		$this->enable_add_order = 0;
+		$this->enable_update_order = 0;
+		$this->enable_get_orders = 0;
+		$this->enable_get_customer = 0;
+		$this->enable_get_items_csv = 0;
+		$this->enable_get_categories_csv = 0;
+		$this->enable_get_reviews_csv = 0;
+		$this->enable_get_pages_csv = 0;
+		$this->enable_get_log_file = 1;
+		$this->enable_mobile_website = 0;
+		
+		$this->generate_items_csv_on_the_fly = 0;
 		$this->export_buffer_capacity = 100;
+		$this->max_attributes = 50;
 		
 		$this->items_csv_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'items.csv';
 		$this->categories_csv_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'categories.csv';
@@ -641,7 +700,22 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->request_log_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs'.DS.'request.log';
 		$this->error_log_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs'.DS.'error.log';
 		
+		$this->redirect_keyword_cache_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'cache'.DS.'redirect_keywords.txt';
+		
+		// call possible sub classes' startup()
+		$this->startup();
+		
 		$this->loadArray($data);
+	}
+	
+	/**
+	 * Inititialization for sub classes
+	 * 
+	 * This can be overwritten by subclasses to initialize further default values or overwrite the library defaults.
+	 * It gets called after default value initialization of the library and befor initialization by file or array.
+	 */
+	protected function startup() {
+		// nothing to do here
 	}
 	
 	/**
@@ -689,13 +763,9 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 			// try myconfig.php
 			$success = $this->includeFile(SHOPGATE_BASE_DIR.DS.'config'.DS.'myconfig.php');
 			
+			// if unsuccessful, use default configuration values
 			if (!$success) {
-				// try config.php
-				$success = $this->includeFile(SHOPGATE_BASE_DIR.DS.'config'.DS.'config.php');
-				
-				if (!$success) {
-					throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR, 'The default configuration files do not exist or do not define the $shopgate_config variable.');
-				}
+				return;
 			}
 		}
 		
@@ -784,6 +854,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	###############
 	### Getters ###
 	###############
+	public function getPluginName() {
+		return $this->plugin_name;
+	}
+	
 	public function getUseCustomErrorHandler() {
 		return $this->use_custom_error_handler;
 	}
@@ -912,9 +986,18 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->error_log_path;
 	}
 	
+	public function getRedirectKeywordCachePath() {
+		return $this->redirect_keyword_cache_path;
+	}
+	
+	
 	###############
 	### Setters ###
 	###############
+	public function setPluginName($value) {
+		$this->plugin_name = $value;
+	}
+	
 	public function setUseCustomErrorHandler($value) {
 		$this->use_custom_error_handler = $value;
 	}
@@ -1042,6 +1125,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	public function setErrorLogPath($value) {
 		$this->error_log_path = $value;
 	}
+	
+	public function setRedirectKeywordCachePath($value) {
+		$this->redirect_keyword_cache_path = $value;
+	}
+	
 	
 	###############
 	### Helpers ###
