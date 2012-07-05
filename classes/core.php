@@ -42,77 +42,6 @@ function ShopgateErrorHandler($errno, $errstr, $errfile, $errline) {
 }
 
 /**
- * Builds the Shopgate Library object graphs for different purposes.
- *
- * @author Shopgate GmbH, 35510 Butzbach, DE
- */
-class ShopgateBuilder {
-	/**
-	 * @var ShopgateConfigInterface
-	 */
-	protected $config;
-	
-	/**
-	 * Loads configuration and initializes the ShopgateLogger class.
-	 *
-	 * @param ShopgateConfigInterface $config
-	 */
-	public function __construct(ShopgateConfigInterface &$config = null) {
-		if (empty($config)) {
-			$this->config = new ShopgateConfig();
-		} else {
-			$this->config = $config;
-		}
-		
-		// set up logger
-		ShopgateLogger::getInstance($config->getAccessLogPath(), $config->getRequestLogPath(), $config->getErrorLogPath());
-	}
-	
-	/**
-	 * Builds the Shopgate Library object graph for a given ShopgatePlugin object.
-	 *
-	 * This initializes all necessary objects of the library, wires them together and injects them into
-	 * the plugin class via its set* methods.
-	 *
-	 * @param ShopgatePlugin $plugin The ShopgatePlugin instance that should be wired to the framework.
-	 */
-	public function buildLibraryFor(ShopgatePlugin &$plugin) {
-		// set error handler if configured
-		if ($this->config->getUseCustomErrorHandler()) {
-			set_error_handler('ShopgateErrorHandler');
-		}
-		
-		// instantiate API stuff
-		$authService = new ShopgateAuthentificationService($this->config->getCustomerNumber(), $this->config->getApiKey());
-		$merchantApi = new ShopgateMerchantApi($authService, $this->config->getShopNumber(), $this->config->getApiUrl());
-		$pluginApi = new ShopgatePluginApi($this->config, $authService, $merchantApi, $plugin);
-		
-		// instantiate export file buffer
-		$fileBuffer = new ShopgateFileBuffer($this->config->getExportBufferCapacity());
-		
-		// inject config and apis into plugin
-		$plugin->setConfig($this->config);
-		$plugin->setPluginApi($pluginApi);
-		$plugin->setBuffer($fileBuffer);
-	}
-	
-	/**
-	 * Builds the Shopgate Library object graph for ShopgateMerchantApi and returns the instance.
-	 *
-	 * This initializes all necessary objects of the library, wires them together and injects them into
-	 * the plugin class via its set* methods.
-	 *
-	 * @return ShopgateMerchantApi
-	 */
-	public function buildMerchantApi() {
-		$authService = new ShopgateAuthentificationService($this->config->getCustomerNumber(), $this->config->getApiKey());
-		$merchantApi = new ShopgateMerchantApi($authService, $this->config->getShopNumber(), $this->config->getApiUrl());
-		
-		return $merchantApi;
-	}
-}
-
-/**
  * Exception type for errors within the Shopgate Library.
  *
  * This is used by the Shopgate Library and should be used by plugins and their components. Predefined error
@@ -335,6 +264,227 @@ class ShopgateMerchantApiException extends Exception {
 	}
 }
 
+/**
+ * Global class (Singleton) to manage log files.
+ *
+ * @author Shopgate GmbH, 35510 Butzbach, DE
+ */
+class ShopgateLogger {
+	const LOGTYPE_ACCESS = 'access';
+	const LOGTYPE_REQUEST = 'request';
+	const LOGTYPE_ERROR = 'error';
+
+	const OBFUSCATION_STRING = 'XXXXXXXX';
+
+	/**
+	 * @var resource[]
+	 */
+	private $fileHandles = array(
+			self::LOGTYPE_ACCESS => null,
+			self::LOGTYPE_REQUEST => null,
+			self::LOGTYPE_ERROR => null,
+	);
+
+	/**
+	 * @var ShopgateLogger
+	 */
+	private static $singleton;
+
+	private function __construct($accessLogPath, $requestLogPath, $errorLogPath) {
+		$this->fileHandles[self::LOGTYPE_ACCESS]  = @fopen($accessLogPath, 'a+');
+		$this->fileHandles[self::LOGTYPE_REQUEST] = @fopen($requestLogPath, 'a+');;
+		$this->fileHandles[self::LOGTYPE_ERROR]   = @fopen($errorLogPath, 'a+');;
+	}
+
+	private function __clone() {
+	}
+	private function __destruct() {
+	}
+
+	/**
+	 * @param string $accessLogPath
+	 * @param string $requestLogPath
+	 * @param string $errorLogPath
+	 * @return ShopgateLogger
+	 */
+	public static function getInstance($accessLogPath = null, $requestLogPath = null, $errorLogPath = null) {
+		if (empty(self::$singleton)) {
+			self::$singleton = new self($accessLogPath, $requestLogPath, $errorLogPath);
+		}
+
+		return self::$singleton;
+	}
+
+	/**
+	 * Logs a message to the according log file.
+	 *
+	 * This produces a log entry of the form<br />
+	 * <br />
+	 * [date] [time]: [message]\n<br />
+	 * <br />
+	 * to the selected log file. If an unknown log type is passed the message will be logged to the error log file.
+	 *
+	 * @param string $msg The error message.
+	 * @param string $type The log type, that would be one of the ShopgateLogger::LOGTYPE_* constants.
+	 * @return bool True on success, false on error.
+	 */
+	public function log($msg, $type = self::LOGTYPE_ERROR) {
+		// build log message
+		$msg = gmdate('d-m-Y H:i:s: ').$msg."\n";
+
+		// determine log file type and append message
+		switch (strtolower($type)) {
+			// write to error log if type is unknown
+			default: $type = self::LOGTYPE_ERROR;
+
+			// allowed types:
+			case self::LOGTYPE_ERROR:
+			case self::LOGTYPE_ACCESS:
+			case self::LOGTYPE_REQUEST:
+		}
+
+		// try to log
+		$success = false;
+		if (!empty($this->fileHandles[$type])) {
+			if (fwrite($this->fileHandles[$type], $msg) !== false) {
+				$success = true;
+			}
+		}
+
+		return $success;
+	}
+
+	/**
+	 * Returns the requested number of lines of the requested log file's end.
+	 *
+	 * @param string $type The log file to be read
+	 * @param int $lines Number of lines to return
+	 * @return string The requested log file content
+	 *
+	 * @see http://tekkie.flashbit.net/php/tail-functionality-in-php
+	 */
+	public function tail($type = self::LOGTYPE_ERROR, $lines = 20) {
+		if (!isset($this->fileHandles[$type])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_UNKNOWN_LOGTYPE, 'Type: '.$type);
+		}
+
+		if (empty($lines)) $lines = 20;
+
+		$handle = $this->fileHandles[$type];
+		$lineCounter = $lines;
+		$pos = -2;
+		$beginning = false;
+		$text = array();
+
+		while ($lineCounter > 0) {
+			$t = '';
+			while ($t !== "\n") {
+				if (@fseek($handle, $pos, SEEK_END) == -1) {
+					$beginning = true;
+					break;
+				}
+				$t = @fgetc($handle);
+				$pos--;
+			}
+
+			$lineCounter--;
+			if ($beginning) @rewind($handle);
+			$text[] = @fgets($handle);
+			if ($beginning) break;
+		}
+
+		return implode('', array_reverse($text));
+	}
+
+	/**
+	 * Function to prepare the parameters of an API request for logging.
+	 *
+	 * Strips out critical request data like the password of a get_customer request.
+	 *
+	 * @param mixed[] $data The incoming request's parameters.
+	 * @return string The cleaned parameters as string ready to log.
+	 */
+	protected function cleanParamsForLog($data) {
+		foreach ($data as $key => &$value) {
+			switch ($key) {
+				case 'pass': $value = self::OBFUSCATION_STRING;
+			}
+		}
+
+		return print_r($data, true);
+	}
+}
+
+/**
+ * Builds the Shopgate Library object graphs for different purposes.
+ *
+ * @author Shopgate GmbH, 35510 Butzbach, DE
+ */
+class ShopgateBuilder {
+	/**
+	 * @var ShopgateConfigInterface
+	 */
+	protected $config;
+	
+	/**
+	 * Loads configuration and initializes the ShopgateLogger class.
+	 *
+	 * @param ShopgateConfigInterface $config
+	 */
+	public function __construct(ShopgateConfigInterface &$config = null) {
+		if (empty($config)) {
+			$this->config = new ShopgateConfig();
+		} else {
+			$this->config = $config;
+		}
+		
+		// set up logger
+		ShopgateLogger::getInstance($this->config->getAccessLogPath(), $this->config->getRequestLogPath(), $this->config->getErrorLogPath());
+	}
+	
+	/**
+	 * Builds the Shopgate Library object graph for a given ShopgatePlugin object.
+	 *
+	 * This initializes all necessary objects of the library, wires them together and injects them into
+	 * the plugin class via its set* methods.
+	 *
+	 * @param ShopgatePlugin $plugin The ShopgatePlugin instance that should be wired to the framework.
+	 */
+	public function buildLibraryFor(ShopgatePlugin &$plugin) {
+		// set error handler if configured
+		if ($this->config->getUseCustomErrorHandler()) {
+			set_error_handler('ShopgateErrorHandler');
+		}
+		
+		// instantiate API stuff
+		$authService = new ShopgateAuthentificationService($this->config->getCustomerNumber(), $this->config->getApiKey());
+		$merchantApi = new ShopgateMerchantApi($authService, $this->config->getShopNumber(), $this->config->getApiUrl());
+		$pluginApi = new ShopgatePluginApi($this->config, $authService, $merchantApi, $plugin);
+		
+		// instantiate export file buffer
+		$fileBuffer = new ShopgateFileBuffer($this->config->getExportBufferCapacity());
+		
+		// inject config and apis into plugin
+		$plugin->setConfig($this->config);
+		$plugin->setPluginApi($pluginApi);
+		$plugin->setBuffer($fileBuffer);
+	}
+	
+	/**
+	 * Builds the Shopgate Library object graph for ShopgateMerchantApi and returns the instance.
+	 *
+	 * This initializes all necessary objects of the library, wires them together and injects them into
+	 * the plugin class via its set* methods.
+	 *
+	 * @return ShopgateMerchantApi
+	 */
+	public function buildMerchantApi() {
+		$authService = new ShopgateAuthentificationService($this->config->getCustomerNumber(), $this->config->getApiKey());
+		$merchantApi = new ShopgateMerchantApi($authService, $this->config->getShopNumber(), $this->config->getApiUrl());
+		
+		return $merchantApi;
+	}
+}
 
 /**
  * ShopgateObject acts as root class of the Shopgate Library.
@@ -423,268 +573,6 @@ abstract class ShopgateObject {
 		return $jsonService->decode($json);
 	}
 
-}
-
-/**
- * Global class (Singleton) to manage log files.
- *
- * @author Shopgate GmbH, 35510 Butzbach, DE
- */
-class ShopgateLogger {
-	const LOGTYPE_ACCESS = 'access';
-	const LOGTYPE_REQUEST = 'request';
-	const LOGTYPE_ERROR = 'error';
-
-	const OBFUSCATION_STRING = 'XXXXXXXX';
-
-	/**
-	 * @var resource[]
-	 */
-	private $fileHandles = array(
-		self::LOGTYPE_ACCESS => null,
-		self::LOGTYPE_REQUEST => null,
-		self::LOGTYPE_ERROR => null,
-	);
-	
-	/**
-	 * @var ShopgateLogger
-	 */
-	private static $singleton;
-	
-	private function __construct($accessLogPath, $requestLogPath, $errorLogPath) {
-		$this->fileHandles[self::LOGTYPE_ACCESS]  = @fopen($accessLogPath, 'a+');
-		$this->fileHandles[self::LOGTYPE_REQUEST] = @fopen($requestLogPath, 'a+');;
-		$this->fileHandles[self::LOGTYPE_ERROR]   = @fopen($errorLogPath, 'a+');;
-	}
-	
-	private function __clone() { }
-	private function __destruct() { }
-	
-	/**
-	 * @param string $accessLogPath
-	 * @param string $requestLogPath
-	 * @param string $errorLogPath
-	 * @return ShopgateLogger
-	 */
-	public static function getInstance($accessLogPath = null, $requestLogPath = null, $errorLogPath = null) {
-		if (empty(self::$singleton)) {
-			self::$singleton = new self($accessLogPath, $requestLogPath, $errorLogPath);
-		}
-		
-		return self::$singleton;
-	}
-	
-	/**
-	 * Logs a message to the according log file.
-	 *
-	 * This produces a log entry of the form<br />
-	 * <br />
-	 * [date] [time]: [message]\n<br />
-	 * <br />
-	 * to the selected log file. If an unknown log type is passed the message will be logged to the error log file.
-	 *
-	 * @param string $msg The error message.
-	 * @param string $type The log type, that would be one of the ShopgateLogger::LOGTYPE_* constants.
-	 * @return bool True on success, false on error.
-	 */
-	public function log($msg, $type = self::LOGTYPE_ERROR) {
-		// build log message
-		$msg = gmdate('d-m-Y H:i:s: ').$msg."\n";
-
-		// determine log file type and append message
-		switch (strtolower($type)) {
-			// write to error log if type is unknown
-			default: $type = self::LOGTYPE_ERROR;
-
-			// allowed types:
-			case self::LOGTYPE_ERROR:
-			case self::LOGTYPE_ACCESS:
-			case self::LOGTYPE_REQUEST:
-		}
-
-		// try to log
-		$success = false;
-		if (!empty($this->fileHandles[$type])) {
-			if (fwrite($this->fileHandles[$type], $msg) !== false) {
-				$success = true;
-			}
-		}
-
-		return $success;
-	}
-
-	/**
-	 * Returns the requested number of lines of the requested log file's end.
-	 *
-	 * @param string $type The log file to be read
-	 * @param int $lines Number of lines to return
-	 * @return string The requested log file content
-	 *
-	 * @see http://tekkie.flashbit.net/php/tail-functionality-in-php
-	 */
-	public function tail($type = self::LOGTYPE_ERROR, $lines = 20) {
-		if (!isset($this->fileHandles[$type])) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_UNKNOWN_LOGTYPE, 'Type: '.$type);
-		}
-
-		if (empty($lines)) $lines = 20;
-
-		$handle = $this->fileHandles[$type];
-		$lineCounter = $lines;
-		$pos = -2;
-		$beginning = false;
-		$text = array();
-
-		while ($lineCounter > 0) {
-			$t = '';
-			while ($t !== "\n") {
-				if (@fseek($handle, $pos, SEEK_END) == -1) {
-					$beginning = true;
-					break;
-				}
-				$t = @fgetc($handle);
-				$pos--;
-			}
-
-			$lineCounter--;
-			if ($beginning) @rewind($handle);
-			$text[] = @fgets($handle);
-			if ($beginning) break;
-		}
-
-		return implode('', array_reverse($text));
-	}
-	
-	/**
-	 * Function to prepare the parameters of an API request for logging.
-	 *
-	 * Strips out critical request data like the password of a get_customer request.
-	 *
-	 * @param mixed[] $data The incoming request's parameters.
-	 * @return string The cleaned parameters as string ready to log.
-	 */
-	protected function cleanParamsForLog($data) {
-		foreach ($data as $key => &$value) {
-			switch ($key) {
-				case 'pass': $value = self::OBFUSCATION_STRING;
-			}
-		}
-
-		return print_r($data, true);
-	}
-}
-
-/**
- * This class provides basic functionality for the Shopgate Library's container objects.
- *
- * It provides initialization with an array, conversion to an array, utf-8 decoding of the container's properties etc.
- *
- * @author Shopgate GmbH, 35510 Butzbach, DE
- */
-abstract class ShopgateContainer extends ShopgateObject {
-	/**
-	 * Initializes the object with the passed data.
-	 *
-	 * If no data is passed, an empty object is created. The passed data must be an array, it's indices must be the un-camelized,
-	 * underscored names of the set* methods of the created object.
-	 *
-	 * @param array $data The data the container should be initialized with.
-	 */
-	public function __construct($data = array()) {
-		$this->loadArray($data);
-	}
-	
-	/**
-	 * Tries to map an associative array to the object's attributes.
-	 *
-	 * The passed data must be an array, it's indices must be the un-camelized,
-	 * underscored names of the set* methods of the object.
-	 *
-	 * Tha data that couldn't be mapped is returned as an array.
-	 *
-	 * @param array $data The data that should be mapped to the container object.
-	 * @return array The part of the array that couldn't be mapped.
-	 */
-	protected function loadArray($data = array()) {
-		$unmappedData = array();
-		
-		if (is_array($data)) {
-			$methods = get_class_methods($this);
-			foreach ($data as $key => $value) {
-				$setter = 'set'.$this->camelize($key, true);
-				if (!in_array($setter, $methods)) {
-					$unmappedData[$key] = $value;
-					continue;
-				}
-				$this->$setter($value);
-			}
-		}
-		
-		return $unmappedData;
-	}
-
-	/**
-	 * Converts the Container object recursively to an associative array.
-	 *
-	 * @return mixed[]
-	 */
-	public function toArray() {
- 		$visitor = new ShopgateContainerToArrayVisitor();
- 		$visitor->visitContainer($this);
- 		return $visitor->getArray();
-	}
-
-	/**
-	 * Creates a new object of the same type with every value recursively utf-8 encoded.
-	 *
-	 * @param String $sourceEncoding The source Encoding of the strings
-	 *
-	 * @return ShopgateContainer The new object with utf-8 encoded values.
-	 */
-	public function utf8Encode($sourceEncoding = 'ISO-8859-15') {
-		$visitor = new ShopgateUtf8Visitor(ShopgateUtf8Visitor::MODE_ENCODE, $sourceEncoding);
-		$visitor->visitContainer($this);
-		return $visitor->getObject();
-	}
-
-	/**
-	 * Creates a new object of the same type with every value recursively utf-8 decoded.
-	 *
-	 * @param String $destinationEncoding The destination Encoding for the strings
-	 *
-	 * @return ShopgateContainer The new object with utf-8 decoded values.
-	 */
-	public function utf8Decode($destinationEncoding = 'ISO-8859-15') {
-		$visitor = new ShopgateUtf8Visitor(ShopgateUtf8Visitor::MODE_DECODE, $destinationEncoding);
-		$visitor->visitContainer($this);
-		return $visitor->getObject();
-	}
-
-	/**
-	 * Creates an array of all properties that have getters.
-	 *
-	 * @return mixed[]
-	 */
-	public function buildProperties() {
-		$methods = get_class_methods($this);
-		$properties = get_object_vars($this);
-		$filteredProperties = array();
-
-		// only properties that have getters should be extracted
-		foreach ($properties as $property => $value) {
-			$getter = 'get'.$this->camelize($property, true);
-			if (in_array($getter, $methods)) {
-				$filteredProperties[$property] = $this->{$getter}();
-			}
-		}
-
-		return $filteredProperties;
-	}
-
-	/**
-	 * @param ShopgateContainerVisitor $v
-	 */
-	public abstract function accept(ShopgateContainerVisitor $v);
 }
 
 /**
@@ -1306,6 +1194,119 @@ class ShopgateFileBuffer extends ShopgateObject {
 		$this->log("Dauer: $duration Sekunden", "access");
 	}
 	
+}
+
+/**
+ * This class provides basic functionality for the Shopgate Library's container objects.
+ *
+ * It provides initialization with an array, conversion to an array, utf-8 decoding of the container's properties etc.
+ *
+ * @author Shopgate GmbH, 35510 Butzbach, DE
+ */
+abstract class ShopgateContainer extends ShopgateObject {
+	/**
+	 * Initializes the object with the passed data.
+	 *
+	 * If no data is passed, an empty object is created. The passed data must be an array, it's indices must be the un-camelized,
+	 * underscored names of the set* methods of the created object.
+	 *
+	 * @param array $data The data the container should be initialized with.
+	 */
+	public function __construct($data = array()) {
+		$this->loadArray($data);
+	}
+	
+	/**
+	 * Tries to map an associative array to the object's attributes.
+	 *
+	 * The passed data must be an array, it's indices must be the un-camelized,
+	 * underscored names of the set* methods of the object.
+	 *
+	 * Tha data that couldn't be mapped is returned as an array.
+	 *
+	 * @param array $data The data that should be mapped to the container object.
+	 * @return array The part of the array that couldn't be mapped.
+	 */
+	protected function loadArray($data = array()) {
+		$unmappedData = array();
+		
+		if (is_array($data)) {
+			$methods = get_class_methods($this);
+			foreach ($data as $key => $value) {
+				$setter = 'set'.$this->camelize($key, true);
+				if (!in_array($setter, $methods)) {
+					$unmappedData[$key] = $value;
+					continue;
+				}
+				$this->$setter($value);
+			}
+		}
+		
+		return $unmappedData;
+	}
+
+	/**
+	 * Converts the Container object recursively to an associative array.
+	 *
+	 * @return mixed[]
+	 */
+	public function toArray() {
+ 		$visitor = new ShopgateContainerToArrayVisitor();
+ 		$visitor->visitContainer($this);
+ 		return $visitor->getArray();
+	}
+
+	/**
+	 * Creates a new object of the same type with every value recursively utf-8 encoded.
+	 *
+	 * @param String $sourceEncoding The source Encoding of the strings
+	 *
+	 * @return ShopgateContainer The new object with utf-8 encoded values.
+	 */
+	public function utf8Encode($sourceEncoding = 'ISO-8859-15') {
+		$visitor = new ShopgateUtf8Visitor(ShopgateUtf8Visitor::MODE_ENCODE, $sourceEncoding);
+		$visitor->visitContainer($this);
+		return $visitor->getObject();
+	}
+
+	/**
+	 * Creates a new object of the same type with every value recursively utf-8 decoded.
+	 *
+	 * @param String $destinationEncoding The destination Encoding for the strings
+	 *
+	 * @return ShopgateContainer The new object with utf-8 decoded values.
+	 */
+	public function utf8Decode($destinationEncoding = 'ISO-8859-15') {
+		$visitor = new ShopgateUtf8Visitor(ShopgateUtf8Visitor::MODE_DECODE, $destinationEncoding);
+		$visitor->visitContainer($this);
+		return $visitor->getObject();
+	}
+
+	/**
+	 * Creates an array of all properties that have getters.
+	 *
+	 * @return mixed[]
+	 */
+	public function buildProperties() {
+		$methods = get_class_methods($this);
+		$properties = get_object_vars($this);
+		$filteredProperties = array();
+
+		// only properties that have getters should be extracted
+		foreach ($properties as $property => $value) {
+			$getter = 'get'.$this->camelize($property, true);
+			if (in_array($getter, $methods)) {
+				$filteredProperties[$property] = $this->{$getter}();
+			}
+		}
+
+		return $filteredProperties;
+	}
+
+	/**
+	 * @param ShopgateContainerVisitor $v
+	 */
+	public abstract function accept(ShopgateContainerVisitor $v);
 }
 
 /**
