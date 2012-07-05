@@ -48,7 +48,7 @@ function ShopgateErrorHandler($errno, $errstr, $errfile, $errline) {
  */
 class ShopgateBuilder {
 	/**
-	 * @var ShopgateConfig
+	 * @var ShopgateConfigInterface
 	 */
 	protected $config;
 	
@@ -65,8 +65,7 @@ class ShopgateBuilder {
 		}
 		
 		// set up logger
-		$logPath = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs'.DS;
-		ShopgateLogger::getInstance($logPath.'access.log', $logPath.'request.log', $logPath.'error.log');
+		ShopgateLogger::getInstance($config->getAccessLogPath(), $config->getRequestLogPath(), $config->getErrorLogPath());
 	}
 	
 	/**

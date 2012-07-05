@@ -226,6 +226,21 @@ interface ShopgateConfigInterface {
 	public function getPagesCsvPath();
 	
 	/**
+	 * @return string The path to the access log file.
+	 */
+	public function getAccessLogPath();
+	
+	/**
+	 * @return string The path to the request log file.
+	 */
+	public function getRequestLogPath();
+	
+	/**
+	 * @return string The path to the error log file.
+	 */
+	public function getErrorLogPath();
+	
+	/**
 	 * @param bool $value true to activate the Shopgate error handler.
 	 */
 	public function setUseCustomErrorHandler($value);
@@ -369,6 +384,21 @@ interface ShopgateConfigInterface {
 	 * @param string $value The path to where the pages CSV file is stored and retrieved from.
 	 */
 	public function setPagesCsvPath($value);
+	
+	/**
+	 * @param string $value The path to the access log file.
+	 */
+	public function setAccessLogPath($value);
+	
+	/**
+	 * @param string $value The path to the request log file.
+	 */
+	public function setRequestLogPath($value);
+	
+	/**
+	 * @param string $value The path to the error log file.
+	 */
+	public function setErrorLogPath($value);
 	
 	/**
 	 * Returns the additional settings array.
@@ -564,6 +594,21 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @var string The path to where the pages CSV file is stored and retrieved from.
 	 */
 	protected $pages_csv_path;
+	
+	/**
+	 * @var string The path to the access log file.
+	 */
+	protected $access_log_path;
+	
+	/**
+	 * @var string The path to the request log file.
+	 */
+	protected $request_log_path;
+	
+	/**
+	 * @var string The path to the error log file.
+	 */
+	protected $error_log_path;
 
 	/**
 	 * @var array<string, mixed> Additional shop system specific settings that cannot (or should not) be generalized and thus be defined by a plugin itself.
@@ -580,9 +625,14 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		// initialization behaviour here (e.g. loading via array or file)
 		
 		$this->export_buffer_capacity = 100;
+		
 		$this->items_csv_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'items.csv';
 		$this->categories_csv_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'categories.csv';
 		$this->reviews_csv_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'reviews.csv';
+		
+		$this->access_log_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs'.DS.'access.log';
+		$this->request_log_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs'.DS.'request.log';
+		$this->error_log_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs'.DS.'error.log';
 		
 		$this->loadArray($data);
 	}
@@ -841,6 +891,18 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->pages_csv_path;
 	}
 	
+	public function getAccessLogPath() {
+		return $this->access_log_path;
+	}
+	
+	public function getRequestLogPath() {
+		return $this->request_log_path;
+	}
+	
+	public function getErrorLogPath() {
+		return $this->error_log_path;
+	}
+	
 	###############
 	### Setters ###
 	###############
@@ -960,6 +1022,17 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->pages_csv_path = $value;
 	}
 	
+	public function setAccessLogPath($value) {
+		$this->access_log_path = $value;
+	}
+	
+	public function setRequestLogPath($value) {
+		$this->request_log_path = $value;
+	}
+	
+	public function setErrorLogPath($value) {
+		$this->error_log_path = $value;
+	}
 	
 	###############
 	### Helpers ###
