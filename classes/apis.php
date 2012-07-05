@@ -268,7 +268,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 
 	public function handleRequest(array $data = array()) {
 		// log incoming request
-		$this->log($this->cleanParamsForLog($data), ShopgateObject::LOGTYPE_ACCESS);
+		$this->log(ShopgateLogger::getInstance()->cleanParamsForLog($data), ShopgateLogger::LOGTYPE_ACCESS);
 
 		// save the params
 		$this->params = $data;
@@ -347,77 +347,18 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	private function ping() {
 		$this->response["pong"] = 'OK';
 
-		function getSettings() {
-			$settingDetails = array();
-
-			$allSettings = ini_get_all();
-
-			$settings = array(
-					"max_execution_time",
-					"memory_limit",
-					"allow_call_time_pass_reference",
-					"disable_functions",
-					"display_errors",
-					"file_uploads",
-					"include_path",
-					"register_globals",
-					"safe_mode"
-			);
-
-			foreach($settings as $setting) {
-				$settingDetails[$setting] = $allSettings[$setting];
-			}
-
-			return $settingDetails;
-		}
-
-		function getPermissions() {
-			$permissions = array();
-			$files = array(
-					SHOPGATE_BASE_DIR.'/config/config.php',
-					SHOPGATE_BASE_DIR.'/config/myconfig.php',
-					SHOPGATE_BASE_DIR.'/temp/',
-					SHOPGATE_BASE_DIR.'/temp/cache/',
-					$this->config->getItemsCsvPath(),
-					$this->config->getCategoriesCsvPath(),
-					$this->config->getReviewsCsvPath(),
-			);
-
-			foreach($files as $file) {
-				$permission = array();
-				$permission["file"] = $file;
-				$permission["exist"] = (bool) file_exists($file);
-				$permission["writeable"] = (bool) is_writable($file);
-				$permission["permission"] = "-";
-
-				$fInfo = pathinfo($file);
-				if( file_exists($file) ) {
-					$permission["permission"] = substr( sprintf('%o', fileperms($file)), -4);
-				} else {
-					if( file_exists( $fInfo["dirname"] ) )
-						$permission["parent_permission"] = substr( sprintf('%o', fileperms( $fInfo["dirname"] )), -4);
-				}
-
-				$permissions[] = $permission;
-			}
-
-
-
-			return $permissions;
-		}
-
 		// obfuscate data relevant for authentication
 		$config = $this->config->toArray();
-		$config['customer_number']	= ShopgateObject::OBFUSCATION_STRING;
-		$config['shop_number']		= ShopgateObject::OBFUSCATION_STRING;
-		$config['apikey']			= ShopgateObject::OBFUSCATION_STRING;
+		$config['customer_number']	= ShopgateLogger::OBFUSCATION_STRING;
+		$config['shop_number']		= ShopgateLogger::OBFUSCATION_STRING;
+		$config['apikey']			= ShopgateLogger::OBFUSCATION_STRING;
 
 		// return the pong object
 		header("Content-Type: application/json");
 		$this->response["configuration"] = $config;
-		$this->response["permissions"] = getPermissions();
+		$this->response["permissions"] = $this->getPermissions();
 		$this->response["php_version"] = phpversion();
-		$this->response["php_config"] = getSettings();
+		$this->response["php_config"] = $this->getSettings();
 		$this->response["php_curl"] = function_exists('curl_version') ? curl_version() : 'No PHP-CURL installed';
 		$this->response["php_extensions"] = get_loaded_extensions();
 		$this->response["shopgate_library_version"] = SHOPGATE_LIBRARY_VERSION;
@@ -530,7 +471,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			$this->plugin->startGetItemsCsv();
 		}
 
-		$fileName = $this->outputCsvFile($this->config->getPagesCsvPath());
+		$fileName = $this->outputCsvFile($this->config->getItemsCsvPath());
 	}
 
 	/**
@@ -541,9 +482,9 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 */
 	private function getCategoriesCsv() {
 		// generate / update categories csv file
-		ShopgateLibraryFactory::getInstance()->getPlugin()->startGetCategoriesCsv();
+		$this->plugin->startGetCategoriesCsv();
 
-		$fileName = $this->outputCsvFile($this->config->getPagesCsvPath());
+		$fileName = $this->outputCsvFile($this->config->getCategoriesCsvPath());
 	}
 
 	/**
@@ -554,9 +495,9 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 */
 	private function getReviewsCsv() {
 		// generate / update reviews csv file
-		ShopgateLibraryFactory::getInstance()->getPlugin()->startGetReviewsCsv();
+		$this->plugin->startGetReviewsCsv();
 
-		$fileName = $this->outputCsvFile($this->config->getPagesCsvPath());
+		$fileName = $this->outputCsvFile($this->config->getReviewsCsvPath());
 	}
 
 	/**
@@ -624,6 +565,72 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 
 		//if (!empty($this->params['external_customer_number'])) {
 	}
+
+	
+	###############
+	### Helpers ###
+	###############
+	
+	private function getSettings() {
+		$settingDetails = array();
+
+		$allSettings = ini_get_all();
+
+		$settings = array(
+				"max_execution_time",
+				"memory_limit",
+				"allow_call_time_pass_reference",
+				"disable_functions",
+				"display_errors",
+				"file_uploads",
+				"include_path",
+				"register_globals",
+				"safe_mode"
+		);
+
+		foreach($settings as $setting) {
+			$settingDetails[$setting] = $allSettings[$setting];
+		}
+
+		return $settingDetails;
+	}
+
+	private function getPermissions() {
+		$permissions = array();
+		$files = array(
+				SHOPGATE_BASE_DIR.'/config/config.php',
+				SHOPGATE_BASE_DIR.'/config/myconfig.php',
+				SHOPGATE_BASE_DIR.'/temp/',
+				SHOPGATE_BASE_DIR.'/temp/cache/',
+				$this->config->getItemsCsvPath(),
+				$this->config->getCategoriesCsvPath(),
+				$this->config->getReviewsCsvPath(),
+				$this->config->getAccessLogPath(),
+				$this->config->getRequestLogPath(),
+				$this->config->getErrorLogPath(),
+		);
+
+		foreach ($files as $file) {
+			$permission = array();
+			$permission["file"] = $file;
+			$permission["exist"] = (bool) file_exists($file);
+			$permission["writeable"] = (bool) is_writable($file);
+			$permission["permission"] = "-";
+
+			$fInfo = pathinfo($file);
+			if (file_exists($file)) {
+				$permission["permission"] = substr(sprintf('%o', fileperms($file)), -4);
+			} else {
+				if (file_exists($fInfo["dirname"])) {
+					$permission["parent_permission"] = substr(sprintf('%o', fileperms($fInfo["dirname"])), -4);
+				}
+			}
+
+			$permissions[] = $permission;
+		}
+
+		return $permissions;
+	}
 }
 
 class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiInterface {
@@ -659,7 +666,7 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 		$data['shop_number'] = $this->shopNumber;
 		$data['trace_id'] = 'spa-'.uniqid();
 
-		$this->log('Sending request to "'.$this->apiUrl.'": '.$this->cleanParamsForLog($data), ShopgateObject::LOGTYPE_REQUEST);
+		$this->log('Sending request to "'.$this->apiUrl.'": '.ShopgateLogger::getInstance()->cleanParamsForLog($data), ShopgateLogger::LOGTYPE_REQUEST);
 
 		$curl = curl_init($this->apiUrl);
 		curl_setopt($curl, CURLOPT_HEADER, false);

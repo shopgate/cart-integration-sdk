@@ -98,7 +98,7 @@ interface ShopgateConfigInterface {
 	/**
 	 * @return string API key (exactly 20 hexadecimal digits)
 	 */
-	public function getApiKey();
+	public function getApikey();
 	
 	/**
 	 * @return string Alias of a shop for mobile redirect (start and end with alpha-numerical characters, dashes in between are ok)
@@ -258,7 +258,7 @@ interface ShopgateConfigInterface {
 	/**
 	 * @param string $value API key (exactly 20 hexadecimal digits)
 	 */
-	public function setApiKey($value);
+	public function setApikey($value);
 	
 	/**
 	 * @param string $value Alias of a shop for mobile redirect (start and end with alpha-numerical characters, dashes in between are ok)
@@ -434,8 +434,8 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	protected $coreValidations = array(
 		'customer_number' => '/^[0-9]{5,}$/', // at least 5 digits
 		'shop_number' => '/^[0-9]{5,}$/', // at least 5 digits
-		'api_key' => '/^[0-9a-f]{20}$/', // exactly 20 hexadecimal digits
-		'alias' => '/^[0-9a-zA-Z]+(\-+[0-9a-zA-Z]+)*$/', // start and end with alpha-numerical characters, dashes in between are ok
+		'apikey' => '/^[0-9a-f]{20}$/', // exactly 20 hexadecimal digits
+		'alias' => '/^[0-9a-zA-Z]+([\.\-]+[0-9a-zA-Z]+)*$/', // start and end with alpha-numerical characters, dashes in between are ok
 		'server' => '/^(live|pg|custom)$/', // "live" or "pg" or "custom"
 		'api_url' => '/^(http(s?)\:\/\/\S+)?$/', // empty or a string beginning with "http://" or "https://" followed by any number of non-whitespace characters
 	);
@@ -467,7 +467,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	/**
 	 * @var string API key (exactly 20 hexadecimal digits)
 	 */
-	protected $api_key;
+	protected $apikey;
 	
 	/**
 	 * @var string Alias of a shop for mobile redirect (start and end with alpha-numerical characters, dashes in between are ok)
@@ -674,7 +674,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		
 		// unset $shopgate_config to avoid reading from somehow injected global variables
 		if (isset($shopgate_config)) {
-			unset($shopgate_config);
+			$shopgate_config = null;
 		}
 		
 		// try loading files
@@ -712,6 +712,13 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 			$this->validate($fieldList);
 		}
 		
+		// preserve values of the fields to save
+		$saveFields = array();
+		$currentConfig = $this->toArray();
+		foreach ($fieldList as $field) {
+			$saveFields[$field] = (isset($currentConfig[$field])) ? $currentConfig[$field] : null;
+		}
+		
 		// load the current configuration
 		try {
 			$this->loadFile($path);
@@ -719,21 +726,16 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 			$shopgate_config = array();
 		}
 		
+		// merge old config with new values
+		$newConfig = array_merge($this->toArray(), $saveFields);
+		
 		// if necessary point $path to  myconfig.php
 		if (empty($path)) {
 			$path = SHOPGATE_BASE_DIR.DS.'config'.DS.'myconfig.php';
 		}
 		
-		// run through fieldList and assign the values to $shopgate_config
-		$array = $this->toArray();
-		foreach ($fieldList as $field) {
-			if (!empty($array[$field])) {
-				$shopgate_config[$field] = $array[$field];
-			}
-		}
-		
 		// create the array definition string and save it to the file
-		$shopgateConfigFile = "<?php\n\$shopgate_config = ".var_export($shopgate_config, true).';';
+		$shopgateConfigFile = "<?php\n\$shopgate_config = ".var_export($newConfig, true).';';
 		if (!@file_put_contents($path, $shopgateConfigFile)) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR, 'The configuration file "'.$path.'" could not be saved.');
 		}
@@ -794,8 +796,8 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->shop_number;
 	}
 	
-	public function getApiKey() {
-		return $this->api_key;
+	public function getApikey() {
+		return $this->apikey;
 	}
 	
 	public function getAlias() {
@@ -925,8 +927,8 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->shop_number = $value;
 	}
 	
-	public function setApiKey($value) {
-		$this->api_key = $value;
+	public function setApikey($value) {
+		$this->apikey = $value;
 	}
 	
 	public function setAlias($value) {

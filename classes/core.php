@@ -296,11 +296,6 @@ class ShopgateLogger {
 		$this->fileHandles[self::LOGTYPE_ERROR]   = @fopen($errorLogPath, 'a+');;
 	}
 
-	private function __clone() {
-	}
-	private function __destruct() {
-	}
-
 	/**
 	 * @param string $accessLogPath
 	 * @param string $requestLogPath
@@ -404,7 +399,7 @@ class ShopgateLogger {
 	 * @param mixed[] $data The incoming request's parameters.
 	 * @return string The cleaned parameters as string ready to log.
 	 */
-	protected function cleanParamsForLog($data) {
+	public function cleanParamsForLog($data) {
 		foreach ($data as $key => &$value) {
 			switch ($key) {
 				case 'pass': $value = self::OBFUSCATION_STRING;
@@ -457,7 +452,7 @@ class ShopgateBuilder {
 		}
 		
 		// instantiate API stuff
-		$authService = new ShopgateAuthentificationService($this->config->getCustomerNumber(), $this->config->getApiKey());
+		$authService = new ShopgateAuthentificationService($this->config->getCustomerNumber(), $this->config->getApikey());
 		$merchantApi = new ShopgateMerchantApi($authService, $this->config->getShopNumber(), $this->config->getApiUrl());
 		$pluginApi = new ShopgatePluginApi($this->config, $authService, $merchantApi, $plugin);
 		
@@ -479,7 +474,7 @@ class ShopgateBuilder {
 	 * @return ShopgateMerchantApi
 	 */
 	public function buildMerchantApi() {
-		$authService = new ShopgateAuthentificationService($this->config->getCustomerNumber(), $this->config->getApiKey());
+		$authService = new ShopgateAuthentificationService($this->config->getCustomerNumber(), $this->config->getApikey());
 		$merchantApi = new ShopgateMerchantApi($authService, $this->config->getShopNumber(), $this->config->getApiUrl());
 		
 		return $merchantApi;
@@ -1182,7 +1177,7 @@ class ShopgateFileBuffer extends ShopgateObject {
 	 *
 	 * @throws ShopgateLibraryException if the buffer and file are empty.
 	 */
-	protected function finish() {
+	public function finish() {
 		$this->flush();
 		fclose($this->fileHandle);
 		$this->fileHandle = null;
