@@ -201,6 +201,11 @@ interface ShopgateConfigInterface {
 	public function getMaxAttributes();
 	
 	/**
+	 * @return int The capacity (number of lines) of the buffer used for the export actions.
+	 */
+	public function getExportBufferCapacity();
+	
+	/**
 	 * @return string The path to where the items CSV file is stored and retrieved from.
 	 */
 	public function getItemsCsvPath();
@@ -339,6 +344,11 @@ interface ShopgateConfigInterface {
 	 * @param int $value The maximum number of attributes per product that are created. If the number is exceeded, attributes should be converted to options.
 	 */
 	public function setMaxAttributes($value);
+
+	/**
+	 * @param int The capacity (number of lines) of the buffer used for the export actions.
+	 */
+	public function setExportBufferCapacity($value);
 	
 	/**
 	 * @param string $value The path to where the items CSV file is stored and retrieved from.
@@ -526,6 +536,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	protected $generate_items_csv_on_the_fly;
 	
 	/**
+	 * @var int The capacity (number of lines) of the buffer used for the export actions.
+	 */
+	protected $export_buffer_capacity;
+	
+	/**
 	 * @var int The maximum number of attributes per product that are created. If the number is exceeded, attributes should be converted to options.
 	 */
 	protected $max_attributes;
@@ -564,6 +579,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		// parent constructor not called on purpose, because we need special
 		// initialization behaviour here (e.g. loading via array or file)
 		
+		$this->export_buffer_capacity = 100;
 		$this->items_csv_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'items.csv';
 		$this->categories_csv_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'categories.csv';
 		$this->reviews_csv_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'reviews.csv';
@@ -801,6 +817,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->generate_items_csv_on_the_fly;
 	}
 	
+	public function getExportBufferCapacity() {
+		return $this->export_buffer_capacity;
+	}
+	
 	public function getMaxAttributes() {
 		return $this->max_attributes;
 	}
@@ -914,6 +934,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	
 	public function setGenerateItemsCsvOnTheFly($value) {
 		$this->generate_items_csv_on_the_fly = $value;
+	}
+	
+	public function setExportBufferCapacity($value) {
+		$this->export_buffer_capacity = $value;
 	}
 	
 	public function setMaxAttributes($value) {

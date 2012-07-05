@@ -88,9 +88,13 @@ class ShopgateBuilder {
 		$merchantApi = new ShopgateMerchantApi($authService, $this->config->getShopNumber(), $this->config->getApiUrl());
 		$pluginApi = new ShopgatePluginApi($this->config, $authService, $merchantApi, $plugin);
 		
+		// instantiate export file buffer
+		$fileBuffer = new ShopgateFileBuffer($this->config->getExportBufferCapacity());
+		
 		// inject config and apis into plugin
 		$plugin->setConfig($this->config);
 		$plugin->setPluginApi($pluginApi);
+		$plugin->setBuffer($fileBuffer);
 	}
 	
 	/**
@@ -338,7 +342,7 @@ class ShopgateMerchantApiException extends Exception {
  *
  * It provides basic functionality like logging, camelization of strings, JSON de- and encoding etc.<br />
  * <br />
- * All classes of the ShopgateLibrary except ShopgateLibraryException are derived from this class.
+ * Almost all classes of the ShopgateLibrary except ShopgateLibraryException are derived from this class.
  *
  * @author Shopgate GmbH, 35510 Butzbach, DE
  */
@@ -422,6 +426,11 @@ abstract class ShopgateObject {
 
 }
 
+/**
+ * Global class (Singleton) to manage log files.
+ *
+ * @author Shopgate GmbH, 35510 Butzbach, DE
+ */
 class ShopgateLogger {
 	const LOGTYPE_ACCESS = 'access';
 	const LOGTYPE_REQUEST = 'request';
@@ -688,20 +697,6 @@ abstract class ShopgateContainer extends ShopgateObject {
  * @author Shopgate GmbH, 35510 Butzbach, DE
  */
 abstract class ShopgatePlugin extends ShopgateObject {
-	private $allowedEncodings = array(
-		'UTF-8', 'ASCII', 'CP1252', 'ISO-8859-15', 'UTF-16LE','ISO-8859-1'
-	);
-
-	/**
-	 * @var string[]
-	 */
-	private $buffer = array();
-
-	/**
-	 * @var int
-	 */
-	private $bufferCounter = 0;
-
 	/**
 	 * @var ShopgateConfigInterface
 	 */
@@ -711,33 +706,44 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @var ShopgatePluginApiInterface
 	 */
 	protected $pluginApi;
+	
+	/**
+	 * @var ShopgateFileBuffer
+	 */
+	protected $buffer;
 
 	/**
 	 * @var int
 	 */
-	protected $bufferLimit = 100;
+	protected $exportLimit;
 
 	/**
 	 * @var int
 	 */
-	public $exportLimit = 1000;
-
-	/**
-	 * @var int
-	 */
-	public $exportOffset = 0;
+	protected $exportOffset;
 
 	/**
 	 * @var bool
 	 */
-	public $splittedExport = false;
+	protected $splittedExport = false;
 
+	/**
+	 * @var double The exchange rate used for items export or orders import.
+	 */
 	protected $exchangeRate = 1;
 	
+	/**
+	 * @param ShopgateBuilder $builder If empty, the default ShopgateBuilder will be instantiated.
+	 */
 	public final function __construct(ShopgateBuilder &$builder = null) {
 		// build the object graph and get needed objects injected via set* methods
 		if (empty($builder)) $builder = new ShopgateBuilder();
 		$builder->buildLibraryFor($this);
+		
+		// some default values
+		$this->splittedExport = false;
+		$this->exportOffset = 0;
+		$this->exportLimit = 1000;
 		
 		// fire the plugin's startup callback
 		try {
@@ -746,22 +752,60 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			// logging is done in exception constructor
 		}
 	}
-
+	
+	/**
+	 * @param bool $splitted True to activate partial export via limit and offset.
+	 */
+	public final function setExportSplitted($splitted) {
+		$this->splittedExport = $splitted;
+	}
+	
+	/**
+	 * @param int $offset Offset to start export at.
+	 */
+	public final function setExportOffset($offset) {
+		$this->exportOffset = $offset;
+	}
+	
+	/**
+	 * @param int $limit Maximum number of items to be exported.
+	 */
+	public final function setExportLimit($limit) {
+		$this->exportLimit = $limit;
+	}
+	
+	/**
+	 * @param ShopgateConfigInterface $config
+	 */
 	public final function setConfig(ShopgateConfigInterface &$config) {
 		$this->config = $config;
 	}
 	
+	/**
+	 * @param ShopgatePluginApiInterface $pluginApi
+	 */
 	public final function setPluginApi(ShopgatePluginApiInterface &$pluginApi) {
 		$this->pluginApi = $pluginApi;
 	}
 
+	/**
+	 * @param ShopgateFileBuffer $buffer
+	 */
+	public final function setBuffer(ShopgateFileBuffer &$buffer) {
+		$this->buffer = $buffer;
+	}
+	
+	###################################################
+	## Dispatching to Plugin API or export callbacks ##
+	###################################################
+	
 	/**
 	 * Convenience method to call ShopgatePluginApi::handleRequest() from $this.
 	 *
 	 * @param mixed[] $data The incoming request's parameters.
 	 * @return bool false if an error occured, otherwise true.
 	 */
-	public function handleRequest($data = array()) {
+	public final function handleRequest($data = array()) {
 		return $this->pluginApi->handleRequest($data);
 	}
 
@@ -771,9 +815,9 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @throws ShopgateLibraryException
 	 */
 	public final function startGetItemsCsv() {
-		$this->createBuffer($this->config->getItemsCsvPath());
+		$this->buffer->setFile($this->config->getItemsCsvPath());
 		$this->createItemsCsv();
-		$this->finishBuffer($this->config->getItemsCsvPath());
+		$this->buffer->finish();
 	}
 
 	/**
@@ -782,9 +826,9 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @throws ShopgateLibraryException
 	 */
 	public final function startGetCategoriesCsv() {
-		$this->createBuffer(ShopgateConfig::getCategoriesCsvFilePath());
+		$this->buffer->setFile($this->config->getCategoriesCsvPath());
 		$this->createCategoriesCsv();
-		$this->finishBuffer(ShopgateConfig::getCategoriesCsvFilePath());
+		$this->buffer->finish();
 	}
 
 	/**
@@ -793,9 +837,9 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @throws ShopgateLibraryException
 	 */
 	public final function startGetReviewsCsv() {
-		$this->createBuffer(ShopgateConfig::getReviewsCsvFilePath());
+		$this->buffer->setFile($this->config->getReviewsCsvPath());
 		$this->createReviewsCsv();
-		$this->finishBuffer(ShopgateConfig::getReviewsCsvFilePath());
+		$this->buffer->finish();
 	}
 
 	/**
@@ -804,11 +848,26 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @throws ShopgateLibraryException
 	 */
 	public final function startGetPagesCsv() {
-		$this->createBuffer(ShopgateConfig::getPagesCsvFilePath());
+		$this->buffer->setFile($this->config->getReviewsCsvPath());
 		$this->createPagesCsv();
-		$this->finishBuffer(ShopgateConfig::getReviewsCsvFilePath());
+		$this->buffer->finish();
 	}
-
+	
+	
+	#############
+	## Helpers ##
+	#############
+		
+	/**
+	 * Calls the addItem() method on the currently associated ShopgateFileBuffer
+	 *
+	 * @param mixed[] $itemArr
+	 * @throws ShopgateLibraryException if flushing the buffer fails.
+	 */
+	protected final function addItem($itemArr) {
+		$this->buffer->addItem($itemArr);
+	}
+	
 	/**
 	 * @return string[] An array with the csv file field names as indices and empty strings as values.
 	 * @see http://wiki.shopgate.com/CSV_File_Categories/de
@@ -1125,6 +1184,15 @@ abstract class ShopgatePlugin extends ShopgateObject {
 }
 
 class ShopgateFileBuffer extends ShopgateObject {
+	private $allowedEncodings = array(
+		'UTF-8', 'ASCII', 'CP1252', 'ISO-8859-15', 'UTF-16LE','ISO-8859-1'
+	);
+	
+	/**
+	 * @var int (timestamp) time of the first call of addItem()
+	 */
+	protected $timeStart;
+	
 	/**
 	 * @var string
 	 */
@@ -1136,74 +1204,74 @@ class ShopgateFileBuffer extends ShopgateObject {
 	protected $fileHandle;
 
 	/**
-	 * @var int (timestamp) starting time of export
+	 * @var mixed[]
 	 */
-	protected $timeStart;
-	
+	protected $buffer;
+
+	/**
+	 * @var int
+	 */
+	protected $capacity;
+
+	/**
+	 * Creates the buffer object.
+	 *
+	 * The object is NOT ready to use. Call setFile() first to associate it with a file first.
+	 *
+	 * @param int $capacity
+	 */
+	public function __construct($capacity) {
+		$this->timeStart = time();
+		$this->buffer = array();
+		$this->capacity = $capacity;
+	}
+
 	/**
 	 * Creates a new write buffer for the file under "$filePath.tmp".
 	 *
 	 * @param string $filePath Path to the file (the .tmp extension is added automatically).
 	 */
-	public function __construct($filePath) {
-		$this->timeStart = time();
+	public function setFile($filePath) {
 		$this->filePath = $filePath;
-		$filePath .= ".tmp";
-	
-		$this->log('Trying to create "'.basename($filePath).'". ', 'access');
-	
-		$this->fileHandle = @fopen($filePath, 'w');
-		if (!$this->fileHandle) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$filePath);
-		}
-	
 		$this->buffer = array();
-	}
-
-	/**
-	 * Closes the file and flushes the buffer.
-	 *
-	 * @param string $filePath Path to the file (the .tmp extension is added automatically).
-	 */
-	private final function finishBuffer($filePath) {
-		$this->flushBuffer();
-		fclose($this->fileHandle);
-	
-		rename($filePath.".tmp", $filePath);
-	
-		$this->log('Fertig, '.basename($filePath).' wurde erfolgreich erstellt', "access");
-		$duration = time() - $this->timeStart;
-		$this->log("Dauer: $duration Sekunden", "access");
+		
+		if (empty($this->fileHandle)) {
+			$filePath = $this->filePath.".tmp";
+			$this->log('Trying to create "'.basename($filePath).'". ', 'access');
+			
+			$this->fileHandle = @fopen($filePath, 'w');
+			if (!$this->fileHandle) {
+				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$filePath);
+			}
+		}
 	}
 	
 	/**
 	 * Adds a line to the csv file buffer.
 	 *
 	 * @param mixed[] $itemArr
+	 * @throws ShopgateLibraryException if flushing the buffer fails.
 	 */
-	protected final function addItem($itemArr) {
+	public function addItem($itemArr) {
 		$this->buffer[] = $itemArr;
-		$this->bufferCounter++;
 
-		if (
-			$this->bufferCounter > $this->bufferLimit ||
-			isset($this->config["flush_buffer_size"]) &&
-			$this->config["flush_buffer_size"] <= $this->bufferCounter
-		) {
-			$this->flushBuffer();
+		if (count($this->buffer) > $this->bufferLimit) {
+			$this->flush();
 		}
 	}
-
+	
 	/**
 	 * Flushes buffer to the currently opened file handle in $this->fileHandle.
 	 *
-	 * The data is converted to utf-8 if mb_convert_encoding() exists
+	 * The data is converted to utf-8 if mb_convert_encoding() exists.
+	 *
+	 * @throws ShopgateLibraryException if the buffer and file are empty.
 	 */
-	private final function flushBuffer() {
+	protected function flush() {
 		if (empty($this->buffer) && ftell($this->fileHandle) == 0) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_EMPTY_BUFFER);
 		}
-
+		
 		// write headline if it's the beginning of the file
 		if (ftell($this->fileHandle) == 0) {
 			fputcsv($this->fileHandle, array_keys($this->buffer[0]), ';', '"');
@@ -1220,8 +1288,25 @@ class ShopgateFileBuffer extends ShopgateObject {
 		}
 
 		$this->buffer = array();
-		$this->bufferCounter = 0;
 	}
+
+	/**
+	 * Closes the file and flushes the buffer.
+	 *
+	 * @throws ShopgateLibraryException if the buffer and file are empty.
+	 */
+	protected function finish() {
+		$this->flush();
+		fclose($this->fileHandle);
+		$this->fileHandle = null;
+		
+		rename($this->filePath.".tmp", $this->filePath);
+		
+		$this->log('Fertig, '.basename($this->filePath).' wurde erfolgreich erstellt', "access");
+		$duration = time() - $this->timeStart;
+		$this->log("Dauer: $duration Sekunden", "access");
+	}
+	
 }
 
 /**

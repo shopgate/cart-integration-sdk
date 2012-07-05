@@ -520,9 +520,9 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 */
 	private function getItemsCsv() {
 		if (isset($this->params["limit"]) && isset($this->params["offset"])) {
-			$this->plugin->exportLimit = (string) $this->params["limit"];
-			$this->plugin->exportOffset = (string) $this->params["offset"];
-			$this->plugin->splittedExport = true;
+			$this->plugin->setExportLimit((int) $this->params["limit"]);
+			$this->plugin->setExportOffset((int) $this->params["offset"]);
+			$this->plugin->setSplittedExport(true);
 		}
 
 		// generate / update items csv file if requested
@@ -600,10 +600,10 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_log_file/de
 	 */
 	private function getLogFile() {
-		$type = (empty($this->params['log_type'])) ? ShopgateObject::LOGTYPE_ERROR : $this->params['log_type'];
+		$type = (empty($this->params['log_type'])) ? ShopgateLogger::LOGTYPE_ERROR : $this->params['log_type'];
 		$lines = (!isset($this->params['lines'])) ? null : $this->params['lines'];
 
-		$log = $this->tail($type, $lines);
+		$log = ShopgateLogger::getInstance()->tail($type, $lines);
 
 		// return the requested log file content and end the script
 		header("HTTP/1.0 200 OK");
