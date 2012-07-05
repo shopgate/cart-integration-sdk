@@ -401,6 +401,13 @@ interface ShopgateConfigInterface {
 	public function setErrorLogPath($value);
 	
 	/**
+	 * Returns an additional setting.
+	 *
+	 * @param string $setting The name of the setting.
+	 */
+	public function returnAdditionalSetting($setting);
+	
+	/**
 	 * Returns the additional settings array.
 	 *
 	 * The naming of this method doesn't follow the getter/setter naming convention because $this->additionalSettings
@@ -1039,6 +1046,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	###############
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitConfig($this);
+	}
+	
+	public function returnAdditionalSetting($setting) {
+		return (isset($this->additionalSettings[$setting])) ? $this->additionalSettings[$setting] : null;
 	}
 	
 	public function returnAdditionalSettings() {
