@@ -190,6 +190,16 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	 * @var string your shops cname entry to redirect to
 	 */
 	protected $cname = '';
+	
+	/**
+	 * @var ShopgateMerchantApiInterface
+	 */
+	protected $merchantApi;
+	
+	/**
+	 * @var string The server type (live | pg | custom) to use for redirection.
+	 */
+	protected $serverType;
 
 	/**
 	 * @var string[] list of strings that cause redirection if they occur in the client's user agent
@@ -246,19 +256,26 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	 */
 	protected $buttonDescription;
 	
-	public function __construct(ShopgateMerchantApiInterface $merchantApi) {
+	/**
+	 * Instantiates the Shopgate mobile redirector.
+	 * 
+	 * @param ShopgateMerchantApiInterface $merchantApi An instance of the ShopgateMerchantApi required for keyword updates.
+	 * @param string $cacheFilePath The path to the cache file where redirect keywords are saved.
+	 * @param string $serverType The server type (live | pg | custom) to use redirection.
+	 */
+	public function __construct(ShopgateMerchantApiInterface &$merchantApi, $cacheFilePath, $serverType) {
+		$this->merchantApi = $merchantApi;
+		$this->cacheFile = $cacheFilePath;
+		$this->serverType = $serverType;
+		
 		$this->updateRedirectKeywords = false;
 		$this->redirectKeywordCacheTime = ShopgateMobileRedirectInterface::DEFAULT_CACHE_TIME;
-		$this->cacheFile = dirname(__FILE__).'/../temp/cache/redirect_keywords.txt';
 		$this->useSecureConnection = isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] === "on" || $_SERVER["HTTPS"] == "1");
 
 		// mobile header options
 		$this->mobileHeaderTemplatePath = SHOPGATE_BASE_DIR.DS.'assets'.DS.'mobile_header.html';
 		$this->cookieLife = gmdate('D, d-M-Y H:i:s T', time());
 		$this->buttonDescription = 'Mobile Webseite aktivieren';
-
-		// update keywords if enabled
-		$this->updateRedirectKeywords();
 	}
 
 
@@ -281,6 +298,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	public function enableKeywordUpdate($cacheTime = ShopgateMobileRedirectInterface::DEFAULT_CACHE_TIME) {
 		$this->updateRedirectKeywords = true;
 		$this->redirectKeywordCacheTime = ($cacheTime >= ShopgateMobileRedirectInterface::MIN_CACHE_TIME) ? $cacheTime : ShopgateMobileRedirectInterface::MIN_CACHE_TIME;
+		$this->updateRedirectKeywords();
 	}
 
 	public function disableKeywordUpdate() {
@@ -408,9 +426,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	 * @return string The URL that can be appended to the alias, e.g. ".shopgate.com"
 	 */
 	private function getShopgateUrl() {
-		$serverType = ShopgateConfig::getConfigField('server');
-
-		switch ($serverType) {
+		switch ($this->serverType) {
 			default: // fall through to "live"
 			case 'live':	return ShopgateMobileRedirectInterface::SHOPGATE_LIVE_ALIAS;
 			case 'pg':		return ShopgateMobileRedirectInterface::SHOPGATE_PG_ALIAS;
@@ -442,7 +458,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 					$firstLine = false;
 					if ((time() - ($lastRedirectKeywordsUpdate + ($this->redirectKeywordCacheTime * 3600)) > 0)) {
 						try{
-							$redirectKeywords = ShopgateMerchantApi::getInstance()->getMobileRedirectKeywords();
+							$redirectKeywords = $this->merchantApi->getMobileRedirectKeywords();
 
 							// save keywords in file
 							$saveKeywords = true;
@@ -461,7 +477,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 			$this->redirectKeywords = $redirectKeywords;
 		} else {
 			try{
-				$redirectKeywords = ShopgateMerchantApi::getInstance()->getMobileRedirectKeywords();
+				$redirectKeywords = $this->merchantApi->getMobileRedirectKeywords();
 
 				// save keywords in file
 				$saveKeywords = true;

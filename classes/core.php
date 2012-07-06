@@ -304,6 +304,11 @@ class ShopgateLogger {
 	 */
 	public static function getInstance($accessLogPath = null, $requestLogPath = null, $errorLogPath = null) {
 		if (empty(self::$singleton)) {
+			// fallback for the default log files if none are specified
+			if (empty($accessLogPath))  $accessLogPath  = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs'.DS.'access.log';
+			if (empty($requestLogPath)) $requestLogPath = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs'.DS.'request.log';
+			if (empty($errorLogPath))   $errorLogPath   = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs'.DS.'error.log';
+			
 			self::$singleton = new self($accessLogPath, $requestLogPath, $errorLogPath);
 		}
 
@@ -468,21 +473,31 @@ class ShopgateBuilder {
 	/**
 	 * Builds the Shopgate Library object graph for ShopgateMerchantApi and returns the instance.
 	 *
-	 * This initializes all necessary objects of the library, wires them together and injects them into
-	 * the plugin class via its set* methods.
-	 *
 	 * @return ShopgateMerchantApi
 	 */
-	public function buildMerchantApi() {
+	public function &buildMerchantApi() {
 		$authService = new ShopgateAuthentificationService($this->config->getCustomerNumber(), $this->config->getApikey());
 		$merchantApi = new ShopgateMerchantApi($authService, $this->config->getShopNumber(), $this->config->getApiUrl());
 		
 		return $merchantApi;
 	}
 	
-	public function buildRedirect() {
-		$merchantApi = $this->buildMerchantApi();
-		$redirect = new ShopgateMobileRedirect($merchantApi, '');
+	/**
+	 * Builds the Shopgate Library object graph for Shopgate mobile redirect and returns the instance.
+	 * 
+	 * @return ShopgateMobileRedirect
+	 */
+	public function &buildRedirect() {
+		$merchantApi = &$this->buildMerchantApi();
+		$redirect = new ShopgateMobileRedirect($merchantApi, $this->config->getRedirectKeywordCachePath(), $this->config->getServer());
+		
+		$redirect->setAlias($this->config->getAlias());
+		$redirect->setCustomMobileUrl($this->config->getCname());
+		
+		if ($this->config->getAlwaysUseSsl()) $redirect->setAlwaysUseSSL();
+		if ($this->config->getEnableRedirectKeywordUpdate()) $redirect->enableKeywordUpdate(ShopgateMobileRedirectInterface::DEFAULT_CACHE_TIME);
+		
+		return $redirect;
 	}
 }
 

@@ -526,7 +526,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	protected $always_use_ssl;
 	
 	/**
-	 * @var int (hours) The update period for keywords that identify mobile devices. Leave empty to download once and then always use the cached keywords
+	 * @var bool true to enable updates of keywords that identify mobile devices
 	 */
 	protected $enable_redirect_keyword_update;
 	
@@ -675,7 +675,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->shop_is_active = 0;
 		$this->always_use_ssl = 0;
 		
-		$this->enable_redirect_keyword_update = 24;
+		$this->enable_redirect_keyword_update = 0;
 		$this->enable_ping = 1;
 		$this->enable_add_order = 0;
 		$this->enable_update_order = 0;
@@ -789,7 +789,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 			$saveFields[$field] = (isset($currentConfig[$field])) ? $currentConfig[$field] : null;
 		}
 		
-		// load the current configuration
+		// load the current configuration file
 		try {
 			$this->loadFile($path);
 		} catch (ShopgateLibraryException $e) {
@@ -887,7 +887,12 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	}
 	
 	public function getApiUrl() {
-		return $this->api_url;
+		switch ($this->getServer()) {
+			default: // fall through to 'live'
+			case 'live':   return ShopgateConfigInterface::SHOPGATE_API_URL_LIVE;
+			case 'pg':     return ShopgateConfigInterface::SHOPGATE_API_URL_PG;
+			case 'custom': return $this->api_url;
+		}
 	}
 	
 	public function getShopIsActive() {
