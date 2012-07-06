@@ -69,7 +69,7 @@ class ShopgateCustomer extends ShopgateContainer {
 	public function setGender($value) {
 		if (empty($value)) return;
 
-		if (($value != "m") && ($value != "f")) {
+		if (($value != self::MALE) && ($value != self::FEMALE)) {
 			$this->gender = null;
 		} else {
 			$this->gender = $value;
@@ -207,6 +207,9 @@ class ShopgateCustomer extends ShopgateContainer {
 }
 
 class ShopgateAddress extends ShopgateContainer {
+	const MALE = "m";
+	const FEMALE = "f";
+
 	const INVOICE  = 0x01;
 	const DELIVERY = 0x10;
 	const BOTH     = 0x11;
@@ -287,7 +290,7 @@ class ShopgateAddress extends ShopgateContainer {
 	public function setGender($value = null) {
 		if (empty($value)) return;
 
-		if (($value != "m") && ($value != "f")) {
+		if (($value != self::MALE) && ($value != self::FEMALE)) {
 			$this->gender = null;
 		} else {
 			$this->gender = $value;
