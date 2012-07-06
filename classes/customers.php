@@ -1,5 +1,8 @@
 <?php
 class ShopgateCustomer extends ShopgateContainer {
+	const MALE = "m";
+	const FEMALE = "f";
+
 	protected $customer_id;
 	protected $customer_number;
 	protected $customer_group;
@@ -81,7 +84,7 @@ class ShopgateCustomer extends ShopgateContainer {
 			$this->birthday = null;
 			return;
 		}
-		
+
 		$matches = null;
 		if (!preg_match('/^([0-9]{4}\-[0-9]{2}\-[0-9]{2})/', $value, $matches)) {
 			$this->birthday = null;
