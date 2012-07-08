@@ -470,7 +470,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 					}
 					continue;
 				}
-				$redirectKeywords[] = $line;
+				$redirectKeywords[] = trim($line);
 			}
 			@fclose($fp);
 
