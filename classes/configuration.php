@@ -62,25 +62,6 @@ interface ShopgateConfigInterface {
 	public function validate(array $fieldList = array());
 	
 	/**
-	 * Adds or overwrites a the validation for a given additional setting.
-	 *
-	 * Unlike the additional settings themselves these validations are not persistet and have to be set whenever needed.
-	 *
-	 * @param string $fieldName The name of the field in the additional settings that should be validated.
-	 * @param string $regex The regular expression used to validate the setting.
-	 */
-	public function addAdditionalValidation($fieldName, $regex);
-	
-	/**
-	 * Adds or overwrites the validations for the given additional settings.
-	 *
-	 * Unlike the additional settings themselves these validations are not persistet and have to be set whenever needed.
-	 *
-	 * @param array<string, string> $validations The field names (index) and regular expressions (value) of the additional settings that should be validated.
-	 */
-	public function addAdditionalValidations(array $validations);
-	
-	/**
 	 * @return string The name of the plugin / shop system the plugin is for.
 	 */
 	public function getPluginName();
@@ -121,7 +102,10 @@ interface ShopgateConfigInterface {
 	public function getServer();
 	
 	/**
-	 * @return string If $server is set to custom, Shopgate Merchant API calls will be made to this URL (empty or a string beginning with "http://" or "https://" followed by any number of non-whitespace characters)
+	 * @return string If getServer() returns "live", ShopgateConfigInterface::SHOPGATE_API_URL_LIVE is returned.<br />
+	 *                 If getServer() returns "pg", ShopgateConfigInterface::SHOPGATE_API_URL_PG is returned.<br />
+	 *                 If getServer() returns "custom": A custom API url (empty or a string beginning with "http://" or "https://" followed by any number of non-whitespace characters) is returned.<br />
+	 *                 If getServer() returns a different value than the above, ShopgateConfigInterface::SHOPGATE_API_URL_LIVE is returned.
 	 */
 	public function getApiUrl();
 	
@@ -456,15 +440,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		'customer_number' => '/^[0-9]{5,}$/', // at least 5 digits
 		'shop_number' => '/^[0-9]{5,}$/', // at least 5 digits
 		'apikey' => '/^[0-9a-f]{20}$/', // exactly 20 hexadecimal digits
-		'alias' => '/^[0-9a-zA-Z]+([\.\-]+[0-9a-zA-Z]+)*$/', // start and end with alpha-numerical characters, dashes in between are ok
+		'alias' => '/^[0-9a-zA-Z]+(([\.]?|[\-]+)[0-9a-zA-Z]+)*$/', // start and end with alpha-numerical characters, multiple dashes and single dots in between are ok
 		'server' => '/^(live|pg|custom)$/', // "live" or "pg" or "custom"
-		'api_url' => '/^(http(s?)\:\/\/\S+)?$/', // empty or a string beginning with "http://" or "https://" followed by any number of non-whitespace characters
+		'api_url' => '/^(https?:\/\/\S+)?$/', // empty or a string beginning with "http://" or "https://" followed by any number of non-whitespace characters (this is used for testing only, thus the lose validation)
 	);
-	
-	/**
-	 * @var array<string, string> List of field names for additional settings (index) that must have a value according regex (value)
-	 */
-	protected $additionalValidations = array();
 	
 	/**
 	 * @var string The name of the plugin / shop system the plugin is for.
@@ -695,6 +674,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->items_csv_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'items.csv';
 		$this->categories_csv_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'categories.csv';
 		$this->reviews_csv_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'reviews.csv';
+		$this->pages_csv_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'pages.csv';
 		
 		$this->access_log_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs'.DS.'access.log';
 		$this->request_log_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs'.DS.'request.log';
@@ -822,14 +802,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		
 		$failedFields = array();
 		foreach ($fieldList as $field) {
-			if (empty($properties[$field]) && empty($this->additionalSettings[$field])) {
+			if (empty($this->coreValidations[$field])) {
 				continue;
-			} elseif (empty($properties[$field]) && !empty($this->additionalSettings[$field]) && !empty($this->additionalValidations[$field])) {
-				if (!preg_match($this->additionalValidations[$field], $this->additionalSettings[$field])) {
-					$failedFields[] = $field;
-				}
 			} else {
-				if (!empty($this->coreValidations[$field]) && !preg_match($this->coreValidations[$field], $properties[$field])) {
+				if (!preg_match($this->coreValidations[$field], $properties[$field])) {
 					$failedFields[] = $field;
 				}
 			}
@@ -837,16 +813,6 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		
 		if (!empty($failedFields)) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_INVALID_VALUE, implode(',', $failedFields));
-		}
-	}
-	
-	public function addAdditionalValidation($fieldName, $regex) {
-		$this->additionalValidations[$fieldName] = $regex;
-	}
-	
-	public function addAdditionalValidations(array $validations) {
-		foreach ($validations as $fieldName => $regex) {
-			$this->addAdditionalValidation($fieldName, $regex);
 		}
 	}
 	
@@ -1108,7 +1074,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	}
 	
 	public function setCategoriesCsvPath($value) {
-		$this->categpories_csv_path = $value;
+		$this->categories_csv_path = $value;
 	}
 	
 	public function setReviewsCsvPath($value) {
