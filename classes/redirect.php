@@ -159,6 +159,7 @@ class ShopgateMobileRedirect extends ShopgateObject {
 	public function enableKeywordUpdate($cacheTime = self::DEFAULT_CACHE_TIME) {
 		$this->updateRedirectKeywords = true;
 		$this->redirectKeywordCacheTime = ($cacheTime >= self::MIN_CACHE_TIME) ? $cacheTime : self::MIN_CACHE_TIME;
+		$this->updateRedirectKeywords();
 	}
 
 	/**
