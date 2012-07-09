@@ -2621,8 +2621,8 @@ class ShopgateAuthentificationService extends ShopgateObject {
 		// create the authentification-password
 		$generatedPassword = sha1("SPA-{$customer_number}-{$timestamp}-{$this->apiKey}");
 
-		// compare customer-number and auth-password
-		if (($customer_number != $this->customerNumber) || ($token != $generatedPassword)) {
+		// compare customer-number and auth-password and make sure, the API key was set in the configuration
+		if (($customer_number != $this->customerNumber) || ($token != $generatedPassword) || (empty($this->apiKey))) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTICATION_FAILED, 'Invalid authentication data.');
 		}
 	}
