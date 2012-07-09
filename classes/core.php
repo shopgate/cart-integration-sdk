@@ -2613,9 +2613,9 @@ class ShopgateAuthentificationService extends ShopgateObject {
 		$customer_number = $matches["customer_number"];
 		$timestamp = $matches["timestamp"];
 
-		// request shouldn't be older than 30 minutes
+		// request shouldn't be older than 30 minutes or more than 30 minutes in the future
 		if ((($this->timestamp - $timestamp) > (30*60)) || ($timestamp - $this->timestamp) > (30*60)) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTICATION_FAILED, 'Request too old.');
+			throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTICATION_FAILED, 'Request too old or too far in the future.');
 		}
 
 		// create the authentification-password
