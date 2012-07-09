@@ -2614,7 +2614,7 @@ class ShopgateAuthentificationService extends ShopgateObject {
 		$timestamp = $matches["timestamp"];
 
 		// request shouldn't be older than 30 minutes
-		if ((time() - $timestamp) >= (30*60)) {
+		if ((($this->timestamp - $timestamp) > (30*60)) || ($timestamp - $this->timestamp) > (30*60)) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTICATION_FAILED, 'Request too old.');
 		}
 
