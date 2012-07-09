@@ -386,7 +386,7 @@ class ShopgateMobileRedirect extends ShopgateObject {
 					}
 					continue;
 				}
-				$redirectKeywords[] = $line;
+				$redirectKeywords[] = trim($line);
 			}
 			@fclose($fp);
 
