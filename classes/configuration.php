@@ -792,6 +792,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		try {
 			$this->loadFile($path);
 		} catch (ShopgateLibraryException $e) {
+			ShopgateLogger::getInstance()->log('-- Don\'t worry about the "error reading or writing configuration", that was just a routine check during saving.');
 			$shopgate_config = array();
 		}
 		
