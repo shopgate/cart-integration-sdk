@@ -236,10 +236,10 @@ class ShopgateLibraryException extends Exception {
 		// Add tracing information to the message
 		$btrace = debug_backtrace();
 		$btrace = $btrace[2];
-		$logMessage = (isset($btrace["class"])
-			? $btrace["class"]."::"
-			: "")
-		.$btrace["function"]."():".$btrace["line"]." - " . print_r($logMessage, true);
+		$class = (isset($btrace['class']) ? $btrace['class'] : 'Unknown class').'::'; 
+		$function = (isset($btrace['function'])) ? $btrace['function'] : 'Unknown function';
+		$line = (isset($btrace['line'])) ? $btrace['line'] : 'Unkown line';
+		$logMessage = $class.$function."():".$line." - " . print_r($logMessage, true);
 
 		return $logMessage;
 	}
@@ -457,7 +457,7 @@ class ShopgateBuilder {
 		}
 		
 		// instantiate API stuff
-		$authService = new ShopgateAuthentificationService($this->config->getCustomerNumber(), $this->config->getApikey());
+		$authService = new ShopgateAuthentificationService($this->config->getCustomerNumber(), $this->config->getApikey(), time());
 		$merchantApi = new ShopgateMerchantApi($authService, $this->config->getShopNumber(), $this->config->getApiUrl());
 		$pluginApi = new ShopgatePluginApi($this->config, $authService, $merchantApi, $plugin);
 		
@@ -476,7 +476,7 @@ class ShopgateBuilder {
 	 * @return ShopgateMerchantApi
 	 */
 	public function &buildMerchantApi() {
-		$authService = new ShopgateAuthentificationService($this->config->getCustomerNumber(), $this->config->getApikey());
+		$authService = new ShopgateAuthentificationService($this->config->getCustomerNumber(), $this->config->getApikey(), time());
 		$merchantApi = new ShopgateMerchantApi($authService, $this->config->getShopNumber(), $this->config->getApiUrl());
 		
 		return $merchantApi;
@@ -533,7 +533,8 @@ abstract class ShopgateObject {
 	 * @return string The camelized string.
 	 */
 	public function camelize($str, $capitalizeFirst = false) {
-		if($capitalizeFirst) {
+		$str = strtolower($str);
+		if ($capitalizeFirst) {
 			$str[0] = strtoupper($str[0]);
 		}
 		$func = create_function('$c', 'return strtoupper($c[1]);');
@@ -587,7 +588,6 @@ abstract class ShopgateObject {
 		$jsonService = new Services_JSON(($assoc) ? SERVICES_JSON_LOOSE_TYPE : SERVICES_JSON_IN_OBJ);
 		return $jsonService->decode($json);
 	}
-
 }
 
 /**
@@ -1239,10 +1239,10 @@ abstract class ShopgateContainer extends ShopgateObject {
 	 *
 	 * Tha data that couldn't be mapped is returned as an array.
 	 *
-	 * @param array $data The data that should be mapped to the container object.
-	 * @return array The part of the array that couldn't be mapped.
+	 * @param array<string, mixed> $data The data that should be mapped to the container object.
+	 * @return array<string, mixed> The part of the array that couldn't be mapped.
 	 */
-	protected function loadArray($data = array()) {
+	public function loadArray(array $data = array()) {
 		$unmappedData = array();
 		
 		if (is_array($data)) {

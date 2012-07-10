@@ -421,6 +421,24 @@ interface ShopgateConfigInterface {
 	 * @return array<string, mixed> The additional settings a plugin may have defined.
 	 */
 	public function returnAdditionalSettings();
+	
+	/**
+	 * Returns the configuration as an array.
+	 * 
+	 * All properties are included as well as the additional settings. Additional settings must be represented as if
+	 * they were properties, e.g. the additional settings array looking like this
+	 * 
+	 * array('setting1' => 'value1', 'setting2' => 'value2')
+	 * 
+	 * appears in the returned array like this:
+	 * 
+	 * array('plugin_name' => 'abc', 'use_custom_error_handler' => 0, ......., 'setting1' => 'value1', 'setting2' => 'value2').
+	 * 
+	 * Properties overwrite additional settings.
+	 * 
+	 * @return array<string, mixed> The configuration as an array of key-value-pairs.
+	 */
+	public function toArray();
 }
 
 /**
@@ -441,6 +459,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		'shop_number' => '/^[0-9]{5,}$/', // at least 5 digits
 		'apikey' => '/^[0-9a-f]{20}$/', // exactly 20 hexadecimal digits
 		'alias' => '/^[0-9a-zA-Z]+(([\.]?|[\-]+)[0-9a-zA-Z]+)*$/', // start and end with alpha-numerical characters, multiple dashes and single dots in between are ok
+		'cname' => '/^(https?:\/\/\S+)?$/', // empty or a string beginning with "http://" or "https://" followed by any number of non-whitespace characters
 		'server' => '/^(live|pg|custom)$/', // "live" or "pg" or "custom"
 		'api_url' => '/^(https?:\/\/\S+)?$/', // empty or a string beginning with "http://" or "https://" followed by any number of non-whitespace characters (this is used for testing only, thus the lose validation)
 	);
@@ -644,9 +663,9 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		// default values
 		$this->plugin_name = 'not set';
 		$this->use_custom_error_handler = 0;
-		$this->customer_number = '12345';
-		$this->shop_number = '12345';
-		$this->apikey = '123456789abcdef01234';
+		$this->customer_number = null;
+		$this->shop_number = null;
+		$this->apikey = null;
 		$this->alias = 'my-shop';
 		$this->cname = '';
 		$this->server = 'live';
@@ -709,7 +728,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 *
 	 * @param $data array<string, mixed> The data to be assigned to the configuration.
 	 */
-	protected function loadArray(array $data = array()) {
+	public function loadArray(array $data = array()) {
 		// if no $data was passed try loading the default configuration file
 		if (empty($data)) {
 			$this->loadFile();
