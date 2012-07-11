@@ -1172,6 +1172,7 @@ class ShopgatePluginApi extends ShopgateObject {
 		// return the pong object
 		header("Content-Type: application/json");
 		$this->response["configuration"] = $config;
+		$this->response["plugin_info"] = $this->plugin->createPluginInfo();
 		$this->response["permissions"] = getPermissions();
 		$this->response["php_version"] = phpversion();
 		$this->response["php_config"] = getSettings();
@@ -2465,6 +2466,13 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 */
 	public abstract function startup();
 
+	/**
+	 * Function to overload to give some information abaout the used system
+	 * 
+	 * @return array
+	 */
+	public function createPluginInfo() { return array(); }
+	
 	/**
 	 * This performs the necessary queries to build a ShopgateCustomer object for the given log in credentials.
 	 *
