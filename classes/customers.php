@@ -1,5 +1,8 @@
 <?php
 class ShopgateCustomer extends ShopgateContainer {
+	const MALE = "m";
+	const FEMALE = "f";
+
 	protected $customer_id;
 	protected $customer_number;
 	protected $customer_group;
@@ -66,7 +69,7 @@ class ShopgateCustomer extends ShopgateContainer {
 	public function setGender($value) {
 		if (empty($value)) return;
 
-		if (($value != "m") && ($value != "f")) {
+		if (($value != self::MALE) && ($value != self::FEMALE)) {
 			$this->gender = null;
 		} else {
 			$this->gender = $value;
@@ -81,7 +84,7 @@ class ShopgateCustomer extends ShopgateContainer {
 			$this->birthday = null;
 			return;
 		}
-		
+
 		$matches = null;
 		if (!preg_match('/^([0-9]{4}\-[0-9]{2}\-[0-9]{2})/', $value, $matches)) {
 			$this->birthday = null;
@@ -206,6 +209,9 @@ class ShopgateCustomer extends ShopgateContainer {
 }
 
 class ShopgateAddress extends ShopgateContainer {
+	const MALE = "m";
+	const FEMALE = "f";
+
 	const INVOICE  = 0x01;
 	const DELIVERY = 0x10;
 	const BOTH     = 0x11;
@@ -286,7 +292,7 @@ class ShopgateAddress extends ShopgateContainer {
 	public function setGender($value = null) {
 		if (empty($value)) return;
 
-		if (($value != "m") && ($value != "f")) {
+		if (($value != self::MALE) && ($value != self::FEMALE)) {
 			$this->gender = null;
 		} else {
 			$this->gender = $value;
