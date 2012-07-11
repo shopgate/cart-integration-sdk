@@ -1271,6 +1271,8 @@ class ShopgateConfigOld extends ShopgateObject {
 	 * @param array $newConfig
 	 */
 	public static final function setConfig(array $newConfig, $validate = true) {
+		self::deprecated(__METHOD__);
+		
 		if($validate) {
 			self::validateConfig($newConfig);
 		}
@@ -1283,6 +1285,8 @@ class ShopgateConfigOld extends ShopgateObject {
 	 * @deprecated
 	 */
 	public static final function validateAndReturnConfig() {
+		self::deprecated(__METHOD__);
+		
 		try {
 			self::validateConfig(self::$config);
 		} catch (ShopgateLibraryException $e) { throw $e; }
@@ -1298,15 +1302,21 @@ class ShopgateConfigOld extends ShopgateObject {
 	 * @return array
 	 */
 	public static function getConfig() {
+		self::deprecated(__METHOD__);
+		
 		return self::$config;
 	}
 
 	public static function getConfigField($field) {
+		self::deprecated(__METHOD__);
+		
 		if(isset(self::$config[$field])) return self::$config[$field];
 		else return null;
 	}
 
 	public static final function getPluginName() {
+		self::deprecated(__METHOD__);
+		
 		return self::$config["plugin"];
 	}
 
@@ -1317,6 +1327,8 @@ class ShopgateConfigOld extends ShopgateObject {
 	 * @deprecated
 	 */
 	public static final function getLogFilePath($type = ShopgateObject::LOGTYPE_ERROR) {
+		self::deprecated(__METHOD__);
+		
 		switch (strtolower($type)) {
 			default: $type = 'error';
 			case "access": case "request": case "request":
@@ -1336,6 +1348,8 @@ class ShopgateConfigOld extends ShopgateObject {
 	 * @deprecated
 	 */
 	public static final function getItemsCsvFilePath() {
+		self::deprecated(__METHOD__);
+		
 		if(isset(self::$config['path_to_items_csv_file'])) {
 			return self::$config['path_to_items_csv_file'];
 		} else {
@@ -1347,6 +1361,8 @@ class ShopgateConfigOld extends ShopgateObject {
 	 * @deprecated
 	 */
 	public static final function getCategoriesCsvFilePath() {
+		self::deprecated(__METHOD__);
+		
 		if(isset(self::$config['path_to_categories_csv_file'])) {
 			return self::$config['path_to_categories_csv_file'];
 		} else {
@@ -1361,6 +1377,8 @@ class ShopgateConfigOld extends ShopgateObject {
 	 * @deprecated
 	 */
 	public static final function getReviewsCsvFilePath() {
+		self::deprecated(__METHOD__);
+		
 		if(isset(self::$config['path_to_reviews_csv_file'])) {
 			return self::$config['path_to_reviews_csv_file'];
 		} else {
@@ -1375,6 +1393,8 @@ class ShopgateConfigOld extends ShopgateObject {
 	 * @deprecated
 	 */
 	public static final function getPagesCsvFilePath() {
+		self::deprecated(__METHOD__);
+		
 		if(isset(self::$config['path_to_pages_csv_file'])) {
 			return self::$config['path_to_pages_csv_file'];
 		} else {
@@ -1390,6 +1410,8 @@ class ShopgateConfigOld extends ShopgateObject {
 	 * @throws ShopgateLibraryException
 	 */
 	private static function validateConfig(array $newConfig) {
+		self::deprecated(__METHOD__);
+		
 		//Pflichtfelder überprüfen
 		if (!preg_match("/^\S+/", $newConfig['apikey'])) {
 			throw new ShopgateLibraryException(
@@ -1431,6 +1453,8 @@ class ShopgateConfigOld extends ShopgateObject {
 	 * @throws ShopgateLibraryException
 	 */
 	public static function saveConfig() {
+		self::deprecated(__METHOD__);
+		
 		$config = self::getConfig();
 
 		$returnString  = "<?php"."\r\n";
@@ -1467,5 +1491,16 @@ class ShopgateConfigOld extends ShopgateObject {
 		}
 
 		fclose($handle);
+	}
+	
+	/**
+	 * Issues a PHP deprecated warning and log entry for calls to deprecated ShopgateConfigOld methods.
+	 * 
+	 * @param string $methodName The name of the called method.
+	 */
+	private static function deprecated($methodName) {
+		$message = 'Use of ShopgateConfigOld::'.$methodName.' and the whole ShopgateConfigOld class are deprecated.';
+		trigger_error($message, E_USER_DEPRECATED);
+		ShopgateLogger::getInstance()->log($msg);
 	}
 }
