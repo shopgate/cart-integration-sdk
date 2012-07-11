@@ -17,7 +17,7 @@ Setup:
 -->
 
 
-<project name="ZIP Library" basedir=".">
+<project name="ZIP Library" basedir="." default="upload">
 
 	<description>Create the ZIP-File for ShopgateLibrary</description>
 

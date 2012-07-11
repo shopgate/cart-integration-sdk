@@ -66,7 +66,7 @@ Setup:
 			<commit message="Increase Version to ${plugin.version}">
 				<fileset dir="${project-root}">
 					<include name="classes/core.php" />
-					<include name="build.num" />
+					<include name="build.number" />
 				</fileset>
 			</commit>
 		</svn>
