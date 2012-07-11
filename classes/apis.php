@@ -227,7 +227,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	private  $actionWhitelist;
 	
 	/**
-	 * @var mixed[]
+	 * @var mixed
 	 */
 	private $responseData;
 
@@ -338,9 +338,13 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
 			$this->response->markError($error, $errortext);
 		}
+		
+		if (empty($this->response)) {
+			trigger_error('No response object defined. This should _never_ happen.', E_USER_ERROR);
+		}
+		
 		$this->response->setData($this->responseData);
 		$this->response->send();
-		
 		
 		// return true or false
 		return (empty($error));
@@ -398,6 +402,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE, 'more than one order in response. Response: '.var_export($orders, true));
 		}
 
+		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
 		$this->responseData['external_order_number'] = $this->plugin->addOrder($orders[0]);
 	}
 
@@ -435,6 +440,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$orders[0]->setUpdatePayment($payment);
 		$orders[0]->setUpdateShipping($shipping);
 
+		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
 		$this->responseData["external_order_number"] = $this->plugin->updateOrder($orders[0]);
 	}
 
@@ -462,6 +468,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$addressList = $customerData['addresses'];
 		unset($customerData['addresses']);
 
+		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
 		$this->responseData["user_data"] = $customerData;
 		$this->responseData["addresses"] = $addressList;
 	}
@@ -484,7 +491,8 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			$this->plugin->startGetItemsCsv();
 		}
 
-		$fileName = $this->outputCsvFile($this->config->getItemsCsvPath());
+		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseTextCsv($this->trace_id);
+		$this->responseData = $this->config->getItemsCsvPath();
 	}
 
 	/**
@@ -497,7 +505,9 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		// generate / update categories csv file
 		$this->plugin->startGetCategoriesCsv();
 
-		$fileName = $this->outputCsvFile($this->config->getCategoriesCsvPath());
+		
+		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseTextCsv($this->trace_id);
+		$this->responseData = $this->config->getCategoriesCsvPath();
 	}
 
 	/**
@@ -510,7 +520,8 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		// generate / update reviews csv file
 		$this->plugin->startGetReviewsCsv();
 
-		$fileName = $this->outputCsvFile($this->config->getReviewsCsvPath());
+		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseTextCsv($this->trace_id);
+		$this->responseData = $this->config->getReviewsCsvPath();
 	}
 
 	/**
@@ -521,38 +532,10 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_pages_csv/de
 	 */
 	protected function getPagesCsv() {
-		$fileName = $this->outputCsvFile($this->config->getPagesCsvPath());
+		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseTextCsv($this->trace_id);
+		$this->responseData = $this->config->getPagesCsvPath();
 	}
 	
-	/**
-	 * @deprecated
-	 * @todo fott do mit
-	 * @param unknown_type $filePath
-	 * @throws ShopgateLibraryException
-	 */
-	private function outputCsvFile($filePath) {
-		if (!file_exists($filePath)) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$filePath);
-		}
-		
-		$fp = @fopen($filePath, "r");
-		if (!$fp) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$filePath);
-		}
-		
-		// output headers ...
-		header("HTTP/1.0 200 OK");
-		header('Content-Type: text/csv');
-		header('Content-Disposition: attachment; filename="'.basename($filePath).'"');
-		
-		// ... and csv file
-		while ($line = fgets($fp)) echo $line;
-		
-		// clean up and leave
-		fclose($fp);
-		exit;
-	}
-
 	/**
 	 * Represents the "get_log_file" action.
 	 *
@@ -566,10 +549,8 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$log = ShopgateLogger::getInstance()->tail($type, $lines);
 
 		// return the requested log file content and end the script
-		header("HTTP/1.0 200 OK");
-		header('Content-Type: text/plain');
-		echo $log;
-		exit;
+		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseTextPlain($this->trace_id);
+		$this->responseData = $log;
 	}
 
 	/**
@@ -1025,7 +1006,7 @@ class ShopgatePluginApiResponseTextPlain extends ShopgatePluginApiResponse {
 	public function send() {
 		header("HTTP/1.0 200 OK");
 		header('Content-Type: text/plain; charset=UTF-8');
-		echo $this->text;
+		echo $this->data;
 		exit;
 	}
 }
@@ -1074,6 +1055,7 @@ class ShopgatePluginApiResponseAppJson extends ShopgatePluginApiResponse {
 		header("HTTP/1.0 200 OK");
 		header("Content-Type: application/json");
 		echo $this->jsonEncode($this->data);
+		exit;
 	}
 }
 

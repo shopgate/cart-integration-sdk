@@ -1499,8 +1499,8 @@ class ShopgateConfigOld extends ShopgateObject {
 	 * @param string $methodName The name of the called method.
 	 */
 	private static function deprecated($methodName) {
-		$message = 'Use of ShopgateConfigOld::'.$methodName.' and the whole ShopgateConfigOld class are deprecated.';
+		$message = 'Use of '.$methodName.' and the whole ShopgateConfigOld class is deprecated.';
 		trigger_error($message, E_USER_DEPRECATED);
-		ShopgateLogger::getInstance()->log($msg);
+		ShopgateLogger::getInstance()->log($message);
 	}
 }
