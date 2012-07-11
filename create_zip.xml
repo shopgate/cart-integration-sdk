@@ -17,14 +17,13 @@ Setup:
 -->
 
 
-<project name="ShopgateLibrary" basedir=".">
+<project name="ZIP Library" basedir="." default="upload">
 
-	<description>ShopgateLibrary</description>
+	<description>Create the ZIP-File for ShopgateLibrary</description>
 
-	<!-- Handle the Build-Number -->
-	<buildnumber file="build.num" />
-
+	<property file="build.number"/>
 	<property file="build.properties"/>
+	
 	<property name="project-root" location="./" />
 	<property name="ant-folder" location="./ant/" />
 
@@ -32,64 +31,11 @@ Setup:
 	<property name="output-folder" location="${build-folder}/shopgate_library" />
 	<property name="release-folder" location="${ant-folder}/releases" />
 
-	<!-- SVN -->
-	<!-- Use the SVN credentials from the project -->
-	<path id="path.svnant">
-		<pathelement location="svnant.jar" />
-		<pathelement location="svnClientAdapter.jar" />
-	</path>
-	<typedef resource="svntask.properties" classpathref="path.svnant" />
-
 	<echo>
 		########################################################
 		## BUILD Library
 		########################################################
 	</echo>
-
-	<!--
-		Prepare the Project
-
-		Increase the Version-Number and commit the Version-Change
-	-->
-	<target name="prepare">
-		<echo message="Set version in classes/core.php to ${plugin.version}" />
-		<replaceregexp file="${project-root}/classes/core.php"
-			match="define\('SHOPGATE_LIBRARY_VERSION', '.+'\);"
-			replace="define('SHOPGATE_LIBRARY_VERSION', '${plugin.version}');"/>
-
-		<echo message="Commit version change in core.php" />
-		<svn>
-			<commit message="Increase Version to ${plugin.version}">
-				<fileset dir="${project-root}">
-					<include name="classes/core.php" />
-					<include name="build.num" />
-				</fileset>
-			</commit>
-		</svn>
-	</target>
-
-	<!-- Create the SVN-Tag for the current Version -->
-	<target name="create_tag">
-		<!--
-		Need to copy and then move because on copy it will create trunk-folder in tag.
-		-->
-		<echo message="Create SVN-Tag for Version ${plugin.version}" />
-		<svn>
-			<mkdir
-				url="${svn.tags}/${plugin.version}"
-				message="Create Path for Version ${plugin.version}" />
-
-			<copy
-				srcUrl="${svn.url}/trunk/"
-				destUrl="${svn.tags}/${plugin.version}/"
-				message="Shopgate Library Version: ${plugin.version}" />
-
-			<move
-				srcUrl="${svn.tags}/${plugin.version}/trunk/"
-				destUrl="${svn.tags}/${plugin.version}/release/"
-				message="Rename Folder trunk to release in tag" />
-		</svn>
-	</target>
 
 	<!--
 		Build the ZIP-File
@@ -123,7 +69,7 @@ Setup:
 
 		Depends on Prepare, create_tag, build
 	-->
-	<target name="upload" depends="prepare, create_tag, build">
+	<target name="upload" depends="build">
 		<s3cmd command="put" file="${project-root}/shopgate_library.zip" key="s3://shopgate-static/plugins/shopgate_library.zip">
 			<args>
 				<arg value="--acl-public" />

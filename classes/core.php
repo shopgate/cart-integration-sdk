@@ -3,7 +3,7 @@
 ###################################################################################
 # define constants
 ###################################################################################
-define('SHOPGATE_LIBRARY_VERSION', '2.0.16/new_config');
+define('SHOPGATE_LIBRARY_VERSION', '2.0.17/new_config');
 define('SHOPGATE_BASE_DIR', realpath(dirname(__FILE__).'/../'));
 define('SHOPGATE_ITUNES_URL', 'http://itunes.apple.com/de/app/shopgate-eine-app-alle-shops/id365287459?mt=8');
 
@@ -1015,6 +1015,13 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 */
 	public abstract function startup();
 
+	/**
+	 * Function to overload to give some information abaout the used system
+	 * 
+	 * @return array
+	 */
+	public function createPluginInfo() { return array(); }
+	
 	/**
 	 * This performs the necessary queries to build a ShopgateCustomer object for the given log in credentials.
 	 *
