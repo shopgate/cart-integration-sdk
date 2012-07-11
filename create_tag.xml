@@ -1,61 +1,97 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="CreateShopgateLibraryTag" basedir="." default="createTag">
+<!--
+Setup:
+	For Uploading to s3 you need s3cmd as commandline tool
 
-	<!-- Projektsettings -->
-	<property name="svn.lib.dir" location="svnant-lib/" />
-	<property name="svn.url"
-		value="https://svn.localdev.cc/svn/shopgate_plugin_library" />
+	For SVN you need svnant.jar in your java-library
+	Project: http://subclipse.tigris.org/svnant.html
+	Download: http://subclipse.tigris.org/files/documents/906/32898/svnant-1.0.0.zip
+	Version: 1.0.0
+
+	In Linux
+	- Copy the File lib/svnant.jar to /usr/share/java/
+
+	In Windows
+	- ...
+
+-->
+
+
+<project name="Tag Library" basedir="." default="create_tag">
+
+	<description>Create a new Tag for ShopgateLibrary</description>
+
+	<!-- Handle the Build-Number -->
+	<propertyfile file="build.number">
+		<entry key="build.number" type="int" operation="+" value="1" pattern="00"/>
+	</propertyfile>
+
+	<property file="build.number"/>
+	<property file="build.properties"/>
+	
+	<property name="project-root" location="./" />
+	<property name="ant-folder" location="./ant/" />
+
+	<property name="build-folder" location="${ant-folder}/build/" />
+	<property name="output-folder" location="${build-folder}/shopgate_library" />
+	<property name="release-folder" location="${ant-folder}/releases" />
 
 	<!-- SVN -->
+	<!-- Use the SVN credentials from the project -->
 	<path id="path.svnant">
 		<pathelement location="svnant.jar" />
 		<pathelement location="svnClientAdapter.jar" />
-		<pathelement location="svnjavahl.jar" />
 	</path>
-	<typedef resource="org/tigris/subversion/svnant/svnantlib.xml"
-		classpathref="path.svnant" />
+	<typedef resource="svntask.properties" classpathref="path.svnant" />
 
-	<!-- SVN Properties -->
-	<svnSetting javahl="false" svnkit="false"
-		username="${svnant.repository.user}" password="${svnant.repository.passwd}"
-		id="svn.settings" />
+	<echo>
+		########################################################
+		## BUILD Library
+		########################################################
+	</echo>
 
-	<!-- Erstellt einen Tag -->
-	<target name="createTag" description="creates a tag">
-		<available resource="org/tigris/subversion/svnant/svnantlib.xml"
-			classpathref="path.svnant" property="available.svnant" />
-		<echo message="SVN-ANT is available = ${available.svnant}" />
+	<!--
+		Prepare the Project
 
-		<!-- Hole die Tag-Versionen -->
-		<svn refid="svn.settings">
-			<list property="tag.versions" url="${svn.url}/tags/" delimiter=","
-				onlyNames="true" />
+		Increase the Version-Number and commit the Version-Change
+	-->
+	<target name="prepare">
+		<echo message="Set version in classes/core.php to ${plugin.version}" />
+		<replaceregexp file="${project-root}/classes/core.php"
+			match="define\('SHOPGATE_LIBRARY_VERSION', '.+'\);"
+			replace="define('SHOPGATE_LIBRARY_VERSION', '${plugin.version}');"/>
+
+		<echo message="Commit version change in core.php" />
+		<svn>
+			<commit message="Increase Version to ${plugin.version}">
+				<fileset dir="${project-root}">
+					<include name="classes/core.php" />
+					<include name="build.num" />
+				</fileset>
+			</commit>
 		</svn>
+	</target>
 
-		<!-- Extrahiere die letzte Version -->
-		<script language="javascript"> <![CDATA[
-	
-	        versions = project.getProperty("tag.versions").split(',');
-			
-			actualTagVersion = versions[versions.length-1];
-			project.setProperty("tag.version.actual", actualTagVersion);
-			splittedVersion = actualTagVersion.split('\\.');
-			
-			newTagVersion = splittedVersion[0]+"."+splittedVersion[1]+"."+(parseInt(splittedVersion[2])+1);
-			
-	        // store the result in a new property
-	        project.setProperty("tag.version.new",newTagVersion);
-	
-	    ]]>
-		</script>
-		<echo message="Die neuste Tag-Version ist: ${tag.version.actual}" />
-		<echo message="Erstelle neue Tag-Version: ${tag.version.new} ...." />
+	<!-- Create the SVN-Tag for the current Version -->
+	<target name="create_tag" depends="prepare">
+		<!--
+		Need to copy and then move because on copy it will create trunk-folder in tag.
+		-->
+		<echo message="Create SVN-Tag for Version ${plugin.version}" />
+		<svn>
+			<mkdir
+				url="${svn.tags}/${plugin.version}"
+				message="Create Path for Version ${plugin.version}" />
 
-		<!-- Tag erstellen -->
-		<svn refid="svn.settings">
-			<copy makeParents="true" srcUrl="${svn.url}/trunk"
-				destUrl="${svn.url}/tags/${tag.version.new}/release" message="Shopgate Library Version: ${tag.version.new}" />
+			<copy
+				srcUrl="${svn.url}/trunk/"
+				destUrl="${svn.tags}/${plugin.version}/"
+				message="Shopgate Library Version: ${plugin.version}" />
+
+			<move
+				srcUrl="${svn.tags}/${plugin.version}/trunk/"
+				destUrl="${svn.tags}/${plugin.version}/release/"
+				message="Rename Folder trunk to release in tag" />
 		</svn>
-
 	</target>
 </project>
