@@ -1069,8 +1069,8 @@ class ShopgateOrderItemOption extends ShopgateContainer {
 	 *
 	 * @return int
 	 */
-	public function getAdditionalUnitAmountWithTax() {
-		return $this->additional_unit_amount_with_tax;
+	public function getAdditionalAmountWithTax() {
+		return $this->additional_amount_with_tax;
 	}
 
 	/**
