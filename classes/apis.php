@@ -241,11 +241,6 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 */
 	private $trace_id;
 	
-	/**
-	 * @var ShopgateLibraryException If an exception occured it is stored here.
-	 */
-	public $exception;
-
 	public function __construct(
 			ShopgateConfigInterface &$config,
 			ShopgateAuthentificationServiceInterface &$authService,
@@ -330,7 +325,6 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			$se = new ShopgateLibraryException($message);
 			$error = $se->getCode();
 			$errortext = $se->getMessage();
-			$this->exception = $se;
 		}
 
 		// print out the response
@@ -1056,7 +1050,6 @@ class ShopgatePluginApiResponseAppJson extends ShopgatePluginApiResponse {
 		header("HTTP/1.0 200 OK");
 		header("Content-Type: application/json");
 		echo $this->jsonEncode($this->data);
-		exit;
 	}
 }
 

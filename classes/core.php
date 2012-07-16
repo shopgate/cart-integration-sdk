@@ -463,7 +463,7 @@ class ShopgateBuilder {
 		// instantiate export file buffer
 		$fileBuffer = new ShopgateFileBuffer($this->config->getExportBufferCapacity());
 		
-		// inject config and apis into plugin
+		// inject apis into plugin
 		$plugin->setConfig($this->config);
 		$plugin->setPluginApi($pluginApi);
 		$plugin->setBuffer($fileBuffer);
@@ -637,10 +637,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @param ShopgateBuilder $builder If empty, the default ShopgateBuilder will be instantiated.
 	 */
 	public final function __construct(ShopgateBuilder &$builder = null) {
-		// build the object graph and get needed objects injected via set* methods
-		if (empty($builder)) $builder = new ShopgateBuilder();
-		$builder->buildLibraryFor($this);
-		
 		// some default values
 		$this->splittedExport = false;
 		$this->exportOffset = 0;
@@ -652,6 +648,10 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		} catch (ShopgateLibraryException $e) {
 			// logging is done in exception constructor
 		}
+		
+		// build the object graph and get needed objects injected via set* methods
+		if (empty($builder)) $builder = new ShopgateBuilder($this->config);
+		$builder->buildLibraryFor($this);
 	}
 	
 	/**
