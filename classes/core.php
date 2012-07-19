@@ -3,7 +3,7 @@
 ###################################################################################
 # define constants
 ###################################################################################
-define('SHOPGATE_LIBRARY_VERSION', '2.0.17/new_config');
+define('SHOPGATE_LIBRARY_VERSION', '2.0.18/new_config');
 define('SHOPGATE_BASE_DIR', realpath(dirname(__FILE__).'/../'));
 define('SHOPGATE_ITUNES_URL', 'http://itunes.apple.com/de/app/shopgate-eine-app-alle-shops/id365287459?mt=8');
 
@@ -235,7 +235,7 @@ class ShopgateLibraryException extends Exception {
 		// Add tracing information to the message
 		$btrace = debug_backtrace();
 		$btrace = $btrace[2];
-		$class = (isset($btrace['class']) ? $btrace['class'] : 'Unknown class').'::'; 
+		$class = (isset($btrace['class']) ? $btrace['class'] : 'Unknown class').'::';
 		$function = (isset($btrace['function'])) ? $btrace['function'] : 'Unknown function';
 		$line = (isset($btrace['line'])) ? $btrace['line'] : 'Unkown line';
 		$logMessage = $class.$function."():".$line." - " . print_r($logMessage, true);
@@ -483,7 +483,7 @@ class ShopgateBuilder {
 	
 	/**
 	 * Builds the Shopgate Library object graph for Shopgate mobile redirect and returns the instance.
-	 * 
+	 *
 	 * @return ShopgateMobileRedirect
 	 */
 	public function &buildRedirect() {
@@ -1017,7 +1017,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 
 	/**
 	 * Function to overload to give some information abaout the used system
-	 * 
+	 *
 	 * @return array
 	 */
 	public function createPluginInfo() { return array(); }

@@ -63,12 +63,8 @@ Setup:
 
 		<echo message="Commit version change in core.php" />
 		<svn>
-			<commit message="Increase Version to ${plugin.version}">
-				<fileset dir="${project-root}">
-					<include name="classes/core.php" />
-					<include name="build.number" />
-				</fileset>
-			</commit>
+			<commit message="Increase Version to ${plugin.version}" file="${basedir}/classes/core.php" />
+			<commit message="Increase Version to ${plugin.version}" file="${basedir}/build.properties" />
 		</svn>
 	</target>
 
