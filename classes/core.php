@@ -2120,6 +2120,9 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		$this->flushBuffer();
 		fclose($this->fileHandle);
 
+		if(file_exists($filePath)){
+			unlink($filePath);
+		}
 		rename($filePath.".tmp", $filePath);
 
 		$this->log('Fertig, '.basename($filePath).' wurde erfolgreich erstellt', "access");
