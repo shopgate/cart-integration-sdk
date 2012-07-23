@@ -15,8 +15,5 @@ require_once(dirname(__FILE__).DS.'classes'.DS.'redirect.php');
 require_once(dirname(__FILE__).DS.'vendors'.DS.'2d_is.php');
 require_once(dirname(__FILE__).DS.'vendors'.DS.'mobile_redirect.class.php');
 
-include_once dirname(__FILE__).DS.'vendors'.DS.'shopgate_phpqrcode'.DS.'qrlib.php';
-include_once dirname(__FILE__).DS.'vendors'.DS.'qr_code_manager.class.php';
-
 // External-Vendors
 if(!class_exists("Services_JSON")) include_once(dirname(__FILE__).DS.'vendors'.DS.'JSON.php');
