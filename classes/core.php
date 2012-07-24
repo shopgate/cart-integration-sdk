@@ -372,7 +372,7 @@ class ShopgateConfig extends ShopgateObject {
 	public static final function getLogFilePath($type = ShopgateObject::LOGTYPE_ERROR) {
 		switch (strtolower($type)) {
 			default: $type = 'error';
-			case "access": case "request": case "request":
+			case "access": case "request": case "request": case "debug":
 		}
 
 		if(isset(self::$config['path_to_'.strtolower($type).'_log_file'])) {
@@ -551,6 +551,7 @@ abstract class ShopgateObject {
 	const LOGTYPE_ACCESS = 'access';
 	const LOGTYPE_REQUEST = 'request';
 	const LOGTYPE_ERROR = 'error';
+	const LOGTYPE_DEBUG = 'debug';
 
 	const OBFUSCATION_STRING = 'XXXXXXXX';
 
@@ -561,6 +562,7 @@ abstract class ShopgateObject {
 		self::LOGTYPE_ACCESS => null,
 		self::LOGTYPE_ERROR => null,
 		self::LOGTYPE_REQUEST => null,
+		self::LOGTYPE_DEBUG => null,
 	);
 
 	/**
@@ -604,20 +606,30 @@ abstract class ShopgateObject {
 	 * Initializes the file handles for logging if necessary.
 	 */
 	protected static function init() {
-		// initialize file handlers if neccessary
-		foreach (self::$fileHandles as $type => $handle) {
-			if (empty($handle)) {
-				$path = ShopgateConfig::getLogFilePath($type);
-				$newHandle = @fopen($path, 'a+');
 
-				// if log files are not writeable continue silently to the next handler
-				// TODO: This seems a bit too silent... How could we get notice of the error?
-				if ($newHandle === false) continue;
+	}
 
-				// set the file handler
-				self::$fileHandles[$type] = $newHandle;
-			}
+	private static function openLogFileHandler( $type ) {
+		$newHandle = self::$fileHandles[$type];
+
+		if( empty( $newHandle ) ) {
+			$path = ShopgateConfig::getLogFilePath($type);
+
+			$sMode = "a+";
+
+			if( defined("SHOPGATE_DEBUG_LOG") && $type === self::LOGTYPE_DEBUG ) $sMode = "w+";
+
+			$newHandle = @fopen($path, $sMode);
+
+			// if log files are not writeable continue silently to the next handler
+			// TODO: This seems a bit too silent... How could we get notice of the error?
+			if ($newHandle === false) continue;
+
+			// set the file handler
+			self::$fileHandles[$type] = $newHandle;
 		}
+
+		return $newHandle;
 	}
 
 	/**
@@ -664,7 +676,8 @@ abstract class ShopgateObject {
 	 */
 	public static function logWrite($msg, $type = self::LOGTYPE_ERROR) {
 		// initialize if neccessary
-		self::init();
+// 		self::init();
+		self::openLogFileHandler($type);
 
 		// build log message
 		$msg = gmdate('d-m-Y H:i:s: ').$msg."\n";
@@ -678,7 +691,10 @@ abstract class ShopgateObject {
 			case self::LOGTYPE_ERROR:
 			case self::LOGTYPE_ACCESS:
 			case self::LOGTYPE_REQUEST:
+			case self::LOGTYPE_DEBUG:
 		}
+
+		if( $type === self::LOGTYPE_DEBUG && !defined("SHOPGATE_DEBUG_LOG") ) return true;
 
 		// try to log
 		$success = false;
@@ -789,13 +805,13 @@ abstract class ShopgateObject {
 	 * @see http://tekkie.flashbit.net/php/tail-functionality-in-php
 	 */
 	protected function tail($type = self::LOGTYPE_ERROR, $lines = 20) {
-		if (!isset(self::$fileHandles[$type])) {
+		if( !array_key_exists($type, self::$fileHandles ) ) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_UNKNOWN_LOGTYPE, 'Type: '.$type);
 		}
 
 		if (empty($lines)) $lines = 20;
 
-		$handle = self::$fileHandles[$type];
+		$handle = self::openLogFileHandler($type);
 		$lineCounter = $lines;
 		$pos = -2;
 		$beginning = false;
@@ -1022,6 +1038,9 @@ class ShopgatePluginApi extends ShopgateObject {
 	 * @return bool false if an error occured, otherwise true.
 	 */
 	public function handleRequest($data = array()) {
+		if( $data["debug_log"] == 1)
+			define("SHOPGATE_DEBUG_LOG", 1);
+
 		// log incoming request
 		$this->log($this->cleanParamsForLog($data), ShopgateObject::LOGTYPE_ACCESS);
 
@@ -2471,11 +2490,11 @@ abstract class ShopgatePlugin extends ShopgateObject {
 
 	/**
 	 * Function to overload to give some information abaout the used system
-	 * 
+	 *
 	 * @return array
 	 */
 	public function createPluginInfo() { return array(); }
-	
+
 	/**
 	 * This performs the necessary queries to build a ShopgateCustomer object for the given log in credentials.
 	 *
