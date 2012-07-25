@@ -22,13 +22,12 @@ Setup:
 	<description>Create a new Tag for ShopgateLibrary</description>
 
 	<!-- Handle the Build-Number -->
-	<propertyfile file="build.number">
-		<entry key="build.number" type="int" operation="+" value="1" pattern="00"/>
+	<propertyfile file="build.properties">
+		<entry key="plugin.build" type="int" operation="+" value="1" pattern="0"/>
 	</propertyfile>
 
-	<property file="build.number"/>
 	<property file="build.properties"/>
-	
+
 	<property name="project-root" location="./" />
 	<property name="ant-folder" location="./ant/" />
 
