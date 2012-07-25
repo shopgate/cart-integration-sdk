@@ -101,6 +101,9 @@ class ShopgateLibraryException extends Exception {
 	// Authentification errors
 	const AUTHENTICATION_FAILED = 120;
 
+	// File errors
+	const FILE_READ_WRITE_ERROR = 130;
+
 	// Unknown error code (the value passed as code gets to be the message)
 	const UNKNOWN_ERROR_CODE = 999;
 
@@ -146,7 +149,10 @@ class ShopgateLibraryException extends Exception {
 		self::MERCHANT_API_NO_CONNECTION => 'no connection to server',
 		self::MERCHANT_API_INVALID_RESPONSE => 'error parsing response',
 		self::MERCHANT_API_ERROR_RECEIVED => 'error code received',
-
+		
+		// File errors
+		self::FILE_READ_WRITE_ERROR => 'error reading or writing file',
+		
 		// Authentification errors
 		self::AUTHENTICATION_FAILED => 'authentication failed',
 	);

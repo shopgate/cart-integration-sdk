@@ -356,68 +356,27 @@ class ShopgateMobileRedirect extends ShopgateObject {
 	 */
 	protected function updateRedirectKeywords() {
 		if (!$this->updateRedirectKeywords) return;
-		$saveKeywords = false;
-
-		if(file_exists($this->cacheFile)){
-
-			$fp = @fopen($this->cacheFile, 'r');
-
-			if(!$fp){
-				return;
-			}
-
-			$lastRedirectKeywordsUpdate = 0;
-			$redirectKeywords = array();
-			$firstLine = true;
-			while($line = fgets($fp)){
-				if($firstLine){
-					$lastRedirectKeywordsUpdate = $line;
-					$firstLine = false;
-					if ((time() - ($lastRedirectKeywordsUpdate + ($this->redirectKeywordCacheTime * 3600)) > 0)) {
-						try{
-							$redirectKeywords = ShopgateMerchantApi::getInstance()->getMobileRedirectKeywords();
-
-							// save keywords in file
-							$saveKeywords = true;
-
-							break;
-						} catch(Exception $ex){
-							continue;
-						}
-					}
-					continue;
-				}
-				$redirectKeywords[] = trim($line);
-			}
-			@fclose($fp);
-
-			$this->redirectKeywords = $redirectKeywords;
-		} else {
-			try{
-				$redirectKeywords = ShopgateMerchantApi::getInstance()->getMobileRedirectKeywords();
-
-				// save keywords in file
-				$saveKeywords = true;
-
-				$this->redirectKeywords = $redirectKeywords;
-			} catch(Exception $ex){
-			}
+		
+		$cacheFile = @fopen($this->cacheFile, 'a+');
+		if (empty($cacheFile)) {
+			return;
 		}
-
-		if($saveKeywords){
-			// Save the keywords in cache
-			$fp = @fopen($this->cacheFile, 'w');
-
-			if(!$fp){
-				return false;
+		
+		$keywordsFromFile = explode("\n", @fread($cacheFile, filesize($this->cacheFile)));
+		$lastUpdate = (int) array_shift($keywordsFromFile); // strip timestamp in first line
+		@fclose($cacheFile);
+		
+		if ((time() - ($lastUpdate + ($this->redirectKeywordCacheTime * 3600)) <= 0)) return;
+		
+		// perform update
+		try {
+			$keywordsFromApi = ShopgateMerchantApi::getInstance()->getMobileRedirectKeywords();
+			$allKeywords = array_unique(array_merge($keywordsFromFile, $keywordsFromApi));
+			array_unshift($allKeywords, time()); // add timestamp to first line
+			if (!@file_put_contents($this->cacheFile, implode("\n", $allKeywords))) {
+				$this->log(ShopgateLibraryException::buildLogMessageFor(ShopgateLibraryException::FILE_READ_WRITE_ERROR, 'Could not write to "'.$this->cacheFile.'".'));
 			}
-
-			fwrite($fp, time()."\n");
-			foreach($this->redirectKeywords as $redirectKeyWord){
-				fwrite($fp, $redirectKeyWord."\n");
-			}
-			fclose($fp);
-		}
+		} catch (Exception $e) { /* do not abort */ }
 	}
 
 	#############################
