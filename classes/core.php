@@ -1038,7 +1038,7 @@ class ShopgatePluginApi extends ShopgateObject {
 	 * @return bool false if an error occured, otherwise true.
 	 */
 	public function handleRequest($data = array()) {
-		if( $data["debug_log"] == 1)
+		if( $data["debug_log"] == 1 )
 			define("SHOPGATE_DEBUG_LOG", 1);
 
 		// log incoming request
@@ -1121,6 +1121,7 @@ class ShopgatePluginApi extends ShopgateObject {
 	 */
 	private function ping() {
 		$this->response["pong"] = "OK";
+		$this->log("PONG", self::LOGTYPE_DEBUG);
 
 		function getSettings() {
 			$settingDetails = array();
