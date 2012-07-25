@@ -53,7 +53,7 @@ class ShopgateMobileRedirect extends ShopgateObject {
 	/**
 	 * @var string[] list of strings that cause redirection if they occur in the client's user agent
 	 */
-	protected $redirectKeywords = array('iPhone', 'iPod', 'iPad', 'Android', 'Windows Phone OS 7.0', 'Bada');
+	protected $redirectKeywords = array('iPhone', 'iPod', 'iPad', 'Android');
 
 	/**
 	 * @var string[] list of strings that deny redirection if they occur in the client's user agent; overrides $this->redirectKeywords
