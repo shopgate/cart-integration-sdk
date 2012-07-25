@@ -318,6 +318,7 @@ class ShopgateConfig extends ShopgateObject {
 		'enable_get_reviews_csv' => true,
 		'enable_get_pages_csv' => true,
 		'enable_get_log_file' => true,
+		'enable_clear_log_file' => true,
 		'enable_mobile_website' => true,
 		'generate_items_csv_on_the_fly' => true,
 		'max_attributes' => 50,
@@ -993,6 +994,7 @@ class ShopgatePluginApi extends ShopgateObject {
 			'get_reviews_csv',
 			'get_pages_csv',
 			'get_log_file',
+			'clear_log_file',
 			'check_coupon',
 			'redeem_coupon'
 		);
@@ -1121,7 +1123,6 @@ class ShopgatePluginApi extends ShopgateObject {
 	 */
 	private function ping() {
 		$this->response["pong"] = "OK";
-		$this->log("PONG", self::LOGTYPE_DEBUG);
 
 		function getSettings() {
 			$settingDetails = array();
@@ -1454,6 +1455,23 @@ class ShopgatePluginApi extends ShopgateObject {
 		header('Content-Type: text/plain');
 		echo $log;
 		exit;
+	}
+
+	/**
+	 * Represents the "clear_log_file" action.
+	 *
+	 * @throws ShopgateLibraryException
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_clear_log_file/de
+	 */
+	private function clearLogFile() {
+		$type = (empty($this->params['log_type'])) ? ShopgateObject::LOGTYPE_ERROR : $this->params['log_type'];
+
+		$sPath = ShopgateConfig::getLogFilePath($type);
+		$rFile = @fopen($sPath, "w");
+		if(!$rFile) throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, "Cannot open File {$sPath}");
+		fclose($rFile);
+
+		$this->response["deleted"] = $sPath;
 	}
 
 	/**
