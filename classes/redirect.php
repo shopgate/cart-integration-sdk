@@ -104,11 +104,12 @@ class ShopgateMobileRedirect extends ShopgateObject {
 	 * @var string description to be displayed to the left of the button
 	 */
 	protected $buttonDescription;
-	
+
 	public function initLibrary() {
 		$this->updateRedirectKeywords = false;
 		$this->redirectKeywordCacheTime = self::DEFAULT_CACHE_TIME;
-		$this->cacheFile = dirname(__FILE__).'/../temp/cache/redirect_keywords.txt';
+		$this->cacheFile = ShopgateConfig::getRedirectKeywordsFilePath();
+
 		$this->useSecureConnection = isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] === "on" || $_SERVER["HTTPS"] == "1");
 
 		// mobile header options
@@ -232,7 +233,7 @@ class ShopgateMobileRedirect extends ShopgateObject {
 	public function setAlwaysUseSSL() {
 		$this->useSecureConnection = true;
 	}
-	
+
 	/**
 	 * Detects by redirect keywords (and skip redirect keywords) if a request was sent by a mobile device.
 	 *
@@ -312,7 +313,7 @@ class ShopgateMobileRedirect extends ShopgateObject {
 		$html = str_replace('{$buttonOnImageSource}',  $this->buttonOnImageSource,  $html);
 		$html = str_replace('{$buttonOffImageSource}', $this->buttonOffImageSource, $html);
 		$html = str_replace('{$buttonDescription}', $this->buttonDescription, $html);
-		
+
 		return $html;
 	}
 
@@ -356,18 +357,18 @@ class ShopgateMobileRedirect extends ShopgateObject {
 	 */
 	protected function updateRedirectKeywords() {
 		if (!$this->updateRedirectKeywords) return;
-		
+
 		$cacheFile = @fopen($this->cacheFile, 'a+');
 		if (empty($cacheFile)) {
 			return;
 		}
-		
+
 		$keywordsFromFile = explode("\n", @fread($cacheFile, filesize($this->cacheFile)));
 		$lastUpdate = (int) array_shift($keywordsFromFile); // strip timestamp in first line
 		@fclose($cacheFile);
-		
+
 		if ((time() - ($lastUpdate + ($this->redirectKeywordCacheTime * 3600)) <= 0)) return;
-		
+
 		// perform update
 		try {
 			$keywordsFromApi = ShopgateMerchantApi::getInstance()->getMobileRedirectKeywords();

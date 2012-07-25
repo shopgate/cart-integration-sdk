@@ -149,10 +149,10 @@ class ShopgateLibraryException extends Exception {
 		self::MERCHANT_API_NO_CONNECTION => 'no connection to server',
 		self::MERCHANT_API_INVALID_RESPONSE => 'error parsing response',
 		self::MERCHANT_API_ERROR_RECEIVED => 'error code received',
-		
+
 		// File errors
 		self::FILE_READ_WRITE_ERROR => 'error reading or writing file',
-		
+
 		// Authentification errors
 		self::AUTHENTICATION_FAILED => 'authentication failed',
 	);
@@ -430,6 +430,17 @@ class ShopgateConfig extends ShopgateObject {
 			return self::$config['path_to_pages_csv_file'];
 		} else {
 			return SHOPGATE_BASE_DIR.'/temp/pages.csv';
+		}
+	}
+
+	/**
+	 * return the absolute Path for the Redirect-Keywords-Caching-File
+	 */
+	public static final function getRedirectKeywordsFilePath() {
+		if(isset(self::$config['path_to_redirect_keywords_file'])) {
+			return self::$config['path_to_redirect_keywords_file'];
+		} else {
+			return SHOPGATE_BASE_DIR.'/temp/cache/redirect_keywords.txt';
 		}
 	}
 
