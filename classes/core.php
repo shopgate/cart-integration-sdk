@@ -762,12 +762,12 @@ abstract class ShopgateObject {
 		}
 
 		// if not check if external class is loaded
-		if (!class_exists("Services_JSON")) {
+		if (!class_exists("sgServices_JSON")) {
 			require_once dirname(__FILE__).'/../vendors/JSON.php';
 		}
 
 		// encode via external class
-		$jsonService = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
+		$jsonService = new sgServices_JSON(sgServices_JSON_LOOSE_TYPE);
 		return $jsonClass->encode($value);
 	}
 
@@ -786,12 +786,12 @@ abstract class ShopgateObject {
 		}
 
 		// if not check if external class is loaded
-		if (!class_exists("Services_JSON")) {
+		if (!class_exists("sgServices_JSON")) {
 			require_once dirname(__FILE__).'/../vendors/JSON.php';
 		}
 
 		// decode via external class
-		$jsonService = new Services_JSON(($assoc) ? SERVICES_JSON_LOOSE_TYPE : SERVICES_JSON_IN_OBJ);
+		$jsonService = new sgServices_JSON(($assoc) ? sgServices_JSON_LOOSE_TYPE : sgServices_JSON_IN_OBJ);
 		return $jsonService->decode($json);
 	}
 
