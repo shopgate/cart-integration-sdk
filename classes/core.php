@@ -641,7 +641,7 @@ abstract class ShopgateObject {
 
 			// if log files are not writeable continue silently to the next handler
 			// TODO: This seems a bit too silent... How could we get notice of the error?
-			if ($newHandle === false) continue;
+			if ($newHandle === false) return;
 
 			// set the file handler
 			self::$fileHandles[$type] = $newHandle;
