@@ -609,7 +609,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	protected $pluginApi;
 	
 	/**
-	 * @var ShopgateFileBuffer
+	 * @var ShopgateFileBufferInterface
 	 */
 	protected $buffer;
 
@@ -692,7 +692,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	/**
 	 * @param ShopgateFileBuffer $buffer
 	 */
-	public final function setBuffer(ShopgateFileBuffer &$buffer) {
+	public final function setBuffer(ShopgateFileBufferInterface &$buffer) {
 		$this->buffer = $buffer;
 	}
 	
@@ -1091,7 +1091,31 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	//protected abstract function getPagesCsv();
 }
 
-class ShopgateFileBuffer extends ShopgateObject {
+interface ShopgateFileBufferInterface {
+	/**
+	 * Creates a new write buffer for the file under "$filePath.tmp".
+	 *
+	 * @param string $filePath Path to the file (the .tmp extension is added automatically).
+	 */
+	public function setFile($filePath);
+	
+	/**
+	 * Adds a line to the csv file buffer.
+	 *
+	 * @param mixed[] $itemArr
+	 * @throws ShopgateLibraryException if flushing the buffer fails.
+	 */
+	public function addItem($itemArr);
+	
+	/**
+	 * Closes the file and flushes the buffer.
+	 *
+	 * @throws ShopgateLibraryException if the buffer and file are empty.
+	 */
+	public function finish();
+}
+
+class ShopgateFileBuffer extends ShopgateObject implements ShopgateFileBufferInterface {
 	private $allowedEncodings = array(
 		'UTF-8', 'ASCII', 'CP1252', 'ISO-8859-15', 'UTF-16LE','ISO-8859-1'
 	);
@@ -1134,11 +1158,6 @@ class ShopgateFileBuffer extends ShopgateObject {
 		$this->capacity = $capacity;
 	}
 
-	/**
-	 * Creates a new write buffer for the file under "$filePath.tmp".
-	 *
-	 * @param string $filePath Path to the file (the .tmp extension is added automatically).
-	 */
 	public function setFile($filePath) {
 		$this->filePath = $filePath;
 		$this->buffer = array();
@@ -1154,12 +1173,6 @@ class ShopgateFileBuffer extends ShopgateObject {
 		}
 	}
 	
-	/**
-	 * Adds a line to the csv file buffer.
-	 *
-	 * @param mixed[] $itemArr
-	 * @throws ShopgateLibraryException if flushing the buffer fails.
-	 */
 	public function addItem($itemArr) {
 		$this->buffer[] = $itemArr;
 
@@ -1198,11 +1211,6 @@ class ShopgateFileBuffer extends ShopgateObject {
 		$this->buffer = array();
 	}
 
-	/**
-	 * Closes the file and flushes the buffer.
-	 *
-	 * @throws ShopgateLibraryException if the buffer and file are empty.
-	 */
 	public function finish() {
 		$this->flush();
 		fclose($this->fileHandle);
@@ -1214,7 +1222,6 @@ class ShopgateFileBuffer extends ShopgateObject {
 		$duration = time() - $this->timeStart;
 		$this->log("Dauer: $duration Sekunden", "access");
 	}
-	
 }
 
 /**
@@ -1285,7 +1292,7 @@ abstract class ShopgateContainer extends ShopgateObject {
 	 * @return ShopgateContainer The new object with utf-8 encoded values.
 	 */
 	public function utf8Encode($sourceEncoding = 'ISO-8859-15') {
-		$visitor = new ShopgateUtf8Visitor(ShopgateUtf8Visitor::MODE_ENCODE, $sourceEncoding);
+		$visitor = new ShopgateContainerUtf8Visitor(ShopgateContainerUtf8Visitor::MODE_ENCODE, $sourceEncoding);
 		$visitor->visitContainer($this);
 		return $visitor->getObject();
 	}
@@ -1298,7 +1305,7 @@ abstract class ShopgateContainer extends ShopgateObject {
 	 * @return ShopgateContainer The new object with utf-8 decoded values.
 	 */
 	public function utf8Decode($destinationEncoding = 'ISO-8859-15') {
-		$visitor = new ShopgateUtf8Visitor(ShopgateUtf8Visitor::MODE_DECODE, $destinationEncoding);
+		$visitor = new ShopgateContainerUtf8Visitor(ShopgateContainerUtf8Visitor::MODE_DECODE, $destinationEncoding);
 		$visitor->visitContainer($this);
 		return $visitor->getObject();
 	}
@@ -1343,11 +1350,11 @@ interface ShopgateContainerVisitor {
 	public function visitOrderItem(ShopgateOrderItem $i);
 	public function visitOrderItemOption(ShopgateOrderItemOption $o);
 	public function visitOrderDeliveryNote(ShopgateDeliveryNote $d);
-	public function visitShopgateCategory(ShopgateCategory $d);
-	public function visitShopgateItem(ShopgateItem $i);
-	public function visitShopgateItemOption(ShopgateItemOption $i);
-	public function visitShopgateItemOptionValue(ShopgateItemOptionValue $i);
-	public function visitShopgateItemInput(ShopgateItemInput $i);
+	public function visitCategory(ShopgateCategory $d);
+	public function visitItem(ShopgateItem $i);
+	public function visitItemOption(ShopgateItemOption $i);
+	public function visitItemOptionValue(ShopgateItemOptionValue $i);
+	public function visitItemInput(ShopgateItemInput $i);
 	public function visitConfig(ShopgateConfig $c);
 }
 
@@ -1356,7 +1363,7 @@ interface ShopgateContainerVisitor {
  *
  * @author Shopgate GmbH, 35510 Butzbach, DE
  */
-class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
+class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 	const MODE_ENCODE = 1;
 	const MODE_DECODE = 2;
 
@@ -1497,7 +1504,7 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 		}
 	}
 
-	public function visitShopgateCategory(ShopgateCategory $c) {
+	public function visitCategory(ShopgateCategory $c) {
 		$properties = $c->buildProperties();
 
 		// iterate the simple variables
@@ -1718,7 +1725,7 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 		$this->array = $this->iterateSimpleProperties($d->buildProperties());
 	}
 
-	public function visitShopgateCategory(ShopgateCategory $d) {
+	public function visitCategory(ShopgateCategory $d) {
 		$this->array = $this->iterateSimpleProperties($d->buildProperties());
 	}
 

@@ -31,6 +31,7 @@ interface ShopgateMerchantApiInterface {
 	/**
 	 * Represents the "get_mobile_redirect_keywords" action.
 	 *
+	 * @return string[] The List of keywords.
 	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
 	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_get_mobile_redirect_keywords/de
 	 */
@@ -197,7 +198,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	/**
 	 * @var ShopgatePlugin
 	 */
-	private $plugin;
+	protected $plugin;
 
 	/**
 	 * @var ShopgateConfigInterface
@@ -219,27 +220,27 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 *
 	 * @var mixed[]
 	 */
-	private $params;
+	protected $params;
 
 	/**
 	 * @var string[]
 	 */
-	private  $actionWhitelist;
+	protected $actionWhitelist;
 	
 	/**
 	 * @var mixed
 	 */
-	private $responseData;
+	protected $responseData;
 
 	/**
 	 * @var ShopgatePluginApiResponse
 	 */
-	private $response;
+	protected $response;
 	
 	/**
 	 * @var string The trace ID of the incoming request.
 	 */
-	private $trace_id;
+	protected $trace_id;
 	
 	public function __construct(
 			ShopgateConfigInterface &$config,
@@ -960,9 +961,9 @@ class ShopgateAuthentificationService extends ShopgateObject implements Shopgate
 
 /**
  * Wrapper for responses by the Shopgate Plugin API.
- * 
+ *
  * Each content type is represented by a subclass.
- * 
+ *
  * @author Shopgate GmbH, 35510 Butzbach, DE
  */
 abstract class ShopgatePluginApiResponse extends ShopgateObject {
@@ -1034,7 +1035,7 @@ class ShopgatePluginApiResponseTextCsv extends ShopgatePluginApiResponse {
 		
 		// clean up and leave
 		fclose($fp);
-		exit;		
+		exit;
 	}
 }
 
