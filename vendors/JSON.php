@@ -46,7 +46,7 @@
  * DAMAGE.
  *
  * @category
- * @package     sgServices_JSON
+ * @package     sgServicesJSON
  * @author      Michal Migurski <mike-json@teczno.com>
  * @author      Matt Knapp <mdknapp[at]gmail[dot]com>
  * @author      Brett Stimmerman <brettstimmerman[at]gmail[dot]com>
@@ -57,39 +57,39 @@
  */
 
 /**
- * Marker constant for sgServices_JSON::decode(), used to flag stack state
+ * Marker constant for sgServicesJSON::decode(), used to flag stack state
  */
-define('sgServices_JSON_SLICE',   1);
+define('sgServicesJSON_SLICE',   1);
 
 /**
- * Marker constant for sgServices_JSON::decode(), used to flag stack state
+ * Marker constant for sgServicesJSON::decode(), used to flag stack state
  */
-define('sgServices_JSON_IN_STR',  2);
+define('sgServicesJSON_IN_STR',  2);
 
 /**
- * Marker constant for sgServices_JSON::decode(), used to flag stack state
+ * Marker constant for sgServicesJSON::decode(), used to flag stack state
  */
-define('sgServices_JSON_IN_ARR',  3);
+define('sgServicesJSON_IN_ARR',  3);
 
 /**
- * Marker constant for sgServices_JSON::decode(), used to flag stack state
+ * Marker constant for sgServicesJSON::decode(), used to flag stack state
  */
-define('sgServices_JSON_IN_OBJ',  4);
+define('sgServicesJSON_IN_OBJ',  4);
 
 /**
- * Marker constant for sgServices_JSON::decode(), used to flag stack state
+ * Marker constant for sgServicesJSON::decode(), used to flag stack state
  */
-define('sgServices_JSON_IN_CMT', 5);
+define('sgServicesJSON_IN_CMT', 5);
 
 /**
- * Behavior switch for sgServices_JSON::decode()
+ * Behavior switch for sgServicesJSON::decode()
  */
-define('sgServices_JSON_LOOSE_TYPE', 16);
+define('sgServicesJSON_LOOSE_TYPE', 16);
 
 /**
- * Behavior switch for sgServices_JSON::decode()
+ * Behavior switch for sgServicesJSON::decode()
  */
-define('sgServices_JSON_SUPPRESS_ERRORS', 32);
+define('sgServicesJSON_SUPPRESS_ERRORS', 32);
 
 /**
  * Converts to and from JSON format.
@@ -97,8 +97,8 @@ define('sgServices_JSON_SUPPRESS_ERRORS', 32);
  * Brief example of use:
  *
  * <code>
- * // create a new instance of sgServices_JSON
- * $json = new sgServices_JSON();
+ * // create a new instance of sgServicesJSON
+ * $json = new sgServicesJSON();
  *
  * // convert a complexe value to JSON notation, and send it to the browser
  * $value = array('foo', 'bar', array(1, 2, 'baz'), array(3, array(4)));
@@ -112,7 +112,7 @@ define('sgServices_JSON_SUPPRESS_ERRORS', 32);
  * $value = $json->decode($input);
  * </code>
  */
-class sgServices_JSON
+class sgServicesJSON
 {
    /**
     * constructs a new JSON instance
@@ -120,17 +120,17 @@ class sgServices_JSON
     * @param    int     $use    object behavior flags; combine with boolean-OR
     *
     *                           possible values:
-    *                           - sgServices_JSON_LOOSE_TYPE:  loose typing.
+    *                           - sgServicesJSON_LOOSE_TYPE:  loose typing.
     *                                   "{...}" syntax creates associative arrays
     *                                   instead of objects in decode().
-    *                           - sgServices_JSON_SUPPRESS_ERRORS:  error suppression.
+    *                           - sgServicesJSON_SUPPRESS_ERRORS:  error suppression.
     *                                   Values which can't be encoded (e.g. resources)
     *                                   appear as NULL instead of throwing errors.
     *                                   By default, a deeply-nested resource will
     *                                   bubble up with an error, so all return values
     *                                   from encode() should be checked with isError()
     */
-    function sgServices_JSON($use = 0)
+    function sgServicesJSON($use = 0)
     {
         $this->use = $use;
     }
@@ -227,7 +227,7 @@ class sgServices_JSON
     * encodes an arbitrary variable into JSON format
     *
     * @param    mixed   $var    any number, boolean, string, array, or object to be encoded.
-    *                           see argument 1 to sgServices_JSON() above for array-parsing behavior.
+    *                           see argument 1 to sgServicesJSON() above for array-parsing behavior.
     *                           if var is a strng, note that encode() always expects it
     *                           to be in ASCII or UTF-8 format!
     *
@@ -381,7 +381,7 @@ class sgServices_JSON
                                             array_values($var));
 
                     foreach($properties as $property) {
-                        if(sgServices_JSON::isError($property)) {
+                        if(sgServicesJSON::isError($property)) {
                             return $property;
                         }
                     }
@@ -393,7 +393,7 @@ class sgServices_JSON
                 $elements = array_map(array($this, 'encode'), $var);
 
                 foreach($elements as $element) {
-                    if(sgServices_JSON::isError($element)) {
+                    if(sgServicesJSON::isError($element)) {
                         return $element;
                     }
                 }
@@ -408,7 +408,7 @@ class sgServices_JSON
                                         array_values($vars));
 
                 foreach($properties as $property) {
-                    if(sgServices_JSON::isError($property)) {
+                    if(sgServicesJSON::isError($property)) {
                         return $property;
                     }
                 }
@@ -416,9 +416,9 @@ class sgServices_JSON
                 return '{' . join(',', $properties) . '}';
 
             default:
-                return ($this->use & sgServices_JSON_SUPPRESS_ERRORS)
+                return ($this->use & sgServicesJSON_SUPPRESS_ERRORS)
                     ? 'null'
-                    : new sgServices_JSON_Error(gettype($var)." can not be encoded as JSON string");
+                    : new sgServicesJSON_Error(gettype($var)." can not be encoded as JSON string");
         }
     }
 
@@ -435,7 +435,7 @@ class sgServices_JSON
     {
         $encoded_value = $this->encode($value);
 
-        if(sgServices_JSON::isError($encoded_value)) {
+        if(sgServicesJSON::isError($encoded_value)) {
             return $encoded_value;
         }
 
@@ -476,7 +476,7 @@ class sgServices_JSON
     *
     * @return   mixed   number, boolean, string, array, or object
     *                   corresponding to given JSON input string.
-    *                   See argument 1 to sgServices_JSON() above for object-output behavior.
+    *                   See argument 1 to sgServicesJSON() above for object-output behavior.
     *                   Note that decode() always returns strings
     *                   in ASCII or UTF-8 format!
     * @access   public
@@ -611,19 +611,19 @@ class sgServices_JSON
                     // array, or object notation
 
                     if ($str{0} == '[') {
-                        $stk = array(sgServices_JSON_IN_ARR);
+                        $stk = array(sgServicesJSON_IN_ARR);
                         $arr = array();
                     } else {
-                        if ($this->use & sgServices_JSON_LOOSE_TYPE) {
-                            $stk = array(sgServices_JSON_IN_OBJ);
+                        if ($this->use & sgServicesJSON_LOOSE_TYPE) {
+                            $stk = array(sgServicesJSON_IN_OBJ);
                             $obj = array();
                         } else {
-                            $stk = array(sgServices_JSON_IN_OBJ);
+                            $stk = array(sgServicesJSON_IN_OBJ);
                             $obj = new stdClass();
                         }
                     }
 
-                    array_push($stk, array('what'  => sgServices_JSON_SLICE,
+                    array_push($stk, array('what'  => sgServicesJSON_SLICE,
                                            'where' => 0,
                                            'delim' => false));
 
@@ -631,7 +631,7 @@ class sgServices_JSON
                     $chrs = $this->reduce_string($chrs);
 
                     if ($chrs == '') {
-                        if (reset($stk) == sgServices_JSON_IN_ARR) {
+                        if (reset($stk) == sgServicesJSON_IN_ARR) {
                             return $arr;
 
                         } else {
@@ -649,18 +649,18 @@ class sgServices_JSON
                         $top = end($stk);
                         $substr_chrs_c_2 = substr($chrs, $c, 2);
 
-                        if (($c == $strlen_chrs) || (($chrs{$c} == ',') && ($top['what'] == sgServices_JSON_SLICE))) {
+                        if (($c == $strlen_chrs) || (($chrs{$c} == ',') && ($top['what'] == sgServicesJSON_SLICE))) {
                             // found a comma that is not inside a string, array, etc.,
                             // OR we've reached the end of the character list
                             $slice = substr($chrs, $top['where'], ($c - $top['where']));
-                            array_push($stk, array('what' => sgServices_JSON_SLICE, 'where' => ($c + 1), 'delim' => false));
+                            array_push($stk, array('what' => sgServicesJSON_SLICE, 'where' => ($c + 1), 'delim' => false));
                             //print("Found split at {$c}: ".substr($chrs, $top['where'], (1 + $c - $top['where']))."\n");
 
-                            if (reset($stk) == sgServices_JSON_IN_ARR) {
+                            if (reset($stk) == sgServicesJSON_IN_ARR) {
                                 // we are in an array, so just push an element onto the stack
                                 array_push($arr, $this->decode($slice));
 
-                            } elseif (reset($stk) == sgServices_JSON_IN_OBJ) {
+                            } elseif (reset($stk) == sgServicesJSON_IN_OBJ) {
                                 // we are in an object, so figure
                                 // out the property name and set an
                                 // element in an associative array,
@@ -672,7 +672,7 @@ class sgServices_JSON
                                     $key = $this->decode($parts[1]);
                                     $val = $this->decode($parts[2]);
 
-                                    if ($this->use & sgServices_JSON_LOOSE_TYPE) {
+                                    if ($this->use & sgServicesJSON_LOOSE_TYPE) {
                                         $obj[$key] = $val;
                                     } else {
                                         $obj->$key = $val;
@@ -682,7 +682,7 @@ class sgServices_JSON
                                     $key = $parts[1];
                                     $val = $this->decode($parts[2]);
 
-                                    if ($this->use & sgServices_JSON_LOOSE_TYPE) {
+                                    if ($this->use & sgServicesJSON_LOOSE_TYPE) {
                                         $obj[$key] = $val;
                                     } else {
                                         $obj->$key = $val;
@@ -691,13 +691,13 @@ class sgServices_JSON
 
                             }
 
-                        } elseif ((($chrs{$c} == '"') || ($chrs{$c} == "'")) && ($top['what'] != sgServices_JSON_IN_STR)) {
+                        } elseif ((($chrs{$c} == '"') || ($chrs{$c} == "'")) && ($top['what'] != sgServicesJSON_IN_STR)) {
                             // found a quote, and we are not inside a string
-                            array_push($stk, array('what' => sgServices_JSON_IN_STR, 'where' => $c, 'delim' => $chrs{$c}));
+                            array_push($stk, array('what' => sgServicesJSON_IN_STR, 'where' => $c, 'delim' => $chrs{$c}));
                             //print("Found start of string at {$c}\n");
 
                         } elseif (($chrs{$c} == $top['delim']) &&
-                                 ($top['what'] == sgServices_JSON_IN_STR) &&
+                                 ($top['what'] == sgServicesJSON_IN_STR) &&
                                  ((strlen(substr($chrs, 0, $c)) - strlen(rtrim(substr($chrs, 0, $c), '\\'))) % 2 != 1)) {
                             // found a quote, we're in a string, and it's not escaped
                             // we know that it's not escaped becase there is _not_ an
@@ -706,35 +706,35 @@ class sgServices_JSON
                             //print("Found end of string at {$c}: ".substr($chrs, $top['where'], (1 + 1 + $c - $top['where']))."\n");
 
                         } elseif (($chrs{$c} == '[') &&
-                                 in_array($top['what'], array(sgServices_JSON_SLICE, sgServices_JSON_IN_ARR, sgServices_JSON_IN_OBJ))) {
+                                 in_array($top['what'], array(sgServicesJSON_SLICE, sgServicesJSON_IN_ARR, sgServicesJSON_IN_OBJ))) {
                             // found a left-bracket, and we are in an array, object, or slice
-                            array_push($stk, array('what' => sgServices_JSON_IN_ARR, 'where' => $c, 'delim' => false));
+                            array_push($stk, array('what' => sgServicesJSON_IN_ARR, 'where' => $c, 'delim' => false));
                             //print("Found start of array at {$c}\n");
 
-                        } elseif (($chrs{$c} == ']') && ($top['what'] == sgServices_JSON_IN_ARR)) {
+                        } elseif (($chrs{$c} == ']') && ($top['what'] == sgServicesJSON_IN_ARR)) {
                             // found a right-bracket, and we're in an array
                             array_pop($stk);
                             //print("Found end of array at {$c}: ".substr($chrs, $top['where'], (1 + $c - $top['where']))."\n");
 
                         } elseif (($chrs{$c} == '{') &&
-                                 in_array($top['what'], array(sgServices_JSON_SLICE, sgServices_JSON_IN_ARR, sgServices_JSON_IN_OBJ))) {
+                                 in_array($top['what'], array(sgServicesJSON_SLICE, sgServicesJSON_IN_ARR, sgServicesJSON_IN_OBJ))) {
                             // found a left-brace, and we are in an array, object, or slice
-                            array_push($stk, array('what' => sgServices_JSON_IN_OBJ, 'where' => $c, 'delim' => false));
+                            array_push($stk, array('what' => sgServicesJSON_IN_OBJ, 'where' => $c, 'delim' => false));
                             //print("Found start of object at {$c}\n");
 
-                        } elseif (($chrs{$c} == '}') && ($top['what'] == sgServices_JSON_IN_OBJ)) {
+                        } elseif (($chrs{$c} == '}') && ($top['what'] == sgServicesJSON_IN_OBJ)) {
                             // found a right-brace, and we're in an object
                             array_pop($stk);
                             //print("Found end of object at {$c}: ".substr($chrs, $top['where'], (1 + $c - $top['where']))."\n");
 
                         } elseif (($substr_chrs_c_2 == '/*') &&
-                                 in_array($top['what'], array(sgServices_JSON_SLICE, sgServices_JSON_IN_ARR, sgServices_JSON_IN_OBJ))) {
+                                 in_array($top['what'], array(sgServicesJSON_SLICE, sgServicesJSON_IN_ARR, sgServicesJSON_IN_OBJ))) {
                             // found a comment start, and we are in an array, object, or slice
-                            array_push($stk, array('what' => sgServices_JSON_IN_CMT, 'where' => $c, 'delim' => false));
+                            array_push($stk, array('what' => sgServicesJSON_IN_CMT, 'where' => $c, 'delim' => false));
                             $c++;
                             //print("Found start of comment at {$c}\n");
 
-                        } elseif (($substr_chrs_c_2 == '*/') && ($top['what'] == sgServices_JSON_IN_CMT)) {
+                        } elseif (($substr_chrs_c_2 == '*/') && ($top['what'] == sgServicesJSON_IN_CMT)) {
                             // found a comment end, and we're in one now
                             array_pop($stk);
                             $c++;
@@ -748,10 +748,10 @@ class sgServices_JSON
 
                     }
 
-                    if (reset($stk) == sgServices_JSON_IN_ARR) {
+                    if (reset($stk) == sgServicesJSON_IN_ARR) {
                         return $arr;
 
-                    } elseif (reset($stk) == sgServices_JSON_IN_OBJ) {
+                    } elseif (reset($stk) == sgServicesJSON_IN_OBJ) {
                         return $obj;
 
                     }
@@ -767,8 +767,8 @@ class sgServices_JSON
     {
         if (class_exists('pear')) {
             return PEAR::isError($data, $code);
-        } elseif (is_object($data) && (get_class($data) == 'sgServices_JSON_error' ||
-                                 is_subclass_of($data, 'sgServices_JSON_error'))) {
+        } elseif (is_object($data) && (get_class($data) == 'sgServicesJSON_error' ||
+                                 is_subclass_of($data, 'sgServicesJSON_error'))) {
             return true;
         }
 
@@ -778,9 +778,9 @@ class sgServices_JSON
 
 if (class_exists('PEAR_Error')) {
 
-    class sgServices_JSON_Error extends PEAR_Error
+    class sgServicesJSON_Error extends PEAR_Error
     {
-        function sgServices_JSON_Error($message = 'unknown error', $code = null,
+        function sgServicesJSON_Error($message = 'unknown error', $code = null,
                                      $mode = null, $options = null, $userinfo = null)
         {
             parent::PEAR_Error($message, $code, $mode, $options, $userinfo);
@@ -792,9 +792,9 @@ if (class_exists('PEAR_Error')) {
     /**
      * @todo Ultimately, this class shall be descended from PEAR_Error
      */
-    class sgServices_JSON_Error
+    class sgServicesJSON_Error
     {
-        function sgServices_JSON_Error($message = 'unknown error', $code = null,
+        function sgServicesJSON_Error($message = 'unknown error', $code = null,
                                      $mode = null, $options = null, $userinfo = null)
         {
 
