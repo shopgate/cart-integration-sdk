@@ -786,7 +786,7 @@ abstract class ShopgateObject {
 
 		// encode via external class
 		$jsonService = new sgServicesJSON(sgServicesJSON_LOOSE_TYPE);
-		return $jsonClass->encode($value);
+		return $jsonService->encode($value);
 	}
 
 	/**

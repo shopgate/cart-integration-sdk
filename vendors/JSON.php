@@ -666,7 +666,7 @@ class sgServicesJSON
                                 // element in an associative array,
                                 // for now
                                 $parts = array();
-                                
+
                                 if (preg_match('/^\s*(["\'].*[^\\\]["\'])\s*:\s*(\S.*),?$/Uis', $slice, $parts)) {
                                     // "name":value pair
                                     $key = $this->decode($parts[1]);
@@ -765,10 +765,11 @@ class sgServicesJSON
      */
     function isError($data, $code = null)
     {
-        if (class_exists('pear')) {
-            return PEAR::isError($data, $code);
-        } elseif (is_object($data) && (get_class($data) == 'sgServicesJSON_error' ||
-                                 is_subclass_of($data, 'sgServicesJSON_error'))) {
+//         if (class_exists('pear')) {
+//             return PEAR::isError($data, $code);
+//         } else
+        if (is_object($data) && (get_class($data) == 'sgServicesJSON_error'
+        || is_subclass_of($data, 'sgServicesJSON_error'))) {
             return true;
         }
 
@@ -776,18 +777,18 @@ class sgServicesJSON
     }
 }
 
-if (class_exists('PEAR_Error')) {
+// if (class_exists('PEAR_Error')) {
 
-    class sgServicesJSON_Error extends PEAR_Error
-    {
-        function sgServicesJSON_Error($message = 'unknown error', $code = null,
-                                     $mode = null, $options = null, $userinfo = null)
-        {
-            parent::PEAR_Error($message, $code, $mode, $options, $userinfo);
-        }
-    }
+//     class sgServicesJSON_Error extends PEAR_Error
+//     {
+//         function sgServicesJSON_Error($message = 'unknown error', $code = null,
+//                                      $mode = null, $options = null, $userinfo = null)
+//         {
+//             parent::PEAR_Error($message, $code, $mode, $options, $userinfo);
+//         }
+//     }
 
-} else {
+// } else {
 
     /**
      * @todo Ultimately, this class shall be descended from PEAR_Error
@@ -801,6 +802,6 @@ if (class_exists('PEAR_Error')) {
         }
     }
 
-}
-    
+// }
+
 ?>
