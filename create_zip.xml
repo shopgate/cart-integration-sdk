@@ -70,13 +70,13 @@ Setup:
 		Depends on Prepare, create_tag, build
 	-->
 	<target name="upload" depends="build">
-		<s3cmd command="put" file="${project-root}/shopgate_library.zip" key="s3://shopgate-static/plugins/shopgate_library.zip">
+		<s3cmd command="put" file="${project-root}/shopgate_library.zip" key="s3://files.shopgate.com/plugins/shopgate_library.zip">
 			<args>
 				<arg value="--acl-public" />
 			</args>
 		</s3cmd>
 
-		<echo message="Public-URL: http://static.shopgate.com/plugins/shopgate_library.zip" />
+		<echo message="Public-URL: http://files.shopgate.com/plugins/shopgate_library.zip" />
 	</target>
 
 	<!--
