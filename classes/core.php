@@ -1057,7 +1057,7 @@ class ShopgatePluginApi extends ShopgateObject {
 	 * @return bool false if an error occured, otherwise true.
 	 */
 	public function handleRequest($data = array()) {
-		if( $data["debug_log"] == 1 )
+		if( isset( $data["debug_log"] ) && $data["debug_log"] == 1 )
 			define("SHOPGATE_DEBUG_LOG", 1);
 
 		// log incoming request
