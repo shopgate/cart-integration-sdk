@@ -4,6 +4,7 @@
 # define constants
 ###################################################################################
 define('SHOPGATE_LIBRARY_VERSION', '2.0.23');
+define('SHOPGATE_LIBRARY_ENCODING' , 'UTF-8');
 define('SHOPGATE_BASE_DIR', realpath(dirname(__FILE__).'/../'));
 define('SHOPGATE_ITUNES_URL', 'http://itunes.apple.com/de/app/shopgate-eine-app-alle-shops/id365287459?mt=8');
 
@@ -854,6 +855,41 @@ abstract class ShopgateObject {
 
 		return implode('', array_reverse($text));
 	}
+	
+	/**
+	 * Encodes a string from a given encoding to UTF-8.
+	 *
+	 * This wraps the mb_convert_encoding() function of PHP.
+	 *
+	 * @param string $string The string to encode.
+	 * @param string|string[] $destinationEncoding The encoding(s) of $string.
+	 * @return string The UTF-8 encoded string.
+	 *
+	 * @see http://php.net/manual/de/function.mb-convert-encoding.php
+	 */
+	public function stringToUtf8($string, $sourceEncoding = 'ISO-8859-15') {
+		return (function_exists('mb_convert_encoding'))
+			? mb_convert_encoding($string, SHOPGATE_LIBRARY_ENCODING, $sourceEncoding)
+			: $string;
+		
+	}
+	
+	/**
+	 * Decodes a string from UTF-8 to a given encoding.
+	 *
+	 * This wraps the mb_convert_encoding() function of PHP.
+	 *
+	 * @param string $string The string to decode.
+	 * @param string $destinationEncoding The desired encoding of the return value.
+	 * @return string The UTF-8 decoded string.
+	 *
+	 * @see http://php.net/manual/de/function.mb-convert-encoding.php
+	 */
+	public function stringFromUtf8($string, $destinationEncoding = 'ISO-8859-15') {
+		return (function_exists('mb_convert_encoding'))
+			? mb_convert_encoding($string, $destinationEncoding, SHOPGATE_LIBRARY_ENCODING)
+			: $string;
+	}
 }
 
 /**
@@ -1121,7 +1157,7 @@ class ShopgatePluginApi extends ShopgateObject {
 		// print out the response
 		header("HTTP/1.0 200 OK");
 		header('Content-Type: application/json');
-		header('Content-Encoding: utf-8');
+		header('Content-Encoding: '.SHOPGATE_LIBRARY_ENCODING);
 		echo $this->jsonEncode($this->response);
 
 		// return true or false
@@ -2057,10 +2093,13 @@ class ShopgateMerchantApi extends ShopgateObject {
  * @author Shopgate GmbH, 35510 Butzbach, DE
  */
 abstract class ShopgatePlugin extends ShopgateObject {
+	/**
+	 * @var string[]
+	 */
 	private $allowedEncodings = array(
-		'UTF-8', 'ASCII', 'CP1252', 'ISO-8859-15', 'UTF-16LE','ISO-8859-1'
+			SHOPGATE_LIBRARY_ENCODING, 'ASCII', 'CP1252', 'ISO-8859-15', 'UTF-16LE','ISO-8859-1'
 	);
-
+	
 	/**
 	 * @var resource
 	 */
@@ -2126,6 +2165,10 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		} catch (ShopgateLibraryException $e) {
 			// Logging is done in exception constructor
 		}
+		
+		// prepend the configured shop system encoding and make the array unique
+		$this->allowedEncodings = array_unique(array_unshift($this->allowedEncodings, $this->config['encoding']));
+		
 	}
 
 	/**
@@ -2263,10 +2306,8 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		}
 
 		foreach ($this->buffer as $item) {
-			if (function_exists("mb_convert_encoding")) {
-				foreach ($item as &$field) {
-					$field = mb_convert_encoding($field, "UTF-8", $this->allowedEncodings);
-				}
+			foreach ($item as &$field) {
+				$field = $this->stringToUtf8($field, $this->config['encoding']);
 			}
 
 			fputcsv($this->fileHandle, $item, ";", "\"");
@@ -2723,6 +2764,7 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 	const MODE_ENCODE = 1;
 	const MODE_DECODE = 2;
 
+	protected $firstObject;
 	protected $object;
 	protected $mode;
 	protected $encoding;
@@ -2753,6 +2795,8 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 	}
 
 	public function visitContainer(ShopgateContainer $c) {
+		// this is awkward but we need an object as a workaround to call the stringTo/FromUtf8 methods of ShopgateObject
+		$this->firstObject = &$c;
 		$c->accept($this);
 	}
 
@@ -2952,8 +2996,8 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 
 			// perform encoding / decoding on simple types
 			switch ($this->mode) {
-				case self::MODE_ENCODE: $value = mb_convert_encoding($value, 'UTF-8', $this->encoding); break;
-				case self::MODE_DECODE: $value = mb_convert_encoding($value, $this->encoding, 'UTF-8'); break;
+				case self::MODE_ENCODE: $value = $this->firstObject->stringToUtf8($value, $this->encoding); break;
+				case self::MODE_DECODE: $value = $this->firstObject->stringFromUtf8($value, $this->encoding); break;
 			}
 		}
 	}

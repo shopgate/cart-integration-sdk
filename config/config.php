@@ -1,5 +1,4 @@
 <?php
-
 $shopgate_config = array();
 $shopgate_config["customer_number"] = "12345";
 $shopgate_config["shop_number"] = "12345";
@@ -25,3 +24,4 @@ $shopgate_config["background_color"] = "#333";
 $shopgate_config["foreground_color"] = "#3d3d3d";
 $shopgate_config["alias"] = "my-shop";
 $shopgate_config["cname"] = "";
+$shopgate_config["encoding"] = "UTF-8";
