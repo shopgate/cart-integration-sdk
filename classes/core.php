@@ -863,15 +863,15 @@ abstract class ShopgateObject {
 	 *
 	 * @param string $string The string to encode.
 	 * @param string|string[] $destinationEncoding The encoding(s) of $string.
+	 * @param bool $force Set this true to enforce encoding even if the source encoding is already UTF-8.
 	 * @return string The UTF-8 encoded string.
 	 *
 	 * @see http://php.net/manual/de/function.mb-convert-encoding.php
 	 */
-	public function stringToUtf8($string, $sourceEncoding = 'ISO-8859-15') {
-		return (function_exists('mb_convert_encoding'))
-			? mb_convert_encoding($string, SHOPGATE_LIBRARY_ENCODING, $sourceEncoding)
-			: $string;
-		
+	public function stringToUtf8($string, $sourceEncoding = 'ISO-8859-15', $force = false) {
+		return (($sourceEncoding == SHOPGATE_LIBRARY_ENCODING) && !$force)
+			? $string
+			: mb_convert_encoding($string, SHOPGATE_LIBRARY_ENCODING, $sourceEncoding);
 	}
 	
 	/**
@@ -881,14 +881,15 @@ abstract class ShopgateObject {
 	 *
 	 * @param string $string The string to decode.
 	 * @param string $destinationEncoding The desired encoding of the return value.
+	 * @param bool $force Set this true to enforce encoding even if the destination encoding is set to UTF-8.
 	 * @return string The UTF-8 decoded string.
 	 *
 	 * @see http://php.net/manual/de/function.mb-convert-encoding.php
 	 */
-	public function stringFromUtf8($string, $destinationEncoding = 'ISO-8859-15') {
-		return (function_exists('mb_convert_encoding'))
-			? mb_convert_encoding($string, $destinationEncoding, SHOPGATE_LIBRARY_ENCODING)
-			: $string;
+	public function stringFromUtf8($string, $destinationEncoding = 'ISO-8859-15', $force = false) {
+		return (($destinationEncoding == SHOPGATE_LIBRARY_ENCODING) && !$force)
+			? $string
+			: mb_convert_encoding($string, $destinationEncoding, SHOPGATE_LIBRARY_ENCODING);
 	}
 }
 
@@ -936,11 +937,11 @@ abstract class ShopgateContainer extends ShopgateObject {
 	 * Creates a new object of the same type with every value recursively utf-8 encoded.
 	 *
 	 * @param String $sourceEncoding The source Encoding of the strings
-	 *
+	 * @param bool $force Set this true to enforce encoding even if the source encoding is already UTF-8.
 	 * @return ShopgateContainer The new object with utf-8 encoded values.
 	 */
-	public function utf8Encode($sourceEncoding = 'ISO-8859-15') {
-		$visitor = new ShopgateUtf8Visitor(ShopgateUtf8Visitor::MODE_ENCODE, $sourceEncoding);
+	public function utf8Encode($sourceEncoding = 'ISO-8859-15', $force = false) {
+		$visitor = new ShopgateUtf8Visitor(ShopgateUtf8Visitor::MODE_ENCODE, $sourceEncoding, $force);
 		$visitor->visitContainer($this);
 		return $visitor->getObject();
 	}
@@ -949,11 +950,11 @@ abstract class ShopgateContainer extends ShopgateObject {
 	 * Creates a new object of the same type with every value recursively utf-8 decoded.
 	 *
 	 * @param String $destinationEncoding The destination Encoding for the strings
-	 *
+	 * @param bool $force Set this true to enforce encoding even if the destination encoding is set to UTF-8.
 	 * @return ShopgateContainer The new object with utf-8 decoded values.
 	 */
-	public function utf8Decode($destinationEncoding = 'ISO-8859-15') {
-		$visitor = new ShopgateUtf8Visitor(ShopgateUtf8Visitor::MODE_DECODE, $destinationEncoding);
+	public function utf8Decode($destinationEncoding = 'ISO-8859-15', $force = false) {
+		$visitor = new ShopgateUtf8Visitor(ShopgateUtf8Visitor::MODE_DECODE, $destinationEncoding, $force);
 		$visitor->visitContainer($this);
 		return $visitor->getObject();
 	}
@@ -2768,13 +2769,15 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 	protected $object;
 	protected $mode;
 	protected $encoding;
+	protected $force;
 
 	/**
 	 * @param int $mode Set mode to one of the two class constants. Default is MODE_DECODE.
 	 * @param string $encoding The source or destination encoding according to PHP's mb_convert_encoding().
+	 * @param bool $force Set this true to enforce encoding even if the source or destination encoding is UTF-8.
 	 * @see http://www.php.net/manual/en/function.mb-convert-encoding.php
 	 */
-	public function __construct($mode = self::MODE_DECODE, $encoding = 'ISO-8859-15') {
+	public function __construct($mode = self::MODE_DECODE, $encoding = 'ISO-8859-15', $force = false) {
 		switch ($mode) {
 			// default mode
 			default: $mode = self::MODE_DECODE;
@@ -2785,6 +2788,7 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 			break;
 		}
 		$this->encoding = $encoding;
+		$this->force = $force;
 	}
 
 	/**
@@ -2996,8 +3000,8 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 
 			// perform encoding / decoding on simple types
 			switch ($this->mode) {
-				case self::MODE_ENCODE: $value = $this->firstObject->stringToUtf8($value, $this->encoding); break;
-				case self::MODE_DECODE: $value = $this->firstObject->stringFromUtf8($value, $this->encoding); break;
+				case self::MODE_ENCODE: $value = $this->firstObject->stringToUtf8($value, $this->encoding, $this->force); break;
+				case self::MODE_DECODE: $value = $this->firstObject->stringFromUtf8($value, $this->encoding, $this->force); break;
 			}
 		}
 	}
