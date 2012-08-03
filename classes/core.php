@@ -2168,7 +2168,9 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		}
 		
 		// prepend the configured shop system encoding and make the array unique
-		$this->allowedEncodings = array_unique(array_unshift($this->allowedEncodings, $this->config['encoding']));
+		if (!empty($this->config['encoding'])) {
+			$this->allowedEncodings = array_unique(array_unshift($this->allowedEncodings, $this->config['encoding']));
+		}
 		
 	}
 
@@ -2308,7 +2310,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 
 		foreach ($this->buffer as $item) {
 			foreach ($item as &$field) {
-				$field = $this->stringToUtf8($field, $this->config['encoding']);
+				$field = $this->stringToUtf8($field, $this->allowedEncodings);
 			}
 
 			fputcsv($this->fileHandle, $item, ";", "\"");
