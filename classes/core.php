@@ -2171,7 +2171,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		if (!empty($this->config['encoding'])) {
 			$this->allowedEncodings = array_unique(array_unshift($this->allowedEncodings, $this->config['encoding']));
 		}
-		
 	}
 
 	/**
