@@ -330,6 +330,7 @@ class ShopgateConfig extends ShopgateObject {
 		'generate_items_csv_on_the_fly' => true,
 		'max_attributes' => 50,
 		'use_custom_error_handler' => false,
+		'encoding' => 'UTF-8',
 	);
 
 	/**
