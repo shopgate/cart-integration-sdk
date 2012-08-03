@@ -2170,7 +2170,8 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		
 		// prepend the configured shop system encoding and make the array unique
 		if (!empty($this->config['encoding'])) {
-			$this->allowedEncodings = array_unique(array_unshift($this->allowedEncodings, $this->config['encoding']));
+			array_unshift($this->allowedEncodings, $this->config['encoding']);
+			$this->allowedEncodings = array_unique($this->allowedEncodings);
 		}
 	}
 
