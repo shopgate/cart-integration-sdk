@@ -60,7 +60,7 @@ Setup:
 			</fileset>
 		</copy>
 
-		<zip zipfile="${project-root}/shopgate_library.zip" basedir="${build-folder}" update="false" />
+		<zip zipfile="${project-root}/${plugin.zip-filename}" basedir="${build-folder}" update="false" />
 		<delete dir="${ant-folder}" />
 	</target>
 
@@ -70,22 +70,14 @@ Setup:
 		Depends on Prepare, create_tag, build
 	-->
 	<target name="upload" depends="build">
-		<s3cmd command="put" file="${project-root}/shopgate_library.zip" key="s3://files.shopgate.com/plugins/shopgate_library.zip">
+		<s3cmd command="put" file="${project-root}\shopgate_library.zip" key="${plugin.s3-key}">
 			<args>
 				<arg value="--acl-public" />
 			</args>
 		</s3cmd>
 
-		<echo message="Public-URL: http://files.shopgate.com/plugins/shopgate_library.zip" />
+		<echo message="Public-URL: ${plugin.s3-key}" />
 	</target>
-
-	<!--
-		Need s3cmd-Commanline-Tool
-
-		Install unter Ubuntu: apt-get install s3cmd
-
-		run: s3cmd -configure
-	-->
 
 	<!-- BEGIN MACROS -->
 	<macrodef name = "s3cmd">
@@ -96,7 +88,8 @@ Setup:
 
 	    <sequential>
 	        <echo message = "Upload @{file} to @{key}" />
-	        <exec executable = "s3cmd">
+	        <exec executable = "${cmd.python}">
+	            <arg value = "${cmd.s3cmd}" />
 	            <arg value = "@{command}" />
 	            <args />
 	            <arg value = "@{file}" />
