@@ -58,7 +58,7 @@ class ShopgateMobileRedirect extends ShopgateObject {
 	/**
 	 * @var string[] list of strings that deny redirection if they occur in the client's user agent; overrides $this->redirectKeywords
 	 */
-	protected $skipRedirectKeywords = array();
+	protected $skipRedirectKeywords = array('Shopgate');
 
 	/**
 	 * @var string
