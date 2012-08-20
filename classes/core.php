@@ -2716,7 +2716,7 @@ class ShopgateAuthentificationService extends ShopgateObject {
 
 		// extract customer number and timestamp from username
 		$matches = array();
-		if (!preg_match('/(?<customer_number>[1-9][0-9]+)-(?<timestamp>[1-9][0-9]+)/', $name, $matches)){
+		if (!preg_match('/(?P<customer_number>[1-9][0-9]+)-(?P<timestamp>[1-9][0-9]+)/', $name, $matches)){
 			throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTICATION_FAILED, 'Cannot parse: '.$name.'.');
 		}
 
