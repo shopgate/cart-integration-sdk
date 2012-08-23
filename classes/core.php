@@ -1866,6 +1866,28 @@ class ShopgateMerchantApi extends ShopgateObject {
 	}
 
 	/**
+	 * Represents the "cancel_order" action.
+	 *
+	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
+	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_cancel_order/de
+	 */
+	public function cancelOrder($orderNumber, $cancelCompleteOrder = false, $cancellationItems = array(), $cancelShipping = false, $cancellationNote = ''){
+		$data = array(
+			'action' => 'cancel_order',
+			'order_number' => $orderNumber,
+			'cancel_complete_order' => $cancelCompleteOrder,
+			'cancellation_items' => $cancellationItems,
+			'cancel_shipping' => $cancelShipping,
+			'cancellation_note' => $cancellationNote,
+		);
+	
+		$response = $this->sendRequest($data);
+		$oResponse = new ShopgateMerchantApiResponse($response);
+
+		return $oResponse;
+	}
+	
+	/**
 	 * Represents the "get_mobile_redirect_keywords" action.
 	 *
 	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
