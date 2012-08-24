@@ -249,7 +249,7 @@ class ShopgateMobileRedirect extends ShopgateObject {
 		} else {
 			return false;
 		}
-
+		
 		// check user agent for redirection keywords and skip redirection keywords and return the result
 		return
 			(!empty($this->redirectKeywords)     ?  preg_match('/'.implode('|', $this->redirectKeywords).'/', $userAgent)     : false) &&
@@ -358,21 +358,20 @@ class ShopgateMobileRedirect extends ShopgateObject {
 	 * Updates the (skip) keywords array from cache file or Shopgate Merchant API if enabled.
 	 */
 	protected function updateRedirectKeywords() {
-		
 		// load the keywords
-		$redirectKeywordsFromFile = $this->loadKeywordsFromFile($this->cacheFileWhitelist);
-		$skipRedirectKeywordsFromFile = $this->loadKeywordsFromFile($this->cacheFileBlacklist);
+		try {
+			$redirectKeywordsFromFile = $this->loadKeywordsFromFile($this->cacheFileWhitelist);
+			$skipRedirectKeywordsFromFile = $this->loadKeywordsFromFile($this->cacheFileBlacklist);
+		} catch (ShopgateLibraryException $e) {
+			// if reading the files fails DO NOT UPDATE
+			return;
+		}
 		
 		// conditions for updating keywords
-		$updateDesired =
-			$this->updateRedirectKeywords && // keyword update enabled?
-			(
-				( // timestamp set and old enough for redirect keywords?
-					(time() - ($redirectKeywordsFromFile['timestamp'] + ($this->redirectKeywordCacheTime * 3600)) > 0)
-				) || ( // timestamp set and old enough for skip redirect keywords?
-					(time() - ($skipRedirectKeywordsFromFile['timestamp'] + ($this->redirectKeywordCacheTime * 3600)) > 0)
-				)
-			);
+		$updateDesired = $this->updateRedirectKeywords && (
+			(time() - ($redirectKeywordsFromFile['timestamp'] + ($this->redirectKeywordCacheTime * 3600)) > 0) ||
+			(time() - ($skipRedirectKeywordsFromFile['timestamp'] + ($this->redirectKeywordCacheTime * 3600)) > 0)
+		);
 		
 		// strip timestamp, it's not needed anymore
 		$redirectKeywords = $redirectKeywordsFromFile['keywords'];
@@ -419,7 +418,7 @@ class ShopgateMobileRedirect extends ShopgateObject {
 		
 		$cacheFile = @fopen($file, 'a+');
 		if (empty($cacheFile)) {
-			return $defaultReturn;
+			throw new Exception(ShopgateLibraryException::FILE_READ_WRITE_ERROR, 'Could not read file "'.$file.'".');
 		}
 		
 		$keywordsFromFile = explode("\n", @fread($cacheFile, filesize($file)));
