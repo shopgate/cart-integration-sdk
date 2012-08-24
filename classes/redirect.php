@@ -382,8 +382,8 @@ class ShopgateMobileRedirect extends ShopgateObject {
 			try {
 				// fetch keywords from Shopgate Merchant API
 				$keywordsFromApi = ShopgateMerchantApi::getInstance()->getMobileRedirectKeywords();
-				$redirectKeywords = array_unique(array_merge($redirectKeywords, $keywordsFromApi['keywords']));
-				$skipRedirectKeywords = array_unique(array_merge($skipRedirectKeywords, $keywordsFromApi['skipKeywords']));
+				$redirectKeywords = $keywordsFromApi['keywords'];
+				$skipRedirectKeywords = $keywordsFromApi['skipKeywords'];
 				
 				// save keywords to their files
 				$this->saveKeywordsToFile($redirectKeywords, $this->cacheFileWhitelist);
@@ -396,6 +396,12 @@ class ShopgateMobileRedirect extends ShopgateObject {
 		if (!empty($skipRedirectKeywords)) $this->setSkipRedirectKeywords($skipRedirectKeywords);
 	}
 	
+	/**
+	 * Saves redirect keywords to file.
+	 *
+	 * @param string[] $keywords The list of keywords to write to the file.
+	 * @param string $file The path to the file.
+	 */
 	protected function saveKeywordsToFile($keywords, $file) {
 		array_unshift($keywords, time()); // add timestamp to first line
 		if (!@file_put_contents($file, implode("\n", $keywords))) {
@@ -404,11 +410,12 @@ class ShopgateMobileRedirect extends ShopgateObject {
 	}
 				
 	/**
-	 * Reads (skip) redirect keywords from file
+	 * Reads redirect keywords from file.
 	 *
 	 * @param string $file The file to read the keywords from.
 	 * @return array<'timestamp' => int, 'keywords' => string[])
 	 * 			An array with the 'timestamp' of the last update and the list of 'keywords'.
+	 * @throws ShopgateLibraryException when the file cannot be opened.
 	 */
 	protected function loadKeywordsFromFile($file) {
 		$defaultReturn = array(
@@ -418,7 +425,7 @@ class ShopgateMobileRedirect extends ShopgateObject {
 		
 		$cacheFile = @fopen($file, 'a+');
 		if (empty($cacheFile)) {
-			throw new Exception(ShopgateLibraryException::FILE_READ_WRITE_ERROR, 'Could not read file "'.$file.'".');
+			throw new ShopgateLibraryException(ShopgateLibraryException::FILE_READ_WRITE_ERROR, 'Could not read file "'.$file.'".');
 		}
 		
 		$keywordsFromFile = explode("\n", @fread($cacheFile, filesize($file)));
