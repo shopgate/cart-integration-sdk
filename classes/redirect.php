@@ -39,10 +39,6 @@ class ShopgateMobileRedirect extends ShopgateObject {
 	 */
 	const DEFAULT_CACHE_TIME = 24;
 	
-	const UPDATE_KEYWORDS = 1;
-	const UPDATE_SKIP_KEYWORDS = 2;
-
-
 	/**
 	 * @var string alias name of shop at Shopgate, e.g. 'yourshop' to redirect to 'https://yourshop.shopgate.com'
 	 */
@@ -166,8 +162,7 @@ class ShopgateMobileRedirect extends ShopgateObject {
 	public function enableKeywordUpdate($cacheTime = self::DEFAULT_CACHE_TIME) {
 		$this->updateRedirectKeywords = true;
 		$this->redirectKeywordCacheTime = ($cacheTime >= self::MIN_CACHE_TIME) ? $cacheTime : self::MIN_CACHE_TIME;
-		$this->updateRedirectKeywords(self::UPDATE_KEYWORDS);
-		$this->updateRedirectKeywords(self::UPDATE_SKIP_KEYWORDS);
+		$this->updateRedirectKeywords();
 	}
 
 	/**
@@ -360,48 +355,82 @@ class ShopgateMobileRedirect extends ShopgateObject {
 	}
 
 	/**
-	 * Updates the keywords array from cache file or Shopgate Merchant API if enabled.
-	 *
-	 * @param int one of self::UPDATE_KEYWORDS or self::UPDATE_SKIP_KEYWORDS
+	 * Updates the (skip) keywords array from cache file or Shopgate Merchant API if enabled.
 	 */
-	protected function updateRedirectKeywords($type = self::UPDATE_KEYWORDS) {
-		if (!$this->updateRedirectKeywords) return;
+	protected function updateRedirectKeywords() {
 		
-		switch ($type) {
-			default:
-			case self::UPDATE_KEYWORDS:
-				$file = $this->cacheFileWhitelist;
-				$setter = 'setRedirectKeywords';
-			break;
-			case self::UPDATE_SKIP_KEYWORDS:
-				$file = $this->cacheFileBlacklist;
-				$setter = 'setSkipRedirectKeywords';
-			break;
-		}
-
-		$cacheFile = @fopen($file, 'a+');
-		if (empty($cacheFile)) {
-			return;
-		}
-
-		$keywordsFromFile = explode("\n", @fread($cacheFile, filesize($file)));
-		$lastUpdate = (int) array_shift($keywordsFromFile); // strip timestamp in first line
-		@fclose($cacheFile);
-
-		if ((time() - ($lastUpdate + ($this->redirectKeywordCacheTime * 3600)) <= 0)) return;
-
+		// load the keywords
+		$redirectKeywordsFromFile = $this->loadKeywordsFromFile($this->cacheFileWhitelist);
+		$skipRedirectKeywordsFromFile = $this->loadKeywordsFromFile($this->cacheFileBlacklist);
+		
+		// conditions for updating keywords
+		$updateDesired =
+			$this->updateRedirectKeywords && // keyword update enabled?
+			(
+				( // timestamp set and old enough for redirect keywords?
+					(time() - ($redirectKeywordsFromFile['timestamp'] + ($this->redirectKeywordCacheTime * 3600)) > 0)
+				) || ( // timestamp set and old enough for skip redirect keywords?
+					(time() - ($skipRedirectKeywordsFromFile['timestamp'] + ($this->redirectKeywordCacheTime * 3600)) > 0)
+				)
+			);
+		
+		// strip timestamp, it's not needed anymore
+		$redirectKeywords = $redirectKeywordsFromFile['keywords'];
+		$skipRedirectKeywords = $skipRedirectKeywordsFromFile['keywords'];
+		
 		// perform update
-		try {
-			$keywordsFromApi = ShopgateMerchantApi::getInstance()->getMobileRedirectKeywords();
-			$allKeywords = array_unique(array_merge($keywordsFromFile, $keywordsFromApi));
-			array_unshift($allKeywords, time()); // add timestamp to first line
-			if (!@file_put_contents($file, implode("\n", $allKeywords))) {
-				$this->log(ShopgateLibraryException::buildLogMessageFor(ShopgateLibraryException::FILE_READ_WRITE_ERROR, 'Could not write to "'.$file.'".'));
-			}
-		} catch (Exception $e) { /* do not abort */ }
+		if ($updateDesired) {
+			try {
+				// fetch keywords from Shopgate Merchant API
+				$keywordsFromApi = ShopgateMerchantApi::getInstance()->getMobileRedirectKeywords();
+				$redirectKeywords = array_unique(array_merge($redirectKeywords, $keywordsFromApi['keywords']));
+				$skipRedirectKeywords = array_unique(array_merge($skipRedirectKeywords, $keywordsFromApi['skipKeywords']));
+				
+				// save keywords to their files
+				$this->saveKeywordsToFile($redirectKeywords, $this->cacheFileWhitelist);
+				$this->saveKeywordsToFile($skipRedirectKeywords, $this->cacheFileBlacklist);
+			} catch (Exception $e) { /* do not abort */ }
+		}
 		
 		// set keywords
-		$this->{$setter}($allKeywords);
+		if (!empty($redirectKeywords)) $this->setRedirectKeywords($redirectKeywords);
+		if (!empty($skipRedirectKeywords)) $this->setSkipRedirectKeywords($skipRedirectKeywords);
+	}
+	
+	protected function saveKeywordsToFile($keywords, $file) {
+		array_unshift($keywords, time()); // add timestamp to first line
+		if (!@file_put_contents($file, implode("\n", $keywords))) {
+			$this->log(ShopgateLibraryException::buildLogMessageFor(ShopgateLibraryException::FILE_READ_WRITE_ERROR, 'Could not write to "'.$file.'".'));
+		}
+	}
+				
+	/**
+	 * Reads (skip) redirect keywords from file
+	 *
+	 * @param string $file The file to read the keywords from.
+	 * @return array<'timestamp' => int, 'keywords' => string[])
+	 * 			An array with the 'timestamp' of the last update and the list of 'keywords'.
+	 */
+	protected function loadKeywordsFromFile($file) {
+		$defaultReturn = array(
+				'timestamp' => 0,
+				'keywords' => array()
+		);
+		
+		$cacheFile = @fopen($file, 'a+');
+		if (empty($cacheFile)) {
+			return $defaultReturn;
+		}
+		
+		$keywordsFromFile = explode("\n", @fread($cacheFile, filesize($file)));
+		@fclose($cacheFile);
+		
+		return (empty($keywordsFromFile))
+			? $defaultReturn
+			: array(
+				'timestamp' => (int) array_shift($keywordsFromFile), // strip timestamp in first line
+				'keywords' => $keywordsFromFile,
+			);
 	}
 
 	#############################

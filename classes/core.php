@@ -1903,7 +1903,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	/**
 	 * Represents the "get_mobile_redirect_keywords" action.
 	 *
-	 * @return ShopgateMerchantApiResponse
+	 * @return array 'keywords' => string[], 'skipKeywords' => string[]
 	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
 	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_get_mobile_redirect_keywords/de
 	 */
