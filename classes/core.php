@@ -94,6 +94,9 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_UNKNOWN_COUNTRY_CODE = 84;
 	const PLUGIN_UNKNOWN_STATE_CODE = 85;
 
+	const PLUGIN_CRON_MISSING_JOBS = 90;
+	const PLUGIN_CRON_UNSUPPORTED_JOB = 91;
+
 	// Merchant API errors
 	const MERCHANT_API_NO_CONNECTION = 100;
 	const MERCHANT_API_INVALID_RESPONSE = 101;
@@ -145,6 +148,9 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_DATABASE_ERROR => 'database error',
 		self::PLUGIN_UNKNOWN_COUNTRY_CODE => 'unknown country code',
 		self::PLUGIN_UNKNOWN_STATE_CODE => 'unknown state code',
+
+		self::PLUGIN_CRON_MISSING_JOBS => "missing parameter jobs",
+		self::PLUGIN_CRON_UNSUPPORTED_JOB => "unsupported job",
 
 		// Merchant API errors
 		self::MERCHANT_API_NO_CONNECTION => 'no connection to server',
@@ -257,6 +263,13 @@ class ShopgateLibraryException extends Exception {
  *
  */
 class ShopgateMerchantApiException extends Exception {
+	const ORDER_NOT_FOUND = 201;
+	const ORDER_ON_HOLD = 202;
+	const ORDER_ALREADY_COMPLETED = 203;
+	const ORDER_SHIPPING_STATUS_ALREADY_COMPLETED = 204;
+
+	const INTERNAL_ERROR_OCCURED_WHILE_SAVING = 803;
+
 	public function __construct($code, $additionalInformation = null) {
 		$message = $additionalInformation;
 
@@ -291,6 +304,7 @@ class ShopgateConfig extends ShopgateObject {
 	 * - plugin_currency -> Währungseinstellung für das Plugin. Zur Zeit nur EUR.
 	 * - plugin_root_dir -> Das Basisverzeichniss für das PlugIn.
 	 * - enable_ping -> Ping erlaubt.
+	 * - enable_cron -> Cron erlaubt.
 	 * - enable_get_shop_info -> Infos ueber das Shopsystem abholen
 	 * - enable_add_order -> Übergeben von bestelldaten erlaubt.
 	 * - enable_update_order -> Übergeben von bestelldaten erlaubt.
@@ -316,6 +330,7 @@ class ShopgateConfig extends ShopgateObject {
 		'plugin_currency' => 'EUR',
 		'plugin_root_dir' => "",
 		'enable_ping' => true,
+		'enable_cron' => true,
 		'enable_add_order' => true,
 		'enable_update_order' => true,
 		'enable_get_customer' => true,
@@ -867,7 +882,7 @@ abstract class ShopgateObject {
 
 		return implode('', array_reverse($text));
 	}
-	
+
 	/**
 	 * Encodes a string from a given encoding to UTF-8.
 	 *
@@ -885,7 +900,7 @@ abstract class ShopgateObject {
 			? $string
 			: mb_convert_encoding($string, SHOPGATE_LIBRARY_ENCODING, $sourceEncoding);
 	}
-	
+
 	/**
 	 * Decodes a string from UTF-8 to a given encoding.
 	 *
@@ -1052,6 +1067,7 @@ class ShopgatePluginApi extends ShopgateObject {
 		// initialize action whitelist
 		$this->actionWhitelist = array(
 			'ping',
+			'cron',
 			'add_order',
 			'update_order',
 			'get_customer',
@@ -1267,6 +1283,16 @@ class ShopgatePluginApi extends ShopgateObject {
 		$this->response["php_extensions"] = get_loaded_extensions();
 		$this->response["shopgate_library_version"] = SHOPGATE_LIBRARY_VERSION;
 		$this->response["plugin_version"] = defined("SHOPGATE_PLUGIN_VERSION")?SHOPGATE_PLUGIN_VERSION:"UNKNOWN";
+	}
+
+	private function cron() {
+		if (!isset($this->params['jobs'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_CRON_MISSING_JOBS);
+		}
+
+		$responses = $this->plugin->startCron( $this->params['jobs'] );
+
+		$this->response = array_merge($this->response, $responses);
 	}
 
 	/**
@@ -1893,13 +1919,13 @@ class ShopgateMerchantApi extends ShopgateObject {
 			'cancel_shipping' => $cancelShipping,
 			'cancellation_note' => $cancellationNote,
 		);
-	
+
 		$response = $this->sendRequest($data);
 		$oResponse = new ShopgateMerchantApiResponse($response);
 
 		return $oResponse;
 	}
-	
+
 	/**
 	 * Represents the "get_mobile_redirect_keywords" action.
 	 *
@@ -2147,7 +2173,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	private $allowedEncodings = array(
 			SHOPGATE_LIBRARY_ENCODING, 'ASCII', 'CP1252', 'ISO-8859-15', 'UTF-16LE','ISO-8859-1'
 	);
-	
+
 	/**
 	 * @var resource
 	 */
@@ -2213,7 +2239,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		} catch (ShopgateLibraryException $e) {
 			// Logging is done in exception constructor
 		}
-		
+
 		// prepend the configured shop system encoding and make the array unique
 		if (!empty($this->config['encoding'])) {
 			array_unshift($this->allowedEncodings, $this->config['encoding']);
@@ -2614,6 +2640,57 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * This method gets called on instantiation of a ShopgatePlugin child class and serves as __construct() replacement.
 	 */
 	public abstract function startup();
+
+	/**
+	 * Initialize and start the cron
+	 *
+	 * @param array $jobs
+	 */
+	public function startCron( array $jobs ) {
+		$responses = array();
+
+		$message = "";
+		$errorcount = 0;
+
+		$starttime = microtime(true);
+		foreach($jobs as $job) {
+			try {
+				if(!isset($job["job_params"])) {
+					$job["job_params"] = array();
+				}
+
+				$_errorcount = $errorcount;
+
+				$this->cron( $job["job_name"], $job["job_params"], $message, $errorcount );
+
+				if( $_errorcount != $errorcount ) {
+					$message .= "Errors happend in job: '{$job["job_name"]}'";
+				}
+
+			} catch (Exception $e) {
+				$errorcount++;
+				$message .= "Job aborted: '{$e->getMessage()}'";
+			}
+		}
+		$endtime = microtime(true);
+
+		$runtime = $endtime - $starttime;
+		$runtime = round($runtime, 4);
+
+		$responses["message"] = $message;
+		$responses["errorcount"] = $errorcount;
+		$responses["execution_time"] = $runtime;
+
+		return $responses;
+	}
+
+	/**
+	 * Function to do some Jobs like a cron for the Plugin
+	 *
+	 * @param string $jobname The name of the job to execute
+	 * @param array $params The Parameter array for the job
+	 */
+	public abstract function cron( $jobname, $params, &$message, &$errorcount );
 
 	/**
 	 * Function to overload to give some information abaout the used system
