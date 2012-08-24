@@ -436,13 +436,24 @@ class ShopgateConfig extends ShopgateObject {
 	}
 
 	/**
-	 * return the absolute Path for the Redirect-Keywords-Caching-File
+	 * @return the absolute Path for the Redirect-Keywords-Caching-File
 	 */
 	public static final function getRedirectKeywordsFilePath() {
 		if(isset(self::$config['path_to_redirect_keywords_file'])) {
 			return self::$config['path_to_redirect_keywords_file'];
 		} else {
 			return SHOPGATE_BASE_DIR.'/temp/cache/redirect_keywords.txt';
+		}
+	}
+
+	/**
+	 * @return the absolute Path for the Skip-Redirect-Keywords-Caching-File
+	 */
+	public static final function getSkipRedirectKeywordsFilePath() {
+		if(isset(self::$config['path_to_skip_redirect_keywords_file'])) {
+			return self::$config['path_to_skip_redirect_keywords_file'];
+		} else {
+			return SHOPGATE_BASE_DIR.'/temp/cache/skip_redirect_keywords.txt';
 		}
 	}
 
@@ -1788,7 +1799,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	 * Represents the "get_orders" action.
 	 *
 	 * @param mixed[] $parameters
-	 * @return ShopgateOrder[]
+	 * @return ShopgateMerchantApiResponse
 	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
 	 *
 	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_get_orders/de
@@ -1826,6 +1837,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	 * @param string $shippingServiceId
 	 * @param int $trackingNumber
 	 * @param bool $markAsCompleted
+	 * @return ShopgateMerchantApiResponse
 	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
 	 *
 	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_add_order_delivery_note/de
@@ -1849,6 +1861,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	 * Represents the "set_order_shipping_completed" action.
 	 *
 	 * @param string $orderNumber
+	 * @return ShopgateMerchantApiResponse
 	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
 	 *
 	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_set_order_shipping_completed/de
@@ -1890,6 +1903,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	/**
 	 * Represents the "get_mobile_redirect_keywords" action.
 	 *
+	 * @return ShopgateMerchantApiResponse
 	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
 	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_get_mobile_redirect_keywords/de
 	 */
@@ -1900,7 +1914,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 
 		$response = $this->sendRequest($data);
 
-		return $response['keywords'];
+		return $response;
 	}
 
 	/********************************************************************
@@ -1909,6 +1923,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	/**
 	 *
 	 * @param mixed[] $data
+	 * @return ShopgateMerchantApiResponse
 	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
 	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_get_items/de
 	 */
@@ -1937,6 +1952,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	/**
 	 *
 	 * @param mixed[] $data
+	 * @return ShopgateMerchantApiResponse
 	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
 	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_add_item/de
 	 */
@@ -1951,6 +1967,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	/**
 	 *
 	 * @param mixed[] $data
+	 * @return ShopgateMerchantApiResponse
 	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
 	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_update_item/de
 	 */
@@ -1966,6 +1983,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	 * Delete a Item by given item_number
 	 *
 	 * @param string $item_number
+	 * @return ShopgateMerchantApiResponse
 	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
 	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_delete_item/de
 	 */
@@ -1986,6 +2004,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	/**
 	 *
 	 * @param mixed[] $data
+	 * @return ShopgateMerchantApiResponse
 	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
 	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_get_categories/de
 	 */
@@ -2015,6 +2034,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	/**
 	 *
 	 * @param mixed[] $data
+	 * @return ShopgateMerchantApiResponse
 	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
 	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_add_category/de
 	 */
@@ -2033,6 +2053,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	/**
 	 *
 	 * @param mixed[] $data
+	 * @return ShopgateMerchantApiResponse
 	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
 	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_update_category/de
 	 */
@@ -2051,6 +2072,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	/**
 	 *
 	 * @param mixed[] $data
+	 * @return ShopgateMerchantApiResponse
 	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
 	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_delete_category/de
 	 */
@@ -2071,6 +2093,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	/**
 	 *
 	 * @param mixed[] $data
+	 * @return ShopgateMerchantApiResponse
 	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
 	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_add_item_to_category/de
 	 */
@@ -2092,6 +2115,7 @@ class ShopgateMerchantApi extends ShopgateObject {
 	/**
 	 *
 	 * @param mixed[] $data
+	 * @return ShopgateMerchantApiResponse
 	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
 	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_delete_item_from_category/de
 	 */
