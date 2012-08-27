@@ -2642,11 +2642,11 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	public abstract function startup();
 
 	/**
-	 * Initialize and start the cron
+	 * Initializes jobs and parameters for the cron callback.
 	 *
-	 * @param array $jobs
+	 * @param <'job_name' => string, 'job_params' => string[]> $jobs An array containing the job names and parameters.
 	 */
-	public function startCron( array $jobs ) {
+	public function startCron(array $jobs) {
 		$responses = array();
 
 		$message = "";
@@ -2685,17 +2685,21 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	}
 
 	/**
-	 * Function to do some Jobs like a cron for the Plugin
+	 * Executes a cron job with parameters.
 	 *
-	 * @param string $jobname The name of the job to execute
-	 * @param array $params The Parameter array for the job
+	 * @param string $jobname The name of the job to execute.
+	 * @param <string => mixed> $params Associative list of parameter names and values.
+	 * @post $message contains a message of success or failure for the job.
+	 * @post $errorcount contains the number of errors that occured during execution.
 	 */
-	public abstract function cron( $jobname, $params, &$message, &$errorcount );
+	public abstract function cron($jobname, $params, &$message, &$errorcount);
 
 	/**
-	 * Function to overload to give some information abaout the used system
+	 * Callback function for the Shopgate Plugin API ping action.
 	 *
-	 * @return array
+	 * Override this to append additional information about shop system to the response of the ping action.
+	 *
+	 * @return mixed[] An array with additional information.
 	 */
 	public function createPluginInfo() { return array(); }
 
