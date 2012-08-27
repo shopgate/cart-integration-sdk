@@ -2689,6 +2689,8 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @param string $jobname The name of the job to execute.
 	 * @param <string => mixed> $params Associative list of parameter names and values.
+	 * @param string $message A reference to the variable the message is appended to.
+	 * @param int $errorcount A reference to the error counter variable.
 	 * @post $message contains a message of success or failure for the job.
 	 * @post $errorcount contains the number of errors that occured during execution.
 	 */
