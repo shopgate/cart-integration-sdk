@@ -51,6 +51,7 @@ class ShopgateOrder extends ShopgateContainer {
 	protected $currency;
 	protected $is_test;
 	protected $is_storno;
+	protected $is_customer_invoice_blocked;
 
 	protected $invoice_address;
 	protected $delivery_address;
@@ -307,21 +308,28 @@ class ShopgateOrder extends ShopgateContainer {
 	public function setCurrency($value) { $this->currency = $value; }
 
 	/**
-	 * Is this flag is set to 1, the Order is a Test
+	 * If this flag is set to 1, the Order is a Test
 	 *
 	 * @param bool $value
 	 */
 	public function setIsTest($value) { $this->is_test = $value; }
 
 	/**
-	 * Is this flag is set to 1 the order is cancled
+	 * If this flag is set to 1 the order is cancelled
 	 *
 	 * @param bool $value
 	 */
 	public function setIsStorno($value) { $this->is_storno = $value; }
 
 	/**
-	 * Is this flag is set to 1 the payment of the order must be updated
+	 * If this flag is set to 1 the invoice is already sent to the customer. The merchant must not send the invoice
+	 *
+	 * @param bool $value
+	 */
+	public function setIsCustomerInvoiceBlocked($value) { $this->is_customer_invoice_blocked = $value; }
+
+	/**
+	 * If this flag is set to 1 the payment of the order must be updated
 	 *
 	 * @param bool $value
 	 */
@@ -330,7 +338,7 @@ class ShopgateOrder extends ShopgateContainer {
 	}
 
 	/**
-	 * Is this flag is set to 1 the shipping of the order must be updated
+	 * If this flag is set to 1 the shipping of the order must be updated
 	 *
 	 * @param bool $value
 	 */
@@ -691,22 +699,29 @@ class ShopgateOrder extends ShopgateContainer {
 	public function getCurrency() { return $this->currency; }
 
 	/**
-	 * Is this flag is set to 1, the Order is a Test
+	 * If this flag is set to 1, the Order is a Test
 	 *
 	 * @return bool
 	 */
 	public function getIsTest() { return (bool) $this->is_test; }
 
 	/**
-	 * Is this flag is set to 1 the order is cancled
+	 * If this flag is set to 1 the order is cancelled
 	 *
 	 * @return bool
 	 */
 	public function getIsStorno() { return (bool) $this->is_storno; }
 
+	/**
+	 * If this flag is set to 1 the invoice is already sent to the customer. The merchant must not send the invoice
+	 *
+	 * @return bool
+	 */
+	public function getIsCustomerInvoiceBlocked() { return (bool) $this->is_customer_invoice_blocked; }
+
 
 	/**
-	 * Is this flag is set to 1 the payment of the order must be updated
+	 * If this flag is set to 1 the payment of the order must be updated
 	 *
 	 * @return bool
 	 */
@@ -715,7 +730,7 @@ class ShopgateOrder extends ShopgateContainer {
 	}
 
 	/**
-	 * Is this flag is set to 1 the shipping of the order must be updated
+	 * If this flag is set to 1 the shipping of the order must be updated
 	 *
 	 * @return bool
 	 */
