@@ -2678,7 +2678,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		$runtime = round($runtime, 4);
 
 		$responses["message"] = $message;
-		$responses["errorcount"] = $errorcount;
+		$responses["execution_error_count"] = $errorcount;
 		$responses["execution_time"] = $runtime;
 
 		return $responses;
