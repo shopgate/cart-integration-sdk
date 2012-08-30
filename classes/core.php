@@ -1824,12 +1824,12 @@ class ShopgateMerchantApi extends ShopgateObject {
 
 		$curl = curl_init($url);
 		curl_setopt($curl, CURLOPT_HEADER, false);
-		curl_setopt($curl, CURLOPT_USERAGENT, "ShopgatePlugin/" . SHOPGATE_PLUGIN_VERSION);
+		curl_setopt($curl, CURLOPT_USERAGENT, "ShopgatePlugin/".(defined('SHOPGATE_PLUGIN_VERSION') ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin'));
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($curl, CURLOPT_HTTPHEADER, array(
 			'X-Shopgate-Library-Version: '. SHOPGATE_LIBRARY_VERSION,
-			'X-Shopgate-Plugin-Version: '.SHOPGATE_PLUGIN_VERSION,
+			'X-Shopgate-Plugin-Version: '.(defined('SHOPGATE_PLUGIN_VERSION') ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin'),
 			ShopgateAuthentificationService::getInstance()->buildAuthUserHeader(),
 			ShopgateAuthentificationService::getInstance()->buildAuthTokenHeader()
 		));
