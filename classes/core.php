@@ -75,6 +75,8 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_API_NO_USER = 35;
 	const PLUGIN_API_NO_PASS = 36;
 	const PLUGIN_API_UNKNOWN_LOGTYPE = 38;
+	const PLUGIN_API_CRON_NO_JOBS = 40;
+	const PLUGIN_API_CRON_NO_JOB_NAME = 41;
 
 	// Plugin errors
 	const PLUGIN_DUPLICATE_ORDER = 60;
@@ -94,7 +96,6 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_UNKNOWN_COUNTRY_CODE = 84;
 	const PLUGIN_UNKNOWN_STATE_CODE = 85;
 
-	const PLUGIN_CRON_MISSING_JOBS = 90;
 	const PLUGIN_CRON_UNSUPPORTED_JOB = 91;
 
 	// Merchant API errors
@@ -130,6 +131,8 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_API_NO_USER => 'parameter "user" missing',
 		self::PLUGIN_API_NO_PASS => 'parameter "pass" missing',
 		self::PLUGIN_API_UNKNOWN_LOGTYPE => 'unknown logtype',
+		self::PLUGIN_API_CRON_NO_JOBS => 'parameter "jobs" missing',
+		self::PLUGIN_API_CRON_NO_JOB_NAME => 'field "job_name" in parameter "jobs" missing',
 
 		// Plugin errors
 		self::PLUGIN_DUPLICATE_ORDER => 'duplicate order',
@@ -141,6 +144,7 @@ class ShopgateLibraryException extends Exception {
 
 		self::PLUGIN_NO_ADDRESSES_FOUND => 'no addresses found for customer',
 		self::PLUGIN_WRONG_USERNAME_OR_PASSWORD => 'wrong username or password',
+		
 
 		self::PLUGIN_FILE_NOT_FOUND => 'file not found',
 		self::PLUGIN_FILE_OPEN_ERROR => 'cannot open file',
@@ -149,8 +153,7 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_UNKNOWN_COUNTRY_CODE => 'unknown country code',
 		self::PLUGIN_UNKNOWN_STATE_CODE => 'unknown state code',
 
-		self::PLUGIN_CRON_MISSING_JOBS => "missing parameter jobs",
-		self::PLUGIN_CRON_UNSUPPORTED_JOB => "unsupported job",
+		self::PLUGIN_CRON_UNSUPPORTED_JOB => 'unsupported job',
 
 		// Merchant API errors
 		self::MERCHANT_API_NO_CONNECTION => 'no connection to server',
@@ -1286,12 +1289,55 @@ class ShopgatePluginApi extends ShopgateObject {
 	}
 
 	private function cron() {
-		if (!isset($this->params['jobs'])) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_CRON_MISSING_JOBS);
+		if (empty($this->params['jobs']) || !is_array($this->params['jobs'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_CRON_NO_JOBS);
 		}
-
-		$responses = $this->plugin->startCron( $this->params['jobs'] );
-
+		
+		// time tracking
+		$starttime = microtime(true);
+		
+		// references
+		$message = '';
+		$errorcount = 0;
+		
+		// execute the jobs
+		foreach ($this->params['jobs'] as $job) {
+			if (empty($job['job_name'])) {
+				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_CRON_NO_JOB_NAME);
+			}
+				
+			if (empty($job['job_params'])) {
+				$job['job_params'] = array();
+			}
+	
+			try {
+				$jobErrorcount = 0;
+				
+				// job execution
+				$this->plugin->cron($job['job_name'], $job['job_params'], $message, $jobErrorcount);
+				
+				// check error count
+				if ($jobErrorcount > 0) {
+					$message .= 'Errors happend in job: "'.$job['job_name'].'" ('.$jobErrorcount.' errors)';
+					$errorcount += $jobErrorcount;
+				}
+			} catch (Exception $e) {
+				$errorcount++;
+				$message .= 'Job aborted: "'.$e->getMessage().'"';
+			}
+		}
+		
+		// time tracking
+		$endtime = microtime(true);
+		$runtime = $endtime - $starttime;
+		$runtime = round($runtime, 4);
+		
+		// prepare response
+		$responses = array();
+		$responses['message'] = $message;
+		$responses['execution_error_count'] = $errorcount;
+		$responses['execution_time'] = $runtime;
+		
 		$this->response = array_merge($this->response, $responses);
 	}
 
@@ -2640,49 +2686,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * This method gets called on instantiation of a ShopgatePlugin child class and serves as __construct() replacement.
 	 */
 	public abstract function startup();
-
-	/**
-	 * Initializes jobs and parameters for the cron callback.
-	 *
-	 * @param <'job_name' => string, 'job_params' => string[]> $jobs An array containing the job names and parameters.
-	 */
-	public function startCron(array $jobs) {
-		$responses = array();
-
-		$message = "";
-		$errorcount = 0;
-
-		$starttime = microtime(true);
-		foreach($jobs as $job) {
-			try {
-				if(!isset($job["job_params"])) {
-					$job["job_params"] = array();
-				}
-
-				$_errorcount = $errorcount;
-
-				$this->cron( $job["job_name"], $job["job_params"], $message, $errorcount );
-
-				if( $_errorcount != $errorcount ) {
-					$message .= "Errors happend in job: '{$job["job_name"]}'";
-				}
-
-			} catch (Exception $e) {
-				$errorcount++;
-				$message .= "Job aborted: '{$e->getMessage()}'";
-			}
-		}
-		$endtime = microtime(true);
-
-		$runtime = $endtime - $starttime;
-		$runtime = round($runtime, 4);
-
-		$responses["message"] = $message;
-		$responses["execution_error_count"] = $errorcount;
-		$responses["execution_time"] = $runtime;
-
-		return $responses;
-	}
 
 	/**
 	 * Executes a cron job with parameters.
