@@ -909,7 +909,7 @@ class ShopgateOrderItem extends ShopgateContainer {
 		}
 		
 		if (!is_array($value)) {
-			$this->options = null;
+			$this->inputs = null;
 			return;
 		}
 		
