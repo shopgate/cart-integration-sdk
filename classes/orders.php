@@ -798,7 +798,7 @@ class ShopgateOrderItem extends ShopgateContainer {
 	 **********/
 
 	/**
-	 * Returns the name value
+	 * Sets the name value
 	 *
 	 * @param string $value
 	 */
@@ -807,7 +807,7 @@ class ShopgateOrderItem extends ShopgateContainer {
 	}
 
 	/**
-	 * Returns the item_number value
+	 * Sets the item_number value
 	 *
 	 * @param string $value
 	 */
@@ -816,7 +816,7 @@ class ShopgateOrderItem extends ShopgateContainer {
 	}
 
 	/**
-	 * Returns the unit_amount value
+	 * Sets the unit_amount value
 	 *
 	 * @param string $value
 	 */
@@ -825,7 +825,7 @@ class ShopgateOrderItem extends ShopgateContainer {
 	}
 
 	/**
-	 * Returns the unit_amount_with_tax value
+	 * Sets the unit_amount_with_tax value
 	 *
 	 * @param float $value
 	 */
@@ -834,7 +834,7 @@ class ShopgateOrderItem extends ShopgateContainer {
 	}
 
 	/**
-	 * Returns the quantity value
+	 * Sets the quantity value
 	 *
 	 * @param int $value
 	 */
@@ -843,16 +843,16 @@ class ShopgateOrderItem extends ShopgateContainer {
 	}
 
 	/**
-	* Returns the tax_percent value
-	*
-	* @param float $value
-	*/
+	 * Sets the tax_percent value
+	 *
+	 * @param float $value
+	 */
 	public function setTaxPercent($value) {
 		$this->tax_percent = $value;
 	}
 
 	/**
-	 * Returns the currency value
+	 * Sets the currency value
 	 *
 	 * @param string $value
 	 */
@@ -861,14 +861,14 @@ class ShopgateOrderItem extends ShopgateContainer {
 	}
 
 	/**
-	 * Returns the internal_order_info value
+	 * Sets the internal_order_info value
 	 *
 	 * @param string $value
 	 */
 	public function setInternalOrderInfo($value) { $this->internal_order_info = $value; }
 
 	/**
-	 * Returns the options value
+	 * Sets the options value
 	 *
 	 * @param ShopgateOrderItemOption[]|mixed[][] $value
 	 */
@@ -898,10 +898,34 @@ class ShopgateOrderItem extends ShopgateContainer {
 	}
 
 	/**
- 	 * @param unknown_type $value
- 	 * @todo IMPLEMENTIEREN
+ 	 * Sets the inputs value
+ 	 *
+ 	 * @param ShopgateOrderItemInput[]|mixed[][] $value
 	 */
-	public function setInputs($value) { $this->inputs = $value; }
+	public function setInputs($value) {
+		if (empty($value)) {
+			$this->inputs = null;
+			return;
+		}
+		
+		if (!is_array($value)) {
+			$this->options = null;
+			return;
+		}
+		
+		foreach ($value as $index => &$element) {
+			if ((!is_object($element) || !($element instanceof ShopgateOrderItemInput)) && !is_array($element)) {
+				unset($value[$index]);
+				continue;
+			}
+			
+			if (is_array(($element))) {
+				$element = new ShopgateOrderItemInput($element);
+			}
+		}
+		
+		$this->inputs = $value;
+	}
 
 
 	/**********
@@ -986,9 +1010,10 @@ class ShopgateOrderItem extends ShopgateContainer {
 	public function getOptions() { return $this->options; }
 
 	/**
-	* @param unknown_type $value
-	* @todo IMPLEMENTIEREN
-	*/
+	 * Returns the inputs value
+	 *
+	 * @param ShopgateOrderItemInputs[]
+	 */
 	public function getInputs() {
 		return $this->inputs;
 	}
@@ -1012,7 +1037,7 @@ class ShopgateOrderItemOption extends ShopgateContainer {
 	 **********/
 
 	/**
-	 * Returns the name value
+	 * Sets the name value
 	 *
 	 * @param string $value
 	 */
@@ -1021,7 +1046,7 @@ class ShopgateOrderItemOption extends ShopgateContainer {
 	}
 
 	/**
-	 * Returns the value value
+	 * Sets the value value
 	 *
 	 * @param string $value
 	 */
@@ -1030,7 +1055,7 @@ class ShopgateOrderItemOption extends ShopgateContainer {
 	}
 
 	/**
-	 * Returns the additional_unit_amount_with_tax value
+	 * Sets the additional_unit_amount_with_tax value
 	 *
 	 * @param string $value
 	 */
@@ -1039,7 +1064,7 @@ class ShopgateOrderItemOption extends ShopgateContainer {
 	}
 
 	/**
-	 * Returns the value_number value
+	 * Sets the value_number value
 	 *
 	 * @param string $value
 	 */
@@ -1048,7 +1073,7 @@ class ShopgateOrderItemOption extends ShopgateContainer {
 	}
 
 	/**
-	 * Returns the option_number value
+	 * Sets the option_number value
 	 *
 	 * @param string $value
 	 */
@@ -1112,6 +1137,76 @@ class ShopgateOrderItemOption extends ShopgateContainer {
 	}
 }
 
+class ShopgateOrderItemInput extends ShopgateContainer {
+	protected $input_number;
+	protected $type;
+	protected $additional_amount_with_tax;
+	protected $label;
+	protected $user_input;
+	protected $info_text;
+	
+	/**********
+	 * Setter *
+	 **********/
+	
+	public function setInputNumber($value) {
+		$this->input_number = $value;
+	}
+	
+	public function setType($value) {
+		$this->type = $value;
+	}
+	
+	public function setAdditionalAmountWithTax($value) {
+		$this->additional_amount_with_tax = $value;
+	}
+	
+	public function setLabel($value) {
+		$this->label = $value;
+	}
+	
+	public function setUserInput($value) {
+		$this->user_input = $value;
+	}
+	
+	public function setInfoText($value) {
+		$this->info_text = $value;
+	}
+	
+	/**********
+	 * Getter *
+	 **********/
+	
+	public function getInputNumber() {
+		return $this->input_number;
+	}
+	
+	public function getType() {
+		return $this->type;
+	}
+	
+	public function getAdditionalAmountWithTax() {
+		return $this->additional_amount_with_tax;
+	}
+	
+	public function getLabel() {
+		return $this->label;
+	}
+	
+	public function getUserInput() {
+		return $this->user_input;
+	}
+	
+	public function getInfoText() {
+		return $this->info_text;
+	}
+	
+	
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitOrderItemInput($this);
+	}
+}
+
 class ShopgateDeliveryNote extends ShopgateContainer {
 	const DHL = "DHL"; // DHL
 	const DHLEXPRESS = "DHLEXPRESS"; // DHLEXPRESS
@@ -1134,7 +1229,7 @@ class ShopgateDeliveryNote extends ShopgateContainer {
 	 **********/
 
 	/**
-	 * Returns the shipping_service_id value
+	 * Sets the shipping_service_id value
 	 *
 	 * @param string $value
 	 */
@@ -1143,7 +1238,7 @@ class ShopgateDeliveryNote extends ShopgateContainer {
 	}
 
 	/**
-	 * Returns the tracking_number value
+	 * Sets the tracking_number value
 	 *
 	 * @param string $value
 	 */
@@ -1152,7 +1247,7 @@ class ShopgateDeliveryNote extends ShopgateContainer {
 	}
 
 	/**
-	 * Returns the tracking_number value
+	 * Sets the tracking_number value
 	 *
 	 * @param string $value
 	 */

@@ -1298,6 +1298,7 @@ class ShopgateItemInput extends ShopgateContainer {
 	const INPUT_TYPE_TEXT = "text";
 	const INPUT_TYPE_IMAGE = "image";
 
+	private $input_number = null;
 	private $type = null;
 	private $additional_amount_with_tax = null;
 	private $label = null;
@@ -1306,6 +1307,15 @@ class ShopgateItemInput extends ShopgateContainer {
 
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitShopgateItemInput($this);
+	}
+
+	/**
+	 *
+	 * @param $value
+	 */
+	public function setInputNumber($value)
+	{
+	    $this->input_number = $value;
 	}
 
 	/**
@@ -1353,6 +1363,15 @@ class ShopgateItemInput extends ShopgateContainer {
 	    $this->is_required = $is_required;
 	}
 
+	/**
+	 *
+	 * @return
+	 */
+	public function getInputNumber()
+	{
+	    return $this->input_number;
+	}
+	
 	/**
 	 *
 	 * @return

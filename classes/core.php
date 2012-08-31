@@ -2539,51 +2539,61 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			'option_10_values' 			=> "",
 			/* inputfields */
 			'has_input_fields' 			=> "0",
+			'input_field_1_number'		=> "",
 			'input_field_1_type'		=> "",
 			'input_field_1_label'		=> "",
 			'input_field_1_infotext'	=> "",
 			'input_field_1_required'	=> "",
 			'input_field_1_add_amount'	=> "",
+			'input_field_2_number'		=> "",
 			'input_field_2_type'		=> "",
 			'input_field_2_label'		=> "",
 			'input_field_2_infotext'	=> "",
 			'input_field_2_required'	=> "",
 			'input_field_2_add_amount'	=> "",
+			'input_field_3_number'		=> "",
 			'input_field_3_type'		=> "",
 			'input_field_3_label'		=> "",
 			'input_field_3_infotext'	=> "",
 			'input_field_3_required'	=> "",
 			'input_field_3_add_amount'	=> "",
+			'input_field_4_number'		=> "",
 			'input_field_4_type'		=> "",
 			'input_field_4_label'		=> "",
 			'input_field_4_infotext'	=> "",
 			'input_field_4_required'	=> "",
 			'input_field_4_add_amount'	=> "",
+			'input_field_5_number'		=> "",
 			'input_field_5_type'		=> "",
 			'input_field_5_label'		=> "",
 			'input_field_5_infotext'	=> "",
 			'input_field_5_required'	=> "",
 			'input_field_5_add_amount'	=> "",
+			'input_field_6_number'		=> "",
 			'input_field_6_type'		=> "",
 			'input_field_6_label'		=> "",
 			'input_field_6_infotext'	=> "",
 			'input_field_6_required'	=> "",
 			'input_field_6_add_amount'	=> "",
+			'input_field_7_number'		=> "",
 			'input_field_7_type'		=> "",
 			'input_field_7_label'		=> "",
 			'input_field_7_infotext'	=> "",
 			'input_field_7_required'	=> "",
 			'input_field_7_add_amount'	=> "",
+			'input_field_8_number'		=> "",
 			'input_field_8_type'		=> "",
 			'input_field_8_label'		=> "",
 			'input_field_8_infotext'	=> "",
 			'input_field_8_required'	=> "",
 			'input_field_8_add_amount'	=> "",
+			'input_field_9_number'		=> "",
 			'input_field_9_type'		=> "",
 			'input_field_9_label'		=> "",
 			'input_field_9_infotext'	=> "",
 			'input_field_9_required'	=> "",
 			'input_field_9_add_amount'	=> "",
+			'input_field_10_number'		=> "",
 			'input_field_10_type'		=> "",
 			'input_field_10_label'		=> "",
 			'input_field_10_infotext'	=> "",
@@ -2883,6 +2893,7 @@ interface ShopgateContainerVisitor {
 	public function visitOrder(ShopgateOrder $o);
 	public function visitOrderItem(ShopgateOrderItem $i);
 	public function visitOrderItemOption(ShopgateOrderItemOption $o);
+	public function visitOrderItemInput(ShopgateOrderItemInput $i);
 	public function visitOrderDeliveryNote(ShopgateDeliveryNote $d);
 	public function visitShopgateCategory(ShopgateCategory $d);
 	public function visitShopgateItem(ShopgateItem $i);
@@ -3009,7 +3020,7 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 
 		// iterate lists of referred objects
 		$properties['options'] = $this->iterateObjectList($properties['options']);
-		// TODO: $properties['inputs'] = $this->iterateObjectList($properties['inputs']);
+		$properties['inputs'] = $this->iterateObjectList($properties['inputs']);
 
 		// create new object with utf-8 en- / decoded data
 		try {
@@ -3026,6 +3037,18 @@ class ShopgateUtf8Visitor implements ShopgateContainerVisitor {
 		// create new object with utf-8 en- / decoded data
 		try {
 			$this->object = new ShopgateOrderItemOption($properties);
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+	
+	public function visitOrderItemInput(ShopgateOrderItemInput $i) {
+		$properties = $i->buildProperties();
+		$this->iterateSimpleProperties($properties);
+		
+		// create new object with utf-8 en- / decoded data
+		try {
+			$this->object = new ShopgateOrderItemInput($properties);
 		} catch (ShopgateLibraryException $e) {
 			$this->object = null;
 		}
@@ -3234,7 +3257,7 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 
 		// iterate ShopgateAddress objects
 		$properties['options'] = $this->iterateObjectList($properties['options']);
-		// TODO: $properties['inputs'] = $this->iterateObjectList($properties['inputs']);
+		$properties['inputs'] = $this->iterateObjectList($properties['inputs']);
 
 		// set last value to converted array
 		$this->array = $properties;
@@ -3243,6 +3266,11 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 	public function visitOrderItemOption(ShopgateOrderItemOption $o) {
 		// get properties and iterate (no complex types in ShopgateOrderItemOption objects)
 		$this->array = $this->iterateSimpleProperties($o->buildProperties());
+	}
+	
+	public function visitOrderItemInput(ShopgateOrderItemInput $i) {
+		// get properties and iterate (no complex types in ShopgateOrderItemInput objects)
+		$this->array = $this->iterateSimpleProperties($i->buildProperties());
 	}
 
 	public function visitOrderDeliveryNote(ShopgateDeliveryNote $d) {
