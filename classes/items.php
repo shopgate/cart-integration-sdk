@@ -774,7 +774,7 @@ class ShopgateItem extends ShopgateContainer {
 	 *
 	 * @return
 	 */
-	public function getShipping_costs_per_order()
+	public function getShippingCostsPerOrder()
 	{
 	    return $this->shipping_costs_per_order;
 	}
