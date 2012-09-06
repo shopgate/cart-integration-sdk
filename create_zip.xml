@@ -70,7 +70,7 @@ Setup:
 		Depends on Prepare, create_tag, build
 	-->
 	<target name="upload" depends="build">
-		<s3cmd command="put" file="${project-root}\shopgate_library.zip" key="${plugin.s3-key}">
+		<s3cmd command="put" file="${project-root}/shopgate_library.zip" key="${plugin.s3-key}">
 			<args>
 				<arg value="--acl-public" />
 			</args>
