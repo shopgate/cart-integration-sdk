@@ -2394,12 +2394,14 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		$this->finishBuffer(ShopgateConfig::getReviewsCsvFilePath());
 	}
 
+
+	
 	/**
 	 * Adds a line to the csv file buffer.
 	 *
 	 * @param mixed[] $itemArr
 	 */
-	protected final function addItem($itemArr) {
+	private final function addRow($itemArr) {
 		$this->buffer[] = $itemArr;
 		$this->bufferCounter++;
 
@@ -2410,6 +2412,41 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		) {
 			$this->flushBuffer();
 		}
+	}
+	
+	/**
+	 * @deprecated
+	 */
+	protected final function addItem($item) {
+		$this->addRow($item);
+	}
+	
+	/**
+	 * @see ShopgatePlugin::addRow
+	 * @param array $itemArr
+	 */
+	protected final function addItemRow($item) {
+		$item = array_merge( $this->buildDefaultItemRow(), $item );
+		
+		$this->addRow( $item );
+	}
+	/**
+	 * @see ShopgatePlugin::addRow
+	 * @param array $itemArr
+	 */
+	protected final function addCategoryRow($category) {
+		$category = array_merge($this->buildDefaultCategoryRow(), $category);
+		
+		$this->addRow($category);
+	}
+	/**
+	 * @see ShopgatePlugin::addRow
+	 * @param array $itemArr
+	 */
+	protected final function addReviewRow($review) {
+		$review = array_merge($this->buildDefaultReviewRow(), $review);
+		
+		$this->addRow($review);
 	}
 
 	/**
