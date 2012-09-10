@@ -2458,10 +2458,18 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	}
 
 	/**
+	 * @see buildDefaultItemRow
+	 * @deprecated
+	 */
+	protected function buildDefaultProductRow() {
+		return $this->buildDefaultItemRow();
+	}
+	
+	/**
 	 * @return string[] An array with the csv file field names as indices and empty strings as values.
 	 * @see http://wiki.shopgate.com/CSV_File_Items/de
 	 */
-	protected function buildDefaultProductRow() {
+	protected function buildDefaultItemRow() {
 		$row = array(
 			/* responsible fields */
 			'item_number' 				=> "",
@@ -2608,7 +2616,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @return string[] An array with the csv file field names as indices and empty strings as values.
 	 * @see http://wiki.shopgate.com/CSV_File_Reviews/de
 	 */
-	protected function buildDefaultReviewsRow() {
+	protected function buildDefaultReviewRow() {
 		$row = array(
 			"item_number" => '',
 			"update_review_id" => '',
@@ -2620,6 +2628,14 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		);
 
 		return $row;
+	}
+	
+	/**
+	 * @see buildDefaultReviewRow
+	 * @deprecated
+	 */
+	protected function buildDefaultReviewsRow() {
+		return $this->buildDefaultReviewRow();
 	}
 
 	/**
@@ -2685,6 +2701,78 @@ abstract class ShopgatePlugin extends ShopgateObject {
 
 	protected $exchangeRate = 1;
 
+	/**
+	 *
+	 * @param array $loaders
+	 * @param array $shopgateItemArray
+	 * @param mixed $dataObject or $dataArray to access
+	 */
+	protected final function executeLoaders(array $loaders)
+	{
+		$arguments = func_get_args();
+		array_shift($arguments);
+	
+		foreach ($loaders as $method) {
+			if (method_exists($this, $method)) {
+				$this->log("Call Function {$method}", self::LOGTYPE_DEBUG);
+				$arguments[0] = call_user_func_array( array( $this, $method ), $arguments );
+			}
+		}
+	
+		return $arguments[0];
+	}
+	
+	/**
+	 * Creates an array of corresponding helper method names, based on the export type given
+	 * @param string $exportType
+	 * @return array
+	 */
+	private final function getCreateCsvLoaders($subjectName) {
+		$actions = array();
+		$subjectName = trim($subjectName);
+		if(!empty($subjectName)) {
+			$subjectName = ($subjectName);
+			$methodName = 'buildDefault'.$this->camelize($subjectName, true).'Row';
+			if(method_exists($this, $methodName)) {
+				foreach(array_keys($this->{$methodName}() ) as $sKey) {
+					$actions[] = $subjectName."Export" . $this->camelize($sKey, true);
+				}
+			}
+		}
+	
+		return $actions;
+	}
+	
+	/**
+	 * Returns an array with the method names of all item-loaders
+	 *
+	 * Example: exportItemName, exportUnitAmount
+	 *
+	 * @return array
+	 */
+	protected final function getCreateItemsCsvLoaders() {
+		return $this->getCreateCsvLoaders("item");
+	}
+	
+	/**
+	 * Returns an array with the method names of all item-loaders
+	 *
+	 * Example: exportCategoryCategoryNumber, exportCategoryCategoryName
+	 *
+	 * @return array
+	 */
+	protected final function getCreateCategoriesCsvLoaders() {
+		return $this->getCreateCsvLoaders("category");
+	}
+	
+	/**
+	 * Returns an array with the method names of all item-loaders
+	 *
+	 * @return array
+	 */
+	protected final function getCreateReviewsCsvLoaders() {
+		return $this->getCreateCsvLoaders("review");
+	}
 
 	/*******************************************************************************
 	 * Following methods are the callbacks that need to be implemented by plugins. *
