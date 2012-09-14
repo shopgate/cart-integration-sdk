@@ -1224,6 +1224,7 @@ class ShopgateConfigOld extends ShopgateObject {
 	 * - plugin_currency -> Währungseinstellung für das Plugin. Zur Zeit nur EUR.
 	 * - plugin_root_dir -> Das Basisverzeichniss für das PlugIn.
 	 * - enable_ping -> Ping erlaubt.
+	 * - enable_cron -> Cron erlaubt.
 	 * - enable_get_shop_info -> Infos ueber das Shopsystem abholen
 	 * - enable_add_order -> Übergeben von bestelldaten erlaubt.
 	 * - enable_update_order -> Übergeben von bestelldaten erlaubt.
@@ -1249,6 +1250,7 @@ class ShopgateConfigOld extends ShopgateObject {
 		'plugin_currency' => 'EUR',
 		'plugin_root_dir' => "",
 		'enable_ping' => true,
+		'enable_cron' => true,
 		'enable_add_order' => true,
 		'enable_update_order' => true,
 		'enable_get_customer' => true,
@@ -1258,10 +1260,12 @@ class ShopgateConfigOld extends ShopgateObject {
 		'enable_get_reviews_csv' => true,
 		'enable_get_pages_csv' => true,
 		'enable_get_log_file' => true,
+		'enable_clear_log_file' => true,
 		'enable_mobile_website' => true,
 		'generate_items_csv_on_the_fly' => true,
 		'max_attributes' => 50,
 		'use_custom_error_handler' => false,
+		'encoding' => 'UTF-8',
 	);
 
 	/**
@@ -1331,7 +1335,7 @@ class ShopgateConfigOld extends ShopgateObject {
 		
 		switch (strtolower($type)) {
 			default: $type = 'error';
-			case "access": case "request": case "request":
+			case "access": case "request": case "request": case "debug":
 		}
 
 		if(isset(self::$config['path_to_'.strtolower($type).'_log_file'])) {
@@ -1399,6 +1403,34 @@ class ShopgateConfigOld extends ShopgateObject {
 			return self::$config['path_to_pages_csv_file'];
 		} else {
 			return SHOPGATE_BASE_DIR.'/temp/pages.csv';
+		}
+	}
+
+	/**
+	 * @return the absolute Path for the Redirect-Keywords-Caching-File
+	 * @deprecated
+	 */
+	public static final function getRedirectKeywordsFilePath() {
+		self::deprecated(__METHOD__);
+		
+		if(isset(self::$config['path_to_redirect_keywords_file'])) {
+			return self::$config['path_to_redirect_keywords_file'];
+		} else {
+			return SHOPGATE_BASE_DIR.'/temp/cache/redirect_keywords.txt';
+		}
+	}
+
+	/**
+	 * @return the absolute Path for the Skip-Redirect-Keywords-Caching-File
+	 * @deprecated
+	 */
+	public static final function getSkipRedirectKeywordsFilePath() {
+		self::deprecated(__METHOD__);
+		
+		if(isset(self::$config['path_to_skip_redirect_keywords_file'])) {
+			return self::$config['path_to_skip_redirect_keywords_file'];
+		} else {
+			return SHOPGATE_BASE_DIR.'/temp/cache/skip_redirect_keywords.txt';
 		}
 	}
 

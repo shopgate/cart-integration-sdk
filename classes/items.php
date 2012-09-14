@@ -126,56 +126,56 @@ class ShopgateCategory extends ShopgateContainer {
  *
  */
 class ShopgateItem extends ShopgateContainer {
-	private $item_number = null;
-	private $name = null;
-	private $currency = null;
-	private $tax_percent = null;
-	private $unit_amount_with_tax = null;
-	private $old_unit_amount_with_tax = null;
-	private $category_numbers = array();
-	private $item_number_public = null;
-	private $parent_item_number = null;
-	private $manufacturer = null;
-	private $manufacturer_number = null;
-	private $description = null;
-	private $shipping_costs_per_order = null;
-	private $shipping_costs_per_unit = null;
-	private $is_free_shipping = null;
-	private $msrp = null;
-	private $tags = null;
-	private $age_rating = null;
-	private $weight = null;
-	private $ean = null;
-	private $isbn = null;
-	private $pzn = null;
-	private $amount_info_text = null;
-	private $internal_order_info = null;
-	private $use_stock = null;
-	private $stock_quantity = null;
-	private $is_highlight = null;
-	private $highlight_order_index = null;
-	private $is_available = null;
-	private $available_text = null;
-	private $has_image = null;
-	private $image_count = null;
-	private $is_marketplace = null;
-	private $is_active = null;
-	private $is_auto_update = null;
-	private $attribute_1 = null;
-	private $attribute_2 = null;
-	private $attribute_3 = null;
-	private $attribute_4 = null;
-	private $attribute_5 = null;
-	private $attribute_6 = null;
-	private $attribute_7 = null;
-	private $attribute_8 = null;
-	private $attribute_9 = null;
-	private $attribute_10 = null;
-	private $properties = array();
-	private $deeplink_onlineshop = null;
-	private $related_item_numbers = array();
-	private $options = array();
-	private $inputs = array();
+	protected $item_number = null;
+	protected $name = null;
+	protected $currency = null;
+	protected $tax_percent = null;
+	protected $unit_amount_with_tax = null;
+	protected $old_unit_amount_with_tax = null;
+	protected $category_numbers = array();
+	protected $item_number_public = null;
+	protected $parent_item_number = null;
+	protected $manufacturer = null;
+	protected $manufacturer_number = null;
+	protected $description = null;
+	protected $shipping_costs_per_order = null;
+	protected $shipping_costs_per_unit = null;
+	protected $is_free_shipping = null;
+	protected $msrp = null;
+	protected $tags = null;
+	protected $age_rating = null;
+	protected $weight = null;
+	protected $ean = null;
+	protected $isbn = null;
+	protected $pzn = null;
+	protected $amount_info_text = null;
+	protected $internal_order_info = null;
+	protected $use_stock = null;
+	protected $stock_quantity = null;
+	protected $is_highlight = null;
+	protected $highlight_order_index = null;
+	protected $is_available = null;
+	protected $available_text = null;
+	protected $has_image = null;
+	protected $image_count = null;
+	protected $is_marketplace = null;
+	protected $is_active = null;
+	protected $is_auto_update = null;
+	protected $attribute_1 = null;
+	protected $attribute_2 = null;
+	protected $attribute_3 = null;
+	protected $attribute_4 = null;
+	protected $attribute_5 = null;
+	protected $attribute_6 = null;
+	protected $attribute_7 = null;
+	protected $attribute_8 = null;
+	protected $attribute_9 = null;
+	protected $attribute_10 = null;
+	protected $properties = array();
+	protected $deeplink_onlineshop = null;
+	protected $related_item_numbers = array();
+	protected $options = array();
+	protected $inputs = array();
 
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitShopgateItem($this);
@@ -774,7 +774,7 @@ class ShopgateItem extends ShopgateContainer {
 	 *
 	 * @return
 	 */
-	public function getShipping_costs_per_order()
+	public function getShippingCostsPerOrder()
 	{
 	    return $this->shipping_costs_per_order;
 	}
@@ -1107,10 +1107,10 @@ class ShopgateItem extends ShopgateContainer {
  *
  */
 class ShopgateItemOption extends ShopgateContainer {
-	private $option_number = null;
-	private $name = null;
-	private $order_index = null;
-	private $option_values = array();
+	protected $option_number = null;
+	protected $name = null;
+	protected $order_index = null;
+	protected $option_values = array();
 
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitShopgateItemOption($this);
@@ -1207,10 +1207,10 @@ class ShopgateItemOption extends ShopgateContainer {
  *
  */
 class ShopgateItemOptionValue extends ShopgateContainer {
-	private $value_number = null;
-	private $value = null;
-	private $order_index = null;
-	private $additional_amount_with_tax = null;
+	protected $value_number = null;
+	protected $value = null;
+	protected $order_index = null;
+	protected $additional_amount_with_tax = null;
 
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitShopgateItemOptionValue($this);
@@ -1298,14 +1298,24 @@ class ShopgateItemInput extends ShopgateContainer {
 	const INPUT_TYPE_TEXT = "text";
 	const INPUT_TYPE_IMAGE = "image";
 
-	private $type = null;
-	private $additional_amount_with_tax = null;
-	private $label = null;
-	private $info_text = null;
-	private $is_required = null;
+	protected $input_number = null;
+	protected $type = null;
+	protected $additional_amount_with_tax = null;
+	protected $label = null;
+	protected $info_text = null;
+	protected $is_required = null;
 
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitShopgateItemInput($this);
+	}
+
+	/**
+	 *
+	 * @param $value
+	 */
+	public function setInputNumber($value)
+	{
+	    $this->input_number = $value;
 	}
 
 	/**
@@ -1353,6 +1363,15 @@ class ShopgateItemInput extends ShopgateContainer {
 	    $this->is_required = $is_required;
 	}
 
+	/**
+	 *
+	 * @return
+	 */
+	public function getInputNumber()
+	{
+	    return $this->input_number;
+	}
+	
 	/**
 	 *
 	 * @return

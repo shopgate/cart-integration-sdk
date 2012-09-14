@@ -47,10 +47,6 @@ class sg_2d_is {
 		return sg_2d_is::getUrl(sg_2d_is::CATALOG, $catalogId, $catalogPage);
 	}
 	
-	public static function getBrochureUrl($brochureId, $brochurePage) {
-		return sg_2d_is::getUrl(sg_2d_is::BROCHURE, $brochureId, $brochurePage);
-	}
-	
 	public static function getShopUrl($shopNumber) {
 		return sg_2d_is::getUrl(sg_2d_is::SHOP, $shopNumber);
 	}
