@@ -713,13 +713,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	protected $pluginApi;
 	
 	/**
-	 * @var string[]
-	 */
-	private $allowedEncodings = array(
-			SHOPGATE_LIBRARY_ENCODING, 'ASCII', 'CP1252', 'ISO-8859-15', 'UTF-16LE','ISO-8859-1'
-	);
-
-	/**
 	 * @var ShopgateFileBufferInterface
 	 */
 	protected $buffer;
@@ -763,12 +756,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		// build the object graph and get needed objects injected via set* methods
 		if (empty($builder)) $builder = new ShopgateBuilder($this->config);
 		$builder->buildLibraryFor($this);
-		
-		// prepend the configured shop system encoding and make the array unique
-		if (!empty($this->config->getEncoding())) {
-			array_unshift($this->allowedEncodings, $this->config->getEncoding());
-			$this->allowedEncodings = array_unique($this->allowedEncodings);
-		}
 	}
 	
 	/**
@@ -1377,10 +1364,13 @@ interface ShopgateFileBufferInterface {
 }
 
 class ShopgateFileBuffer extends ShopgateObject implements ShopgateFileBufferInterface {
+	/**
+	 * @var string[]
+	 */
 	private $allowedEncodings = array(
-		'UTF-8', 'ASCII', 'CP1252', 'ISO-8859-15', 'UTF-16LE','ISO-8859-1'
+			SHOPGATE_LIBRARY_ENCODING, 'ASCII', 'CP1252', 'ISO-8859-15', 'UTF-16LE','ISO-8859-1'
 	);
-	
+
 	/**
 	 * @var int (timestamp) time of the first call of addItem()
 	 */
@@ -1412,11 +1402,18 @@ class ShopgateFileBuffer extends ShopgateObject implements ShopgateFileBufferInt
 	 * The object is NOT ready to use. Call setFile() first to associate it with a file first.
 	 *
 	 * @param int $capacity
+	 * @param string $encoding
 	 */
-	public function __construct($capacity) {
+	public function __construct($capacity, $encoding = null) {
 		$this->timeStart = time();
 		$this->buffer = array();
 		$this->capacity = $capacity;
+		
+		// prepend the configured shop system encoding and make the array unique
+		if (!empty($encoding)) {
+			array_unshift($this->allowedEncodings, $encoding);
+			$this->allowedEncodings = array_unique($this->allowedEncodings);
+		}
 	}
 
 	public function setFile($filePath) {
@@ -1460,10 +1457,8 @@ class ShopgateFileBuffer extends ShopgateObject implements ShopgateFileBufferInt
 		}
 
 		foreach ($this->buffer as $item) {
-			if (function_exists("mb_convert_encoding")) {
-				foreach ($item as &$field) {
-					$field = mb_convert_encoding($field, "UTF-8", $this->allowedEncodings);
-				}
+			foreach ($item as &$field) {
+				$field = $this->stringToUtf8($field, $this->allowedEncodings);
 			}
 
 			fputcsv($this->fileHandle, $item, ";", "\"");
@@ -1816,7 +1811,7 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 		}
 	}
 
-	public function visitShopgateOption(ShopgateItemOption $i) {
+	public function visitItemOption(ShopgateItemOption $i) {
 		$properties = $i->buildProperties();
 
 		// iterate the simple variables
@@ -1833,7 +1828,7 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 		}
 	}
 
-	public function visitShopgateOptionValue(ShopgateItemOptionValue $i) {
+	public function visitItemOptionValue(ShopgateItemOptionValue $i) {
 		$properties = $i->buildProperties();
 
 		// iterate the simple variables
@@ -1847,7 +1842,7 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 		}
 	}
 
-	public function visitShopgateInput(ShopgateItemInput $i) {
+	public function visitItemInput(ShopgateItemInput $i) {
 		$properties = $i->buildProperties();
 
 		// iterate the simple variables
@@ -2038,7 +2033,6 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 
 		// iterate item option values
 		$properties['option_values'] = $this->iterateObjectList($properties['option_values']);
-		// TODO: $properties['inputs'] = $this->iterateObjectList($properties['inputs']);
 
 		// set last value to converted array
 		$this->array = $properties;

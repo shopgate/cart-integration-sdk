@@ -15,7 +15,7 @@ class ShopgateCategory extends ShopgateContainer {
 	private $is_active					= null;
 
 	public function accept(ShopgateContainerVisitor $v) {
-		$v->visitShopgateCategory($this);
+		$v->visitCategory($this);
 	}
 
 	/**
@@ -178,7 +178,7 @@ class ShopgateItem extends ShopgateContainer {
 	protected $inputs = array();
 
 	public function accept(ShopgateContainerVisitor $v) {
-		$v->visitShopgateItem($this);
+		$v->visitItem($this);
 	}
 
 	/**
@@ -1113,7 +1113,7 @@ class ShopgateItemOption extends ShopgateContainer {
 	protected $option_values = array();
 
 	public function accept(ShopgateContainerVisitor $v) {
-		$v->visitShopgateItemOption($this);
+		$v->visitItemOption($this);
 	}
 
 	/**
@@ -1213,7 +1213,7 @@ class ShopgateItemOptionValue extends ShopgateContainer {
 	protected $additional_amount_with_tax = null;
 
 	public function accept(ShopgateContainerVisitor $v) {
-		$v->visitShopgateItemOptionValue($this);
+		$v->visitItemOptionValue($this);
 	}
 
 	/**
@@ -1306,7 +1306,7 @@ class ShopgateItemInput extends ShopgateContainer {
 	protected $is_required = null;
 
 	public function accept(ShopgateContainerVisitor $v) {
-		$v->visitShopgateItemInput($this);
+		$v->visitItemInput($this);
 	}
 
 	/**

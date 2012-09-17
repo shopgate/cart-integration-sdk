@@ -463,16 +463,26 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	private function getPermissions() {
 		$permissions = array();
 		$files = array(
-				SHOPGATE_BASE_DIR.'/config/config.php',
+				# default paths
 				SHOPGATE_BASE_DIR.'/config/myconfig.php',
 				SHOPGATE_BASE_DIR.'/temp/',
 				SHOPGATE_BASE_DIR.'/temp/cache/',
+				SHOPGATE_BASE_DIR.'/temp/logs/',
+				
+				# csv files
 				$this->config->getItemsCsvPath(),
 				$this->config->getCategoriesCsvPath(),
 				$this->config->getReviewsCsvPath(),
+				
+				# log files
 				$this->config->getAccessLogPath(),
 				$this->config->getRequestLogPath(),
 				$this->config->getErrorLogPath(),
+				$this->config->getDebugLogPath(),
+				
+				# cache files
+				$this->config->getRedirectKeywordCachePath(),
+				$this->config->getRedirectSkipKeywordCachePath(),
 		);
 
 		foreach ($files as $file) {
