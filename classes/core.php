@@ -866,18 +866,18 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	/**
 	 * Calls the addRow() method on the currently associated ShopgateFileBuffer
 	 *
-	 * @param mixed[] $itemArr
+	 * @param mixed[] $row
 	 * @throws ShopgateLibraryException if flushing the buffer fails.
 	 */
-	private final function addRow($itemArr) {
-		$this->buffer->addItem($itemArr);
+	private final function addRow($row) {
+		$this->buffer->addRow($row);
 	}
 	
 	/**
 	 * @deprecated Use ShopgatePlugin::addRow().
 	 */
 	protected final function addItem($item) {
-		$this->addRow($item);
+		$this->buffer->addRow($item);
 	}
 	
 	/**
@@ -1348,12 +1348,12 @@ interface ShopgateFileBufferInterface {
 	public function setFile($filePath);
 	
 	/**
-	 * Adds a line to the csv file buffer.
+	 * Adds a line / row to the csv file buffer.
 	 *
-	 * @param mixed[] $itemArr
+	 * @param mixed[] $row
 	 * @throws ShopgateLibraryException if flushing the buffer fails.
 	 */
-	public function addItem($itemArr);
+	public function addRow($row);
 	
 	/**
 	 * Closes the file and flushes the buffer.
@@ -1431,8 +1431,8 @@ class ShopgateFileBuffer extends ShopgateObject implements ShopgateFileBufferInt
 		}
 	}
 	
-	public function addRow($itemArr) {
-		$this->buffer[] = $itemArr;
+	public function addRow($row) {
+		$this->buffer[] = $row;
 
 		if (count($this->buffer) > $this->bufferLimit) {
 			$this->flush();
