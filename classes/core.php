@@ -806,7 +806,7 @@ abstract class ShopgateObject {
 	 */
 	public function jsonEncode($value) {
 		// if json_encode exists use that
-		if (function_exists("json_encode")) {
+		if ( extension_loaded("json") && function_exists("json_decode") ) {
 			return $string = json_encode($value);
 		}
 
@@ -830,7 +830,7 @@ abstract class ShopgateObject {
 	 */
 	public function jsonDecode($json, $assoc = false) {
 		// if json_decode exists use that
-		if (function_exists("json_decode")) {
+		if ( extension_loaded("json") && function_exists("json_decode") ) {
 			return json_decode($json, $assoc);
 		}
 
