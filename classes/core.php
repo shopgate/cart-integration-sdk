@@ -555,7 +555,12 @@ class ShopgateBuilder {
 	 */
 	public function &buildRedirect() {
 		$merchantApi = &$this->buildMerchantApi();
-		$redirect = new ShopgateMobileRedirect($merchantApi, $this->config->getRedirectKeywordCachePath(), $this->config->getServer());
+		$redirect = new ShopgateMobileRedirect(
+				$merchantApi,
+				$this->config->getRedirectKeywordCachePath(),
+				$this->config->getRedirectSkipKeywordCachePath(),
+				$this->config->getServer()
+		);
 		
 		$redirect->setAlias($this->config->getAlias());
 		$redirect->setCustomMobileUrl($this->config->getCname());
@@ -618,7 +623,7 @@ abstract class ShopgateObject {
 	 */
 	public function jsonEncode($value) {
 		// if json_encode exists use that
-		if (function_exists('json_encode')) {
+		if (extension_loaded('json') && function_exists('json_encode')) {
 			return $string = json_encode($value);
 		}
 
@@ -642,7 +647,7 @@ abstract class ShopgateObject {
 	 */
 	public function jsonDecode($json, $assoc = false) {
 		// if json_decode exists use that
-		if (function_exists('json_decode')) {
+		if (extension_loaded('json') && function_exists('json_decode')) {
 			return json_decode($json, $assoc);
 		}
 
@@ -703,6 +708,11 @@ abstract class ShopgateObject {
  */
 abstract class ShopgatePlugin extends ShopgateObject {
 	/**
+	 * @var ShopgateBuilder
+	 */
+	protected $builder;
+	
+	/**
 	 * @var ShopgateConfigInterface
 	 */
 	protected $config;
@@ -756,6 +766,9 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		// build the object graph and get needed objects injected via set* methods
 		if (empty($builder)) $builder = new ShopgateBuilder($this->config);
 		$builder->buildLibraryFor($this);
+		
+		// store the builder
+		$this->builder = $builder;
 	}
 	
 	/**
@@ -924,7 +937,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	}
 
 	/**
-	 * @deprecated Use ShopgatePlugin::addItemRow().
+	 * @deprecated Use ShopgatePlugin::buildDefaultItemRow().
 	 */
 	protected function buildDefaultProductRow() {
 		return $this->buildDefaultItemRow();
@@ -1246,6 +1259,8 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * Callback function for initialization by plugin implementations.
 	 *
 	 * This method gets called on instantiation of a ShopgatePlugin child class and serves as __construct() replacement.
+	 *
+	 * Important: Initialize $this->config here if you have your own config class.
 	 */
 	public abstract function startup();
 

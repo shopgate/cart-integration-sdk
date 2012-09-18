@@ -264,7 +264,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_get_pages_csv = 0;
 		$this->enable_get_log_file = 1;
 		$this->enable_mobile_website = 0;
-		$this->enable_cron = 1;
+		$this->enable_cron = 0;
 		$this->enable_clear_logfile = 1;
 		
 		$this->export_buffer_capacity = 100;
@@ -278,6 +278,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->access_log_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs'.DS.'access.log';
 		$this->request_log_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs'.DS.'request.log';
 		$this->error_log_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs'.DS.'error.log';
+		$this->debug_log_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs'.DS.'debug.log';
 		
 		$this->redirect_keyword_cache_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'cache'.DS.'redirect_keywords.txt';
 		$this->redirect_skip_keyword_cache_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'cache'.DS.'skip_redirect_keywords.txt';

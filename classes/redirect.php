@@ -263,7 +263,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	
 	/**
 	 * Instantiates the Shopgate mobile redirector.
-	 * 
+	 *
 	 * @param ShopgateMerchantApiInterface $merchantApi An instance of the ShopgateMerchantApi required for keyword updates.
 	 * @param string $cacheFilePath The path to the cache file where redirect keywords are saved.
 	 * @param string $serverType The server type (live | pg | custom) to use redirection.
@@ -469,7 +469,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		if ($updateDesired) {
 			try {
 				// fetch keywords from Shopgate Merchant API
-				$keywordsFromApi = ShopgateMerchantApi::getInstance()->getMobileRedirectKeywords();
+				$keywordsFromApi = $this->merchantApi->getMobileRedirectKeywords();
 				$redirectKeywords = $keywordsFromApi['keywords'];
 				$skipRedirectKeywords = $keywordsFromApi['skipKeywords'];
 				

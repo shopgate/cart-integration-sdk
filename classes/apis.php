@@ -177,7 +177,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$this->responseData = array();
 		$this->responseData['pong'] = 'OK';
 		$this->responseData['configuration'] = $config;
-		$this->response['plugin_info'] = $this->plugin->createPluginInfo();
+		$this->responseData['plugin_info'] = $this->plugin->createPluginInfo();
 		$this->responseData['permissions'] = $this->getPermissions();
 		$this->responseData['php_version'] = phpversion();
 		$this->responseData['php_config'] = $this->getSettings();
@@ -352,9 +352,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		}
 
 		// generate / update items csv file if requested
-		if ($this->config->getGenerateItemsCsvOnTheFly() || isset($this->params['generate_items_csv_on_the_fly'])) {
-			$this->plugin->startGetItemsCsv();
-		}
+		$this->plugin->startGetItemsCsv();
 
 		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseTextCsv($this->trace_id);
 		$this->responseData = $this->config->getItemsCsvPath();
