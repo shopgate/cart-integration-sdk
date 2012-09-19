@@ -16,4 +16,4 @@ require_once(dirname(__FILE__).DS.'vendors'.DS.'2d_is.php');
 require_once(dirname(__FILE__).DS.'vendors'.DS.'mobile_redirect.class.php');
 
 // External-Vendors
-if(!class_exists("sgServicesJSON")) include_once(dirname(__FILE__).DS.'vendors'.DS.'JSON.php');
+include_once(dirname(__FILE__).DS.'vendors'.DS.'JSON.php');

@@ -811,10 +811,7 @@ abstract class ShopgateObject {
 			return $string = json_encode($value);
 		}
 
-		// if not check if external class is loaded
-		if (!class_exists("sgServicesJSON")) {
-			require_once dirname(__FILE__).'/../vendors/JSON.php';
-		}
+		require_once dirname(__FILE__).'/../vendors/JSON.php';
 
 		// encode via external class
 		$jsonService = new sgServicesJSON(sgServicesJSON_LOOSE_TYPE);
@@ -835,10 +832,7 @@ abstract class ShopgateObject {
 			return json_decode($json, $assoc);
 		}
 
-		// if not check if external class is loaded
-		if (!class_exists("sgServicesJSON")) {
-			require_once dirname(__FILE__).'/../vendors/JSON.php';
-		}
+		require_once dirname(__FILE__).'/../vendors/JSON.php';
 
 		// decode via external class
 		$jsonService = new sgServicesJSON(($assoc) ? sgServicesJSON_LOOSE_TYPE : sgServicesJSON_IN_OBJ);
