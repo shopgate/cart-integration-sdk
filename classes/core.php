@@ -696,11 +696,7 @@ abstract class ShopgateObject {
 	 * @see http://php.net/manual/de/function.mb-convert-encoding.php
 	 */
 	public function stringFromUtf8($string, $destinationEncoding = 'ISO-8859-15', $force = false) {
-		return (
-			(is_array($sourceEncoding)
-				? in_array(SHOPGATE_LIBRARY_ENCODING, $destinationEncoding)
-				: ($destinationEncoding == SHOPGATE_LIBRARY_ENCODING))
-			) && !$force
+		return ($destinationEncoding == SHOPGATE_LIBRARY_ENCODING) && !$force
 				? $string
 				: mb_convert_encoding($string, $destinationEncoding, SHOPGATE_LIBRARY_ENCODING);
 	}
