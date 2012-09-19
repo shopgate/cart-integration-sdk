@@ -349,6 +349,7 @@ class ShopgateConfig extends ShopgateObject {
 		'max_attributes' => 50,
 		'use_custom_error_handler' => false,
 		'encoding' => 'UTF-8',
+		'export_convert_encoding' => true,
 	);
 
 	/**
@@ -899,13 +900,14 @@ abstract class ShopgateObject {
 	 * @see http://php.net/manual/de/function.mb-convert-encoding.php
 	 */
 	public function stringToUtf8($string, $sourceEncoding = 'ISO-8859-15', $force = false) {
-		return (
-			(is_array($sourceEncoding)
-				? in_array(SHOPGATE_LIBRARY_ENCODING, $sourceEncoding)
-				: ($sourceEncoding == SHOPGATE_LIBRARY_ENCODING))
-			) && !$force
-				? $string
-				: mb_convert_encoding($string, SHOPGATE_LIBRARY_ENCODING, $sourceEncoding);
+		$conditions =
+			is_string($sourceEncoding) &&
+			($sourceEncoding == SHOPGATE_LIBRARY_ENCODING) &&
+			!$force;
+		
+		return ($conditions)
+			? $string
+			: mb_convert_encoding($string, SHOPGATE_LIBRARY_ENCODING, $sourceEncoding);
 	}
 
 	/**
@@ -2274,12 +2276,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		} catch (ShopgateLibraryException $e) {
 			// Logging is done in exception constructor
 		}
-
-		// prepend the configured shop system encoding and make the array unique
-		if (!empty($this->config['encoding'])) {
-			array_unshift($this->allowedEncodings, $this->config['encoding']);
-			$this->allowedEncodings = array_unique($this->allowedEncodings);
-		}
 	}
 
 	/**
@@ -2462,8 +2458,10 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		}
 
 		foreach ($this->buffer as $item) {
-			foreach ($item as &$field) {
-				$field = $this->stringToUtf8($field, $this->allowedEncodings);
+			if (!empty($this->config['export_convert_encoding'])) {
+				foreach ($item as &$field) {
+					$field = $this->stringToUtf8($field, $this->allowedEncodings);
+				}
 			}
 
 			fputcsv($this->fileHandle, $item, ";", "\"");
