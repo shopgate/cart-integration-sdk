@@ -91,6 +91,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 */
 	protected $encoding;
 	
+	/**
+	 * @var bool true to enable automatic encoding conversion to utf-8 during export
+	 */
+	protected $export_convert_encoding;
+	
 	
 	##############################################################
 	### Indicators to (de)activate Shopgate Plugin API actions ###
@@ -252,6 +257,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->always_use_ssl = 0;
 		$this->enable_redirect_keyword_update = 0;
 		$this->encoding = 'UTF-8';
+		$this->export_convert_encoding = 1;
 		
 		$this->enable_ping = 1;
 		$this->enable_add_order = 0;
@@ -479,6 +485,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->encoding;
 	}
 	
+	public function getExportConvertEncoding() {
+		return $this->export_convert_encoding;
+	}
+	
 	public function getEnablePing() {
 		return $this->enable_ping;
 	}
@@ -633,6 +643,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	
 	public function setEncoding($value) {
 		$this->encoding = $value;
+	}
+	
+	public function setExportConvertEncoding($value) {
+		$this->export_convert_encoding = $value;
 	}
 	
 	public function setEnablePing($value) {
@@ -1282,6 +1296,11 @@ interface ShopgateConfigInterface {
 	public function getEncoding();
 
 	/**
+	 * @return bool true to enable automatic encoding conversion to utf-8 during export
+	 */
+	public function getExportConvertEncoding();
+
+	/**
 	 * @return bool
 	 */
 	public function getEnablePing();
@@ -1470,6 +1489,11 @@ interface ShopgateConfigInterface {
 	 * @param string $value The encoding the shop system is using internally.
 	 */
 	public function setEncoding($value);
+	
+	/**
+	 * @param bool $value true to enable automatic encoding conversion to utf-8 during export
+	 */
+	public function setExportConvertEncoding($value);
 
 	/**
 	 * @param bool $value

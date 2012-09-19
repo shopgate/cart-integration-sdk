@@ -528,7 +528,7 @@ class ShopgateBuilder {
 		$pluginApi = new ShopgatePluginApi($this->config, $authService, $merchantApi, $plugin);
 		
 		// instantiate export file buffer
-		$fileBuffer = new ShopgateFileBuffer($this->config->getExportBufferCapacity());
+		$fileBuffer = new ShopgateFileBuffer($this->config->getExportBufferCapacity(), $this->config);
 		
 		// inject apis into plugin
 		$plugin->setConfig($this->config);
@@ -1389,6 +1389,11 @@ class ShopgateFileBuffer extends ShopgateObject implements ShopgateFileBufferInt
 	private $allowedEncodings = array(
 			SHOPGATE_LIBRARY_ENCODING, 'ASCII', 'CP1252', 'ISO-8859-15', 'UTF-16LE','ISO-8859-1'
 	);
+	
+	/**
+	 * @var bool true to enable automatic encoding conversion to utf-8
+	 */
+	protected $convertEncoding;
 
 	/**
 	 * @var int (timestamp) time of the first call of addItem()
@@ -1421,18 +1426,13 @@ class ShopgateFileBuffer extends ShopgateObject implements ShopgateFileBufferInt
 	 * The object is NOT ready to use. Call setFile() first to associate it with a file first.
 	 *
 	 * @param int $capacity
-	 * @param string $encoding
+	 * @param bool $encoding true to enable automatic encoding conversion to utf-8
 	 */
-	public function __construct($capacity, $encoding = null) {
+	public function __construct($capacity, $convertEncoding = true) {
 		$this->timeStart = time();
 		$this->buffer = array();
 		$this->capacity = $capacity;
-		
-		// prepend the configured shop system encoding and make the array unique
-		if (!empty($encoding)) {
-			array_unshift($this->allowedEncodings, $encoding);
-			$this->allowedEncodings = array_unique($this->allowedEncodings);
-		}
+		$this->convertEncoding = $convertEncoding;
 	}
 
 	public function setFile($filePath) {
@@ -1476,8 +1476,10 @@ class ShopgateFileBuffer extends ShopgateObject implements ShopgateFileBufferInt
 		}
 
 		foreach ($this->buffer as $item) {
-			foreach ($item as &$field) {
-				$field = $this->stringToUtf8($field, $this->allowedEncodings);
+			if (!empty($this->convertEncoding)) {
+				foreach ($item as &$field) {
+					$field = $this->stringToUtf8($field, $this->allowedEncodings);
+				}
 			}
 
 			fputcsv($this->fileHandle, $item, ";", "\"");
