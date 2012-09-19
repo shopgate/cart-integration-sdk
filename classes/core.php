@@ -679,8 +679,8 @@ abstract class ShopgateObject {
 				? in_array(SHOPGATE_LIBRARY_ENCODING, $sourceEncoding)
 				: ($sourceEncoding == SHOPGATE_LIBRARY_ENCODING))
 			) && !$force
-			? $string
-			: mb_convert_encoding($string, SHOPGATE_LIBRARY_ENCODING, $sourceEncoding);
+				? $string
+				: mb_convert_encoding($string, SHOPGATE_LIBRARY_ENCODING, $sourceEncoding);
 	}
 
 	/**
@@ -701,8 +701,8 @@ abstract class ShopgateObject {
 				? in_array(SHOPGATE_LIBRARY_ENCODING, $destinationEncoding)
 				: ($destinationEncoding == SHOPGATE_LIBRARY_ENCODING))
 			) && !$force
-			? $string
-			: mb_convert_encoding($string, $destinationEncoding, SHOPGATE_LIBRARY_ENCODING);
+				? $string
+				: mb_convert_encoding($string, $destinationEncoding, SHOPGATE_LIBRARY_ENCODING);
 	}
 }
 
