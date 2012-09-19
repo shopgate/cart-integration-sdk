@@ -667,14 +667,18 @@ abstract class ShopgateObject {
 	 * This wraps the mb_convert_encoding() function of PHP.
 	 *
 	 * @param string $string The string to encode.
-	 * @param string|string[] $destinationEncoding The encoding(s) of $string.
+	 * @param string|string[] $sourceEncoding The encoding(s) of $string.
 	 * @param bool $force Set this true to enforce encoding even if the source encoding is already UTF-8.
 	 * @return string The UTF-8 encoded string.
 	 *
 	 * @see http://php.net/manual/de/function.mb-convert-encoding.php
 	 */
 	public function stringToUtf8($string, $sourceEncoding = 'ISO-8859-15', $force = false) {
-		return (($sourceEncoding == SHOPGATE_LIBRARY_ENCODING) && !$force)
+		return (
+			(is_array($sourceEncoding)
+				? in_array(SHOPGATE_LIBRARY_ENCODING, $sourceEncoding)
+				: ($sourceEncoding == SHOPGATE_LIBRARY_ENCODING))
+			) && !$force
 			? $string
 			: mb_convert_encoding($string, SHOPGATE_LIBRARY_ENCODING, $sourceEncoding);
 	}
@@ -692,7 +696,11 @@ abstract class ShopgateObject {
 	 * @see http://php.net/manual/de/function.mb-convert-encoding.php
 	 */
 	public function stringFromUtf8($string, $destinationEncoding = 'ISO-8859-15', $force = false) {
-		return (($destinationEncoding == SHOPGATE_LIBRARY_ENCODING) && !$force)
+		return (
+			(is_array($sourceEncoding)
+				? in_array(SHOPGATE_LIBRARY_ENCODING, $destinationEncoding)
+				: ($destinationEncoding == SHOPGATE_LIBRARY_ENCODING))
+			) && !$force
 			? $string
 			: mb_convert_encoding($string, $destinationEncoding, SHOPGATE_LIBRARY_ENCODING);
 	}
