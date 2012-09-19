@@ -1205,7 +1205,7 @@ class ShopgatePluginApi extends ShopgateObject {
 	 */
 	private function outputFile($fileName) {
 		// No output on streaming
-		if(preg_match("/^php", $fileName)) return;
+		if(preg_match("/^php/", $fileName)) return;
 		
 		if (!file_exists($fileName)) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$fileName);
