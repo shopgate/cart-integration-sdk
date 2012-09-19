@@ -899,9 +899,13 @@ abstract class ShopgateObject {
 	 * @see http://php.net/manual/de/function.mb-convert-encoding.php
 	 */
 	public function stringToUtf8($string, $sourceEncoding = 'ISO-8859-15', $force = false) {
-		return (($sourceEncoding == SHOPGATE_LIBRARY_ENCODING) && !$force)
-			? $string
-			: mb_convert_encoding($string, SHOPGATE_LIBRARY_ENCODING, $sourceEncoding);
+		return (
+			(is_array($sourceEncoding)
+				? in_array(SHOPGATE_LIBRARY_ENCODING, $sourceEncoding)
+				: ($sourceEncoding == SHOPGATE_LIBRARY_ENCODING))
+			) && !$force
+				? $string
+				: mb_convert_encoding($string, SHOPGATE_LIBRARY_ENCODING, $sourceEncoding);
 	}
 
 	/**
@@ -917,9 +921,9 @@ abstract class ShopgateObject {
 	 * @see http://php.net/manual/de/function.mb-convert-encoding.php
 	 */
 	public function stringFromUtf8($string, $destinationEncoding = 'ISO-8859-15', $force = false) {
-		return (($destinationEncoding == SHOPGATE_LIBRARY_ENCODING) && !$force)
-			? $string
-			: mb_convert_encoding($string, $destinationEncoding, SHOPGATE_LIBRARY_ENCODING);
+		return ($destinationEncoding == SHOPGATE_LIBRARY_ENCODING) && !$force
+				? $string
+				: mb_convert_encoding($string, $destinationEncoding, SHOPGATE_LIBRARY_ENCODING);
 	}
 }
 
