@@ -1196,6 +1196,32 @@ class ShopgatePluginApi extends ShopgateObject {
 		return !(isset($this->response["error"]) && $this->response["error"] > 0);
 	}
 
+	/**
+	 * Open the given file and output line by line
+	 * to the default output
+	 *
+	 * @param string $fileName
+	 * @throws ShopgateLibraryException
+	 */
+	private function outputFile($fileName) {
+		// No output on streaming
+		if(preg_match("/^php", $fileName)) return;
+		
+		if (!file_exists($fileName)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$fileName);
+		}
+		
+		$fp = @fopen($fileName, "r");
+		if (!$fp) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$fileName);
+		}
+		
+		// output csv file
+		while ($line = fgets($fp)) echo $line;
+		
+		// clean up and leave
+		fclose($fp);
+	}
 
 	/******************************************************************
 	 * Following methods represent the Shopgate Plugin API's actions: *
@@ -1444,6 +1470,11 @@ class ShopgatePluginApi extends ShopgateObject {
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_items_csv/de
 	 */
 	private function getItemsCsv() {
+		// output headers ...
+		header("HTTP/1.0 200 OK");
+		header('Content-Type: text/csv');
+		header('Content-Disposition: attachment; filename="items.csv"');
+		
 		$generate_csv = ($this->config["generate_items_csv_on_the_fly"] || isset($this->params["generate_items_csv_on_the_fly"]));
 
 		if (isset($this->params["limit"]) && isset($this->params["offset"])) {
@@ -1456,27 +1487,10 @@ class ShopgatePluginApi extends ShopgateObject {
 		if ($generate_csv) {
 			$this->plugin->startGetItemsCsv();
 		}
-
+		
 		$fileName = ShopgateConfig::getItemsCsvFilePath();
-		if (!file_exists($fileName)) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$fileName);
-		}
-
-		$fp = @fopen($fileName, "r");
-		if (!$fp) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$fileName);
-		}
-
-		// output headers ...
-		header("HTTP/1.0 200 OK");
-		header('Content-Type: text/csv');
-		header('Content-Disposition: attachment; filename="items.csv"');
-
-		// ... and csv file
-		while ($line = fgets($fp)) echo $line;
-
-		// clean up and leave
-		fclose($fp);
+		$this->outputFile($fileName);
+		
 		exit;
 	}
 
@@ -1487,29 +1501,17 @@ class ShopgatePluginApi extends ShopgateObject {
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_categories_csv/de
 	 */
 	private function getCategoriesCsv() {
+		// output headers
+		header("HTTP/1.0 200 OK");
+		header('Content-Type: text/csv');
+		header('Content-Disposition: attachment; filename="categories.csv"');
+		
 		// generate / update categories csv file
 		$this->plugin->startGetCategoriesCsv();
 
 		$fileName = ShopgateConfig::getCategoriesCsvFilePath();
-		if (!file_exists($fileName)) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$fileName);
-		}
-
-		$fp = @fopen($fileName, "r");
-		if (!$fp) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$fileName);
-		}
-
-		// output headers ...
-		header("HTTP/1.0 200 OK");
-		header('Content-Type: text/csv');
-		header('Content-Disposition: attachment; filename="categories.csv"');
-
-		// ... and csv file
-		while ($line = fgets($fp)) echo $line;
-
-		// clean up and leave
-		fclose($fp);
+		$this->outputFile($fileName);
+		
 		exit;
 	}
 
@@ -1520,29 +1522,17 @@ class ShopgatePluginApi extends ShopgateObject {
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_reviews_csv/de
 	 */
 	private function getReviewsCsv() {
+		// output headers
+		header("HTTP/1.0 200 OK");
+		header('Content-Type: text/csv');
+		header('Content-Disposition: attachment; filename="reviews.csv"');
+		
 		// generate / update reviews csv file
 		$this->plugin->startGetReviewsCsv();
 
 		$fileName = ShopgateConfig::getReviewsCsvFilePath();
-		if (!file_exists($fileName)) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$fileName);
-		}
-
-		$fp = @fopen($fileName, "r");
-		if (!$fp) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$fileName);
-		}
-
-		// output headers ...
-		header("HTTP/1.0 200 OK");
-		header('Content-Type: text/csv');
-		header('Content-Disposition: attachment; filename="reviews.csv"');
-
-		// ... and csv file
-		while ($line = fgets($fp)) echo $line;
-
-		// clean up and leave
-		fclose($fp);
+		$this->outputFile($fileName);
+		
 		exit;
 	}
 
@@ -1553,26 +1543,16 @@ class ShopgatePluginApi extends ShopgateObject {
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_pages_csv/de
 	 */
 	private function getPagesCsv() {
-		$fileName = ShopgateConfig::getPagesCsvFilePath();
-		if (!file_exists($fileName)) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$fileName);
-		}
-
-		$fp = @fopen($fileName, "r");
-		if (!$fp) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$fileName);
-		}
-
-		// output headers ...
+		// output headers
 		header("HTTP/1.0 200 OK");
 		header('Content-Type: text/csv');
 		header('Content-Disposition: attachment; filename="pages.csv"');
+		
+		$this->plugin->startGetPagesCsv();
+		
+		$fileName = ShopgateConfig::getPagesCsvFilePath();
+		$this->outputFile($fileName);
 
-		// ... and csv file
-		while ($line = fgets($fp)) echo $line;
-
-		// clean up and leave
-		fclose($fp);
 		exit;
 	}
 
@@ -2233,6 +2213,11 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	/**
 	 * @var int
 	 */
+	private $rowCount = 0;
+	
+	/**
+	 * @var int
+	 */
 	private $bufferCounter = 0;
 
 	/**
@@ -2319,10 +2304,16 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 */
 	private final function createBuffer($filePath) {
 		$this->timeStart = time();
-		$filePath .= ".tmp";
+		$baseFile = $filePath;
+		
+		if(!preg_match("/^php/", $filePath)) {
+			$filePath .= ".tmp";
+			$baseFile = basename($baseFile);
+		}
 
-		$this->log('Trying to create "'.basename($filePath).'". ', 'access');
-
+		$this->log("Trying to create {$baseFile}", 'access');
+		
+		$this->rowCount = 0;
 		$this->fileHandle = @fopen($filePath, 'w');
 		if (!$this->fileHandle) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$filePath);
@@ -2340,10 +2331,12 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		$this->flushBuffer();
 		fclose($this->fileHandle);
 
-		if(file_exists($filePath)){
-			unlink($filePath);
+		if(!preg_match("/^php/", $filePath)) {
+			if(file_exists($filePath)){
+				unlink($filePath);
+			}
+			rename($filePath.".tmp", $filePath);
 		}
-		rename($filePath.".tmp", $filePath);
 
 		$this->log('Fertig, '.basename($filePath).' wurde erfolgreich erstellt', "access");
 		$duration = time() - $this->timeStart;
@@ -2455,12 +2448,12 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * The data is converted to utf-8 if mb_convert_encoding() exists
 	 */
 	private final function flushBuffer() {
-		if (empty($this->buffer) && ftell($this->fileHandle) == 0) {
+		if (empty($this->buffer) && $this->rowCount == 0) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_EMPTY_BUFFER);
 		}
 
 		// write headline if it's the beginning of the file
-		if (ftell($this->fileHandle) == 0) {
+		if ($this->rowCount == 0) {
 			fputcsv($this->fileHandle, array_keys($this->buffer[0]), ';', '"');
 		}
 
@@ -2470,6 +2463,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			}
 
 			fputcsv($this->fileHandle, $item, ";", "\"");
+			$this->rowCount++;
 		}
 
 		$this->buffer = array();
