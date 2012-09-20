@@ -1196,11 +1196,11 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	
 		foreach ($loaders as $method) {
 			if (method_exists($this, $method)) {
-				$this->log("Call Function {$method}", self::LOGTYPE_DEBUG);
+				$this->log("Call Function {$method}", ShopgateLogger::LOGTYPE_DEBUG);
 				$arguments[0] = call_user_func_array( array( $this, $method ), $arguments );
 			}
 		}
-	
+		
 		return $arguments[0];
 	}
 	
@@ -1221,7 +1221,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 				}
 			}
 		}
-	
+		
 		return $actions;
 	}
 	
