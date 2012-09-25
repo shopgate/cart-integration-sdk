@@ -25,3 +25,4 @@ $shopgate_config["foreground_color"] = "#3d3d3d";
 $shopgate_config["alias"] = "my-shop";
 $shopgate_config["cname"] = "";
 $shopgate_config["encoding"] = "UTF-8";
+$shopgate_config["export_convert_encoding"] = true;

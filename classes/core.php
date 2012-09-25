@@ -3,7 +3,7 @@
 ###################################################################################
 # define constants
 ###################################################################################
-define('SHOPGATE_LIBRARY_VERSION', '2.0.31');
+define('SHOPGATE_LIBRARY_VERSION', '2.0.34');
 define('SHOPGATE_LIBRARY_ENCODING' , 'UTF-8');
 define('SHOPGATE_BASE_DIR', realpath(dirname(__FILE__).'/../'));
 define('SHOPGATE_ITUNES_URL', 'http://itunes.apple.com/de/app/shopgate-eine-app-alle-shops/id365287459?mt=8');
@@ -349,6 +349,7 @@ class ShopgateConfig extends ShopgateObject {
 		'max_attributes' => 50,
 		'use_custom_error_handler' => false,
 		'encoding' => 'UTF-8',
+		'export_convert_encoding' => true,
 	);
 
 	/**
@@ -810,10 +811,7 @@ abstract class ShopgateObject {
 			return $string = json_encode($value);
 		}
 
-		// if not check if external class is loaded
-		if (!class_exists("sgServicesJSON")) {
-			require_once dirname(__FILE__).'/../vendors/JSON.php';
-		}
+		require_once dirname(__FILE__).'/../vendors/JSON.php';
 
 		// encode via external class
 		$jsonService = new sgServicesJSON(sgServicesJSON_LOOSE_TYPE);
@@ -834,10 +832,7 @@ abstract class ShopgateObject {
 			return json_decode($json, $assoc);
 		}
 
-		// if not check if external class is loaded
-		if (!class_exists("sgServicesJSON")) {
-			require_once dirname(__FILE__).'/../vendors/JSON.php';
-		}
+		require_once dirname(__FILE__).'/../vendors/JSON.php';
 
 		// decode via external class
 		$jsonService = new sgServicesJSON(($assoc) ? sgServicesJSON_LOOSE_TYPE : sgServicesJSON_IN_OBJ);
@@ -899,7 +894,12 @@ abstract class ShopgateObject {
 	 * @see http://php.net/manual/de/function.mb-convert-encoding.php
 	 */
 	public function stringToUtf8($string, $sourceEncoding = 'ISO-8859-15', $force = false) {
-		return (($sourceEncoding == SHOPGATE_LIBRARY_ENCODING) && !$force)
+		$conditions =
+			is_string($sourceEncoding) &&
+			($sourceEncoding == SHOPGATE_LIBRARY_ENCODING) &&
+			!$force;
+		
+		return ($conditions)
 			? $string
 			: mb_convert_encoding($string, SHOPGATE_LIBRARY_ENCODING, $sourceEncoding);
 	}
@@ -917,9 +917,9 @@ abstract class ShopgateObject {
 	 * @see http://php.net/manual/de/function.mb-convert-encoding.php
 	 */
 	public function stringFromUtf8($string, $destinationEncoding = 'ISO-8859-15', $force = false) {
-		return (($destinationEncoding == SHOPGATE_LIBRARY_ENCODING) && !$force)
-			? $string
-			: mb_convert_encoding($string, $destinationEncoding, SHOPGATE_LIBRARY_ENCODING);
+		return ($destinationEncoding == SHOPGATE_LIBRARY_ENCODING) && !$force
+				? $string
+				: mb_convert_encoding($string, $destinationEncoding, SHOPGATE_LIBRARY_ENCODING);
 	}
 }
 
@@ -2270,12 +2270,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		} catch (ShopgateLibraryException $e) {
 			// Logging is done in exception constructor
 		}
-
-		// prepend the configured shop system encoding and make the array unique
-		if (!empty($this->config['encoding'])) {
-			array_unshift($this->allowedEncodings, $this->config['encoding']);
-			$this->allowedEncodings = array_unique($this->allowedEncodings);
-		}
 	}
 
 	/**
@@ -2458,8 +2452,10 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		}
 
 		foreach ($this->buffer as $item) {
-			foreach ($item as &$field) {
-				$field = $this->stringToUtf8($field, $this->allowedEncodings);
+			if (!empty($this->config['export_convert_encoding'])) {
+				foreach ($item as &$field) {
+					$field = $this->stringToUtf8($field, $this->allowedEncodings);
+				}
 			}
 
 			fputcsv($this->fileHandle, $item, ";", "\"");

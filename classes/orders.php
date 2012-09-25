@@ -1055,12 +1055,12 @@ class ShopgateOrderItemOption extends ShopgateContainer {
 	}
 
 	/**
-	 * Sets the additional_unit_amount_with_tax value
+	 * Sets the additional_amount_with_tax value
 	 *
 	 * @param string $value
 	 */
-	public function setAdditionalUnitAmountWithTax($value) {
-		$this->additional_unit_amount_with_tax = $value;
+	public function setAdditionalAmountWithTax($value) {
+		$this->additional_amount_with_tax = $value;
 	}
 
 	/**
@@ -1105,7 +1105,7 @@ class ShopgateOrderItemOption extends ShopgateContainer {
 	}
 
 	/**
-	 * Returns the additional_unit_amount_with_tax value
+	 * Returns the additional_amount_with_tax value
 	 *
 	 * @return int
 	 */
