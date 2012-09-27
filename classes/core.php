@@ -1266,6 +1266,7 @@ class ShopgatePluginApi extends ShopgateObject {
 				SHOPGATE_BASE_DIR."/config/myconfig.php",
 				SHOPGATE_BASE_DIR."/temp/",
 				SHOPGATE_BASE_DIR."/temp/cache/",
+				SHOPGATE_BASE_DIR."/temp/logs/",
 			);
 
 			$files[] = ShopgateConfig::getItemsCsvFilePath();
