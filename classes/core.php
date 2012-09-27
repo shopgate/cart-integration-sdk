@@ -1272,7 +1272,15 @@ class ShopgatePluginApi extends ShopgateObject {
 			$files[] = ShopgateConfig::getItemsCsvFilePath();
 			$files[] = ShopgateConfig::getCategoriesCsvFilePath();
 			$files[] = ShopgateConfig::getReviewsCsvFilePath();
-
+			
+			$files[] = ShopgateConfig::getLogFilePath(ShopgateObject::LOGTYPE_ACCESS);
+			$files[] = ShopgateConfig::getLogFilePath(ShopgateObject::LOGTYPE_DEBUG);
+			$files[] = ShopgateConfig::getLogFilePath(ShopgateObject::LOGTYPE_ERROR);
+			$files[] = ShopgateConfig::getLogFilePath(ShopgateObject::LOGTYPE_REQUEST);
+			
+			$files[] = ShopgateConfig::getRedirectKeywordsFilePath();
+			$files[] = ShopgateConfig::getSkipRedirectKeywordsFilePath();
+			
 			foreach($files as $file) {
 				$permission = array();
 				$permission["file"] = $file;
