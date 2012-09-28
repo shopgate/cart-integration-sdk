@@ -548,7 +548,7 @@ class ShopgateOrder extends ShopgateContainer {
 	/**
 	 * The payment method for the order
 	 *
-	 * Sample: <ul><li>SHOPGATE</li><li>PREPAY</li><li>CC</li><li>INVOICE</li><li>DEBIT</li><li>COD</li><li>PAYPAL</li></ul>
+	 * Sample: <ul><li>SHOPGATE</li><li>PREPAY</li><li>DT_CC</li><li>BILLSAFE</li><li>KLARNA_INV</li><li>DEBIT</li><li>COD</li><li>PAYPAL</li></ul>
 	 *
 	 * @see http://wiki.shopgate.com/Merchant_API_payment_infos/de
 	 * @return string
@@ -560,7 +560,7 @@ class ShopgateOrder extends ShopgateContainer {
 	/**
 	 * The payment group for the order
 	 *
-	 * Sample: <ul><li>SHOPGATE</li><li>PREPAY</li><li>DT_CC</li><li>BILLSAFE</li><li>KLARNA_INV</li><li>DEBIT</li><li>COD</li><li>PAYPAL</li></ul>
+	 * Sample: <ul><li>SHOPGATE</li><li>PREPAY</li><li>CC</li><li>INVOICE</li><li>DEBIT</li><li>COD</li><li>PAYPAL</li></ul>
 	 *
 	 * @see http://wiki.shopgate.com/Merchant_API_payment_infos/de
 	 * @return string
