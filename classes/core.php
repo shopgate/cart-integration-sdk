@@ -1287,8 +1287,9 @@ class ShopgatePluginApi extends ShopgateObject {
 				$permission["file"] = $file;
 				$permission["exist"] = (bool) file_exists($file);
 				$permission["writeable"] = (bool) is_writable($file);
+				$permission["last_modification_time"] = date ("m.d.Y H:i:s.", filemtime($file));
 				$permission["permission"] = "-";
-
+				
 				$fInfo = pathinfo($file);
 				if( file_exists($file) ) {
 					$permission["permission"] = substr( sprintf('%o', fileperms($file)), -4);
