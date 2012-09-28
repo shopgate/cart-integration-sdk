@@ -93,11 +93,6 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		try {
 			$this->authService->checkAuthentification();
 
-			// enable debugging if requested
-			if (!empty($data['debug_log'])) {
-				define("SHOPGATE_DEBUG_LOG", 1);
-			}
-		
 			// set error handler to Shopgate's handler if requested
 			if (!empty($this->params['use_errorhandler'])) {
 				set_error_handler('ShopgateErrorHandler');
@@ -117,6 +112,11 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			$configArray = $this->config->toArray();
 			if (empty($configArray['enable_'.$this->params['action']])) {
 				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_DISABLED_ACTION, "'{$this->params['action']}'");
+			}
+			
+			// enable debugging if requested
+			if (!empty($data['debug_log'])) {
+				ShopgateLogger::getInstance()->enableDebug();
 			}
 
 			// call the action
@@ -406,10 +406,14 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_log_file/de
 	 */
 	protected function getLogFile() {
+		// disable debug log for this action
+		$logger = &ShopgateLogger::getInstance();
+		$logger->disableDebug();
+		
 		$type = (empty($this->params['log_type'])) ? ShopgateLogger::LOGTYPE_ERROR : $this->params['log_type'];
 		$lines = (!isset($this->params['lines'])) ? null : $this->params['lines'];
 
-		$log = ShopgateLogger::getInstance()->tail($type, $lines);
+		$log = $logger->tail($type, $lines);
 
 		// return the requested log file content and end the script
 		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseTextPlain($this->trace_id);

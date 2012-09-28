@@ -298,6 +298,11 @@ class ShopgateLogger {
 	const OBFUSCATION_STRING = 'XXXXXXXX';
 
 	/**
+	 * @var bool
+	 */
+	private $debug;
+	
+	/**
 	 * @var mixed[]
 	 */
 	private $files = array(
@@ -317,12 +322,14 @@ class ShopgateLogger {
 		$this->files[self::LOGTYPE_REQUEST]['path'] = $requestLogPath;
 		$this->files[self::LOGTYPE_ERROR]['path']   = $errorLogPath;
 		$this->files[self::LOGTYPE_DEBUG]['path']   = $debugLogErrorPath;
+		$this->debug = false;
 	}
 
 	/**
 	 * @param string $accessLogPath
 	 * @param string $requestLogPath
 	 * @param string $errorLogPath
+	 * @param string $debugLogPath
 	 * @return ShopgateLogger
 	 */
 	public static function getInstance($accessLogPath = null, $requestLogPath = null, $errorLogPath = null, $debugLogPath = null) {
@@ -340,13 +347,30 @@ class ShopgateLogger {
 	}
 
 	/**
+	 * Enables logging messages to debug log file.
+	 */
+	public function enableDebug() {
+		$this->debug = true;
+	}
+	
+	/**
+	 * Disables logging messages to debug log file.
+	 */
+	public function disableDebug() {
+		$this->debug = false;
+	}
+	
+	/**
 	 * Logs a message to the according log file.
 	 *
 	 * This produces a log entry of the form<br />
 	 * <br />
 	 * [date] [time]: [message]\n<br />
 	 * <br />
-	 * to the selected log file. If an unknown log type is passed the message will be logged to the error log file.
+	 * to the selected log file. If an unknown log type is passed the message will be logged to the error log file.<br />
+	 * <br />
+	 * Logging to LOGTYPE_DEBUG only occurs after $this->enableDebug() has been called. The debug log file will be truncated
+	 * on opening.
 	 *
 	 * @param string $msg The error message.
 	 * @param string $type The log type, that would be one of the ShopgateLogger::LOGTYPE_* constants.
@@ -369,7 +393,7 @@ class ShopgateLogger {
 		}
 
 		// if debug logging is requested but not activated, simply return
-		if ($type === self::LOGTYPE_DEBUG && !defined("SHOPGATE_DEBUG_LOG")) {
+		if (($type === self::LOGTYPE_DEBUG) && $this->debug) {
 			return true;
 		}
 
