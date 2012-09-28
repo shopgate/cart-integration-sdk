@@ -1125,8 +1125,9 @@ class ShopgatePluginApi extends ShopgateObject {
 	 * @return bool false if an error occured, otherwise true.
 	 */
 	public function handleRequest($data = array()) {
-		if( !empty($data["debug_log"]) )
+		if (!empty($data["debug_log"]) && !empty($data['action']) && ($data['action'] != 'get_log_file')) {
 			define("SHOPGATE_DEBUG_LOG", 1);
+		}
 
 		// log incoming request
 		$this->log($this->cleanParamsForLog($data), ShopgateObject::LOGTYPE_ACCESS);
