@@ -245,7 +245,8 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$responses['execution_error_count'] = $errorcount;
 		$responses['execution_time'] = $runtime;
 
-		$this->response = array_merge($this->response, $responses);
+		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
+		$this->responseData = array_merge($responses);
 	}
 
 	/**
@@ -881,7 +882,7 @@ abstract class ShopgatePluginApiResponse extends ShopgateObject {
 	public function __construct($traceId) {
 		$this->error = 0;
 		$this->error_text = '';
-		$this->trace_id = 0;
+		$this->trace_id = $traceId;
 		$this->version = SHOPGATE_LIBRARY_VERSION;
 	}
 	
