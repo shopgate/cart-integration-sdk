@@ -361,6 +361,13 @@ class ShopgateLogger {
 	}
 	
 	/**
+	 * @return true if logging messages to debug log file is enabled, false otherwise.
+	 */
+	public function isDebugEnabled() {
+		return $this->debug;
+	}
+	
+	/**
 	 * Logs a message to the according log file.
 	 *
 	 * This produces a log entry of the form<br />
@@ -486,7 +493,7 @@ class ShopgateLogger {
 	 * @param string $type The log type, that would be one of the ShopgateLogger::LOGTYPE_* constants.
 	 * @return bool true if opening succeeds or the handle is already open; false on error.
 	 */
-	private function openLogFileHandle($type) {
+	protected function openLogFileHandle($type) {
 		// don't open file handle if already open
 		if (!empty($this->files[$type]['handle'])) {
 			return true;
