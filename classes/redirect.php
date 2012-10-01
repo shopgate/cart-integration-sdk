@@ -178,6 +178,15 @@ interface ShopgateMobileRedirectInterface {
 	 * @param string $searchString
 	 */
 	public function getSearchUrl($searchString);
+	
+	/**
+	 * Convenience method for logging.
+	 *
+	 * @param string $msg The error message.
+	 * @param string $type The log type. When using ShopgateLogger that would be one of the ShopgateLogger::LOGTYPE_* constants.
+	 * @return bool True on success, false on error.
+	 */
+	public function log($msg, $type);
 }
 
 class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRedirectInterface {
@@ -264,13 +273,13 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	/**
 	 * Instantiates the Shopgate mobile redirector.
 	 *
-	 * @param ShopgateMerchantApiInterface $merchantApi An instance of the ShopgateMerchantApi required for keyword updates.
-	 * @param string $cacheFilePath The path to the cache file where redirect keywords are saved.
+	 * @param string $cacheFileWhitelist The path to the cache file where redirect keywords are saved.
+	 * @param string $cacheFileBlacklist The path to the cache file where skip redirect keywords are.
 	 * @param string $serverType The server type (live | pg | custom) to use redirection.
+	 * @param ShopgateMerchantApiInterface $merchantApi An instance of the ShopgateMerchantApi required for keyword updates or null.
 	 */
-	public function __construct(ShopgateMerchantApiInterface &$merchantApi, $cacheFileWhitelist, $cacheFileBlacklist, $serverType) {
+	public function __construct($cacheFileWhitelist, $cacheFileBlacklist, $serverType, ShopgateMerchantApiInterface &$merchantApi = null) {
 		$this->merchantApi = $merchantApi;
-		$this->cacheFile = $cacheFilePath;
 		$this->serverType = $serverType;
 		
 		$this->updateRedirectKeywords = false;
@@ -302,11 +311,12 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	public function setCustomMobileUrl($cname){
 		$this->cname = $cname;
 	}
+	
+	
 
 	public function enableKeywordUpdate($cacheTime = ShopgateMobileRedirectInterface::DEFAULT_CACHE_TIME) {
 		$this->updateRedirectKeywords = true;
 		$this->redirectKeywordCacheTime = ($cacheTime >= ShopgateMobileRedirectInterface::MIN_CACHE_TIME) ? $cacheTime : ShopgateMobileRedirectInterface::MIN_CACHE_TIME;
-		$this->updateRedirectKeywords();
 	}
 
 	public function disableKeywordUpdate() {
@@ -351,7 +361,10 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		$this->useSecureConnection = true;
 	}
 	
-	public function isMobileRequest(){
+	public function isMobileRequest() {
+		// try loading keywords
+		$this->updateRedirectKeywords();
+		
 		// find user agent
 		$userAgent = '';
 		if(!empty($_SERVER['HTTP_USER_AGENT'])){
@@ -417,7 +430,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	/**
 	 * Generates the root mobile Url for the redirect
 	 */
-	private function _getMobileUrl(){
+	protected function getMobileUrl(){
 		if(!empty($this->cname)){
 			return $this->cname;
 		} elseif(!empty($this->alias)){
@@ -433,7 +446,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	 *
 	 * @return string The URL that can be appended to the alias, e.g. ".shopgate.com"
 	 */
-	private function getShopgateUrl() {
+	protected function getShopgateUrl() {
 		switch ($this->serverType) {
 			default: // fall through to "live"
 			case 'live':	return ShopgateMobileRedirectInterface::SHOPGATE_LIVE_ALIAS;
@@ -456,9 +469,12 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		}
 		
 		// conditions for updating keywords
-		$updateDesired = $this->updateRedirectKeywords && (
-			(time() - ($redirectKeywordsFromFile['timestamp'] + ($this->redirectKeywordCacheTime * 3600)) > 0) ||
-			(time() - ($skipRedirectKeywordsFromFile['timestamp'] + ($this->redirectKeywordCacheTime * 3600)) > 0)
+		$updateDesired = (
+			$this->updateRedirectKeywords &&
+			(!empty($this->merchantApi)) && (
+				(time() - ($redirectKeywordsFromFile['timestamp'] + ($this->redirectKeywordCacheTime * 3600)) > 0) ||
+				(time() - ($skipRedirectKeywordsFromFile['timestamp'] + ($this->redirectKeywordCacheTime * 3600)) > 0)
+			)
 		);
 		
 		// strip timestamp, it's not needed anymore
@@ -503,7 +519,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	 * @param string $file The file to read the keywords from.
 	 * @return array<'timestamp' => int, 'keywords' => string[])
 	 * 			An array with the 'timestamp' of the last update and the list of 'keywords'.
-	 * @throws ShopgateLibraryException when the file cannot be opened.
+	 * @throws ShopgateLibraryException in case the file cannot be opened.
 	 */
 	protected function loadKeywordsFromFile($file) {
 		$defaultReturn = array(
@@ -532,26 +548,26 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	#############################
 
 	public function getShopUrl(){
-		return $this->_getMobileUrl();
+		return $this->getMobileUrl();
 	}
 
 	public function getItemUrl($itemNumber){
-		return $this->_getMobileUrl().'/item/'.bin2hex($itemNumber);
+		return $this->getMobileUrl().'/item/'.bin2hex($itemNumber);
 	}
 
 	public function getCategoryUrl($categoryNumber){
-		return $this->_getMobileUrl().'/category/'.bin2hex($categoryNumber);
+		return $this->getMobileUrl().'/category/'.bin2hex($categoryNumber);
 	}
 
 	public function getCmsUrl($key){
-		return $this->_getMobileUrl().'/cms/'.$key;
+		return $this->getMobileUrl().'/cms/'.$key;
 	}
 
 	public function getBrandUrl($manufacturerName){
-		return $this->_getMobileUrl().'/brand/?q='.urlencode($manufacturerName);
+		return $this->getMobileUrl().'/brand/?q='.urlencode($manufacturerName);
 	}
 
 	public function getSearchUrl($searchString){
-		return $this->_getMobileUrl().'/search/?s='.urlencode($searchString);
+		return $this->getMobileUrl().'/search/?s='.urlencode($searchString);
 	}
 }

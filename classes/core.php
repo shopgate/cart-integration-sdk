@@ -587,10 +587,10 @@ class ShopgateBuilder {
 	public function &buildRedirect() {
 		$merchantApi = &$this->buildMerchantApi();
 		$redirect = new ShopgateMobileRedirect(
-				$merchantApi,
 				$this->config->getRedirectKeywordCachePath(),
 				$this->config->getRedirectSkipKeywordCachePath(),
-				$this->config->getServer()
+				$this->config->getServer(),
+				$merchantApi
 		);
 		
 		$redirect->setAlias($this->config->getAlias());
