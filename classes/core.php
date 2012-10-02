@@ -1347,7 +1347,11 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * Performs the necessary queries to add an order to the shop system's database.
 	 *
 	 * @param ShopgateOrder $order The ShopgateOrder object to be added to the shop system's database.
-	 * @return int The ID of the added order in your shop system's database.
+	 * @return array(
+	 *          <ul>
+	 *          	<li>'external_order_id' => <i>string</i>, # the ID of the order in your shop system's database</li>
+	 *              <li>'external_order_number' => <i>string</i> # the number of the order in your shop system</li>
+	 *          </ul>)
 	 * @throws ShopgateLibraryException if an error occurs.
 	 */
 	public abstract function addOrder(ShopgateOrder $order);
@@ -1357,7 +1361,11 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @param ShopgateOrder $order The ShopgateOrder object to be update in the shop system's database.
 	 * @param bool $payment True if the payment status of an order should be updated, false otherwise.
-	 * @return int The ID of the added order in your shop system's database.
+	 * @return array(
+	 *          <ul>
+	 *          	<li>'external_order_id' => <i>string</i>, # the ID of the order in your shop system's database</li>
+	 *              <li>'external_order_number' => <i>string</i> # the number of the order in your shop system</li>
+	 *          </ul>)
 	 * @throws ShopgateLibraryException if an error occurs.
 	 */
 	public abstract function updateOrder(ShopgateOrder $order);

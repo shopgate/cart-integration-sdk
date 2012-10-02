@@ -59,6 +59,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$this->merchantApi = $merchantApi;
 		$this->plugin = $plugin;
 		$this->response = $response;
+		$this->responseData = array();
 		
 		// initialize action whitelist
 		$this->actionWhitelist = array(
@@ -174,7 +175,6 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$config['apikey']			= ShopgateLogger::OBFUSCATION_STRING;
 
 		// prepare response data array
-		$this->responseData = array();
 		$this->responseData['pong'] = 'OK';
 		$this->responseData['configuration'] = $config;
 		$this->responseData['plugin_info'] = $this->plugin->createPluginInfo();
@@ -269,7 +269,14 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		}
 
 		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
-		$this->responseData['external_order_number'] = $this->plugin->addOrder($orders[0]);
+		
+		$orderData = $this->plugin->addOrder($orders[0]);
+		if (is_array($orderData)) {
+			array_merge($orderData, $this->responseData);
+		} else {
+			$this->responseData['external_order_id'] = $orderData;
+			$this->responseData['external_order_number'] = null;
+		}
 	}
 
 	/**
@@ -307,7 +314,14 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$orders[0]->setUpdateShipping($shipping);
 
 		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
-		$this->responseData["external_order_number"] = $this->plugin->updateOrder($orders[0]);
+		
+		$orderData = $this->plugin->updateOrder($orders[0]);
+		if (is_array($orderData)) {
+			array_merge($orderData, $this->responseData);
+		} else {
+			$this->responseData['external_order_id'] = $orderData;
+			$this->responseData['external_order_number'] = null;
+		}
 	}
 
 	/**
