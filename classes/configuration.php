@@ -290,19 +290,22 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->redirect_skip_keyword_cache_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'cache'.DS.'skip_redirect_keywords.txt';
 		
 		// call possible sub classes' startup()
-		$this->startup();
-		
-		$this->loadArray($data);
+		if (!$this->startup()) {
+			$this->loadArray($data);
+		}
 	}
 	
 	/**
 	 * Inititialization for sub classes
 	 *
 	 * This can be overwritten by subclasses to initialize further default values or overwrite the library defaults.
-	 * It gets called after default value initialization of the library and befor initialization by file or array.
+	 * It gets called after default value initialization of the library and before initialization by file or array.
+	 *
+	 * @return bool false if initialization should be done by ShopgateConfig, true if it has already been done.
 	 */
 	protected function startup() {
 		// nothing to do here
+		return false;
 	}
 	
 	/**
