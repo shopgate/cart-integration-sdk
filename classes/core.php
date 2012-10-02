@@ -563,6 +563,7 @@ class ShopgateBuilder {
 		
 		// inject apis into plugin
 		$plugin->setConfig($this->config);
+		$plugin->setMerchantApi($merchantApi);
 		$plugin->setPluginApi($pluginApi);
 		$plugin->setBuffer($fileBuffer);
 	}
@@ -754,6 +755,11 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	protected $config;
 	
 	/**
+	 * @var ShopgateMerchantApiInterface
+	 */
+	protected $merchantApi;
+	
+	/**
 	 * @var ShopgatePluginApiInterface
 	 */
 	protected $pluginApi;
@@ -833,6 +839,10 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 */
 	public final function setConfig(ShopgateConfigInterface &$config) {
 		$this->config = $config;
+	}
+	
+	public final function setMerchantApi(ShopgateMerchantApiInterface &$merchantApi) {
+		$this->merchantApi = $merchantApi;
 	}
 	
 	/**
