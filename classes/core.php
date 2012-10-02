@@ -1485,7 +1485,7 @@ class ShopgateFileBuffer extends ShopgateObject implements ShopgateFileBufferInt
 	public function addRow($row) {
 		$this->buffer[] = $row;
 
-		if (count($this->buffer) > $this->bufferLimit) {
+		if (count($this->buffer) > $this->capacity) {
 			$this->flush();
 		}
 	}
