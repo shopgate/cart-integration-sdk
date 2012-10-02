@@ -272,7 +272,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		
 		$orderData = $this->plugin->addOrder($orders[0]);
 		if (is_array($orderData)) {
-			array_merge($orderData, $this->responseData);
+			$this->responseData = array_merge($orderData, $this->responseData);
 		} else {
 			$this->responseData['external_order_id'] = $orderData;
 			$this->responseData['external_order_number'] = null;
@@ -317,7 +317,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		
 		$orderData = $this->plugin->updateOrder($orders[0]);
 		if (is_array($orderData)) {
-			array_merge($orderData, $this->responseData);
+			$this->responseData = array_merge($orderData, $this->responseData);
 		} else {
 			$this->responseData['external_order_id'] = $orderData;
 			$this->responseData['external_order_number'] = null;
@@ -967,9 +967,11 @@ class ShopgatePluginApiResponseTextCsv extends ShopgatePluginApiResponse {
  */
 class ShopgatePluginApiResponseAppJson extends ShopgatePluginApiResponse {
 	public function send() {
-		$this->data['error'] = $this->error;
-		$this->data['error_text'] = $this->error_text;
-		$this->data['trace_id'] = $this->trace_id;
+		$data = array();
+		$data['error'] = $this->error;
+		$data['error_text'] = $this->error_text;
+		$data['trace_id'] = $this->trace_id;
+		$this->data = array_merge($data, $this->data);
 		
 		header("HTTP/1.0 200 OK");
 		header("Content-Type: application/json");
