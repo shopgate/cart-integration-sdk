@@ -933,10 +933,10 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	}
 	
 	/**
-	 * @deprecated Use ShopgatePlugin::addRow().
+	 * @deprecated Use ShopgatePlugin::addItemRow(), ::addCategoryRow() or ::addReviewRow().
 	 */
 	protected final function addItem($item) {
-		$this->buffer->addRow($item);
+		$this->addRow($item);
 	}
 	
 	/**
