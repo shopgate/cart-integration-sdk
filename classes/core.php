@@ -1252,7 +1252,9 @@ abstract class ShopgatePlugin extends ShopgateObject {
 				$this->log("Call Function {$method}", ShopgateLogger::LOGTYPE_DEBUG);
 				$result = call_user_func_array( array( $this, $method ), $arguments );
 
-				if( ShopgateLogger::getInstance()->isDebugEnabled() ) {
+				if( ShopgateLogger::getInstance()->isDebugEnabled()
+				&& is_array($result) && is_array( $arguments[0]) ) {
+					
 					$diff = array_diff_assoc($result, $arguments[0]);
 					$this->log("Changed Data:\n". print_r($diff, true), ShopgateLogger::LOGTYPE_DEBUG);
 				}
