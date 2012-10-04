@@ -400,7 +400,7 @@ class ShopgateLogger {
 		}
 
 		// if debug logging is requested but not activated, simply return
-		if (($type === self::LOGTYPE_DEBUG) && $this->debug) {
+		if (($type === self::LOGTYPE_DEBUG) && !$this->debug ) {
 			return true;
 		}
 
@@ -536,7 +536,7 @@ class ShopgateBuilder {
 		}
 		
 		// set up logger
-		ShopgateLogger::getInstance($this->config->getAccessLogPath(), $this->config->getRequestLogPath(), $this->config->getErrorLogPath());
+		ShopgateLogger::getInstance($this->config->getAccessLogPath(), $this->config->getRequestLogPath(), $this->config->getErrorLogPath(), $this->config->getDebugLogPath());
 	}
 	
 	/**
@@ -1238,7 +1238,14 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		foreach ($loaders as $method) {
 			if (method_exists($this, $method)) {
 				$this->log("Call Function {$method}", ShopgateLogger::LOGTYPE_DEBUG);
-				$arguments[0] = call_user_func_array( array( $this, $method ), $arguments );
+				$result = call_user_func_array( array( $this, $method ), $arguments );
+
+				if( defined("SHOPGATE_DEBUG_LOG") ) {
+					$diff = array_diff_assoc($result, $arguments[0]);
+					$this->log("Changed Data:\n". print_r($diff, true), ShopgateLogger::LOGTYPE_DEBUG);
+				}
+
+				$arguments[0] = $result;
 			}
 		}
 		
