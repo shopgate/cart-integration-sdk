@@ -424,6 +424,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		// disable debug log for this action
 		$logger = &ShopgateLogger::getInstance();
 		$logger->disableDebug();
+		$logger->keepDebugLog(true);
 		
 		$type = (empty($this->params['log_type'])) ? ShopgateLogger::LOGTYPE_ERROR : $this->params['log_type'];
 		$lines = (!isset($this->params['lines'])) ? null : $this->params['lines'];

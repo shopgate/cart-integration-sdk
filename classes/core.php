@@ -420,6 +420,18 @@ class ShopgateLogger {
 	}
 
 	/**
+	 * Set the file handler mode to a+ (keep) or to w+ (reverse) the debug log file
+	 *
+	 * @param bool $keep
+	 */
+	public function keepDebugLog($keep) {
+		if($keep)
+			$this->files[self::LOGTYPE_DEBUG]["mode"]  = "a+";
+		else
+			$this->files[self::LOGTYPE_DEBUG]["mode"]  = "w+";
+	}
+	
+	/**
 	 * Returns the requested number of lines of the requested log file's end.
 	 *
 	 * @param string $type The log file to be read
