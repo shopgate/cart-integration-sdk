@@ -462,7 +462,7 @@ class ShopgateLogger {
 		$lineCounter = $lines;
 		$pos = -2;
 		$beginning = false;
-		$text = array();
+		$text = '';
 
 		while ($lineCounter > 0) {
 			$t = '';
@@ -477,11 +477,11 @@ class ShopgateLogger {
 
 			$lineCounter--;
 			if ($beginning) @rewind($handle);
-			$text[] = @fgets($handle);
+			$text = @fgets($handle).$text;
 			if ($beginning) break;
 		}
 
-		return implode('', array_reverse($text));
+		return $text;
 	}
 
 	/**
