@@ -245,14 +245,19 @@ class ShopgateLibraryException extends Exception {
 		if (!empty($additionalInformation)) {
 			$logMessage .= ' - Additional information: "'.$additionalInformation.'"';
 		}
+		
+		$logMessage .= "\n\t";
 
 		// Add tracing information to the message
 		$btrace = debug_backtrace();
-		$btrace = $btrace[2];
-		$class = (isset($btrace['class']) ? $btrace['class'] : 'Unknown class').'::';
-		$function = (isset($btrace['function'])) ? $btrace['function'] : 'Unknown function';
-		$line = (isset($btrace['line'])) ? $btrace['line'] : 'Unkown line';
-		$logMessage = $class.$function."():".$line." - " . print_r($logMessage, true);
+		for ($i = 1; $i < 6; $i++) {
+			if (empty($btrace[$i+1])) break;
+			
+			$class = (isset($btrace[$i+1]['class']) ? $btrace[$i+1]['class'] : 'Unknown class').'::';
+			$function = (isset($btrace[$i+1]['function'])) ? $btrace[$i+1]['function'] : 'Unknown function';
+			$line = (isset($btrace[$i]['line'])) ? $btrace[$i]['line'] : 'Unkown line';
+			$logMessage .= $class.$function."():".$line."\n\t";
+		}
 
 		return $logMessage;
 	}
