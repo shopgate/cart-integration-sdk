@@ -253,10 +253,11 @@ class ShopgateLibraryException extends Exception {
 		for ($i = 1; $i < 6; $i++) {
 			if (empty($btrace[$i+1])) break;
 			
-			$class = (isset($btrace[$i+1]['class']) ? $btrace[$i+1]['class'] : 'Unknown class').'::';
+			$class = (isset($btrace[$i+1]['class'])) ? $btrace[$i+1]['class'].'::' : 'Unknown class - ';
 			$function = (isset($btrace[$i+1]['function'])) ? $btrace[$i+1]['function'] : 'Unknown function';
+			$file = ' in '.((isset($btrace[$i]['file'])) ? basename($btrace[$i]['file']) : 'Unknown file');
 			$line = (isset($btrace[$i]['line'])) ? $btrace[$i]['line'] : 'Unkown line';
-			$logMessage .= $class.$function."():".$line."\n\t";
+			$logMessage .= $class.$function.'()'.$file.':'.$line."\n\t";
 		}
 
 		return $logMessage;
