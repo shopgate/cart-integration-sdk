@@ -180,54 +180,69 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	protected $max_attributes;
 	
 	/**
-	 * @var string The path to where the items CSV file is stored and retrieved from.
+	 * @var string The path to the folder where the export CSV files are stored and retrieved from.
 	 */
-	protected $items_csv_path;
+	protected $export_folder_path;
 	
 	/**
-	 * @var string The path to where the categories CSV file is stored and retrieved from.
+	 * @var string The path to the folder where the log files are stored and retrieved from.
 	 */
-	protected $categories_csv_path;
+	protected $log_folder_path;
 	
 	/**
-	 * @var string The path to where the reviews CSV file is stored and retrieved from.
+	 * @var string The path to the folder where cache files are stored and retrieved from.
 	 */
-	protected $reviews_csv_path;
+	protected $cache_folder_path;
 	
 	/**
-	 * @var string The path to where the pages CSV file is stored and retrieved from.
+	 * @var string The name of the items CSV file.
 	 */
-	protected $pages_csv_path;
+	protected $items_csv_filename;
 	
 	/**
-	 * @var string The path to the access log file.
+	 * @var string The name of the categories CSV file.
 	 */
-	protected $access_log_path;
+	protected $categories_csv_filename;
 	
 	/**
-	 * @var string The path to the request log file.
+	 * @var string The name of the reviews CSV file.
 	 */
-	protected $request_log_path;
+	protected $reviews_csv_filename;
 	
 	/**
-	 * @var string The path to the error log file.
+	 * @var string The name of the pages CSV file.
 	 */
-	protected $error_log_path;
+	protected $pages_csv_filename;
 	
 	/**
-	 * @var string The path to the debug log file.
+	 * @var string The name of the access log file.
 	 */
-	protected $debug_log_path;
+	protected $access_log_filename;
 	
 	/**
-	 * @var string The path to the cache file for mobile device detection keywords.
+	 * @var string The name of the request log file.
 	 */
-	protected $redirect_keyword_cache_path;
+	protected $request_log_filename;
+	
+	/**
+	 * @var string The name of the error log file.
+	 */
+	protected $error_log_filename;
+	
+	/**
+	 * @var string The name of the debug log file.
+	 */
+	protected $debug_log_filename;
+	
+	/**
+	 * @var string The name of the cache file for mobile device detection keywords.
+	 */
+	protected $redirect_keyword_cache_filename;
 
 	/**
-	 * @var string The path to the cache file for mobile device skip detection keywords.
+	 * @var string The name of the cache file for mobile device skip detection keywords.
 	 */
-	protected $redirect_skip_keyword_cache_path;
+	protected $redirect_skip_keyword_cache_filename;
 
 	/**
 	 * @var array<string, mixed> Additional shop system specific settings that cannot (or should not) be generalized and thus be defined by a plugin itself.
@@ -276,18 +291,22 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->export_buffer_capacity = 100;
 		$this->max_attributes = 50;
 		
-		$this->items_csv_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'items.csv';
-		$this->categories_csv_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'categories.csv';
-		$this->reviews_csv_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'reviews.csv';
-		$this->pages_csv_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'pages.csv';
+		$this->export_folder_path = SHOPGATE_BASE_DIR.DS.'temp';
+		$this->log_folder_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs';
+		$this->cache_folder_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'cache';
 		
-		$this->access_log_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs'.DS.'access.log';
-		$this->request_log_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs'.DS.'request.log';
-		$this->error_log_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs'.DS.'error.log';
-		$this->debug_log_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs'.DS.'debug.log';
+		$this->items_csv_filename = 'items.csv';
+		$this->categories_csv_filename = 'categories.csv';
+		$this->reviews_csv_filename = 'reviews.csv';
+		$this->pages_csv_filename = 'pages.csv';
 		
-		$this->redirect_keyword_cache_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'cache'.DS.'redirect_keywords.txt';
-		$this->redirect_skip_keyword_cache_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'cache'.DS.'skip_redirect_keywords.txt';
+		$this->access_log_filename = 'access.log';
+		$this->request_log_filename = 'request.log';
+		$this->error_log_filename = 'error.log';
+		$this->debug_log_filename = 'debug.log';
+		
+		$this->redirect_keyword_cache_filename = 'redirect_keywords.txt';
+		$this->redirect_skip_keyword_cache_filename = 'skip_redirect_keywords.txt';
 		
 		// call possible sub classes' startup()
 		if (!$this->startup()) {
@@ -552,44 +571,96 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->max_attributes;
 	}
 	
+	public function getExportFolderPath() {
+		return $this->export_folder_path;
+	}
+	
+	public function getLogFolderPath() {
+		return $this->log_folder_path;
+	}
+	
+	public function getCacheFolderPath() {
+		return $this->cache_folder_path;
+	}
+	
+	public function getItemsCsvFilename() {
+		return $this->items_csv_filename;
+	}
+	
+	public function getCategoriesCsvFilename() {
+		return $this->categories_csv_filename;
+	}
+	
+	public function getReviewsCsvFilename() {
+		return $this->reviews_csv_filename;
+	}
+	
+	public function getPagesCsvFilename() {
+		return $this->pages_csv_filename;
+	}
+	
+	public function getAccessLogFilename() {
+		return $this->access_log_filename;
+	}
+	
+	public function getRequestLogFilename() {
+		return $this->request_log_filename;
+	}
+	
+	public function getErrorLogFilename() {
+		return $this->error_log_filename;
+	}
+	
+	public function getDebugLogFilename() {
+		return $this->debug_log_filename;
+	}
+	
+	public function getRedirectKeywordCacheFilename() {
+		return $this->redirect_keyword_cache_filename;
+	}
+	
+	public function getRedirectSkipKeywordCacheFilename() {
+		return $this->redirect_skip_keyword_cache_filename;
+	}
+	
 	public function getItemsCsvPath() {
-		return $this->items_csv_path;
+		return rtrim($this->export_folder_path.DS.$this->items_csv_filename, DS);
 	}
 	
 	public function getCategoriesCsvPath() {
-		return $this->categories_csv_path;
+		return rtrim($this->export_folder_path.DS.$this->categories_csv_filename, DS);
 	}
 	
 	public function getReviewsCsvPath() {
-		return $this->reviews_csv_path;
+		return rtrim($this->export_folder_path.DS.$this->reviews_csv_filename, DS);
 	}
 	
 	public function getPagesCsvPath() {
-		return $this->pages_csv_path;
+		return rtrim($this->export_folder_path.DS.$this->pages_csv_filename, DS);
 	}
 	
 	public function getAccessLogPath() {
-		return $this->access_log_path;
+		return rtrim($this->log_folder_path.DS.$this->access_log_filename, DS);
 	}
 	
 	public function getRequestLogPath() {
-		return $this->request_log_path;
+		return rtrim($this->log_folder_path.DS.$this->request_log_filename, DS);
 	}
 	
 	public function getErrorLogPath() {
-		return $this->error_log_path;
+		return rtrim($this->log_folder_path.DS.$this->error_log_filename, DS);
 	}
 	
 	public function getDebugLogPath() {
-		return $this->debug_log_path;
+		return rtrim($this->log_folder_path.DS.$this->debug_log_filename, DS);
 	}
 	
 	public function getRedirectKeywordCachePath() {
-		return $this->redirect_keyword_cache_path;
+		return rtrim($this->cache_folder_path.DS.$this->redirect_keyword_cache_filename, DS);
 	}
 	
 	public function getRedirectSkipKeywordCachePath() {
-		return $this->redirect_skip_keyword_cache_path;
+		return rtrim($this->cache_folder_path.DS.$this->redirect_skip_keyword_cache_filename, DS);
 	}
 	
 	
@@ -712,44 +783,156 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->max_attributes = $value;
 	}
 	
+	public function setExportFolderPath($value) {
+		$this->export_folder_path = $value;
+	}
+	
+	public function setLogFolderPath($value) {
+		$this->log_folder_path = $value;
+	}
+	
+	public function setCacheFolderPath($value) {
+		$this->cache_folder_path = $value;
+	}
+	
+	public function setItemsCsvFilename($value) {
+		$this->items_csv_filename = $value;
+	}
+	
+	public function setCategoriesCsvFilename($value) {
+		$this->categories_csv_filename = $value;
+	}
+	
+	public function setReviewsCsvFilename($value) {
+		$this->reviews_csv_filename = $value;
+	}
+	
+	public function setPagesCsvFilename($value) {
+		$this->pages_csv_filename = $value;
+	}
+	
+	public function setAccessLogFilename($value) {
+		$this->access_log_filename = $value;
+	}
+	
+	public function setRequestLogFilename($value) {
+		$this->request_log_filename = $value;
+	}
+	
+	public function setErrorLogFilename($value) {
+		$this->error_log_filename = $value;
+	}
+	
+	public function setDebugLogFilename($value) {
+		$this->debug_log_filename = $value;
+	}
+	
+	public function setRedirectKeywordCacheFilename($value) {
+		$this->redirect_keyword_cache_filename = $value;
+	}
+	
+	public function setRedirectSkipKeywordCacheFilename($value) {
+		$this->redirect_skip_keyword_cache_filename = $value;
+	}
+	
 	public function setItemsCsvPath($value) {
-		$this->items_csv_path = $value;
+		$dir = dirname($value);
+		$file = basename($value);
+		
+		if (!empty($dir) && !empty($file)) {
+			$this->export_folder_path = $dir;
+			$this->items_csv_filename = $file;
+		}
 	}
 	
 	public function setCategoriesCsvPath($value) {
-		$this->categories_csv_path = $value;
+		$dir = dirname($value);
+		$file = basename($value);
+		
+		if (!empty($dir) && !empty($file)) {
+			$this->export_folder_path = $dir;
+			$this->categories_csv_filename = $file;
+		}
 	}
 	
 	public function setReviewsCsvPath($value) {
-		$this->reviews_csv_path = $value;
+		$dir = dirname($value);
+		$file = basename($value);
+		
+		if (!empty($dir) && !empty($file)) {
+			$this->export_folder_path = $dir;
+			$this->reviews_csv_filename = $file;
+		}
 	}
 	
 	public function setPagesCsvPath($value) {
-		$this->pages_csv_path = $value;
+		$dir = dirname($value);
+		$file = basename($value);
+		
+		if (!empty($dir) && !empty($file)) {
+			$this->export_folder_path = $dir;
+			$this->pages_csv_filename = $file;
+		}
 	}
 	
 	public function setAccessLogPath($value) {
-		$this->access_log_path = $value;
+		$dir = dirname($value);
+		$file = basename($value);
+		
+		if (!empty($dir) && !empty($file)) {
+			$this->log_folder_path = $dir;
+			$this->access_log_filename = $file;
+		}
 	}
 	
 	public function setRequestLogPath($value) {
-		$this->request_log_path = $value;
+		$dir = dirname($value);
+		$file = basename($value);
+		
+		if (!empty($dir) && !empty($file)) {
+			$this->log_folder_path = $dir;
+			$this->request_log_filename = $file;
+		}
 	}
 	
 	public function setErrorLogPath($value) {
-		$this->error_log_path = $value;
+		$dir = dirname($value);
+		$file = basename($value);
+		
+		if (!empty($dir) && !empty($file)) {
+			$this->log_folder_path = $dir;
+			$this->error_log_filename = $file;
+		}
 	}
 	
 	public function setDebugLogPath($value) {
-		$this->debug_log_path = $value;
+		$dir = dirname($value);
+		$file = basename($value);
+		
+		if (!empty($dir) && !empty($file)) {
+			$this->log_folder_path = $dir;
+			$this->debug_log_filename = $file;
+		}
 	}
 	
 	public function setRedirectKeywordCachePath($value) {
-		$this->redirect_keyword_cache_path = $value;
+		$dir = dirname($value);
+		$file = basename($value);
+		
+		if (!empty($dir) && !empty($file)) {
+			$this->cache_folder_path = $dir;
+			$this->redirect_keyword_cache_filename = $file;
+		}
 	}
 	
 	public function setRedirectSkipKeywordCachePath($value) {
-		$this->redirect_skip_keyword_cache_path = $value;
+		$dir = dirname($value);
+		$file = basename($value);
+		
+		if (!empty($dir) && !empty($file)) {
+			$this->cache_folder_path = $dir;
+			$this->redirect_skip_keyword_cache_filename = $file;
+		}
 	}
 	
 	
@@ -766,6 +949,26 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	
 	public function returnAdditionalSettings() {
 		return $this->additionalSettings;
+	}
+	
+	public function buildProperties() {
+		$properties = parent::buildProperties();
+		
+		// append the file paths
+		$properties['items_csv_path'] = $this->getItemsCsvPath();
+		$properties['categories_csv_path'] = $this->getCategoriesCsvPath();
+		$properties['reviews_csv_path'] = $this->getReviewsCsvPath();
+		$properties['pages_csv_path'] = $this->getPagesCsvPath();
+		
+		$properties['access_log_path'] = $this->getAccessLogPath();
+		$properties['request_log_path'] = $this->getRequestLogPath();
+		$properties['error_log_path'] = $this->getErrorLogPath();
+		$properties['debug_log_path'] = $this->getDebugLogPath();
+		
+		$properties['redirect_keyword_cache_path'] = $this->getRedirectKeywordCachePath();
+		$properties['redirect_skip_keyword_cache_path'] = $this->getRedirectSkipKeywordCachePath();
+		
+		return $properties;
 	}
 	
 	/**
@@ -1379,6 +1582,71 @@ interface ShopgateConfigInterface {
 	public function getExportBufferCapacity();
 
 	/**
+	 * @return string The path to the folder where the export CSV files are stored and retrieved from.
+	 */
+	public function getExportFolderPath();
+	
+	/**
+	 * @return string The path to the folder where the log files are stored and retrieved from.
+	 */
+	public function getLogFolderPath();
+	
+	/**
+	 * @return string The path to the folder where the cache files are stored and retrieved from.
+	 */
+	public function getCacheFolderPath();
+	
+	/**
+	 * @return string The name of the items CSV file.
+	 */
+	public function getItemsCsvFilename();
+	
+	/**
+	 * @return string The name of the categories CSV file.
+	 */
+	public function getCategoriesCsvFilename();
+	
+	/**
+	 * @return string The name of the reviews CSV file.
+	 */
+	public function getReviewsCsvFilename();
+	
+	/**
+	 * @return string The name of the pages CSV file.
+	 */
+	public function getPagesCsvFilename();
+	
+	/**
+	 * @return string The name of the access log file.
+	 */
+	public function getAccessLogFilename();
+	
+	/**
+	 * @return string The name of the request log file.
+	 */
+	public function getRequestLogFilename();
+	
+	/**
+	 * @return string The name of the error log file.
+	 */
+	public function getErrorLogFilename();
+	
+	/**
+	 * @return string The name of the debug log file.
+	 */
+	public function getDebugLogFilename();
+	
+	/**
+	 * @return string The name of the cache file for mobile device detection keywords.
+	 */
+	public function getRedirectKeywordCacheFilename();
+	
+	/**
+	 * @return string The name of the cache file for mobile device skip detection keywords.
+	 */
+	public function getRedirectSkipKeywordCacheFilename();
+	
+	/**
 	 * @return string The path to where the items CSV file is stored and retrieved from.
 	 */
 	public function getItemsCsvPath();
@@ -1574,6 +1842,71 @@ interface ShopgateConfigInterface {
 	public function setExportBufferCapacity($value);
 
 	/**
+	 * @param string $value The path to the folder where the export CSV files are stored and retrieved from.
+	 */
+	public function setExportFolderPath($value);
+	
+	/**
+	 * @param string $value The path to the folder where the log files are stored and retrieved from.
+	 */
+	public function setLogFolderPath($value);
+	
+	/**
+	 * @param string $value The path to the folder where the cache files are stored and retrieved from.
+	 */
+	public function setCacheFolderPath($value);
+	
+	/**
+	 * @param string $value The name of the items CSV file.
+	 */
+	public function setItemsCsvFilename($value);
+	
+	/**
+	 * @param string $value The name of the categories CSV file.
+	 */
+	public function setCategoriesCsvFilename($value);
+	
+	/**
+	 * @param string $value The name of the reviews CSV file.
+	 */
+	public function setReviewsCsvFilename($value);
+	
+	/**
+	 * @param string $value The name of the pages CSV file.
+	 */
+	public function setPagesCsvFilename($value);
+	
+	/**
+	 * @param string $value The name of the access log file.
+	 */
+	public function setAccessLogFilename($value);
+	
+	/**
+	 * @param string $value The name of the request log file.
+	 */
+	public function setRequestLogFilename($value);
+	
+	/**
+	 * @param string $value The name of the error log file.
+	 */
+	public function setErrorLogFilename($value);
+	
+	/**
+	 * @param string $value The name of the debug log file.
+	 */
+	public function setDebugLogFilename($value);
+	
+	/**
+	 * @param string $value The name of the cache file for mobile device detection keywords.
+	 */
+	public function setRedirectKeywordCacheFilename($value);
+	
+	/**
+	 * @param string $value The name of the cache file for mobile device skip detection keywords.
+	 */
+	public function setRedirectSkipKeywordCacheFilename($value);
+	
+	/**
 	 * @param string $value The path to where the items CSV file is stored and retrieved from.
 	 */
 	public function setItemsCsvPath($value);
@@ -1657,4 +1990,11 @@ interface ShopgateConfigInterface {
 	 * @return array<string, mixed> The configuration as an array of key-value-pairs.
 	 */
 	public function toArray();
+	
+	/**
+	 * Creates an array of all properties that have getters.
+	 *
+	 * @return mixed[]
+	 */
+	public function buildProperties();
 }
