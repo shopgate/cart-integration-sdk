@@ -178,15 +178,6 @@ interface ShopgateMobileRedirectInterface {
 	 * @param string $searchString
 	 */
 	public function getSearchUrl($searchString);
-	
-	/**
-	 * Convenience method for logging.
-	 *
-	 * @param string $msg The error message.
-	 * @param string $type The log type. When using ShopgateLogger that would be one of the ShopgateLogger::LOGTYPE_* constants.
-	 * @return bool True on success, false on error.
-	 */
-	public function log($msg, $type);
 }
 
 class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRedirectInterface {
