@@ -1039,6 +1039,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			'basic_price' 				=> "",
 			'use_stock' 				=> "0",
 			'stock_quantity' 			=> "",
+			'is_active'					=> "1",
 			'ean' 						=> "",
 			'isbn' 						=> "",
 			'pzn'						=> "",
