@@ -834,7 +834,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	/**
 	 * @param bool $splitted True to activate partial export via limit and offset.
 	 */
-	public final function setExportSplitted($splitted) {
+	public final function setSplittedExport($splitted) {
 		$this->splittedExport = $splitted;
 	}
 	
