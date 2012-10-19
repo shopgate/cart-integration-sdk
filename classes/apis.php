@@ -510,7 +510,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			$permission['writeable'] = (bool) is_writable($file);
 			$permission['permission'] = '-';
 			if (file_exists($file)) {
-				$permission['last_modification_time'] = date('m.d.Y H:i:s.', filemtime($file));
+				$permission['last_modification_time'] = date('d.m.Y H:i:s.', filemtime($file));
 			}
 			
 			$fInfo = pathinfo($file);
