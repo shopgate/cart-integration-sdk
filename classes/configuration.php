@@ -10,7 +10,7 @@
  */
 class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterface {
 	/**
-	 * @var array<string, string> List of field names (index) that must have a value according to its validation regex (value)
+	 * @var array<string, string> List of field names (index) that must have a value according to their validation regex (value)
 	 */
 	protected $coreValidations = array(
 		'customer_number' => '/^[0-9]{5,}$/', // at least 5 digits
@@ -21,6 +21,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		'server' => '/^(live|pg|custom)$/', // "live" or "pg" or "custom"
 		'api_url' => '/^(https?:\/\/\S+)?$/', // empty or a string beginning with "http://" or "https://" followed by any number of non-whitespace characters (this is used for testing only, thus the lose validation)
 	);
+	
+	/**
+	 * @var array<string, string> List of field names (index) that must have a value according to their validation regex (value)
+	 */
+	protected $customValidations = array();
 	
 	/**
 	 * @var string The name of the plugin / shop system the plugin is for.
@@ -430,20 +435,35 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 			$fieldList = array_merge($coreFields, $additionalFields);
 		}
 		
+		$validations = array_merge($this->customValidations, $this->coreValidations);
 		$failedFields = array();
 		foreach ($fieldList as $field) {
-			if (empty($this->coreValidations[$field])) {
+			if (empty($validations[$field]) || preg_match($validations[$field], $properties[$field])) {
 				continue;
 			} else {
-				if (!preg_match($this->coreValidations[$field], $properties[$field])) {
-					$failedFields[] = $field;
-				}
+				$failedFields[] = $field;
 			}
+		}
+		
+		// run custom validations
+		$failedCustomFields = $this->validateCustom($fieldList);
+		if (!empty($failedCustomFields) && is_array($failedCustomFields)) {
+			$failedFields = array_merge($failedCustomFields, $failedFields);
 		}
 		
 		if (!empty($failedFields)) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_INVALID_VALUE, implode(',', $failedFields));
 		}
+	}
+	
+	/**
+	 * Validates the configuration values.
+	 *
+	 * @param string[] $fieldList The list of fields to be validated.
+	 * @return string[] The list of fields that failed validation or an empty array if validation was successful.
+	 */
+	protected function validateCustom(array $fieldList = array()) {
+		return array();
 	}
 	
 	
@@ -1423,7 +1443,7 @@ interface ShopgateConfigInterface {
 	/**
 	 * Validates the configuration values.
 	 *
-	 * If $fieldList contains values, only these values will be validated. It it's empty, all values that have a validation
+	 * If $fieldList contains values, only these values will be validated. If it's empty, all values that have a validation
 	 * rule will be validated.
 	 *
 	 * In case one or more validations fail an exception is thrown. The failed fields are appended as additonal information
