@@ -1401,8 +1401,10 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	/**
 	 * Loads the products of the shop system's database and passes them to the buffer.
 	 *
-	 * User ShopgatePlugin::buildDefaultProductRow() to get the correct indices for the field names in a Shopgate items csv and
-	 * use ShopgatePlugin::addItem() to add it to the output buffer.
+	 * If $this->splittedExport is set to "true", you MUST regard $this->offset and $this->limit when fetching items from the database.
+	 *
+	 * Use ShopgatePlugin::buildDefaultItemRow() to get the correct indices for the field names in a Shopgate items csv and
+	 * use ShopgatePlugin::addItemRow() to add it to the output buffer.
 	 *
 	 * @throws ShopgateLibraryException
 	 */
@@ -1411,8 +1413,8 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	/**
 	 * Loads the product categories of the shop system's database and passes them to the buffer.
 	 *
-	 * User ShopgatePlugin::buildDefaultCategoryRow() to get the correct indices for the field names in a Shopgate categories csv and
-	 * use ShopgatePlugin::addItem() to add it to the output buffer.
+	 * Use ShopgatePlugin::buildDefaultCategoryRow() to get the correct indices for the field names in a Shopgate categories csv and
+	 * use ShopgatePlugin::addCategoryRow() to add it to the output buffer.
 	 *
 	 * @throws ShopgateLibraryException
 	 */
@@ -1421,8 +1423,8 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	/**
 	 * Loads the product reviews of the shop system's database and passes them to the buffer.
 	 *
-	 * User ShopgatePlugin::buildDefaultReviewsRow() to get the correct indices for the field names in a Shopgate reviews csv and
-	 * use ShopgatePlugin::addItem() to add it to the output buffer.
+	 * Use ShopgatePlugin::buildDefaultReviewRow() to get the correct indices for the field names in a Shopgate reviews csv and
+	 * use ShopgatePlugin::addReviewRow() to add it to the output buffer.
 	 *
 	 * @throws ShopgateLibraryException
 	 */
