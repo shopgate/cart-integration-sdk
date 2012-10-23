@@ -55,6 +55,7 @@ Setup:
 				<include name="vendors/" />
 				<include name=".htaccess" />
 				<include name="shopgate.php" />
+				<include name="changelog.txt" />
 				<exclude name="temp/*.*"/>
 			</fileset>
 		</copy>
