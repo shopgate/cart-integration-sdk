@@ -1184,7 +1184,7 @@ class ShopgateConfigOld extends ShopgateObject {
 	 *
 	 * @deprecated
 	 */
-	public static final function getLogFilePath($type = ShopgateObject::LOGTYPE_ERROR) {
+	public static final function getLogFilePath($type = ShopgateLogger::LOGTYPE_ERROR) {
 		self::deprecated(__METHOD__);
 		
 		switch (strtolower($type)) {

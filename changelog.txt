@@ -1,0 +1,11 @@
+'''Deutsch'''
+
+'''Version 2.1.5'''
+* Fehler in der Verwendung der alten Konfiguaration behoben
+* changelog.txt hinzugefügt
+
+'''English'''
+
+'''Version 2.1.5'''
+* fixed error in use of old configuration
+* added changelog.txt
