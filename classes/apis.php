@@ -897,11 +897,11 @@ abstract class ShopgatePluginApiResponse extends ShopgateObject {
 	protected $version;
 	protected $data;
 	
-	public function __construct($traceId) {
+	public function __construct($traceId, $version = SHOPGATE_LIBRARY_VERSION) {
 		$this->error = 0;
-		$this->error_text = '';
+		$this->error_text = null;
 		$this->trace_id = $traceId;
-		$this->version = SHOPGATE_LIBRARY_VERSION;
+		$this->version = $version;
 	}
 	
 	/**
@@ -972,6 +972,7 @@ class ShopgatePluginApiResponseAppJson extends ShopgatePluginApiResponse {
 		$data['error'] = $this->error;
 		$data['error_text'] = $this->error_text;
 		$data['trace_id'] = $this->trace_id;
+		$data['version'] = $this->version;
 		$this->data = array_merge($data, $this->data);
 		
 		header("HTTP/1.0 200 OK");
@@ -988,19 +989,19 @@ class ShopgatePluginApiResponseAppJson extends ShopgatePluginApiResponse {
  * @author Shopgate GmbH, 35510 Butzbach, DE
  */
 class ShopgateMerchantApiResponse extends ShopgateContainer {
-	private $sma_version = null;
-	private $trace_id = null;
-	private $limit = 1;
-	private $offset = 1;
-	private $has_more_results = false;
+	protected $sma_version = null;
+	protected $trace_id = null;
+	protected $limit = 1;
+	protected $offset = 1;
+	protected $has_more_results = false;
 
-	private $data = null;
+	protected $data = null;
 
 	/**
 	 *
 	 * @param $sma_version
 	 */
-	private function setSmaVersion($sma_version) {
+	protected function setSmaVersion($sma_version) {
 		$this->sma_version = $sma_version;
 	}
 
@@ -1008,7 +1009,7 @@ class ShopgateMerchantApiResponse extends ShopgateContainer {
 	 *
 	 * @param $trace_id
 	 */
-	private function setTraceId($trace_id) {
+	protected function setTraceId($trace_id) {
 		$this->trace_id = $trace_id;
 	}
 
@@ -1016,7 +1017,7 @@ class ShopgateMerchantApiResponse extends ShopgateContainer {
 	 *
 	 * @param $limit
 	 */
-	private function setLimit($limit) {
+	protected function setLimit($limit) {
 		$this->limit = $limit;
 	}
 
@@ -1024,7 +1025,7 @@ class ShopgateMerchantApiResponse extends ShopgateContainer {
 	 *
 	 * @param $offset
 	 */
-	private function setOffset($offset) {
+	protected function setOffset($offset) {
 		$this->offset = $offset;
 	}
 
@@ -1032,7 +1033,7 @@ class ShopgateMerchantApiResponse extends ShopgateContainer {
 	 *
 	 * @param $has_more_results
 	 */
-	private function setHasMoreResults($has_more_results) {
+	protected function setHasMoreResults($has_more_results) {
 		$this->has_more_results = $has_more_results;
 	}
 
