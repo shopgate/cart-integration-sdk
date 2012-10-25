@@ -895,13 +895,15 @@ abstract class ShopgatePluginApiResponse extends ShopgateObject {
 	protected $error_text;
 	protected $trace_id;
 	protected $version;
+	protected $pluginVersion;
 	protected $data;
 	
-	public function __construct($traceId, $version = SHOPGATE_LIBRARY_VERSION) {
+	public function __construct($traceId, $version = SHOPGATE_LIBRARY_VERSION, $pluginVersion = null) {
 		$this->error = 0;
 		$this->error_text = null;
 		$this->trace_id = $traceId;
 		$this->version = $version;
+		$this->pluginVersion = (empty($pluginVersion) && defined('SHOPGATE_PLUGIN_VERSION')) ? SHOPGATE_PLUGIN_VERSION : $pluginVersion;
 	}
 	
 	/**
@@ -973,6 +975,9 @@ class ShopgatePluginApiResponseAppJson extends ShopgatePluginApiResponse {
 		$data['error_text'] = $this->error_text;
 		$data['trace_id'] = $this->trace_id;
 		$data['version'] = $this->version;
+		if (!empty($this->pluginVersion)) {
+			$data['plugin_version'] = $this->pluginVersion;
+		}
 		$this->data = array_merge($data, $this->data);
 		
 		header("HTTP/1.0 200 OK");
