@@ -762,6 +762,10 @@ abstract class ShopgateObject {
  * @author Shopgate GmbH, 35510 Butzbach, DE
  */
 abstract class ShopgatePlugin extends ShopgateObject {
+	const PRODUCT_STATUS_STOCK = 'stock';
+	const PRODUCT_STATUS_ACTIVE = 'active';
+	const PRODUCT_STATUS_INACTIVE = 'inactive';
+	
 	/**
 	 * @var ShopgateBuilder
 	 */
@@ -1039,7 +1043,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			'basic_price' 				=> "",
 			'use_stock' 				=> "0",
 			'stock_quantity' 			=> "",
-			'is_active'					=> "1",
+			'active_status'				=> self::PRODUCT_STATUS_STOCK,
 			'ean' 						=> "",
 			'isbn' 						=> "",
 			'pzn'						=> "",
