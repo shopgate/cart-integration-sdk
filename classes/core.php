@@ -338,7 +338,7 @@ class ShopgateLogger {
 	 * @param string $debugLogPath
 	 * @return ShopgateLogger
 	 */
-	public static function getInstance($accessLogPath = null, $requestLogPath = null, $errorLogPath = null, $debugLogPath = null) {
+	public static function &getInstance($accessLogPath = null, $requestLogPath = null, $errorLogPath = null, $debugLogPath = null) {
 		if (empty(self::$singleton)) {
 			// fallback for the default log files if none are specified
 			if (empty($accessLogPath))  $accessLogPath  = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs'.DS.'access.log';
