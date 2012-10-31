@@ -128,7 +128,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			$errortext = $e->getMessage();
 		} catch (ShopgateMerchantApiException $e) {
 			$error = ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED;
-			$error_text = ShopgateLibraryException::getMessageFor(ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED).': "'.$e->getCode() . ' - ' . $e->getMessage().'"';
+			$errortext = ShopgateLibraryException::getMessageFor(ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED).': "'.$e->getCode() . ' - ' . $e->getMessage().'"';
 		} catch (Exception $e) {
 			$message  = "\n".get_class($e)."\n";
 			$message .= 'with code:   '.$e->getCode()."\n";
