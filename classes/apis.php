@@ -472,7 +472,10 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		);
 
 		foreach($settings as $setting) {
-			$settingDetails[$setting] = $allSettings[$setting];
+				$settingDetails[$setting] = (!empty($allSettings[$setting]))
+					? $allSettings[$setting]
+					: 'undefined'
+				;
 		}
 
 		return $settingDetails;
