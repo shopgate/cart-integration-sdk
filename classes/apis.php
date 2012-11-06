@@ -576,7 +576,7 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 				'X-Shopgate-Library-Version: '. SHOPGATE_LIBRARY_VERSION,
 				'X-Shopgate-Plugin-Version: '.(defined('SHOPGATE_PLUGIN_VERSION') ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin'),
 				$this->authService->buildAuthUserHeader(),
-				$this->authService->buildAuthTokenHeader()
+				$this->authService->buildMerchantApiAuthTokenHeader()
 		));
 		curl_setopt($curl, CURLOPT_POST, true);
 		curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
@@ -846,8 +846,16 @@ class ShopgateAuthentificationService extends ShopgateObject implements Shopgate
 		return self::HEADER_X_SHOPGATE_AUTH_USER .': '. $this->customerNumber.'-'.$this->timestamp;
 	}
 
-	public function buildAuthTokenHeader() {
-		return self::HEADER_X_SHOPGATE_AUTH_TOKEN.': '.sha1("SMA-{$this->customerNumber}-{$this->timestamp}-{$this->apiKey}");
+	public function buildAuthTokenHeader($prefix = "SMA") {
+		return self::HEADER_X_SHOPGATE_AUTH_TOKEN.': '.sha1("{$prefix}-{$this->customerNumber}-{$this->timestamp}-{$this->apiKey}");
+	}
+	
+	public function buildMerchantApiAuthTokenHeader() {
+		return $this->buildAuthTokenHeader("SMA");
+	}
+	
+	public function buildPluginApiAuthTokenHeader() {
+		return $this->buildAuthTokenHeader("SPA");
 	}
 
 	public function checkAuthentification() {
@@ -877,7 +885,7 @@ class ShopgateAuthentificationService extends ShopgateObject implements Shopgate
 		}
 		
 		// create the authentification-password
-		$generatedPassword = sha1("SPA-{$customer_number}-{$timestamp}-{$this->apiKey}");
+		$generatedPassword = $this->buildPluginApiAuthTokenHeader();
 
 		// compare customer-number and auth-password and make sure, the API key was set in the configuration
 		if (($customer_number != $this->customerNumber) || ($token != $generatedPassword) || (empty($this->apiKey))) {
@@ -1309,10 +1317,21 @@ interface ShopgateAuthentificationServiceInterface {
 	public function buildAuthUserHeader();
 
 	/**
+	 * @param $prefix string SMA|SPA
+	 * @return string The X-Shopgate-Auth-Token HTTP header.
+	 */
+	public function buildAuthTokenHeader($prefix = "SMA");
+
+	/**
 	 * @return string The X-Shopgate-Auth-Token HTTP header for an outgoing request.
 	 */
-	public function buildAuthTokenHeader();
-
+	public function buildMerchantApiAuthTokenHeader();
+	
+	/**
+	 * @return string The X-Shopgate-Auth-Token HTTP header for an incoming request.
+	 */
+	public function buildPluginApiAuthTokenHeader();
+	
 	/**
 	 * @throws ShopgateLibraryException if authentication fails
 	 */
