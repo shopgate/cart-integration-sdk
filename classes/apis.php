@@ -587,13 +587,15 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 
 		// check the result
 		if (!$response) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_NO_CONNECTION);
+			// exception without logging - this might cause spamming your logs and we will know when our API is offline anyways
+			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_NO_CONNECTION, null, false, false);
 		}
 
 		$decodedResponse = $this->jsonDecode($response, true);
 
 		if (empty($decodedResponse)) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE, 'Response: '.$response, true);
+			// exception without logging - this might cause spamming your logs and we will know when our API is offline anyways
+			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE, 'Response: '.$response, true, false);
 		}
 
 		if ($decodedResponse['error'] != 0) {

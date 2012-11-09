@@ -178,8 +178,9 @@ class ShopgateLibraryException extends Exception {
 	 * @param int $code One of the constants defined in ShopgateLibraryException.
 	 * @param string $additionalInformation More detailed information on what exactly went wrong.
 	 * @param boolean $appendAdditionalInformationOnMessage Set true to output the additional information to the response. Set false to log it silently.
+	 * @param boolean $writeLog true to create a log entry in the error log, false otherwise.
 	 */
-	public function __construct($code, $additionalInformation = null, $appendAdditionalInformationToMessage = false) {
+	public function __construct($code, $additionalInformation = null, $appendAdditionalInformationToMessage = false, $writeLog = true) {
 		// Set code and message
 		$logMessage = self::buildLogMessageFor($code, $additionalInformation);
 		if (isset(self::$errorMessages[$code])) {
@@ -197,14 +198,18 @@ class ShopgateLibraryException extends Exception {
 		$this->additionalInformation = $additionalInformation;
 
 		// Log the error
-		if (ShopgateLogger::getInstance()->log($code.' - '.$logMessage) === false) {
-			$message .= ' (unable to log)';
+		if (empty($writeLog)) {
+			$message .= ' (logging disabled for this message)';
+		} else {
+			if (ShopgateLogger::getInstance()->log($code.' - '.$logMessage) === false) {
+				$message .= ' (unable to log)';
+			}
 		}
 
 		// Call default Exception class constructor
 		parent::__construct($message, $code);
 	}
-
+	
 	/**
 	 * Returns the saved additional information.
 	 *
