@@ -844,12 +844,20 @@ class ShopgateAuthentificationService extends ShopgateObject implements Shopgate
 		$this->timestamp = $timestamp;
 	}
 
+	public function buildAuthUser() {
+		return $this->customerNumber.'-'.$this->timestamp;
+	}
+	
 	public function buildAuthUserHeader() {
-		return self::HEADER_X_SHOPGATE_AUTH_USER .': '. $this->customerNumber.'-'.$this->timestamp;
+		return self::HEADER_X_SHOPGATE_AUTH_USER .': '. $this->buildAuthUser();
 	}
 
+	public function buildAuthToken($prefix = "SMA") {
+		return sha1("{$prefix}-{$this->customerNumber}-{$this->timestamp}-{$this->apiKey}");
+	}
+	
 	public function buildAuthTokenHeader($prefix = "SMA") {
-		return self::HEADER_X_SHOPGATE_AUTH_TOKEN.': '.sha1("{$prefix}-{$this->customerNumber}-{$this->timestamp}-{$this->apiKey}");
+		return self::HEADER_X_SHOPGATE_AUTH_TOKEN.': '.$this->buildAuthToken();
 	}
 	
 	public function buildMerchantApiAuthTokenHeader() {
@@ -887,7 +895,7 @@ class ShopgateAuthentificationService extends ShopgateObject implements Shopgate
 		}
 		
 		// create the authentification-password
-		$generatedPassword = $this->buildPluginApiAuthTokenHeader();
+		$generatedPassword = $this->buildAuthToken("SPA");
 
 		// compare customer-number and auth-password and make sure, the API key was set in the configuration
 		if (($customer_number != $this->customerNumber) || ($token != $generatedPassword) || (empty($this->apiKey))) {
