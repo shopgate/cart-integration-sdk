@@ -851,21 +851,21 @@ class ShopgateAuthentificationService extends ShopgateObject implements Shopgate
 	public function buildAuthUserHeader() {
 		return self::HEADER_X_SHOPGATE_AUTH_USER .': '. $this->buildAuthUser();
 	}
-
-	public function buildAuthToken($prefix = "SMA") {
-		return sha1("{$prefix}-{$this->customerNumber}-{$this->timestamp}-{$this->apiKey}");
+	
+	public function buildAuthToken($prefix = 'SMA') {
+		return $this->buildCustomAuthToken($prefix, $this->customerNumber, $this->timestamp, $this->apiKey);
 	}
 	
-	public function buildAuthTokenHeader($prefix = "SMA") {
+	public function buildAuthTokenHeader($prefix = 'SMA') {
 		return self::HEADER_X_SHOPGATE_AUTH_TOKEN.': '.$this->buildAuthToken();
 	}
 	
 	public function buildMerchantApiAuthTokenHeader() {
-		return $this->buildAuthTokenHeader("SMA");
+		return $this->buildAuthTokenHeader('SMA');
 	}
 	
 	public function buildPluginApiAuthTokenHeader() {
-		return $this->buildAuthTokenHeader("SPA");
+		return $this->buildAuthTokenHeader('SPA');
 	}
 
 	public function checkAuthentification() {
@@ -895,12 +895,24 @@ class ShopgateAuthentificationService extends ShopgateObject implements Shopgate
 		}
 		
 		// create the authentification-password
-		$generatedPassword = $this->buildAuthToken("SPA");
+		$generatedPassword = $this->buildCustomAuthToken('SPA', $customer_number, $timestamp, $this->apiKey);
 
 		// compare customer-number and auth-password and make sure, the API key was set in the configuration
 		if (($customer_number != $this->customerNumber) || ($token != $generatedPassword) || (empty($this->apiKey))) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTICATION_FAILED, 'Invalid authentication data.');
 		}
+	}
+	
+	/**
+	 * Generates the auth token with the given parameters.
+	 *
+	 * @param string $prefix
+	 * @param string $customerNumber
+	 * @param int $timestamp
+	 * @param string $apiKey
+	 */
+	protected function buildCustomAuthToken($prefix, $customerNumber, $timestamp, $apiKey) {
+		return sha1("{$prefix}-{$customerNumber}-{$timestamp}-{$apiKey}");
 	}
 }
 
@@ -1322,15 +1334,26 @@ interface ShopgateAuthentificationServiceInterface {
 	const PHP_X_SHOPGATE_AUTH_TOKEN = 'HTTP_X_SHOPGATE_AUTH_TOKEN';
 
 	/**
+	 * @return string The auth user string.
+	 */
+	public function buildAuthUser();
+	
+	/**
 	 * @return string The X-Shopgate-Auth-User HTTP header for an outgoing request.
 	 */
 	public function buildAuthUserHeader();
+	
+	/**
+	 * @param $prefix string SMA|SPA
+	 * @return string The auth token string.
+	 */
+	public function buildAuthToken($prefix = 'SMA');
 
 	/**
 	 * @param $prefix string SMA|SPA
 	 * @return string The X-Shopgate-Auth-Token HTTP header.
 	 */
-	public function buildAuthTokenHeader($prefix = "SMA");
+	public function buildAuthTokenHeader($prefix = 'SMA');
 
 	/**
 	 * @return string The X-Shopgate-Auth-Token HTTP header for an outgoing request.
