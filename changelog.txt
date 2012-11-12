@@ -1,10 +1,40 @@
 '''Deutsch'''
 
+'''Version 2.1.9'''
+* Authentifizierung erweitert
+* Das Schreiben von Log-Einträgen wird jetzt unterbunden, wenn der cache keine Schreibrechte hat
+
+'''Version 2.1.8'''
+* Notice-Meldungen der ping-action entfernt
+
+'''Version 2.1.7'''
+* Return by reference benötigt das &-Zeichen bei der Zuweisung UND am Funktions-/Methodennamen
+
+'''Version 2.1.6'''
+* Neues CSV-Feld "active_status"
+* Bei Plugin-API-Anfragen wird jetzt auch die Plugin-Version zurückgegeben, falls gesetzt.
+
 '''Version 2.1.5'''
 * Fehler in der Verwendung der alten Konfiguaration behoben
 * changelog.txt hinzugefügt
 
+
+
 '''English'''
+
+'''Version 2.1.9'''
+* extended authentification
+* disable log entries if cache is not writeable
+
+'''Version 2.1.8'''
+* reduced notice Logs on ping action
+
+'''Version 2.1.7'''
+* return by reference needs &-sign on function name
+
+'''Version 2.1.6'''
+* new csv column "active_status"
+* plugin API returns the plugin version if exists
 
 '''Version 2.1.5'''
 * fixed error in use of old configuration
