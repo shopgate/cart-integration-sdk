@@ -1236,11 +1236,13 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			"P", "SAMP", "SELECT", "SMALL", "STRIKE", "STRONG", "STYLE", "SUB", "SUP",
 			"TABLE", "TD", "TEXTAREA", "TH", "TITLE", "TR", "TT", "UL", "U", "VAR"
 		);
-
-		// make them all lowercase
+		
 		foreach ($allowedTags as &$t) $t = strtolower($t);
 		foreach ($removeTags as &$t) $t = strtolower($t);
 		foreach ($additionalAllowedTags as &$t) $t = strtolower($t);
+		
+		// some tags must be removed completely (including content)
+		$string = preg_replace('/<\s*script.*\/script>/s', '', $string);
 
 		// add the additional allowed tags to the list
 		$allowedTags = array_merge($allowedTags, $additionalAllowedTags);
