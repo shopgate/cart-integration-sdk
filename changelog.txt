@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.1.11'''
+* Script-Tags werden beim Export jetzt inklusive Inhalt entfernt.
+
 '''Version 2.1.10'''
 * timestamp-fehler behoben
 
@@ -24,6 +27,9 @@
 
 
 '''English'''
+
+'''Version 2.1.11'''
+* script tags will be stripped off including content on products export
 
 '''Version 2.1.10'''
 * fixed timestamp error
