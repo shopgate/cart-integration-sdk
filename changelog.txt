@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.1.10'''
+* timestamp-fehler behoben
+
 '''Version 2.1.9'''
 * Authentifizierung erweitert
 * Das Schreiben von Log-Einträgen wird jetzt unterbunden, wenn der cache keine Schreibrechte hat
@@ -21,6 +24,9 @@
 
 
 '''English'''
+
+'''Version 2.1.10'''
+* fixed timestamp error
 
 '''Version 2.1.9'''
 * extended authentification
