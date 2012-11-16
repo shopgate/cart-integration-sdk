@@ -836,16 +836,14 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 class ShopgateAuthentificationService extends ShopgateObject implements ShopgateAuthentificationServiceInterface {
 	private $customerNumber;
 	private $apiKey;
-	private $timestamp;
 
-	public function __construct($customerNumber, $apiKey, $timestamp) {
+	public function __construct($customerNumber, $apiKey) {
 		$this->customerNumber = $customerNumber;
 		$this->apiKey = $apiKey;
-		$this->timestamp = $timestamp;
 	}
-
+	
 	public function buildAuthUser() {
-		return $this->customerNumber.'-'.$this->timestamp;
+		return $this->customerNumber.'-'.$this->getTimestamp();
 	}
 	
 	public function buildAuthUserHeader() {
@@ -853,7 +851,7 @@ class ShopgateAuthentificationService extends ShopgateObject implements Shopgate
 	}
 	
 	public function buildAuthToken($prefix = 'SMA') {
-		return $this->buildCustomAuthToken($prefix, $this->customerNumber, $this->timestamp, $this->apiKey);
+		return $this->buildCustomAuthToken($prefix, $this->customerNumber, $this->getTimestamp(), $this->apiKey);
 	}
 	
 	public function buildAuthTokenHeader($prefix = 'SMA') {
@@ -890,7 +888,7 @@ class ShopgateAuthentificationService extends ShopgateObject implements Shopgate
 		$timestamp = $matches['timestamp'];
 
 		// request shouldn't be older than 30 minutes or more than 30 minutes in the future
-		if ((($this->timestamp - $timestamp) > (30*60)) || ($timestamp - $this->timestamp) > (30*60)) {
+		if (abs($this->getTimestamp() - $timestamp) > (30*60)) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTICATION_FAILED, 'Request too old or too far in the future.');
 		}
 		
@@ -901,6 +899,15 @@ class ShopgateAuthentificationService extends ShopgateObject implements Shopgate
 		if (($customer_number != $this->customerNumber) || ($token != $generatedPassword) || (empty($this->apiKey))) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTICATION_FAILED, 'Invalid authentication data.');
 		}
+	}
+	
+	/**
+	 * Return current timestamp
+	 *
+	 * @return int
+	 */
+	protected function getTimestamp() {
+		return time();
 	}
 	
 	/**
