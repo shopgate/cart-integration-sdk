@@ -1067,18 +1067,133 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	### Deprecated / Compatibility ###
 	##################################
 	/**
-	 * Routes static calls to ShopgateConfigOld (the former ShopgateConfig class).
-	 *
 	 * This is for compatibility reasons only. The use of ShopgateConfigOld is deprecated!
 	 *
 	 * @deprecated
-	 * @param string $name Method name.
-	 * @param mixed[] $arguments Arguments to call the method with.
-	 * @return mixed The return value of the called method.
-	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld.
+	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
 	 */
-	public static function __callStatic($name, $arguments) {
-		return call_user_func_array(array('ShopgateConfigOld', $name), $arguments);
+	public static function setConfig(array $newConfig, $validate = true) {
+		return ShopgateConfigOld::setConfig($newConfig, $validate);
+	}
+	
+	/**
+	 * This is for compatibility reasons only. The use of ShopgateConfigOld is deprecated!
+	 *
+	 * @deprecated
+	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
+	 */
+	public static function validateAndReturnConfig() {
+		return ShopgateConfigOld::validateAndReturnConfig();
+	}
+	
+	/**
+	 * This is for compatibility reasons only. The use of ShopgateConfigOld is deprecated!
+	 *
+	 * @deprecated
+	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
+	 */
+	public static function getConfig() {
+		return ShopgateConfigOld::getConfig();
+	}
+	
+	/**
+	 * This is for compatibility reasons only. The use of ShopgateConfigOld is deprecated!
+	 *
+	 * @deprecated
+	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
+	 */
+	public static function getConfigField($field) {
+		return ShopgateConfigOld::getConfigField($field);
+	}
+	
+	/**
+	 * This is for compatibility reasons only. The use of ShopgateConfigOld is deprecated!
+	 *
+	 * @deprecated
+	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
+	 */
+	public static function getPluginName() {
+		return ShopgateConfigOld::getPluginName();
+	}
+	
+	/**
+	 * This is for compatibility reasons only. The use of ShopgateConfigOld is deprecated!
+	 *
+	 * @deprecated
+	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
+	 */
+	public static function getLogFilePath($type = ShopgateLogger::LOGTYPE_ERROR) {
+		return ShopgateConfigOld::getLogFilePath($type = ShopgateLogger::LOGTYPE_ERROR);
+	}
+	
+	/**
+	 * This is for compatibility reasons only. The use of ShopgateConfigOld is deprecated!
+	 *
+	 * @deprecated
+	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
+	 */
+	public static function getItemsCsvFilePath() {
+		return ShopgateConfigOld::getItemsCsvFilePath();
+	}
+	
+	/**
+	 * This is for compatibility reasons only. The use of ShopgateConfigOld is deprecated!
+	 *
+	 * @deprecated
+	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
+	 */
+	public static function getCategoriesCsvFilePath() {
+		return ShopgateConfigOld::getCategoriesCsvFilePath();
+	}
+	
+	/**
+	 * This is for compatibility reasons only. The use of ShopgateConfigOld is deprecated!
+	 *
+	 * @deprecated
+	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
+	 */
+	public static function getReviewsCsvFilePath() {
+		return ShopgateConfigOld::getReviewsCsvFilePath();
+	}
+	
+	/**
+	 * This is for compatibility reasons only. The use of ShopgateConfigOld is deprecated!
+	 *
+	 * @deprecated
+	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
+	 */
+	public static function getPagesCsvFilePath() {
+		return ShopgateConfigOld::getPagesCsvFilePath();
+	}
+	
+	/**
+	 * This is for compatibility reasons only. The use of ShopgateConfigOld is deprecated!
+	 *
+	 * @deprecated
+	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
+	 */
+	public static function getRedirectKeywordsFilePath() {
+		return ShopgateConfigOld::getRedirectKeywordsFilePath();
+	}
+	
+	/**
+	 * This is for compatibility reasons only. The use of ShopgateConfigOld is deprecated!
+	 *
+	 * @deprecated
+	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
+	 */
+	public static function getSkipRedirectKeywordsFilePath() {
+		return ShopgateConfigOld::getSkipRedirectKeywordsFilePath();
+	}
+	
+	/**
+	 * This is for compatibility reasons only. The use of ShopgateConfigOld is deprecated!
+	 *
+	 * @deprecated
+	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
+	 */
+	public static function saveConfig() {
+		return ShopgateConfigOld::saveConfig();
 	}
 }
 
