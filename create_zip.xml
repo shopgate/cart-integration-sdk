@@ -59,7 +59,8 @@ Setup:
 				<exclude name="temp/*.*"/>
 			</fileset>
 		</copy>
-
+		
+		<mkdir dir="${output-folder}/config" />
 		<zip zipfile="${project-root}/${plugin.zip-filename}" basedir="${build-folder}" update="false" />
 		<delete dir="${ant-folder}" />
 	</target>
