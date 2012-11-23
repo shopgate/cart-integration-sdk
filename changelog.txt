@@ -1,5 +1,10 @@
 '''Deutsch'''
 
+'''Version 2.1.12'''
+* möglicher timestamp-fehler behoben
+* Standard Timeout für der ShopgateMerachantApi auf 30 sekunden
+* Timeout bei getMobileRedirectKeywords auf 1 sekunde gesetzt
+
 '''Version 2.1.11'''
 * Script-Tags werden beim Export jetzt inklusive Inhalt entfernt.
 
@@ -27,6 +32,11 @@
 
 
 '''English'''
+
+'''Version 2.1.12'''
+* fix possible timestamp-error
+* set default timout for ShopagteMerchantApi to 30 seconds
+* set timeout on getMobileRedirectKeywords to 1 second
 
 '''Version 2.1.11'''
 * script tags will be stripped off including content on products export
