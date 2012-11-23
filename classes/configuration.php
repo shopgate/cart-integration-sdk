@@ -1067,6 +1067,21 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	### Deprecated / Compatibility ###
 	##################################
 	/**
+	 * Routes static calls to ShopgateConfigOld (the former ShopgateConfig class).
+	 *
+	 * This is for compatibility reasons only. The use of ShopgateConfigOld is deprecated!
+	 *
+	 * @deprecated
+	 * @param string $name Method name.
+	 * @param mixed[] $arguments Arguments to call the method with.
+	 * @return mixed The return value of the called method.
+	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld.
+	 */
+	public static function __callStatic($name, $arguments) {
+		return call_user_func_array(array('ShopgateConfigOld', $name), $arguments);
+	}
+	
+	/**
 	 * This is for compatibility reasons only. The use of ShopgateConfigOld is deprecated!
 	 *
 	 * @deprecated
@@ -1104,16 +1119,6 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 */
 	public static function getConfigField($field) {
 		return ShopgateConfigOld::getConfigField($field);
-	}
-	
-	/**
-	 * This is for compatibility reasons only. The use of ShopgateConfigOld is deprecated!
-	 *
-	 * @deprecated
-	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
-	 */
-	public static function getPluginName() {
-		return ShopgateConfigOld::getPluginName();
 	}
 	
 	/**

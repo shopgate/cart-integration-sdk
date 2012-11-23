@@ -4,6 +4,7 @@
 * möglicher timestamp-fehler behoben
 * Standard Timeout für der ShopgateMerachantApi auf 30 sekunden
 * Timeout bei getMobileRedirectKeywords auf 1 sekunde gesetzt
+* Kompatibilitätsproblem mit PHP < 5.3 behoben
 
 '''Version 2.1.11'''
 * Script-Tags werden beim Export jetzt inklusive Inhalt entfernt.
@@ -37,6 +38,7 @@
 * fix possible timestamp-error
 * set default timout for ShopagteMerchantApi to 30 seconds
 * set timeout on getMobileRedirectKeywords to 1 second
+* fixed compatibility issues with PHP < 5.3
 
 '''Version 2.1.11'''
 * script tags will be stripped off including content on products export
