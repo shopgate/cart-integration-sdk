@@ -560,10 +560,9 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 	/**
 	 * Returns an array of curl-options for requests
 	 *
-	 * @param mixed[] $data
 	 * @return mixed[]
 	 */
-	protected function getCurlOptArray( $data ) {
+	protected function getCurlOptArray() {
 		$opt = array();
 
 		$opt[CURLOPT_HEADER] = false;
