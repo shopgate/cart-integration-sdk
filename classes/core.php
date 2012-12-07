@@ -1066,7 +1066,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			'age_rating' 				=> "",
 			'weight' 					=> "",
 			'block_pricing' 			=> "",
-			'amount_info_text'			=> "",
 			/* parent/child relationship */
 			'has_children' 				=> "0",
 			'parent_item_number' 		=> "",
