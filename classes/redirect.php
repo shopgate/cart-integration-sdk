@@ -260,6 +260,16 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	 * @var string description to be displayed to the left of the button
 	 */
 	protected $buttonDescription;
+	
+	/**
+	 * @var string itemNumber used for creating a mobile product url
+	 */
+	protected $itemNumber;
+	
+	/**
+	 * @var string categoryNumber used for creating a mobile category url
+	 */
+	protected $categoryNumber;
 
 	/**
 	 * Instantiates the Shopgate mobile redirector.
@@ -302,9 +312,16 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	public function setCustomMobileUrl($cname){
 		$this->cname = $cname;
 	}
-	
-	
 
+	public function setItemNumber($itemNumber) {
+		$this->itemNumber = $itemNumber;
+	}
+	
+	public function setCategoryNumber($categoryNumber) {
+		$this->categoryNumber = $categoryNumber;
+	}
+	
+	
 	public function enableKeywordUpdate($cacheTime = ShopgateMobileRedirectInterface::DEFAULT_CACHE_TIME) {
 		$this->updateRedirectKeywords = true;
 		$this->redirectKeywordCacheTime = ($cacheTime >= ShopgateMobileRedirectInterface::MIN_CACHE_TIME) ? $cacheTime : ShopgateMobileRedirectInterface::MIN_CACHE_TIME;
@@ -417,7 +434,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	###############
 	### helpers ###
 	###############
-
+	
 	/**
 	 * Generates the root mobile Url for the redirect
 	 */
@@ -540,6 +557,19 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	### mobile url generation ###
 	#############################
 
+	/**
+	 * Generates the mobile Url for the redirect
+	 */
+	public function getRedirectUrl(){
+		if(!empty($this->itemNumber)){
+			return $this->getItemUrl($this->itemNumber);
+		} elseif(!empty($this->categoryNumber)){
+			return $this->getCategoryUrl($this->categoryNumber);
+		} else {
+			return $this->getShopUrl();
+		}
+	}
+	
 	public function getShopUrl(){
 		return $this->getMobileUrl();
 	}
