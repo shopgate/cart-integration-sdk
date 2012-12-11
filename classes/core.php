@@ -619,6 +619,7 @@ class ShopgateBuilder {
 		
 		$redirect->setAlias($this->config->getAlias());
 		$redirect->setCustomMobileUrl($this->config->getCname());
+		$redirect->setLanguageCode($this->config->getLanguage());
 		
 		if ($this->config->getAlwaysUseSsl()) $redirect->setAlwaysUseSSL();
 		if ($this->config->getEnableRedirectKeywordUpdate()) $redirect->enableKeywordUpdate(ShopgateMobileRedirectInterface::DEFAULT_CACHE_TIME);

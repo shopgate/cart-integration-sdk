@@ -242,6 +242,11 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	protected $mobileHeaderTemplatePath;
 
 	/**
+	 * @var string
+	 */
+	protected $mobileHtmlHeadTemplatePath;
+
+	/**
 	 * @var string expiration date of the cookie as defined in http://www.ietf.org/rfc/rfc2109.txt
 	 */
 	protected $cookieLife;
@@ -270,6 +275,11 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	 * @var string categoryNumber used for creating a mobile category url
 	 */
 	protected $categoryNumber;
+	
+	/**
+	 * @var string language code used for <head>-tag
+	 */
+	protected $languageCode;
 
 	/**
 	 * Instantiates the Shopgate mobile redirector.
@@ -287,11 +297,13 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		$this->redirectKeywordCacheTime = ShopgateMobileRedirectInterface::DEFAULT_CACHE_TIME;
 		$this->cacheFileWhitelist = $cacheFileWhitelist;
 		$this->cacheFileBlacklist = $cacheFileBlacklist;
+		$this->languageCode = 'de';
 		
 		$this->useSecureConnection = isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] === "on" || $_SERVER["HTTPS"] == "1");
 
 		// mobile header options
 		$this->mobileHeaderTemplatePath = dirname(__FILE__).'/../assets/mobile_header.html';
+		$this->mobileHtmlHeadTemplatePath = dirname(__FILE__).'/../assets/html_head.html';
 		$this->cookieLife = gmdate('D, d-M-Y H:i:s T', time());
 		$this->buttonDescription = 'Mobile Webseite aktivieren';
 	}
@@ -319,6 +331,10 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	
 	public function setCategoryNumber($categoryNumber) {
 		$this->categoryNumber = $categoryNumber;
+	}
+	
+	public function setLanguageCode($languageCode) {
+		$this->languageCode = $languageCode;
 	}
 	
 	
@@ -430,6 +446,22 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		return $html;
 	}
 
+	public function getHtmlHead() {
+		if (!file_exists($this->mobileHtmlHeadTemplatePath)) {
+			return '';
+		}
+	
+		$html = @file_get_contents($this->mobileHtmlHeadTemplatePath);
+		if (empty($html)) {
+			return '';
+		}
+	
+		// set parameters
+		$html = str_replace('{$mobile_url}', $this->getRedirectUrl(), $html);
+		$html = str_replace('{$lang_code}', $this->languageCode, $html);
+	
+		return $html;
+	}
 
 	###############
 	### helpers ###
@@ -562,10 +594,13 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	 */
 	public function getRedirectUrl(){
 		if(!empty($this->itemNumber)){
+			echo '-1-';
 			return $this->getItemUrl($this->itemNumber);
 		} elseif(!empty($this->categoryNumber)){
 			return $this->getCategoryUrl($this->categoryNumber);
+			echo '-2-';
 		} else {
+			echo '-3-';
 			return $this->getShopUrl();
 		}
 	}
