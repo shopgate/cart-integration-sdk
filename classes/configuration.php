@@ -10,6 +10,11 @@
  */
 class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterface {
 	/**
+	 * @var string The path to the folder where the config file(s) are saved.
+	 */
+	protected $config_folder_path;
+	
+	/**
 	 * @var array<string, string> List of field names (index) that must have a value according to their validation regex (value)
 	 */
 	protected $coreValidations = array(
@@ -175,7 +180,12 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	### Options regarding shop system specific settings ###
 	#######################################################
 	/**
-	 * @var string The ISO 3166 ALPHA-2 code of the language the plugin uses for export.
+	 * @var string The ISO 3166 ALPHA-2 code of the country the plugin uses for export.
+	 */
+	protected $country;
+	
+	/**
+	 * @var string The ISO 639 code of the language the plugin uses for export.
 	 */
 	protected $language;
 	
@@ -303,11 +313,14 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_cron = 0;
 		$this->enable_clear_logfile = 1;
 		
-		$this->language = 'DE';
+		$this->country = 'DE';
+		$this->language = 'de';
 		$this->currency = 'EUR';
 		
 		$this->export_buffer_capacity = 100;
 		$this->max_attributes = 50;
+		
+		$this->config_folder_path = SHOPGATE_BASE_DIR.DS.'config';
 		
 		$this->export_folder_path = SHOPGATE_BASE_DIR.DS.'temp';
 		$this->log_folder_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs';
@@ -326,7 +339,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->redirect_keyword_cache_filename = 'redirect_keywords.txt';
 		$this->redirect_skip_keyword_cache_filename = 'skip_redirect_keywords.txt';
 		
-		// call possible sub classes' startup()
+		// call possible sub class' startup()
 		if (!$this->startup()) {
 			$this->loadArray($data);
 		}
@@ -399,6 +412,76 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		// if we got here, we have a $shopgate_config to load
 		$unmappedData = parent::loadArray($shopgate_config);
 		$this->mapAdditionalSettings($unmappedData);
+	}
+	
+	/**
+	 * Loads the configuration file by for a given Shopgate shop number.
+	 *
+	 * @param string $shopNumber The shop number.
+	 * @throws ShopgateLibraryException in case the $shopNumber is empty or no configuration file can be found.
+	 */
+	public function loadByShopNumber($shopNumber) {
+		global $shopgate_config;
+	
+		if (empty($shopNumber)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR, 'configuration file cannot be found without shop number');
+		}
+	
+		// find all config files
+		$configFile = null;
+		$files = scandir($this->config_folder_path);
+		foreach ($files as $file) {
+			if (!is_file($this->config_folder_path.DS.$file)) {
+				continue;
+			}
+				
+			$shopgate_config = null;
+			include_once($this->config_folder_path.DS.$file);
+			if (isset($shopgate_config) && isset($shopgate_config['shop_number']) && ($shopgate_config['shop_number'] == $shopNumber)) {
+				$configFile = $this->config_folder_path.DS.$file;
+				break;
+			}
+		}
+	
+		if (empty($configFile)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR, 'no configuration file found for shop number "'.$shopNumber.'"', true, false);
+		}
+	
+		$this->loadFile($configFile);
+		$this->initFileNames();
+	}
+	
+	/**
+	 * Loads the configuration file by a given language.
+	 *
+	 * @param string $language the ISO-639 code of the language
+	 * @throws ShopgateLibraryException in case the $language is empty
+	 */
+	public function loadByLanguage($language) {
+		if (empty($language)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR, 'configuration file cannot be found without language', true, false);
+		}
+	
+		$this->loadFile($this->config_folder_path.DS.'myconfig-'.$language.'.php');
+		$this->initFileNames();
+	}
+	
+	/**
+	 * Sets the file names according to the language of the configuration.
+	 */
+	protected function initFileNames() {
+		$this->items_csv_filename = 'items-'.$this->language.'.csv';
+		$this->categories_csv_filename = 'categories-'.$this->language.'.csv';
+		$this->reviews_csv_filename = 'reviews-'.$this->language.'.csv';
+		$this->pages_csv_filename = 'pages-'.$this->language.'.csv';
+	
+		$this->access_log_filename = 'access-'.$this->language.'.log';
+		$this->request_log_filename = 'request-'.$this->language.'.log';
+		$this->error_log_filename = 'error-'.$this->language.'.log';
+		$this->debug_log_filename = 'debug-'.$this->language.'.log';
+	
+		$this->redirect_keyword_cache_filename = 'redirect_keywords-'.$this->language.'.txt';
+		$this->redirect_skip_keyword_cache_filename = 'skip_redirect_keywords-'.$this->language.'.txt';
 	}
 	
 	public function saveFile(array $fieldList, $path = null, $validate = true) {
@@ -596,8 +679,12 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->enable_clear_logfile;
 	}
 	
+	public function getCountry() {
+		return strtoupper($this->country);
+	}
+	
 	public function getLanguage() {
-		return $this->language;
+		return strtolower($this->language);
 	}
 	
 	public function getCurrency() {
@@ -816,8 +903,12 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_clear_logfile = $value;
 	}
 	
+	public function setCountry($value) {
+		$this->country = strtoupper($value);
+	}
+	
 	public function setLanguage($value) {
-		$this->language = $value;
+		$this->language = strtolower($value);
 	}
 	
 	public function setCurrency($value) {
