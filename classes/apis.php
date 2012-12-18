@@ -48,11 +48,11 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	protected $trace_id;
 	
 	public function __construct(
-			ShopgateConfigInterface &$config,
-			ShopgateAuthentificationServiceInterface &$authService,
-			ShopgateMerchantApiInterface &$merchantApi,
-			ShopgatePlugin &$plugin,
-			ShopgatePluginApiResponse &$response = null
+			ShopgateConfigInterface $config,
+			ShopgateAuthentificationServiceInterface $authService,
+			ShopgateMerchantApiInterface $merchantApi,
+			ShopgatePlugin $plugin,
+			ShopgatePluginApiResponse $response = null
 	) {
 		$this->config = $config;
 		$this->authService = $authService;
@@ -422,7 +422,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 */
 	protected function getLogFile() {
 		// disable debug log for this action
-		$logger = &ShopgateLogger::getInstance();
+		$logger = ShopgateLogger::getInstance();
 		$logger->disableDebug();
 		$logger->keepDebugLog(true);
 		
@@ -550,7 +550,7 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 	
 	private $curlOpt = array();
 	
-	public function __construct(ShopgateAuthentificationServiceInterface &$authService, $shopNumber, $apiUrl) {
+	public function __construct(ShopgateAuthentificationServiceInterface $authService, $shopNumber, $apiUrl) {
 		$this->authService = $authService;
 		$this->shopNumber = $shopNumber;
 		$this->apiUrl = $apiUrl;

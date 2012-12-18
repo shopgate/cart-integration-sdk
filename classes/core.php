@@ -343,7 +343,7 @@ class ShopgateLogger {
 	 * @param string $debugLogPath
 	 * @return ShopgateLogger
 	 */
-	public static function &getInstance($accessLogPath = null, $requestLogPath = null, $errorLogPath = null, $debugLogPath = null) {
+	public static function getInstance($accessLogPath = null, $requestLogPath = null, $errorLogPath = null, $debugLogPath = null) {
 		if (empty(self::$singleton)) {
 			// fallback for the default log files if none are specified
 			if (empty($accessLogPath))  $accessLogPath  = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs'.DS.'access.log';
@@ -551,7 +551,7 @@ class ShopgateBuilder {
 	 *
 	 * @param ShopgateConfigInterface $config
 	 */
-	public function __construct(ShopgateConfigInterface &$config = null) {
+	public function __construct(ShopgateConfigInterface $config = null) {
 		if (empty($config)) {
 			$this->config = new ShopgateConfig();
 		} else {
@@ -570,7 +570,7 @@ class ShopgateBuilder {
 	 *
 	 * @param ShopgatePlugin $plugin The ShopgatePlugin instance that should be wired to the framework.
 	 */
-	public function buildLibraryFor(ShopgatePlugin &$plugin) {
+	public function buildLibraryFor(ShopgatePlugin $plugin) {
 		// set error handler if configured
 		if ($this->config->getUseCustomErrorHandler()) {
 			set_error_handler('ShopgateErrorHandler');
@@ -596,7 +596,7 @@ class ShopgateBuilder {
 	 *
 	 * @return ShopgateMerchantApi
 	 */
-	public function &buildMerchantApi() {
+	public function buildMerchantApi() {
 		$authService = new ShopgateAuthentificationService($this->config->getCustomerNumber(), $this->config->getApikey());
 		$merchantApi = new ShopgateMerchantApi($authService, $this->config->getShopNumber(), $this->config->getApiUrl());
 		
@@ -608,8 +608,8 @@ class ShopgateBuilder {
 	 *
 	 * @return ShopgateMobileRedirect
 	 */
-	public function &buildRedirect() {
-		$merchantApi = &$this->buildMerchantApi();
+	public function buildRedirect() {
+		$merchantApi = $this->buildMerchantApi();
 		$redirect = new ShopgateMobileRedirect(
 				$this->config->getRedirectKeywordCachePath(),
 				$this->config->getRedirectSkipKeywordCachePath(),
@@ -820,7 +820,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	/**
 	 * @param ShopgateBuilder $builder If empty, the default ShopgateBuilder will be instantiated.
 	 */
-	public final function __construct(ShopgateBuilder &$builder = null) {
+	public final function __construct(ShopgateBuilder $builder = null) {
 		// some default values
 		$this->splittedExport = false;
 		$this->exportOffset = 0;
@@ -865,25 +865,25 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	/**
 	 * @param ShopgateConfigInterface $config
 	 */
-	public final function setConfig(ShopgateConfigInterface &$config) {
+	public final function setConfig(ShopgateConfigInterface $config) {
 		$this->config = $config;
 	}
 	
-	public final function setMerchantApi(ShopgateMerchantApiInterface &$merchantApi) {
+	public final function setMerchantApi(ShopgateMerchantApiInterface $merchantApi) {
 		$this->merchantApi = $merchantApi;
 	}
 	
 	/**
 	 * @param ShopgatePluginApiInterface $pluginApi
 	 */
-	public final function setPluginApi(ShopgatePluginApiInterface &$pluginApi) {
+	public final function setPluginApi(ShopgatePluginApiInterface $pluginApi) {
 		$this->pluginApi = $pluginApi;
 	}
 
 	/**
 	 * @param ShopgateFileBuffer $buffer
 	 */
-	public final function setBuffer(ShopgateFileBufferInterface &$buffer) {
+	public final function setBuffer(ShopgateFileBufferInterface $buffer) {
 		$this->buffer = $buffer;
 	}
 	

@@ -289,7 +289,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	 * @param string $serverType The server type (live | pg | custom) to use redirection.
 	 * @param ShopgateMerchantApiInterface $merchantApi An instance of the ShopgateMerchantApi required for keyword updates or null.
 	 */
-	public function __construct($cacheFileWhitelist, $cacheFileBlacklist, $serverType, ShopgateMerchantApiInterface &$merchantApi = null) {
+	public function __construct($cacheFileWhitelist, $cacheFileBlacklist, $serverType, ShopgateMerchantApiInterface $merchantApi = null) {
 		$this->merchantApi = $merchantApi;
 		$this->serverType = $serverType;
 		
