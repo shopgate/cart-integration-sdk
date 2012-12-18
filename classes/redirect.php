@@ -594,13 +594,10 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	 */
 	public function getRedirectUrl(){
 		if(!empty($this->itemNumber)){
-			echo '-1-';
 			return $this->getItemUrl($this->itemNumber);
 		} elseif(!empty($this->categoryNumber)){
 			return $this->getCategoryUrl($this->categoryNumber);
-			echo '-2-';
 		} else {
-			echo '-3-';
 			return $this->getShopUrl();
 		}
 	}
