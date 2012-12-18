@@ -1,5 +1,13 @@
 '''Deutsch'''
 
+'''Version 2.1.13'''
+* der updateOrder()-Callback erhält jetzt mit der Bestellung auch die Bestellungsposten
+* die Filterung von <script>-Tags im Export wurde verbessert
+* die Getter-Methoden eines ShopgateOrderItem-Objekts ohne Optionen oder Eingabefelder geben jetzt leere Arrays anstelle von null zurück
+* die Einstellungen "country" und "language" wurden zur Klasse ShopgateConfig hinzugefügt
+* allgemeine Methode zur Erzeugung von Weiterleitungslinks über Produktnummer, Kategorienummer und zur Startseite hinzugefügt
+* Kompatibilitätsprobleme zwischen verschiedenen PHP-Versionen behoben
+
 '''Version 2.1.12'''
 * möglicher timestamp-fehler behoben
 * Standard Timeout für der ShopgateMerachantApi auf 30 sekunden
@@ -33,6 +41,14 @@
 
 
 '''English'''
+
+'''Version 2.1.13'''
+* the updateOrder() callback is now provided with the items of the order as well
+* filtering of <script> tags in the export has been improved
+* the getters of a ShopgateOrderItem object with no inputs or options set will now return empty arrays instead of null
+* settings "country" and "language" have been added to the ShopgateConfig class
+* added generic method to create redirection links for item numbers, category numbers and the welcome page
+* fixed incompatibility issues between different PHP versions
 
 '''Version 2.1.12'''
 * fix possible timestamp-error
