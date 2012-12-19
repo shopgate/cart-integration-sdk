@@ -525,9 +525,9 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		if ($updateDesired) {
 			try {
 				// fetch keywords from Shopgate Merchant API
-				$keywordsFromApi = $this->merchantApi->getMobileRedirectKeywords();
+				$keywordsFromApi = $this->merchantApi->getMobileRedirectUserAgents();
 				$redirectKeywords = $keywordsFromApi['keywords'];
-				$skipRedirectKeywords = $keywordsFromApi['skipKeywords'];
+				$skipRedirectKeywords = $keywordsFromApi['skip_keywords'];
 				
 				// save keywords to their files
 				$this->saveKeywordsToFile($redirectKeywords, $this->cacheFileWhitelist);

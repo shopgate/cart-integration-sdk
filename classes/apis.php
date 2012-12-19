@@ -700,7 +700,11 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 		return $smaResponse;
 	}
 	
-	public function getMobileRedirectKeywords(){
+	/*
+	 * This method is deprecated, please use getMobileRedirectUserAgents().
+	 * @deprecated
+	 */
+	public function getMobileRedirectKeywords() {
 		// Set timeout to 1 second
 		$this->curlOpt[CURLOPT_TIMEOUT] = 1;
 		
@@ -710,6 +714,19 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 
 		$response = $this->sendRequest($data);
 
+		return $response;
+	}
+	
+	public function getMobileRedirectUserAgents() {
+		// Set timeout to 1 second
+		$this->curlOpt[CURLOPT_TIMEOUT] = 1;
+		
+		$data = array(
+				'action' => 'get_mobile_redirect_user_agents',
+		);
+		
+		$response = $this->sendRequest($data);
+		
 		return $response;
 	}
 
@@ -1216,11 +1233,22 @@ interface ShopgateMerchantApiInterface {
 	/**
 	 * Represents the "get_mobile_redirect_keywords" action.
 	 *
+	 * This method is deprecated, please use getMobileRedirectUserAgents().
+	 *
 	 * @return array 'keywords' => string[], 'skipKeywords' => string[]
 	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
-	 * @see http://wiki.shopgate.com/Shopgate_Merchant_API_get_mobile_redirect_keywords/de
+	 * @deprecated
 	 */
 	public function getMobileRedirectKeywords();
+	
+	/**
+	 * Represents the "get_mobile_user_agents" action.
+	 *
+	 * @return array 'keywords' => string[], 'skip_keywords' => string[]
+	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
+	 * @see http://wiki.shopgate.com/Merchant_API_get_mobile_user_agents
+	 */
+	public function getMobileRedirectUserAgents();
 
 	/**
 	 * Represents the "get_orders" action.
