@@ -1,5 +1,9 @@
 '''Deutsch'''
 
+'''Version 2.1.14'''
+* ShopgateMerchantApi::getMobileRedirectKeywords() ist jetzt deprecated
+* ShopgateMerchantApi::getMobileRedirectUserAgents() eingefügt
+
 '''Version 2.1.13'''
 * der updateOrder()-Callback erhält jetzt mit der Bestellung auch die Bestellungsposten
 * die Filterung von <script>-Tags im Export wurde verbessert
@@ -41,6 +45,10 @@
 
 
 '''English'''
+
+'''Version 2.1.14'''
+* ShopgateMerchantApi::getMobileRedirectKeywords() is now deprecated
+* added ShopgateMerchantApi::getMobileRedirectUserAgents()
 
 '''Version 2.1.13'''
 * the updateOrder() callback is now provided with the items of the order as well
