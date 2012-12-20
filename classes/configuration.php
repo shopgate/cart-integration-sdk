@@ -384,33 +384,28 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	}
 	
 	public function loadFile($path = null) {
-		global $shopgate_config;
-		
-		// unset $shopgate_config to avoid reading from somehow injected global variables
-		if (isset($shopgate_config)) {
-			$shopgate_config = null;
-		}
+		$config = null;
 		
 		// try loading files
 		if (!empty($path)) {
 			// try $path
-			$success = $this->includeFile($path);
+			$config = $this->includeFile($path);
 			
-			if (!$success) {
+			if (!$config) {
 				throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR, 'The passed configuration file "'.$path.'" does not exist or does not define the $shopgate_config variable.');
 			}
 		} else {
 			// try myconfig.php
-			$success = $this->includeFile(SHOPGATE_BASE_DIR.DS.'config'.DS.'myconfig.php');
+			$config = $this->includeFile(SHOPGATE_BASE_DIR.DS.'config'.DS.'myconfig.php');
 			
 			// if unsuccessful, use default configuration values
-			if (!$success) {
+			if (!$config) {
 				return;
 			}
 		}
 		
 		// if we got here, we have a $shopgate_config to load
-		$unmappedData = parent::loadArray($shopgate_config);
+		$unmappedData = parent::loadArray($config);
 		$this->mapAdditionalSettings($unmappedData);
 	}
 	
@@ -421,12 +416,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @throws ShopgateLibraryException in case the $shopNumber is empty or no configuration file can be found.
 	 */
 	public function loadByShopNumber($shopNumber) {
-		global $shopgate_config;
-	
-		if (empty($shopNumber)) {
+		if (empty($shopNumber) || !preg_match($this->coreValidations['shop_number'], $shopNumber)) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR, 'configuration file cannot be found without shop number');
 		}
-	
+		
 		// find all config files
 		$configFile = null;
 		$files = scandir($this->config_folder_path);
@@ -434,7 +427,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 			if (!is_file($this->config_folder_path.DS.$file)) {
 				continue;
 			}
-				
+			
 			$shopgate_config = null;
 			include_once($this->config_folder_path.DS.$file);
 			if (isset($shopgate_config) && isset($shopgate_config['shop_number']) && ($shopgate_config['shop_number'] == $shopNumber)) {
@@ -442,11 +435,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 				break;
 			}
 		}
-	
+		
 		if (empty($configFile)) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR, 'no configuration file found for shop number "'.$shopNumber.'"', true, false);
 		}
-	
+		
 		$this->loadFile($configFile);
 		$this->initFileNames();
 	}
@@ -458,8 +451,8 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @throws ShopgateLibraryException in case the $language is empty
 	 */
 	public function loadByLanguage($language) {
-		if (empty($language)) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR, 'configuration file cannot be found without language', true, false);
+		if (empty($language) || !preg_match('/[a-z]{2}/', $language)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR, 'configuration file cannot be found without language code', true, false);
 		}
 	
 		$this->loadFile($this->config_folder_path.DS.'myconfig-'.$language.'.php');
@@ -485,8 +478,6 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	}
 	
 	public function saveFile(array $fieldList, $path = null, $validate = true) {
-		global $shopgate_config;
-		
 		// if desired, validate before doing anything else
 		if ($validate) {
 			$this->validate($fieldList);
@@ -504,7 +495,6 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 			$this->loadFile($path);
 		} catch (ShopgateLibraryException $e) {
 			ShopgateLogger::getInstance()->log('-- Don\'t worry about the "error reading or writing configuration", that was just a routine check during saving.');
-			$shopgate_config = array();
 		}
 		
 		// merge old config with new values
@@ -520,6 +510,14 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		if (!@file_put_contents($path, $shopgateConfigFile)) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR, 'The configuration file "'.$path.'" could not be saved.');
 		}
+	}
+	
+	public function saveFileForLanguage(array $fieldList, $language, $validate = true) {
+		if (empty($language)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR, 'configuration file cannot be saved without language', true, false);
+		}
+		
+		$this->saveFile($fieldList, $this->config_folder_path.DS.'myconfig-'.$language.'.php', $validate);
 	}
 	
 	public final function validate(array $fieldList = array()) {
@@ -1115,15 +1113,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * Tries to include the specified file and check for $shopgate_config.
 	 *
 	 * @param string $path The path to the configuration file.
-	 * @return boolean true if the file was included and defined $shopgate_config, false otherwise
+	 * @return mixed[]|bool The $shopgate_config array if the file was included and defined $shopgate_config, false otherwise.
 	 */
 	private function includeFile($path) {
-		global $shopgate_config;
-		
-		// unset $shopgate_config to avoid reading from somehow injected global variables
-		if (isset($shopgate_config)) {
-			unset($shopgate_config);
-		}
+		$shopgate_config = null;
 		
 		// try including the file
 		if (file_exists($path)) {
@@ -1138,7 +1131,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		if (!isset($shopgate_config) || !is_array($shopgate_config)) {
 			return false;
 		} else {
-			return true;
+			return $shopgate_config;
 		}
 	}
 	
