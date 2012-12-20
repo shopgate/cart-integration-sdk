@@ -903,7 +903,7 @@ class ShopgateAuthentificationService extends ShopgateObject implements Shopgate
 	}
 	
 	public function buildAuthTokenHeader($prefix = 'SMA') {
-		return self::HEADER_X_SHOPGATE_AUTH_TOKEN.': '.$this->buildAuthToken();
+		return self::HEADER_X_SHOPGATE_AUTH_TOKEN.': '.$this->buildAuthToken($prefix);
 	}
 	
 	public function buildMerchantApiAuthTokenHeader() {
