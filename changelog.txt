@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.1.15'''
+* Anpassung der Klasse ShopgateConfig zur Nutzung sprach- oder Shop-abhängiger Konfigurationsdateien
+
 '''Version 2.1.14'''
 * ShopgateMerchantApi::getMobileRedirectKeywords() ist jetzt deprecated
 * ShopgateMerchantApi::getMobileRedirectUserAgents() eingefügt
@@ -45,6 +48,9 @@
 
 
 '''English'''
+
+'''Version 2.1.15'''
+* extended class ShopgateConfig for use with multiple configuration files depending on language or shop number
 
 '''Version 2.1.14'''
 * ShopgateMerchantApi::getMobileRedirectKeywords() is now deprecated
