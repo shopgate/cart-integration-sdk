@@ -396,7 +396,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 			}
 		} else {
 			// try myconfig.php
-			$config = $this->includeFile(SHOPGATE_BASE_DIR.DS.'config'.DS.'myconfig.php');
+			$config = $this->includeFile($this->config_folder_path.DS.'myconfig.php');
 			
 			// if unsuccessful, use default configuration values
 			if (!$config) {
@@ -502,7 +502,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		
 		// if necessary point $path to  myconfig.php
 		if (empty($path)) {
-			$path = SHOPGATE_BASE_DIR.DS.'config'.DS.'myconfig.php';
+			$path = $this->config_folder_path.DS.'myconfig.php';
 		}
 		
 		// create the array definition string and save it to the file
