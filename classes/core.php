@@ -288,7 +288,7 @@ class ShopgateMerchantApiException extends Exception {
 	public function __construct($code, $additionalInformation = null) {
 		$message = $additionalInformation;
 
-		if (ShopgateLogger::getInstance()->log($code.' - '.$additionalInformation) === false){
+		if (ShopgateLogger::getInstance()->log('SMA reports error: '.$code.' - '.$additionalInformation) === false){
 			$message .= ' (unable to log)';
 		}
 		parent::__construct($message, $code);
