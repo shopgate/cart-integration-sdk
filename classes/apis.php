@@ -486,9 +486,9 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$files = array(
 				# default paths
 				SHOPGATE_BASE_DIR.'/config/myconfig.php',
-				SHOPGATE_BASE_DIR.'/temp/',
-				SHOPGATE_BASE_DIR.'/temp/cache/',
-				SHOPGATE_BASE_DIR.'/temp/logs/',
+				$this->config->getExportFolderPath(),
+				$this->config->getLogFolderPath(),
+				$this->config->getCacheFolderPath(),
 				
 				# csv files
 				$this->config->getItemsCsvPath(),
