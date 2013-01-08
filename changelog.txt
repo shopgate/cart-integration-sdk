@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.1.16'''
+* Funktionen ShopgateAddress::getStreetNumber und ShopgateAddress::getStreetName hinzugefügt
+
 '''Version 2.1.15'''
 * Anpassung der Klasse ShopgateConfig zur Nutzung sprach- oder Shop-abhängiger Konfigurationsdateien
 
@@ -48,6 +51,9 @@
 
 
 '''English'''
+
+'''Version 2.1.16'''
+* Added function ShopgateAddress::getStreetNumber and ShopgateAddress::getStreetName
 
 '''Version 2.1.15'''
 * extended class ShopgateConfig for use with multiple configuration files depending on language or shop number
