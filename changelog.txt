@@ -3,6 +3,8 @@
 '''Version 2.1.16'''
 * Funktionen ShopgateAddress::getStreetNumber und ShopgateAddress::getStreetName hinzugefügt
 * Der CNAME wird um http:// ergeänzt, wenn es nicht angegeben wurde
+* Entfernen von <script>-, <style>- und <link>-Tags aus der Produktbeschreibung verbessert
+* "ping" liest jetzt die Ordnerberechtigungen der konfigurierten Ordner für Export, Logs und Cache aus
 
 '''Version 2.1.15'''
 * Anpassung der Klasse ShopgateConfig zur Nutzung sprach- oder Shop-abhängiger Konfigurationsdateien
