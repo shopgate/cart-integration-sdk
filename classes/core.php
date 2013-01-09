@@ -1243,9 +1243,13 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		foreach ($additionalAllowedTags as &$t) $t = strtolower($t);
 		
 		// some tags must be removed completely (including content)
-		$string = preg_replace('#<script(.*?)>(.*?)</script>#is', '', $string);
-		$string = preg_replace('#<style(.*?)>(.*?)</style>#is', '', $string);
-		$string = preg_replace('#<link(.*?)/>#is', '', $string);
+		$string = preg_replace('#<script([^>]*?)>(.*?)</script>#is', '', $string);
+		$string = preg_replace('#<style([^>]*?)>(.*?)</style>#is', '', $string);
+		$string = preg_replace('#<link([^>]*?)>(.*?)</link>#is', '', $string);
+		
+		$string = preg_replace('#<script([^>]*?)/>#is', '', $string);
+		$string = preg_replace('#<style([^>]*?)/>#is', '', $string);
+		$string = preg_replace('#<link([^>]*?)/>#is', '', $string);
 
 		// add the additional allowed tags to the list
 		$allowedTags = array_merge($allowedTags, $additionalAllowedTags);
