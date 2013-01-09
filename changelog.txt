@@ -2,6 +2,7 @@
 
 '''Version 2.1.16'''
 * Funktionen ShopgateAddress::getStreetNumber und ShopgateAddress::getStreetName hinzugefügt
+* Der CNAME wird um http:// ergeänzt, wenn es nicht angegeben wurde
 
 '''Version 2.1.15'''
 * Anpassung der Klasse ShopgateConfig zur Nutzung sprach- oder Shop-abhängiger Konfigurationsdateien
@@ -54,6 +55,7 @@
 
 '''Version 2.1.16'''
 * Added function ShopgateAddress::getStreetNumber and ShopgateAddress::getStreetName
+* http:// will add to cname if not given
 
 '''Version 2.1.15'''
 * extended class ShopgateConfig for use with multiple configuration files depending on language or shop number
