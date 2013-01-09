@@ -308,7 +308,6 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		$this->buttonDescription = 'Mobile Webseite aktivieren';
 	}
 
-
 	####################
 	# general settings #
 	####################
@@ -322,6 +321,10 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	}
 
 	public function setCustomMobileUrl($cname){
+		if(!preg_match("/^http(s)?:\/\//i", $cname)) {
+			$cname = "http://"  . $cname;
+		}
+		
 		$this->cname = $cname;
 	}
 
