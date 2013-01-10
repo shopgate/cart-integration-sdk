@@ -62,7 +62,7 @@
 '''English'''
 
 '''Version 2.1.17'''
-* Mobile Header bow gets attached via JavaScript for more flexibility in complicated layouts
+* Mobile Header now gets attached via JavaScript for more flexibility in complicated layouts
 * new settings "mobile_header_parent" and "mobile_header_prepend in ShopgateConfig
 * new method ShopgateRedirect::setParentElement()
 * fixed the issue where redirection to "http://" was performed if no CNAME was set
