@@ -195,6 +195,16 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	protected $currency;
 	
 	/**
+	 * @var string CSS style identifier for the parent element the Mobile Header should be attached to.
+	 */
+	protected $mobile_header_parent;
+	
+	/**
+	 * @var bool True to insert the Mobile Header as first child element, false to append it.
+	 */
+	protected $mobile_header_prepend;
+	
+	/**
 	 * @var int The capacity (number of lines) of the buffer used for the export actions.
 	 */
 	protected $export_buffer_capacity;
@@ -316,6 +326,9 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->country = 'DE';
 		$this->language = 'de';
 		$this->currency = 'EUR';
+		
+		$this->mobile_header_parent = 'body';
+		$this->mobile_header_prepend = true;
 		
 		$this->export_buffer_capacity = 100;
 		$this->max_attributes = 50;
@@ -689,6 +702,14 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->currency;
 	}
 	
+	public function getMobileHeaderParent() {
+		return $this->mobile_header_parent;
+	}
+	
+	public function getMobileHeaderPrepend() {
+		return $this->mobile_header_prepend;
+	}
+	
 	public function getExportBufferCapacity() {
 		return $this->export_buffer_capacity;
 	}
@@ -911,6 +932,14 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	
 	public function setCurrency($value) {
 		$this->currency = $value;
+	}
+	
+	public function setMobileHeaderParent($value) {
+		$this->mobile_header_parent = $value;
+	}
+	
+	public function setMobileHeaderPrepend($value) {
+		$this->mobile_header_prepend = $value;
 	}
 	
 	public function setExportBufferCapacity($value) {
@@ -1833,6 +1862,16 @@ interface ShopgateConfigInterface {
 	 * @return string The ISO 4217 code of the currency the plugin uses for export.
 	 */
 	public function getCurrency();
+	
+	/**
+	 * @return string CSS style identifier for the parent element the Mobile Header should be attached to.
+	 */
+	public function getMobileHeaderParent();
+	
+	/**
+	 * @return bool True to insert the Mobile Header as first child element, false to append it.
+	 */
+	public function getMobileHeaderPrepend();
 
 	/**
 	 * @return int The capacity (number of lines) of the buffer used for the export actions.
@@ -2095,17 +2134,27 @@ interface ShopgateConfigInterface {
 	public function setEnableClearLogfile($value);
 
 	/**
-	 * @param string The ISO 3166 ALPHA-2 code of the language the plugin uses for export.
+	 * @param string $value The ISO 3166 ALPHA-2 code of the language the plugin uses for export.
 	 */
 	public function setLanguage($value);
 	
 	/**
-	 * @param string The ISO 4217 code of the currency the plugin uses for export.
+	 * @param string $value The ISO 4217 code of the currency the plugin uses for export.
 	 */
 	public function setCurrency($value);
 	
 	/**
-	 * @param int The capacity (number of lines) of the buffer used for the export actions.
+	 * @param string $value CSS style identifier for the parent element the Mobile Header should be attached to.
+	 */
+	public function setMobileHeaderParent($value);
+	
+	/**
+	 * @return bool $value True to insert the Mobile Header as first child element, false to append it.
+	 */
+	public function setMobileHeaderPrepend($value);
+	
+	/**
+	 * @param int $value The capacity (number of lines) of the buffer used for the export actions.
 	 */
 	public function setExportBufferCapacity($value);
 

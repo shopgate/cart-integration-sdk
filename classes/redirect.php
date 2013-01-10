@@ -59,6 +59,35 @@ interface ShopgateMobileRedirectInterface {
 	public function setCustomMobileUrl($cname);
 	
 	/**
+	 * Sets the number of the item to redirect to.
+	 *
+	 * @param string $itemNumber
+	 */
+	public function setItemNumber($itemNumber);
+	
+	/**
+	 * Sets the number of the category to redirect to.
+	 *
+	 * @param string $categoryNumber
+	 */
+	public function setCategoryNumber($categoryNumber);
+	
+	/**
+	 * Set the language the page is currently viewed in by a visitor.
+	 *
+	 * @param string $languageCode The ISO 639 code of the language.
+	 */
+	public function setLanguageCode($languageCode);
+	
+	/**
+	 * Sets the parent element the Mobile Header should be attached to.
+	 *
+	 * @param string $identifier CSS style identifier for the parent element.
+	 * @param bool $prepend True to add the Mobile Header as first child of the parent element, false to append it.
+	 */
+	public function setParentElement($identifier, $prepend = false);
+	
+	/**
 	 * Enables updating of the keywords that identify mobile devices from Shopgate Merchant API.
 	 *
 	 * @param int $cacheTime Time the keywords are cached in hours. Will be set to at least ShopgateMobileRedirectInterface::MIN_CACHE_TIME.
@@ -267,6 +296,16 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	protected $buttonDescription;
 	
 	/**
+	 * @var string identifier CSS style identifier for the parent element of the Mobile Header
+	 */
+	protected $buttonParent;
+	
+	/**
+	 * @var bool true to add the Mobile Header as first child of the parent element, false to append it
+	 */
+	protected $buttonPrepend;
+	
+	/**
 	 * @var string itemNumber used for creating a mobile product url
 	 */
 	protected $itemNumber;
@@ -298,9 +337,11 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		$this->cacheFileWhitelist = $cacheFileWhitelist;
 		$this->cacheFileBlacklist = $cacheFileBlacklist;
 		$this->languageCode = 'de';
+		$this->buttonParent = 'body';
+		$this->buttonPrepend = true;
 		
 		$this->useSecureConnection = isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] === "on" || $_SERVER["HTTPS"] == "1");
-
+		
 		// mobile header options
 		$this->mobileHeaderTemplatePath = dirname(__FILE__).'/../assets/mobile_header.html';
 		$this->mobileHtmlHeadTemplatePath = dirname(__FILE__).'/../assets/html_head.html';
@@ -321,7 +362,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	}
 
 	public function setCustomMobileUrl($cname){
-		if(!preg_match("/^http(s)?:\/\//i", $cname)) {
+		if(!preg_match("/^(https?:\/\/\S+)?$/i", $cname)) {
 			$cname = "http://"  . $cname;
 		}
 		
@@ -340,6 +381,10 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		$this->languageCode = $languageCode;
 	}
 	
+	public function setParentElement($identifier, $prepend = true) {
+		$this->buttonParent = $identifier;
+		$this->buttonPrepend = $prepend;
+	}
 	
 	public function enableKeywordUpdate($cacheTime = ShopgateMobileRedirectInterface::DEFAULT_CACHE_TIME) {
 		$this->updateRedirectKeywords = true;
@@ -412,8 +457,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 			setcookie(ShopgateMobileRedirectInterface::COOKIE_NAME, 1, time() + 604800, '/'); // expires after 7 days
 			return false;
 		}
-
-
+		
 		return empty($_COOKIE[ShopgateMobileRedirectInterface::COOKIE_NAME]) ? true : false;
 	}
 
@@ -422,7 +466,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		if (!preg_match('#^(http|https)\://#', $url)) {
 			return false;
 		}
-
+		
 		// perform redirect
 		header("Location: ". $url, true, 302);
 		exit;
@@ -432,12 +476,12 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		if (!file_exists($this->mobileHeaderTemplatePath)) {
 			return '';
 		}
-
+		
 		$html = @file_get_contents($this->mobileHeaderTemplatePath);
 		if (empty($html)) {
 			return '';
 		}
-
+		
 		// set parameters
 		$this->buttonOnImageSource = (($this->useSecureConnection) ? ShopgateMobileRedirectInterface::SHOPGATE_STATIC_SSL : ShopgateMobileRedirectInterface::SHOPGATE_STATIC).'/api/mobile_header/button_on.png';
 		$this->buttonOffImageSource = (($this->useSecureConnection) ? ShopgateMobileRedirectInterface::SHOPGATE_STATIC_SSL : ShopgateMobileRedirectInterface::SHOPGATE_STATIC).'/api/mobile_header/button_off.png';
@@ -445,7 +489,9 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		$html = str_replace('{$buttonOnImageSource}',  $this->buttonOnImageSource,  $html);
 		$html = str_replace('{$buttonOffImageSource}', $this->buttonOffImageSource, $html);
 		$html = str_replace('{$buttonDescription}', $this->buttonDescription, $html);
-
+		$html = str_replace('{$buttonParent}', $this->buttonParent, $html);
+		$html = str_replace('{$buttonPrepend}', (($this->buttonPrepend) ? 'true' : 'false'), $html);
+		
 		return $html;
 	}
 
@@ -453,16 +499,16 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		if (!file_exists($this->mobileHtmlHeadTemplatePath)) {
 			return '';
 		}
-	
+		
 		$html = @file_get_contents($this->mobileHtmlHeadTemplatePath);
 		if (empty($html)) {
 			return '';
 		}
-	
+		
 		// set parameters
 		$html = str_replace('{$mobile_url}', $this->getRedirectUrl(), $html);
 		$html = str_replace('{$lang_code}', $this->languageCode, $html);
-	
+		
 		return $html;
 	}
 

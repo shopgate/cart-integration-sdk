@@ -1,5 +1,11 @@
 '''Deutsch'''
 
+'''Version 2.1.17'''
+* der Mobile Header wird jetzt per JavaScript eingehangen, um mehr Flexibilität bei komplizierten Layouts zu ermöglichen
+* neue Einstellungen "mobile_header_parent" und "mobile_header_prepend in ShopgateConfig
+* neue Methode ShopgateRedirect::setParentElement()
+* Fehler behoben, bei dem auf "http://" weitergeleitet wurde, wenn kein CNAME eingetragen war
+
 '''Version 2.1.16'''
 * Funktionen ShopgateAddress::getStreetNumber und ShopgateAddress::getStreetName hinzugefügt
 * Der CNAME wird um http:// ergeänzt, wenn es nicht angegeben wurde
@@ -54,6 +60,12 @@
 
 
 '''English'''
+
+'''Version 2.1.17'''
+* Mobile Header bow gets attached via JavaScript for more flexibility in complicated layouts
+* new settings "mobile_header_parent" and "mobile_header_prepend in ShopgateConfig
+* new method ShopgateRedirect::setParentElement()
+* fixed the issue where redirection to "http://" was performed if no CNAME was set
 
 '''Version 2.1.16'''
 * Added function ShopgateAddress::getStreetNumber and ShopgateAddress::getStreetName
