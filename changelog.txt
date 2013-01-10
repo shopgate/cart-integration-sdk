@@ -5,6 +5,7 @@
 * neue Einstellungen "mobile_header_parent" und "mobile_header_prepend" in ShopgateConfig
 * neue Methode ShopgateRedirect::setParentElement()
 * Fehler behoben, bei dem auf "http://" weitergeleitet wurde, wenn kein CNAME eingetragen war
+* Log-, Export- und Cache-Dateien erhalten jetzt das Präfix "shopgate_"
 
 '''Version 2.1.16'''
 * Funktionen ShopgateAddress::getStreetNumber und ShopgateAddress::getStreetName hinzugefügt
@@ -66,6 +67,7 @@
 * new settings "mobile_header_parent" and "mobile_header_prepend" in ShopgateConfig
 * new method ShopgateRedirect::setParentElement()
 * fixed the issue where redirection to "http://" was performed if no CNAME was set
+* log, export and cache file now get the prefix "shopgate_"
 
 '''Version 2.1.16'''
 * Added function ShopgateAddress::getStreetNumber and ShopgateAddress::getStreetName

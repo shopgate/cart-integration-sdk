@@ -339,18 +339,18 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->log_folder_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs';
 		$this->cache_folder_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'cache';
 		
-		$this->items_csv_filename = 'items.csv';
-		$this->categories_csv_filename = 'categories.csv';
-		$this->reviews_csv_filename = 'reviews.csv';
-		$this->pages_csv_filename = 'pages.csv';
+		$this->items_csv_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'items.csv';
+		$this->categories_csv_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'categories.csv';
+		$this->reviews_csv_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'reviews.csv';
+		$this->pages_csv_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'pages.csv';
 		
-		$this->access_log_filename = 'access.log';
-		$this->request_log_filename = 'request.log';
-		$this->error_log_filename = 'error.log';
-		$this->debug_log_filename = 'debug.log';
+		$this->access_log_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'access.log';
+		$this->request_log_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'request.log';
+		$this->error_log_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'error.log';
+		$this->debug_log_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'debug.log';
 		
-		$this->redirect_keyword_cache_filename = 'redirect_keywords.txt';
-		$this->redirect_skip_keyword_cache_filename = 'skip_redirect_keywords.txt';
+		$this->redirect_keyword_cache_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'redirect_keywords.txt';
+		$this->redirect_skip_keyword_cache_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'skip_redirect_keywords.txt';
 		
 		// call possible sub class' startup()
 		if (!$this->startup()) {
@@ -1665,6 +1665,8 @@ class ShopgateConfigOld extends ShopgateObject {
 interface ShopgateConfigInterface {
 	const SHOPGATE_API_URL_LIVE = 'https://api.shopgate.com/merchant/';
 	const SHOPGATE_API_URL_PG   = 'https://api.shopgatepg.com/merchant/';
+	
+	const SHOPGATE_FILE_PREFIX = 'shopgate_';
 
 	/**
 	 * Tries to load the configuration from a file.
