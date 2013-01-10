@@ -2,7 +2,7 @@
 
 '''Version 2.1.17'''
 * der Mobile Header wird jetzt per JavaScript eingehangen, um mehr Flexibilität bei komplizierten Layouts zu ermöglichen
-* neue Einstellungen "mobile_header_parent" und "mobile_header_prepend in ShopgateConfig
+* neue Einstellungen "mobile_header_parent" und "mobile_header_prepend" in ShopgateConfig
 * neue Methode ShopgateRedirect::setParentElement()
 * Fehler behoben, bei dem auf "http://" weitergeleitet wurde, wenn kein CNAME eingetragen war
 
@@ -63,7 +63,7 @@
 
 '''Version 2.1.17'''
 * Mobile Header now gets attached via JavaScript for more flexibility in complicated layouts
-* new settings "mobile_header_parent" and "mobile_header_prepend in ShopgateConfig
+* new settings "mobile_header_parent" and "mobile_header_prepend" in ShopgateConfig
 * new method ShopgateRedirect::setParentElement()
 * fixed the issue where redirection to "http://" was performed if no CNAME was set
 
