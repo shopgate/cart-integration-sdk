@@ -130,6 +130,8 @@ class ShopgateItem extends ShopgateContainer {
 	protected $name = null;
 	protected $currency = null;
 	protected $tax_percent = null;
+	protected $tax_class_key = null;
+	protected $tax_class_id = null;
 	protected $unit_amount_with_tax = null;
 	protected $old_unit_amount_with_tax = null;
 	protected $category_numbers = array();
@@ -210,11 +212,28 @@ class ShopgateItem extends ShopgateContainer {
 
 	/**
 	 *
-	 * @param $tax_percent
+	 * @param $tax_percent float
+	 * @deprecated
 	 */
 	public function setTaxPercent($tax_percent)
 	{
 	    $this->tax_percent = $tax_percent;
+	}
+	
+	/**
+	 *
+	 * @param string $value
+	 */
+	public function setTaxClassKey($value) {
+		$this->tax_class_key = $value;
+	}
+	
+	/**
+	 *
+	 * @param string $value
+	 */
+	public function setTaxClassId($value) {
+		$this->tax_class_id = $value;
 	}
 
 	/**
@@ -691,11 +710,26 @@ class ShopgateItem extends ShopgateContainer {
 
 	/**
 	 *
-	 * @return
+	 * @return float
+	 * @deprecated
 	 */
 	public function getTaxPercent()
 	{
 	    return $this->tax_percent;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getTaxClassKey() {
+		return $this->tax_class_key;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getTaxClassId() {
+		return $this->tax_class_id;
 	}
 
 	/**

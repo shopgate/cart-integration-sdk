@@ -1030,6 +1030,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			'unit_amount' 				=> "",
 			'currency' 					=> "EUR",
 			'tax_percent' 				=> "",
+			'tax_rate'					=> "",
 			'description' 				=> "",
 			'urls_images' 				=> "",
 			'categories' 				=> "",
@@ -1666,7 +1667,7 @@ abstract class ShopgateContainer extends ShopgateObject {
 	/**
 	 * Creates a new object of the same type with every value recursively utf-8 encoded.
 	 *
-	 * @param String $sourceEncoding The source Encoding of the strings
+	 * @param string $sourceEncoding The source Encoding of the strings
 	 * @param bool $force Set this true to enforce encoding even if the source encoding is already UTF-8.
 	 * @return ShopgateContainer The new object with utf-8 encoded values.
 	 */
@@ -1679,7 +1680,7 @@ abstract class ShopgateContainer extends ShopgateObject {
 	/**
 	 * Creates a new object of the same type with every value recursively utf-8 decoded.
 	 *
-	 * @param String $destinationEncoding The destination Encoding for the strings
+	 * @param string $destinationEncoding The destination Encoding for the strings
 	 * @param bool $force Set this true to enforce encoding even if the destination encoding is set to UTF-8.
 	 * @return ShopgateContainer The new object with utf-8 decoded values.
 	 */
