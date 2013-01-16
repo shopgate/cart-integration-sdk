@@ -1030,7 +1030,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			'unit_amount' 				=> "",
 			'currency' 					=> "EUR",
 			'tax_percent' 				=> "",
-			'tax_rate'					=> "",
+			'tax_class'					=> "",
 			'description' 				=> "",
 			'urls_images' 				=> "",
 			'categories' 				=> "",
