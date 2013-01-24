@@ -122,7 +122,7 @@ class ShopgateLibraryException extends Exception {
 
 		// Plugin API errors
 		self::PLUGIN_API_NO_ACTION => 'no action specified',
-		self::PLUGIN_API_UNKNOWN_ACTION  => 'unkown action requested',
+		self::PLUGIN_API_UNKNOWN_ACTION  => 'unknown action requested',
 		self::PLUGIN_API_DISABLED_ACTION => 'disabled action requested',
 		self::PLUGIN_API_WRONG_RESPONSE_FORMAT => 'wrong response format',
 
