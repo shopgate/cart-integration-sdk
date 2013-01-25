@@ -1014,7 +1014,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 
 	/**
 	 * @return string[] An array with the csv file field names as indices and empty strings as values.
-	 * @see http://wiki.shopgate.com/CSV_File_Categories/de
+	 * @see http://wiki.shopgate.com/CSV_File_Categories/
 	 */
 	protected function buildDefaultCategoryRow() {
 		$row = array(
@@ -1039,7 +1039,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	
 	/**
 	 * @return string[] An array with the csv file field names as indices and empty strings as values.
-	 * @see http://wiki.shopgate.com/CSV_File_Items/de
+	 * @see http://wiki.shopgate.com/CSV_File_Items/
 	 */
 	protected function buildDefaultItemRow() {
 		$row = array(
@@ -1191,7 +1191,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 
 	/**
 	 * @return string[] An array with the csv file field names as indices and empty strings as values.
-	 * @see http://wiki.shopgate.com/CSV_File_Reviews/de
+	 * @see http://wiki.shopgate.com/CSV_File_Reviews/
 	 */
 	protected function buildDefaultReviewRow() {
 		$row = array(
