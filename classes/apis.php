@@ -1112,7 +1112,7 @@ class ShopgateMerchantApiResponse extends ShopgateContainer {
 		$this->errors = array();
 		$this->data = array();
 		
-		$unmappedData = parent::__construct($data);
+		$unmappedData = $this->loadArray($data);
 		
 		if (!empty($unmappedData)) {
 			$this->data = $unmappedData;
