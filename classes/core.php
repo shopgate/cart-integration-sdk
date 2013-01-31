@@ -1046,9 +1046,8 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			/* responsible fields */
 			'item_number' 				=> "",
 			'item_name' 				=> "",
-			'unit_amount' 				=> "",
+			'unit_amount_net' 			=> "",
 			'currency' 					=> "EUR",
-			'tax_percent' 				=> "",
 			'tax_class'					=> "",
 			'description' 				=> "",
 			'urls_images' 				=> "",
