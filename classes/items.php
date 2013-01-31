@@ -132,7 +132,6 @@ class ShopgateItem extends ShopgateContainer {
 	protected $tax_percent = null;
 	protected $tax_class_key = null;
 	protected $tax_class_id = null;
-	protected $unit_amount_net = null;
 	protected $unit_amount_with_tax = null;
 	protected $old_unit_amount_with_tax = null;
 	protected $category_numbers = array();
