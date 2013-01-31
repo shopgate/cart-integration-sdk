@@ -177,7 +177,7 @@ class ShopgateOrder extends ShopgateContainer {
 	 *
 	 * Sample: <ul><li>SHOPGATE</li><li>PREPAY</li><li>CC</li><li>INVOICE</li><li>DEBIT</li><li>COD</li><li>PAYPAL</li></ul>
 	 *
-	 * @see http://wiki.shopgate.com/Merchant_API_payment_infos/de
+	 * @see http://wiki.shopgate.com/Merchant_API_payment_infos/
 	 * @param string $value
 	 */
 	public function setPaymentGroup($value) {
@@ -189,7 +189,7 @@ class ShopgateOrder extends ShopgateContainer {
 	 *
 	 * Sample: <ul><li>SHOPGATE</li><li>PREPAY</li><li>DT_CC</li><li>KLARNA_INV</li><li>BILLSAFE</li><li>DEBIT</li><li>COD</li><li>PAYPAL</li></ul>
 	 *
-	 * @see http://wiki.shopgate.com/Merchant_API_payment_infos/de
+	 * @see http://wiki.shopgate.com/Merchant_API_payment_infos/
 	 * @param string $value
 	 */
 	public function setPaymentMethod($value) { $this->payment_method = $value; }
@@ -550,7 +550,7 @@ class ShopgateOrder extends ShopgateContainer {
 	 *
 	 * Sample: <ul><li>SHOPGATE</li><li>PREPAY</li><li>DT_CC</li><li>BILLSAFE</li><li>KLARNA_INV</li><li>DEBIT</li><li>COD</li><li>PAYPAL</li></ul>
 	 *
-	 * @see http://wiki.shopgate.com/Merchant_API_payment_infos/de
+	 * @see http://wiki.shopgate.com/Merchant_API_payment_infos/
 	 * @return string
 	 */
 	public function getPaymentMethod() {
@@ -562,7 +562,7 @@ class ShopgateOrder extends ShopgateContainer {
 	 *
 	 * Sample: <ul><li>SHOPGATE</li><li>PREPAY</li><li>CC</li><li>INVOICE</li><li>DEBIT</li><li>COD</li><li>PAYPAL</li></ul>
 	 *
-	 * @see http://wiki.shopgate.com/Merchant_API_payment_infos/de
+	 * @see http://wiki.shopgate.com/Merchant_API_payment_infos/
 	 * @return string
 	 */
 	public function getPaymentGroup() { return $this->payment_group; }

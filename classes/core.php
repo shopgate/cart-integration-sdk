@@ -44,7 +44,7 @@ function ShopgateErrorHandler($errno, $errstr, $errfile, $errline) {
  * Exception type for errors within the Shopgate Library.
  *
  * This is used by the Shopgate Library and should be used by plugins and their components. Predefined error
- * codes and messages should be used. If not suitable, a custom message can be passed which results in error
+ * codes and messages are to be used. If not suitable, a custom message can be passed which results in error
  * code 999 (unknown error code) with the message appended. Error code, message, time, additional information
  * and part of the stack trace will be logged automatically on construction of a ShopgateLibraryException.
  *
@@ -122,7 +122,7 @@ class ShopgateLibraryException extends Exception {
 
 		// Plugin API errors
 		self::PLUGIN_API_NO_ACTION => 'no action specified',
-		self::PLUGIN_API_UNKNOWN_ACTION  => 'unkown action requested',
+		self::PLUGIN_API_UNKNOWN_ACTION  => 'unknown action requested',
 		self::PLUGIN_API_DISABLED_ACTION => 'disabled action requested',
 		self::PLUGIN_API_WRONG_RESPONSE_FORMAT => 'wrong response format',
 
@@ -272,9 +272,6 @@ class ShopgateLibraryException extends Exception {
 /**
  * Exception type for errors reported by the Shopgate Merchant API.
  *
- * @param int $code One of the constants defined in [TODO].
- * @param string $additionalInformation More detailed information on what exactly went wrong.
- *
  * @author Shopgate GmbH, 35510 Butzbach, DE
  */
 class ShopgateMerchantApiException extends Exception {
@@ -284,14 +281,36 @@ class ShopgateMerchantApiException extends Exception {
 	const ORDER_SHIPPING_STATUS_ALREADY_COMPLETED = 204;
 
 	const INTERNAL_ERROR_OCCURED_WHILE_SAVING = 803;
+	
+	/**
+	 * @var ShopgateMerchantApiResponse
+	 */
+	protected $response;
 
-	public function __construct($code, $additionalInformation = null) {
+	/**
+	 * Exception type for errors reported by the Shopgate Merchant API.
+	 *
+	 *
+	 * @param int $code One of the constants defined in ShopgateMerchantApiException.
+	 * @param string $additionalInformation More detailed information on what exactly went wrong.
+	 * @param ShopgateMerchantApiResponse $response The response of the request that caused the exception to be thrown or null if the response was invalid.
+	 */
+	public function __construct($code, $additionalInformation, ShopgateMerchantApiResponse $response) {
+		$this->response = $response;
 		$message = $additionalInformation;
 
-		if (ShopgateLogger::getInstance()->log('SMA reports error: '.$code.' - '.$additionalInformation) === false){
+		if (ShopgateLogger::getInstance()->log('SMA reports error: '.$code.' - '.$additionalInformation) === false) {
 			$message .= ' (unable to log)';
 		}
+		
 		parent::__construct($message, $code);
+	}
+	
+	/**
+	 * @return ShopgateMerchantApiResponse
+	 */
+	public function getResponse() {
+		return $this->response;
 	}
 }
 
@@ -995,7 +1014,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 
 	/**
 	 * @return string[] An array with the csv file field names as indices and empty strings as values.
-	 * @see http://wiki.shopgate.com/CSV_File_Categories/de
+	 * @see http://wiki.shopgate.com/CSV_File_Categories/
 	 */
 	protected function buildDefaultCategoryRow() {
 		$row = array(
@@ -1020,7 +1039,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	
 	/**
 	 * @return string[] An array with the csv file field names as indices and empty strings as values.
-	 * @see http://wiki.shopgate.com/CSV_File_Items/de
+	 * @see http://wiki.shopgate.com/CSV_File_Items/
 	 */
 	protected function buildDefaultItemRow() {
 		$row = array(
@@ -1173,7 +1192,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 
 	/**
 	 * @return string[] An array with the csv file field names as indices and empty strings as values.
-	 * @see http://wiki.shopgate.com/CSV_File_Reviews/de
+	 * @see http://wiki.shopgate.com/CSV_File_Reviews/
 	 */
 	protected function buildDefaultReviewRow() {
 		$row = array(
