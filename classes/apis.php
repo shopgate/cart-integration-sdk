@@ -1335,7 +1335,7 @@ interface ShopgateMerchantApiInterface {
 	 * @throws ShopgateLibraryException in case the connection can't be established
 	 * @throws ShopgateMerchantApiException in case the response is invalid or an error occured
 	 *
-	 * @see http://wiki.shopgate.com/Merchant_API_get_mobile_user_agents
+	 * @see http://wiki.shopgate.com/Merchant_API_get_mobile_redirect_user_agents
 	 */
 	public function getMobileRedirectUserAgents();
 	
