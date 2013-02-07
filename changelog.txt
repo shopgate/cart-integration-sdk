@@ -1,5 +1,12 @@
 '''Deutsch'''
 
+'''Version 2.1.18
+* neue Methode ShopgateMerchantApi::batchAddItem() hinzugefügt
+* neue Methode ShopgateMerchantApi::batchUpdateItem() hinzugefügt
+* Aktualisierung und Korrektur der PHPDocs für die API-Klassen
+* Schrägstriche am Ende des CNAME-Eintrags werden jetzt entfernt
+* Methoden getCreateItemsCsvLoaders(), getCreateCategoriesCsvLoaders() und getCreateReviewsCsvLoaders() der Klasse ShopgatePlugin sind nicht mehr "final"
+
 '''Version 2.1.17'''
 * der Mobile Header wird jetzt per JavaScript eingehangen, um mehr Flexibilität bei komplizierten Layouts zu ermöglichen
 * neue Einstellungen "mobile_header_parent" und "mobile_header_prepend" in ShopgateConfig
@@ -61,6 +68,13 @@
 
 
 '''English'''
+
+'''Version 2.1.18
+* added new method ShopgateMerchantApi::batchAddItem()
+* added new method ShopgateMerchantApi::batchUpdateItem()
+* updated and corrected PHPDoc for API classes
+* trailing slashes on the CNAME setting are cut off
+* methods getCreateItemsCsvLoaders(), getCreateCategoriesCsvLoaders() and getCreateReviewsCsvLoaders() of class ShopgatePlugin are not "final" anymore
 
 '''Version 2.1.17'''
 * Mobile Header now gets attached via JavaScript for more flexibility in complicated layouts
