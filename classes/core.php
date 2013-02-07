@@ -1342,7 +1342,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @return array
 	 */
-	protected final function getCreateItemsCsvLoaders() {
+	protected function getCreateItemsCsvLoaders() {
 		return $this->getCreateCsvLoaders("item");
 	}
 	
@@ -1353,7 +1353,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @return array
 	 */
-	protected final function getCreateCategoriesCsvLoaders() {
+	protected function getCreateCategoriesCsvLoaders() {
 		return $this->getCreateCsvLoaders("category");
 	}
 	
@@ -1362,7 +1362,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @return array
 	 */
-	protected final function getCreateReviewsCsvLoaders() {
+	protected function getCreateReviewsCsvLoaders() {
 		return $this->getCreateCsvLoaders("review");
 	}
 
