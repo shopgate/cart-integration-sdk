@@ -1,6 +1,6 @@
 '''Deutsch'''
 
-'''Version 2.1.18
+'''Version 2.1.18'''
 * neue Methode ShopgateMerchantApi::batchAddItem() hinzugefügt
 * neue Methode ShopgateMerchantApi::batchUpdateItem() hinzugefügt
 * Aktualisierung und Korrektur der PHPDocs für die API-Klassen
@@ -69,7 +69,7 @@
 
 '''English'''
 
-'''Version 2.1.18
+'''Version 2.1.18'''
 * added new method ShopgateMerchantApi::batchAddItem()
 * added new method ShopgateMerchantApi::batchUpdateItem()
 * updated and corrected PHPDoc for API classes
