@@ -602,7 +602,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	}
 	
 	public function getCname() {
-		return $this->cname;
+		return rtrim($this->cname, '/');
 	}
 	
 	public function getServer() {
@@ -839,7 +839,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	}
 	
 	public function setCname($value) {
-		$this->cname = $value;
+		$this->cname = rtrim($value, '/');
 	}
 	
 	public function setServer($value) {
