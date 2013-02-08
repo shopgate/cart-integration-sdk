@@ -323,6 +323,95 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			$this->responseData['external_order_number'] = null;
 		}
 	}
+	
+	protected function checkCoupon() {
+// 		if (!isset($this->params['coupon_code'])) {
+// 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ORDER_NUMBER);
+// 		}
+// 		if (!isset($this->params['cart'])) {
+// 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ORDER_NUMBER);
+// 		}
+
+		$this->params['coupon_code'] = "XXXXXXXX";
+		$this->params['cart'] = array(
+				"customer_number" => "10000",
+				"external_customer_number" => "14232",
+				"external_customer_id" => "14232",
+				"customer_group" => "",
+				"customer_group_id" => "",
+				"payment_group" => "PREPAY",
+				"payment_method" => "PREPAY",
+				"coupons" => array(
+						array(
+								"coupon_code" => "555555",
+								"coupon_value" => "100",
+								),
+						array(
+								"coupon_code" => "666666",
+								"coupon_value" => "50",
+								),
+						),
+				"invoice_address" => array(
+						"gender" => "m",
+						"first_name" => "Martin",
+						"last_name" => "Weber",
+						"birthday" => "26.07.1984",
+						"company" => "Shopgate GmbH",
+						"street_1" => "Schloßstraße 10",
+						"street_2" => "1. OG",
+						"city" => "Butzbach",
+						"zipcode" => "35510",
+						"country" => "DE",
+						"state" => "DE-HE",
+						),
+				"delivery_address" => array(
+						"gender" => "m",
+						"first_name" => "Martin",
+						"last_name" => "Weber",
+						"birthday" => "26.07.1984",
+						"company" => "Shopgate GmbH",
+						"street_1" => "Schloßstraße 10",
+						"street_2" => "1. OG",
+						"city" => "Butzbach",
+						"zipcode" => "35510",
+						"country" => "DE",
+						"state" => "DE-HE",
+						),
+				"items" => array(
+						array(
+								"item_number" => "123456",
+								"quantity" => "2",
+								"name" => "Test-Produkt",
+								"unit_amount" => "100.00",
+								"unit_amount_with_tax" => "119.00",
+								"tax_percent" => "19",
+								"currency" => "EUR",
+								"weight" => "",
+								"internal_order_info" => "",
+								),
+						array(
+								"item_number" => "11111",
+								"quantity" => "1",
+								"name" => "Test2-Produkt",
+								"unit_amount" => "50.00",
+								"unit_amount_with_tax" => "54.00",
+								"tax_percent" => "19",
+								"currency" => "EUR",
+								"weight" => "",
+								"internal_order_info" => "",
+								),
+						),
+				);
+		
+// 		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
+
+		$couponCode = $this->params['coupon_code'];
+		$cart = new ShopgateCart($this->params['cart']);
+		
+		$orderData = $this->plugin->checkCoupon($couponCode, $cart);
+		
+// 		$this->responseData = array_merge($orderData, $this->responseData);
+	}
 
 	/**
 	 * Represents the "get_customer" action.
