@@ -592,9 +592,9 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 	protected function sendRequest($parameters) {
 		$parameters['shop_number'] = $this->shopNumber;
 		$parameters['trace_id'] = 'spa-'.uniqid();
-
+		
 		$this->log('Sending request to "'.$this->apiUrl.'": '.ShopgateLogger::getInstance()->cleanParamsForLog($parameters), ShopgateLogger::LOGTYPE_REQUEST);
-
+		
 		$this->authService->startNewSession();
 		
 		$curl = curl_init($this->apiUrl);
@@ -605,15 +605,15 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 		$response = curl_exec($curl);
 		$info = curl_getinfo($curl);
 		curl_close($curl);
-
+		
 		// check the result
 		if (!$response) {
 			// exception without logging - this might cause spamming your logs and we will know when our API is offline anyways
 			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_NO_CONNECTION, null, false, false);
 		}
-
+		
 		$decodedResponse = $this->jsonDecode($response, true);
-
+		
 		if (empty($decodedResponse)) {
 			// exception without logging - this might cause spamming your logs and we will know when our API is offline anyways
 			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE, 'Response: '.$response, true, false);
@@ -624,15 +624,15 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 		if ($decodedResponse['error'] != 0) {
 			throw new ShopgateMerchantApiException($decodedResponse['error'], $decodedResponse['error_text'], $responseObject);
 		}
-
+		
 		return $responseObject;
 	}
-
-
+	
+	
 	######################################################################
 	## Following methods represent the Shopgate Merchant API's actions: ##
 	######################################################################
-
+	
 	######################################################################
 	## Orders                                                           ##
 	######################################################################
@@ -724,7 +724,7 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 		$response = $this->sendRequest($request);
 		return $response->getData();
 	}
-
+	
 	######################################################################
 	## Items                                                            ##
 	######################################################################
@@ -783,7 +783,7 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 				'items' => array(),
 				'action' => 'batch_add_items',
 		);
-				
+		
 		foreach ($items as $item) {
 			$request['items'][] = ($item instanceof ShopgateItem)
 				? $item->toArray()
@@ -1120,38 +1120,46 @@ class ShopgateMerchantApiResponse extends ShopgateContainer {
 	}
 	
 	/**
-	 * @param $value string
+	 * @param integer $value
 	 */
 	protected function setSmaVersion($value) {
 		$this->sma_version = $value;
 	}
 
 	/**
-	 * @param $value string
+	 * @param integer $value
 	 */
 	protected function setTraceId($value) {
 		$this->trace_id = $value;
 	}
 
 	/**
-	 * @param $value integer
+	 * @param integer $value
 	 */
 	protected function setLimit($value) {
 		$this->limit = $value;
 	}
 
 	/**
-	 * @param $value integer
+	 * @param integer $value
 	 */
 	protected function setOffset($value) {
 		$this->offset = $value;
 	}
 
 	/**
-	 * @param $value bool
+	 * @param bool $value
 	 */
 	protected function setHasMoreResults($value) {
 		$this->has_more_results = $value;
+	}
+	
+	/**
+	 *
+	 * @param string[] $value
+	 */
+	protected function setErrors($value) {
+		$this->errors = $value;
 	}
 
 	/**
