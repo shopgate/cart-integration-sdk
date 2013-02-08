@@ -128,7 +128,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	/**
 	 * @var bool
 	 */
-	protected $enable_check_coupon = 1;
+	protected $enable_check_coupon;
 	
 	/**
 	 * @var bool
@@ -322,8 +322,8 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_ping = 1;
 		$this->enable_add_order = 0;
 		$this->enable_update_order = 0;
-		$this->enable_check_coupon = 1;
-		$this->enable_redeem_coupon = 1;
+		$this->enable_check_coupon = 0;
+		$this->enable_redeem_coupon = 0;
 		$this->enable_get_orders = 0;
 		$this->enable_get_customer = 0;
 		$this->enable_get_items_csv = 0;
