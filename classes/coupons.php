@@ -158,6 +158,10 @@ class ShopgateCartItem {
 	protected $weight;
 	protected $internal_order_info;
 	
+	protected $options;
+	
+	protected $inputs;
+	
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitCoupon($this);
 	}
@@ -225,6 +229,22 @@ class ShopgateCartItem {
 	public function setInternalOrderInfo($value) {
 		$this->internal_order_info = $value;
 	}
+	
+	public function getOptions() {
+		return $this->options;
+	}
+	
+	public function setOptions($value) {
+		$this->options = $value;
+	}
+	
+	public function getInputs() {
+		return $this->inputs;
+	}
+	
+	public function setInputs($value) {
+		$this->inputs = $value;
+	}
 }
 
 class ShopgateCartItemOption {
@@ -233,6 +253,46 @@ class ShopgateCartItemOption {
 	protected $value_number;
 	protected $value;
 	protected $additional_amount_with_tax;
+	
+	public function getOptionNumber() {
+		return $this->option_number;
+	}
+	
+	public function setOptionNumber($value) {
+		$this->option_number = $value;
+	}
+	
+	public function getName() {
+		return $this->name;
+	}
+	
+	public function setName($value) {
+		$this->name = $value;
+	}
+	
+	public function getValueNumber() {
+		return $this->value_number;
+	}
+	
+	public function setValueNumber($value) {
+		$this->value_number = $value;
+	}
+	
+	public function getValue() {
+		return $this->value;
+	}
+	
+	public function setValue($value) {
+		$this->value = $value;
+	}
+	
+	public function getAdditionalAmountWithTax() {
+		return $this->additional_amount_with_tax;
+	}
+	
+	public function setAdditionalAmountWithTax($value) {
+		$this->additional_amount_with_tax = $value;
+	}
 }
 
 class ShopgateCartItemInput {
@@ -241,5 +301,29 @@ class ShopgateCartItemInput {
 	protected $label;
 	protected $user_input;
 	protected $info_text;
+	
+	public function getType() {
+		return $this->type;
+	}
+	
+	public function setType($value) {
+		$this->type = $value;
+	}
+	
+	public function getAdditionalAmountWithTax() {
+		return $this->additional_amount_with_tax;
+	}
+	
+	public function setAdditionalAmountWithTax($value) {
+		$this->additional_amount_with_tax = $value;
+	}
+	
+	public function getLabel() {
+		return $this->label;
+	}
+	
+	public function setLabel($value) {
+		$this->label = $value;
+	}
 }
 
