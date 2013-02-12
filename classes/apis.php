@@ -457,7 +457,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	private function getSettings() {
 		$settingDetails = array();
 
-		$allSettings = ini_get_all();
+		$allSettings = function_exists('ini_get_all') ? ini_get_all() : array();
 
 		$settings = array(
 				'max_execution_time',
