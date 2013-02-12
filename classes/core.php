@@ -1945,10 +1945,10 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 		}
 	
 		// visit invoice_address
-		if (!empty($properties['invoice_address']) && ($properties['invoice_address'] instanceof ShopgateAddress)) {
-			$properties['invoice_address']->accept($this);
-			$properties['invoice_address'] = $this->object;
-		}
+// 		if (!empty($properties['invoice_address']) && ($properties['invoice_address'] instanceof ShopgateAddress)) {
+// 			$properties['invoice_address']->accept($this);
+// 			$properties['invoice_address'] = $this->object;
+// 		}
 	
 		// iterate lists of referred objects
 		$properties['coupons'] = $this->iterateObjectList($properties['coupons']);

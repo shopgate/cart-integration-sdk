@@ -12,11 +12,6 @@ class ShopgateCart extends ShopgateContainer {
 	/**
 	 * @var ShopgateAddress
 	 */
-	protected $invoice_address;
-	
-	/**
-	 * @var ShopgateAddress
-	 */
 	protected $delivery_address;
 	
 	/**
@@ -128,23 +123,6 @@ class ShopgateCart extends ShopgateContainer {
 		}
 
 		$this->delivery_address = $value;
-	}
-	
-	public function getInvoiceAddress() {
-		return $this->invoice_address;
-	}
-	
-	public function setInvoiceAddress($value) {
-		if (!is_object($value) && !($value instanceof ShopgateAddress) && !is_array($value)) {
-			$this->invoice_address = null;
-			return;
-		}
-
-		if (is_array($value)) {
-			$value = new ShopgateAddress($value);
-		}
-
-		$this->invoice_address = $value;
 	}
 	
 	public function getItems() {
