@@ -10,11 +10,6 @@ class ShopgateCart extends ShopgateContainer {
 	protected $payment_method;
 	
 	/**
-	 * @var ShopgateCoupon[]
-	 */
-	protected $coupons;
-	
-	/**
 	 * @var ShopgateAddress
 	 */
 	protected $invoice_address;
@@ -23,6 +18,11 @@ class ShopgateCart extends ShopgateContainer {
 	 * @var ShopgateAddress
 	 */
 	protected $delivery_address;
+	
+	/**
+	 * @var ShopgateCoupon[]
+	 */
+	protected $coupons;
 	
 	/**
 	 * @var ShopgateCartItem[]
@@ -94,6 +94,22 @@ class ShopgateCart extends ShopgateContainer {
 	}
 	
 	public function setCoupons($value) {
+		if (!is_array($value)) {
+			$this->coupons = null;
+			return;
+		}
+		
+		foreach ($value as $index => &$element) {
+			if ((!is_object($element) || !($element instanceof ShopgateCoupon)) && !is_array($element)) {
+				unset($value[$index]);
+				continue;
+			}
+		
+			if (is_array($element)) {
+				$element = new ShopgateCoupon($element);
+			}
+		}
+		
 		$this->coupons = $value;
 	}
 	
@@ -102,6 +118,15 @@ class ShopgateCart extends ShopgateContainer {
 	}
 	
 	public function setDeliveryAddress($value) {
+		if (!is_object($value) && !($value instanceof ShopgateAddress) && !is_array($value)) {
+			$this->delivery_address = null;
+			return;
+		}
+
+		if (is_array($value)) {
+			$value = new ShopgateAddress($value);
+		}
+
 		$this->delivery_address = $value;
 	}
 	
@@ -110,6 +135,15 @@ class ShopgateCart extends ShopgateContainer {
 	}
 	
 	public function setInvoiceAddress($value) {
+		if (!is_object($value) && !($value instanceof ShopgateAddress) && !is_array($value)) {
+			$this->invoice_address = null;
+			return;
+		}
+
+		if (is_array($value)) {
+			$value = new ShopgateAddress($value);
+		}
+
 		$this->invoice_address = $value;
 	}
 	
@@ -118,6 +152,22 @@ class ShopgateCart extends ShopgateContainer {
 	}
 	
 	public function setItems($value) {
+		if (!is_array($value)) {
+			$this->items = null;
+			return;
+		}
+		
+		foreach ($value as $index => &$element) {
+			if ((!is_object($element) || !($element instanceof ShopgateCartItem)) && !is_array($element)) {
+				unset($value[$index]);
+				continue;
+			}
+		
+			if (is_array($element)) {
+				$element = new ShopgateCartItem($element);
+			}
+		}
+		
 		$this->items = $value;
 	}
 }
@@ -147,7 +197,7 @@ class ShopgateCoupon extends ShopgateContainer {
 	}
 }
 
-class ShopgateCartItem {
+class ShopgateCartItem extends ShopgateContainer {
 	protected $item_number;
 	protected $quantity;
 	protected $name;
@@ -163,7 +213,7 @@ class ShopgateCartItem {
 	protected $inputs;
 	
 	public function accept(ShopgateContainerVisitor $v) {
-		$v->visitCoupon($this);
+		$v->visitCartItem($this);
 	}
 	
 	public function getItemNumber() {
@@ -235,6 +285,22 @@ class ShopgateCartItem {
 	}
 	
 	public function setOptions($value) {
+		if (!is_array($value)) {
+			$this->options = null;
+			return;
+		}
+		
+		foreach ($value as $index => &$element) {
+			if ((!is_object($element) || !($element instanceof ShopgateCartItemOption)) && !is_array($element)) {
+				unset($value[$index]);
+				continue;
+			}
+		
+			if (is_array($element)) {
+				$element = new ShopgateCartItemOption($element);
+			}
+		}
+		
 		$this->options = $value;
 	}
 	
@@ -243,16 +309,36 @@ class ShopgateCartItem {
 	}
 	
 	public function setInputs($value) {
+		if (!is_array($value)) {
+			$this->inputs = null;
+			return;
+		}
+		
+		foreach ($value as $index => &$element) {
+			if ((!is_object($element) || !($element instanceof ShopgateCartItemInput)) && !is_array($element)) {
+				unset($value[$index]);
+				continue;
+			}
+		
+			if (is_array($element)) {
+				$element = new ShopgateCartItemInput($element);
+			}
+		}
+		
 		$this->inputs = $value;
 	}
 }
 
-class ShopgateCartItemOption {
+class ShopgateCartItemOption extends ShopgateContainer {
 	protected $option_number;
 	protected $name;
 	protected $value_number;
 	protected $value;
 	protected $additional_amount_with_tax;
+	
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitCartItemOption($this);
+	}
 	
 	public function getOptionNumber() {
 		return $this->option_number;
@@ -295,12 +381,16 @@ class ShopgateCartItemOption {
 	}
 }
 
-class ShopgateCartItemInput {
+class ShopgateCartItemInput extends ShopgateContainer {
 	protected $type;
 	protected $additional_amount_with_tax;
 	protected $label;
 	protected $user_input;
 	protected $info_text;
+	
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitCartItemInput($this);
+	}
 	
 	public function getType() {
 		return $this->type;
@@ -326,4 +416,3 @@ class ShopgateCartItemInput {
 		$this->label = $value;
 	}
 }
-
