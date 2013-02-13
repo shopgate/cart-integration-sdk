@@ -662,12 +662,12 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->enable_update_order;
 	}
 	
-	public function getEnableCheckCoupon() {
-		return $this->enable_check_coupon;
+	public function getEnableRedeemCoupon() {
+		return $this->enable_redeem_coupon;
 	}
 	
-	public function setEnableCheckCoupon($value) {
-		$this->enable_check_coupon = $value;
+	public function getEnableCheckCoupon() {
+		return $this->enable_check_coupon;
 	}
 	
 	public function getEnableGetOrders() {
@@ -900,6 +900,14 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	
 	public function setEnableUpdateOrder($value) {
 		$this->enable_update_order = $value;
+	}
+
+	public function setEnableRedeemCoupon($value) {
+		$this->enable_redeem_coupon = $value;
+	}
+	
+	public function setEnableCheckCoupon($value) {
+		$this->enable_check_coupon = $value;
 	}
 	
 	public function setEnableGetOrders($value) {

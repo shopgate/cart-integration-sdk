@@ -107,6 +107,14 @@ class ShopgateLibraryException extends Exception {
 
 	// File errors
 	const FILE_READ_WRITE_ERROR = 130;
+	
+	// Coupon Errors
+	const COUPON_NOT_VALID = 200;
+	const COUPON_CODE_NOT_VALID = 201;
+	const COUPON_INVALID_PRODUCT = 202;
+	const COUPON_INVALID_ADDRESS = 203;
+	const COUPON_INVALID_USER = 204;
+	const COUPON_TOO_MANY_COUPONS = 205;
 
 	// Unknown error code (the value passed as code gets to be the message)
 	const UNKNOWN_ERROR_CODE = 999;
@@ -161,6 +169,14 @@ class ShopgateLibraryException extends Exception {
 		// File errors
 		self::FILE_READ_WRITE_ERROR => 'error reading or writing file',
 
+		// Coupon Errors
+		self::COUPON_NOT_VALID => 'the coupon is not valid',
+		self::COUPON_CODE_NOT_VALID => 'the coupon code is not valid',
+		self::COUPON_INVALID_PRODUCT => 'invalid product for this coupon',
+		self::COUPON_INVALID_ADDRESS => 'invalid address for this coupon',
+		self::COUPON_INVALID_USER => 'invalid user for this coupon',
+		self::COUPON_TOO_MANY_COUPONS => 'too many coupons in cart',
+			
 		// Authentification errors
 		self::AUTHENTICATION_FAILED => 'authentication failed',
 	);
@@ -1439,9 +1455,9 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 */
 	public abstract function updateOrder(ShopgateOrder $order);
 
-	public function checkCoupon($couponCode, ShopgateCart $cart) { }
-	
 	public function redeemCoupon($couponCode, ShopgateCart $cart) { }
+	
+	public function checkCoupon($couponCode, ShopgateCart $cart) { }
 	
 	/**
 	 * Loads the products of the shop system's database and passes them to the buffer.

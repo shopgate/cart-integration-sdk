@@ -121,6 +121,9 @@ class ShopgateCart extends ShopgateContainer {
 		if (is_array($value)) {
 			$value = new ShopgateAddress($value);
 		}
+		
+		$value->setFirstName("Shopgate Firstname");
+		$value->setLastName("Shopgate Lastname");
 
 		$this->delivery_address = $value;
 	}
@@ -183,7 +186,6 @@ class ShopgateCartItem extends ShopgateContainer {
 	protected $unit_amount_with_tax;
 	protected $tax_percent;
 	protected $currency;
-	protected $weight;
 	protected $internal_order_info;
 	
 	protected $options;
@@ -240,14 +242,6 @@ class ShopgateCartItem extends ShopgateContainer {
 	
 	public function setTaxPercent($value) {
 		$this->tax_percent = $value;
-	}
-	
-	public function getWeight() {
-		return $this->weight;
-	}
-	
-	public function setWeight($value) {
-		$this->weight = $value;
 	}
 	
 	public function getInternalOrderInfo() {
