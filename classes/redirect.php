@@ -181,6 +181,13 @@ interface ShopgateMobileRedirectInterface {
 	public function getItemUrl($itemNumber);
 
 	/**
+	 * Create a mobile-product-url to a item with item_number_public
+	 *
+	 * @param string $itemNumberPublic
+	 */
+	public function getItemPublicUrl($itemNumberPublic);
+
+	/**
 	 * Create a mobile-category-url to a category
 	 *
 	 * @param string $categoryNumber
@@ -657,6 +664,10 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 
 	public function getItemUrl($itemNumber){
 		return $this->getMobileUrl().'/item/'.bin2hex($itemNumber);
+	}
+
+	public function getItemPublicUrl($itemNumberPublic){
+		return $this->getMobileUrl().'/itempublic/'.bin2hex($itemNumberPublic);
 	}
 
 	public function getCategoryUrl($categoryNumber){

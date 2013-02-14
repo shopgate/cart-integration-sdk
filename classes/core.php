@@ -1081,6 +1081,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			'ean' 						=> "",
 			'isbn' 						=> "",
 			'pzn'						=> "",
+			'upc'						=> "",
 			'last_update' 				=> "",
 			'tags' 						=> "",
 			'sort_order' 				=> "",
