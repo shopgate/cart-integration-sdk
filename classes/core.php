@@ -70,6 +70,8 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_API_DISABLED_ACTION = 22;
 	const PLUGIN_API_WRONG_RESPONSE_FORMAT = 23;
 
+	const PLUGIN_API_UNKNOWN_SHOP_NUMBER = 24;
+	
 	const PLUGIN_API_NO_ORDER_NUMBER = 30;
 	const PLUGIN_API_NO_USER = 35;
 	const PLUGIN_API_NO_PASS = 36;
@@ -125,6 +127,8 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_API_UNKNOWN_ACTION  => 'unknown action requested',
 		self::PLUGIN_API_DISABLED_ACTION => 'disabled action requested',
 		self::PLUGIN_API_WRONG_RESPONSE_FORMAT => 'wrong response format',
+		
+		self::PLUGIN_API_UNKNOWN_SHOP_NUMBER => 'unknown shop number received',
 
 		self::PLUGIN_API_NO_ORDER_NUMBER => 'parameter "order_number" missing',
 		self::PLUGIN_API_NO_USER => 'parameter "user" missing',
