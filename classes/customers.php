@@ -482,25 +482,6 @@ class ShopgateAddress extends ShopgateContainer {
 	public function getStreetNumber1() {
 		return $this->splitStreetData($this->getStreet1(), "number");
 	}
-
-	/**
-	 * Return the name of street2
-	 *
-	 * @return string
-	 */
-	public function getStreetName2() {
-		return $this->splitStreetData($this->getStreet2(), "street");
-	}
-	
-	/**
-	 * Return the house number of street2
-	 *
-	 * @return string
-	 */
-	public function getStreetNumber2() {
-		return $this->splitStreetData($this->getStreet2(), "number");
-	}
-	
 	
 	/**
 	 * @return string
