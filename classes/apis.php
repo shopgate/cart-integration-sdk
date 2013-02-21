@@ -437,6 +437,44 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	}
 
 	/**
+	 * Represents the "clear_log_file" action.
+	 *
+	 * @throws ShopgateLibraryException
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_clear_log_file/
+	 */
+	private function clearLogFile() {
+		if (empty($this->params['log_type'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_UNKNOWN_LOGTYPE);
+		}
+		
+		switch ($this->params['log_type']) {
+			case ShopgateLogger::LOGTYPE_ACCESS:
+				$logFilePath = $this->config->getAccessLogPath();
+			break;
+			case ShopgateLogger::LOGTYPE_REQUEST:
+				$logFilePath = $this->config->getRequestLogPath();
+			break;
+			case ShopgateLogger::LOGTYPE_ERROR:
+				$logFilePath = $this->config->getErrorLogPath();
+			break;
+			case ShopgateLogger::LOGTYPE_DEBUG:
+				$logFilePath = $this->config->getDebugLogPath();
+			break;
+			default:
+				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_UNKNOWN_LOGTYPE);
+		}
+		
+		$logFilePointer = @fopen($logFilePath, 'w');
+		if ($logFilePointer === false) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, "Cannot open File {$logFilePath}");
+		}
+		fclose($logFilePointer);
+		
+		// return the path of the deleted log file
+		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseTextPlain($this->trace_id);
+	}
+
+	/**
 	 * Represents the "get_orders" action.
 	 *
 	 * @throws ShopgateLibraryException
