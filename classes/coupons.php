@@ -24,6 +24,13 @@ class ShopgateCart extends ShopgateContainer {
 	 */
 	protected $items;
 	
+	public function __construct($data) {
+		$this->coupons = array();
+		$this->items = array();
+		
+		parent::__construct($data);
+	}
+	
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitCart($this);
 	}
@@ -156,6 +163,7 @@ class ShopgateCart extends ShopgateContainer {
 class ShopgateCoupon extends ShopgateContainer {
 	protected $coupon_code;
 	protected $coupon_value;
+	protected $reservation_id;
 	
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitCoupon($this);
@@ -176,6 +184,14 @@ class ShopgateCoupon extends ShopgateContainer {
 	public function setCouponValue($value) {
 		$this->coupon_value = $value;
 	}
+
+	public function getReservationId() {
+		return $this->reservation_id;
+	}
+	
+	public function setReservationId($value) {
+		$this->reservation_id = $value;
+	}
 }
 
 class ShopgateCartItem extends ShopgateContainer {
@@ -191,6 +207,13 @@ class ShopgateCartItem extends ShopgateContainer {
 	protected $options;
 	
 	protected $inputs;
+	
+	public function __construct($data) {
+		$this->options = array();
+		$this->inputs = array();
+	
+		parent::__construct($data);
+	}
 	
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitCartItem($this);
