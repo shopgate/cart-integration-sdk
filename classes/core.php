@@ -3,7 +3,7 @@
 ###################################################################################
 # define constants
 ###################################################################################
-define('SHOPGATE_LIBRARY_VERSION', '2.1.17');
+define('SHOPGATE_LIBRARY_VERSION', '2.1.18');
 define('SHOPGATE_LIBRARY_ENCODING' , 'UTF-8');
 define('SHOPGATE_BASE_DIR', realpath(dirname(__FILE__).'/../'));
 define('SHOPGATE_ITUNES_URL', 'http://itunes.apple.com/de/app/shopgate-eine-app-alle-shops/id365287459?mt=8');
@@ -70,6 +70,8 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_API_DISABLED_ACTION = 22;
 	const PLUGIN_API_WRONG_RESPONSE_FORMAT = 23;
 
+	const PLUGIN_API_UNKNOWN_SHOP_NUMBER = 24;
+	
 	const PLUGIN_API_NO_ORDER_NUMBER = 30;
 	const PLUGIN_API_NO_USER = 35;
 	const PLUGIN_API_NO_PASS = 36;
@@ -125,6 +127,8 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_API_UNKNOWN_ACTION  => 'unknown action requested',
 		self::PLUGIN_API_DISABLED_ACTION => 'disabled action requested',
 		self::PLUGIN_API_WRONG_RESPONSE_FORMAT => 'wrong response format',
+		
+		self::PLUGIN_API_UNKNOWN_SHOP_NUMBER => 'unknown shop number received',
 
 		self::PLUGIN_API_NO_ORDER_NUMBER => 'parameter "order_number" missing',
 		self::PLUGIN_API_NO_USER => 'parameter "user" missing',
@@ -297,8 +301,13 @@ class ShopgateMerchantApiException extends Exception {
 	 */
 	public function __construct($code, $additionalInformation, ShopgateMerchantApiResponse $response) {
 		$this->response = $response;
+		
 		$message = $additionalInformation;
-
+		$errors = $this->response->getErrors();
+		if (!empty($errors)) {
+			$message .= "\n".print_r($errors, true);
+		}
+		
 		if (ShopgateLogger::getInstance()->log('SMA reports error: '.$code.' - '.$additionalInformation) === false) {
 			$message .= ' (unable to log)';
 		}
@@ -1076,6 +1085,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			'ean' 						=> "",
 			'isbn' 						=> "",
 			'pzn'						=> "",
+			'upc'						=> "",
 			'last_update' 				=> "",
 			'tags' 						=> "",
 			'sort_order' 				=> "",
@@ -1342,7 +1352,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @return array
 	 */
-	protected final function getCreateItemsCsvLoaders() {
+	protected function getCreateItemsCsvLoaders() {
 		return $this->getCreateCsvLoaders("item");
 	}
 	
@@ -1353,7 +1363,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @return array
 	 */
-	protected final function getCreateCategoriesCsvLoaders() {
+	protected function getCreateCategoriesCsvLoaders() {
 		return $this->getCreateCsvLoaders("category");
 	}
 	
@@ -1362,7 +1372,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @return array
 	 */
-	protected final function getCreateReviewsCsvLoaders() {
+	protected function getCreateReviewsCsvLoaders() {
 		return $this->getCreateCsvLoaders("review");
 	}
 
