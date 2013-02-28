@@ -175,6 +175,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 */
 	protected $enable_clear_logfile;
 	
+	/**
+	 * @var bool
+	 */
+	protected $enable_clear_cache;
 	
 	#######################################################
 	### Options regarding shop system specific settings ###
@@ -322,6 +326,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_mobile_website = 0;
 		$this->enable_cron = 0;
 		$this->enable_clear_logfile = 1;
+		$this->enable_clear_cache = 1;
 		
 		$this->country = 'DE';
 		$this->language = 'de';
@@ -690,6 +695,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->enable_clear_logfile;
 	}
 	
+	public function getEnableClearCache() {
+		return $this->enable_clear_cache;
+	}
+	
 	public function getCountry() {
 		return strtoupper($this->country);
 	}
@@ -920,6 +929,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	
 	public function setEnableClearLogfile($value) {
 		$this->enable_clear_logfile = $value;
+	}
+	
+	public function setEnableClearCache($value) {
+		$this->enable_clear_cache = $value;
 	}
 	
 	public function setCountry($value) {
