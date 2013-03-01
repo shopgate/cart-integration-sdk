@@ -135,12 +135,13 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		$this->config = $shopgateConfig;
 		$this->setAlias($shopgateConfig->getAlias());
 		$this->setCustomMobileUrl($shopgateConfig->getCname());
-		
+
 		if($this->config->getEnableRedirectKeywordUpdate()){
 			$this->enableKeywordUpdate($this->config->getEnableRedirectKeywordUpdate());
 		} else {
 			$this->disableKeywordUpdate();
 		}
+		
 		$this->redirectKeywordCacheTime = ShopgateMobileRedirectInterface::DEFAULT_CACHE_TIME;
 		$this->buttonParent = 'body';
 		$this->buttonPrepend = true;
@@ -183,7 +184,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		$this->updateRedirectKeywords = true;
 		$this->redirectKeywordCacheTime = ($cacheTime >= ShopgateMobileRedirectInterface::MIN_CACHE_TIME) ? $cacheTime : ShopgateMobileRedirectInterface::MIN_CACHE_TIME;
 		// try loading keywords
-		$this->updateRedirectKeywords();	
+		$this->updateRedirectKeywords();
 	}
 
 	public function disableKeywordUpdate() {
