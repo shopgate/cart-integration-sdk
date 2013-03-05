@@ -240,8 +240,8 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		
 		// check user agent for redirection keywords and skip redirection keywords and return the result
 		return
-			(!empty($this->redirectKeywords)     ?  preg_match('/'.implode('|', $this->redirectKeywords).'/', $userAgent)     : false) &&
-			(!empty($this->skipRedirectKeywords) ? !preg_match('/'.implode('|', $this->skipRedirectKeywords).'/', $userAgent) : true);
+			(!empty($this->redirectKeywords)     ?  preg_match('/'.implode('|', $this->redirectKeywords).'/i', $userAgent)     : false) &&
+			(!empty($this->skipRedirectKeywords) ? !preg_match('/'.implode('|', $this->skipRedirectKeywords).'/i', $userAgent) : true);
 	}
 
 	public function isRedirectAllowed() {
