@@ -74,6 +74,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				'get_pages_csv',
 				'get_log_file',
 				'clear_log_file',
+				'clear_cache',
 				'check_coupon',
 				'redeem_coupon'
 		);
@@ -466,12 +467,40 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		
 		$logFilePointer = @fopen($logFilePath, 'w');
 		if ($logFilePointer === false) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, "Cannot open File {$logFilePath}");
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, "Cannot open file {$logFilePath}");
 		}
 		fclose($logFilePointer);
 		
 		// return the path of the deleted log file
-		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseTextPlain($this->trace_id);
+		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
+	}
+	
+	/**
+	 * Represents the "clear_cache" action.
+	 *
+	 * @throws ShopgateLibraryException
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_clear_cache/
+	 */
+	private function clearCache() {
+	
+		$files = array();
+		$files[] = $this->config->getRedirectKeywordCachePath();
+		$files[] = $this->config->getRedirectSkipKeywordCachePath();
+	
+		$errorFiles = array();
+		foreach($files as $file){
+			if(@file_exists($file) && is_file($file)){
+				if(!@unlink($file)){
+					$errorFiles[] = $file;
+				}
+			}
+		}
+	
+		if (!empty($errorFiles)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_DELETE_ERROR, "Cannot delete files (".implode(', ', $errorFiles).")", true);
+		}
+	
+		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
 	}
 
 	/**

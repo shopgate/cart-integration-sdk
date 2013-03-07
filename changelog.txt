@@ -1,5 +1,10 @@
 '''Deutsch'''
 
+'''Version 2.1.19'''
+* Javascript Header hinzugefügt, um den Onlineshop mit dem mobilen Shop zu "verlinken" 
+* HTTP  Weiterleitungscode von 302 auf 301 geändert
+* neue Methode "clear_cache" hinzugefügt
+
 '''Version 2.1.18'''
 * neue Methode ShopgateMerchantApi::batchAddItem() hinzugefügt
 * neue Methode ShopgateMerchantApi::batchUpdateItem() hinzugefügt
@@ -69,6 +74,11 @@
 
 
 '''English'''
+
+'''Version 2.1.19'''
+* java script header added for linking online shop to the mobile shop site
+* updated HTTP redirect code from 302 to 301
+* new method "clear_cache" added
 
 '''Version 2.1.18'''
 * added new method ShopgateMerchantApi::batchAddItem()
