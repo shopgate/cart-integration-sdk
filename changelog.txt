@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.1.20'''
+* Problem mit der EInstellung "enable_clear_log_file" behoben
+
 '''Version 2.1.19'''
 * Javascript Header hinzugefügt, um den Onlineshop mit dem mobilen Shop zu "verlinken" 
 * HTTP  Weiterleitungscode von 302 auf 301 geändert
@@ -74,6 +77,9 @@
 
 
 '''English'''
+
+'''Version 2.1.20'''
+* fixed issue with "enable_clear_log_file" setting
 
 '''Version 2.1.19'''
 * java script header added for linking online shop to the mobile shop site
