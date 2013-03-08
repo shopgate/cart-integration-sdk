@@ -74,8 +74,8 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				'get_pages_csv',
 				'get_log_file',
 				'clear_log_file',
-				'check_coupon',
-				'redeem_coupon'
+				'check_cart',
+				'redeem_coupons'
 		);
 	}
 
