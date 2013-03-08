@@ -1465,9 +1465,9 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 */
 	public abstract function updateOrder(ShopgateOrder $order);
 
-	public function redeemCoupon($couponCode, ShopgateCart $cart) { }
+	public function redeemCoupons(ShopgateCart $cart) { }
 	
-	public function checkCoupon($couponCode, ShopgateCart $cart) { }
+	public function checkCart(ShopgateCart $cart) { }
 	
 	/**
 	 * Loads the products of the shop system's database and passes them to the buffer.

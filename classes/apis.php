@@ -324,38 +324,30 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		}
 	}
 	
-	protected function redeemCoupon() {
-		if (!isset($this->params['coupon_code'])) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ORDER_NUMBER);
-		}
+	protected function redeemCoupons() {
 		if (!isset($this->params['cart'])) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ORDER_NUMBER);
 		}
 
 		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
 
-		$couponCode = $this->params['coupon_code'];
 		$cart = new ShopgateCart($this->params['cart']);
 		
-		$couponData = $this->plugin->redeemCoupon($couponCode, $cart);
+		$couponData = $this->plugin->redeemCoupons( $cart);
 		
 		$this->responseData = array_merge($couponData, $this->responseData);
 	}
 	
-	protected function checkCoupon() {
-		if (!isset($this->params['coupon_code'])) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ORDER_NUMBER);
-		}
+	protected function checkCart() {
 		if (!isset($this->params['cart'])) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ORDER_NUMBER);
 		}
 
 		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
 
-		$couponCode = $this->params['coupon_code'];
 		$cart = new ShopgateCart($this->params['cart']);
 		
-		$couponData = $this->plugin->checkCoupon($couponCode, $cart);
+		$couponData = $this->plugin->checkCart($cart);
 		
 		$this->responseData = array_merge($couponData, $this->responseData);
 	}

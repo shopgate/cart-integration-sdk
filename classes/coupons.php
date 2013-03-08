@@ -1,13 +1,24 @@
 <?php
 
+/**
+ *
+ * @author Shopgate GmbH, 35510 Butzbach, DE
+ *
+ */
 class ShopgateCart extends ShopgateContainer {
 	protected $customer_number;
 	protected $external_customer_number;
 	protected $external_customer_id;
-	protected $customer_group;
-	protected $customer_group_id;
+	protected $external_customer_group;
+	protected $external_customer_group_id;
+	protected $mail;
 	protected $payment_group;
 	protected $payment_method;
+	
+	/**
+	 * @var ShopgateAddress
+	 */
+	protected $invoice_address;
 	
 	/**
 	 * @var ShopgateAddress
@@ -59,20 +70,28 @@ class ShopgateCart extends ShopgateContainer {
 		$this->external_customer_id = $value;
 	}
 	
-	public function getCustomerGroup() {
-		return $this->customer_group;
+	public function getExternalCustomerGroup() {
+		return $this->external_customer_group;
 	}
 	
-	public function setCustomerGroup($value) {
-		$this->customer_group = $value;
+	public function setExternalCustomerGroup($value) {
+		$this->external_customer_group = $value;
 	}
 	
-	public function getCustomerGroupId() {
-		return $this->customer_group_id;
+	public function getExternalCustomerGroupId() {
+		return $this->external_customer_group_id;
 	}
 	
-	public function setCustomerGroupId($value) {
-		$this->customer_group_id = $value;
+	public function setExternalCustomerGroupId($value) {
+		$this->external_customer_group_id = $value;
+	}
+	
+	public function getMail() {
+		return $this->mail;
+	}
+	
+	public function setMail($value) {
+		$this->mail = $value;
 	}
 	
 	public function getPaymentGroup() {
@@ -115,10 +134,46 @@ class ShopgateCart extends ShopgateContainer {
 		$this->coupons = $value;
 	}
 	
+	/**
+	 *
+	 * @return ShopgateAddress
+	 */
+	public function getInvoiceAddress() {
+		return $this->invoice_address;
+	}
+	
+	/**
+	 *
+	 * @param ShopgateAddress $value
+	 */
+	public function setInvoiceAddress($value) {
+		if (!is_object($value) && !($value instanceof ShopgateAddress) && !is_array($value)) {
+			$this->invoice_address = null;
+			return;
+		}
+
+		if (is_array($value)) {
+			$value = new ShopgateAddress($value);
+		}
+		
+		$value->setFirstName("Shopgate Firstname");
+		$value->setLastName("Shopgate Lastname");
+
+		$this->invoice_address = $value;
+	}
+	
+	/**
+	 *
+	 * @return ShopgateAddress
+	 */
 	public function getDeliveryAddress() {
 		return $this->delivery_address;
 	}
 	
+	/**
+	 *
+	 * @param ShopgateAddress $value
+	 */
 	public function setDeliveryAddress($value) {
 		if (!is_object($value) && !($value instanceof ShopgateAddress) && !is_array($value)) {
 			$this->delivery_address = null;
@@ -135,10 +190,18 @@ class ShopgateCart extends ShopgateContainer {
 		$this->delivery_address = $value;
 	}
 	
+	/**
+	 *
+	 * @return ShopgateCartItem[]
+	 */
 	public function getItems() {
 		return $this->items;
 	}
 	
+	/**
+	 *
+	 * @param ShopgateCartItem[] $value
+	 */
 	public function setItems($value) {
 		if (!is_array($value)) {
 			$this->items = null;
@@ -162,7 +225,7 @@ class ShopgateCart extends ShopgateContainer {
 
 class ShopgateCoupon extends ShopgateContainer {
 	protected $coupon_code;
-	protected $coupon_value;
+	protected $order_index;
 	protected $reservation_id;
 	
 	public function accept(ShopgateContainerVisitor $v) {
@@ -177,12 +240,12 @@ class ShopgateCoupon extends ShopgateContainer {
 		$this->coupon_code = $value;
 	}
 	
-	public function getCouponValue() {
-		return $this->coupon_value;
+	public function getOrderIndex() {
+		return $this->order_index;
 	}
 	
-	public function setCouponValue($value) {
-		$this->coupon_value = $value;
+	public function setOrderIndex($value) {
+		$this->order_index = $value;
 	}
 
 	public function getReservationId() {
@@ -196,10 +259,12 @@ class ShopgateCoupon extends ShopgateContainer {
 
 class ShopgateCartItem extends ShopgateContainer {
 	protected $item_number;
+	protected $item_number_public;
 	protected $quantity;
 	protected $name;
 	protected $unit_amount;
 	protected $unit_amount_with_tax;
+	protected $tax_class;
 	protected $tax_percent;
 	protected $currency;
 	protected $internal_order_info;
@@ -225,6 +290,14 @@ class ShopgateCartItem extends ShopgateContainer {
 	
 	public function setItemNumber($value) {
 		$this->item_number = $value;
+	}
+	
+	public function getItemNumberPublic() {
+		return $this->item_number_public;
+	}
+	
+	public function setItemNumberPublic($value) {
+		$this->item_number_public = $value;
 	}
 	
 	public function getQuantity() {
@@ -257,6 +330,14 @@ class ShopgateCartItem extends ShopgateContainer {
 	
 	public function setUnitAmountWithTax($value) {
 		$this->unit_amount_with_tax = $value;
+	}
+	
+	public function getTaxClass() {
+		return $this->tax_class;
+	}
+	
+	public function setTaxClass($value) {
+		$this->tax_class = $value;
 	}
 	
 	public function getTaxPercent() {
