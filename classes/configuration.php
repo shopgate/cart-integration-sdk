@@ -183,8 +183,12 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	/**
 	 * @var bool
 	 */
-	protected $enable_clear_logfile;
+	protected $enable_clear_log_file;
 	
+	/**
+	 * @var bool
+	 */
+	protected $enable_clear_cache;
 	
 	#######################################################
 	### Options regarding shop system specific settings ###
@@ -333,7 +337,8 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_get_log_file = 1;
 		$this->enable_mobile_website = 0;
 		$this->enable_cron = 0;
-		$this->enable_clear_logfile = 1;
+		$this->enable_clear_log_file = 1;
+		$this->enable_clear_cache = 1;
 		
 		$this->country = 'DE';
 		$this->language = 'de';
@@ -706,8 +711,12 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->enable_cron;
 	}
 	
-	public function getEnableClearLogfile() {
-		return $this->enable_clear_logfile;
+	public function getEnableClearLogFile() {
+		return $this->enable_clear_log_file;
+	}
+	
+	public function getEnableClearCache() {
+		return $this->enable_clear_cache;
 	}
 	
 	public function getCountry() {
@@ -946,8 +955,12 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_cron = $value;
 	}
 	
-	public function setEnableClearLogfile($value) {
-		$this->enable_clear_logfile = $value;
+	public function setEnableClearLogFile($value) {
+		$this->enable_clear_log_file = $value;
+	}
+	
+	public function setEnableClearCache($value) {
+		$this->enable_clear_cache = $value;
 	}
 	
 	public function setCountry($value) {

@@ -3,7 +3,7 @@
 ###################################################################################
 # define constants
 ###################################################################################
-define('SHOPGATE_LIBRARY_VERSION', '2.1.18');
+define('SHOPGATE_LIBRARY_VERSION', '2.1.20');
 define('SHOPGATE_LIBRARY_ENCODING' , 'UTF-8');
 define('SHOPGATE_BASE_DIR', realpath(dirname(__FILE__).'/../'));
 define('SHOPGATE_ITUNES_URL', 'http://itunes.apple.com/de/app/shopgate-eine-app-alle-shops/id365287459?mt=8');
@@ -89,7 +89,8 @@ class ShopgateLibraryException extends Exception {
 
 	const PLUGIN_NO_ADDRESSES_FOUND = 70;
 	const PLUGIN_WRONG_USERNAME_OR_PASSWORD = 71;
-
+	
+	const PLUGIN_FILE_DELETE_ERROR = 79;
 	const PLUGIN_FILE_NOT_FOUND = 80;
 	const PLUGIN_FILE_OPEN_ERROR = 81;
 	const PLUGIN_FILE_EMPTY_BUFFER = 82;
@@ -156,6 +157,8 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_NO_ADDRESSES_FOUND => 'no addresses found for customer',
 		self::PLUGIN_WRONG_USERNAME_OR_PASSWORD => 'wrong username or password',
 
+	
+		self::PLUGIN_FILE_DELETE_ERROR => 'cannot delete file(s)',
 		self::PLUGIN_FILE_NOT_FOUND => 'file not found',
 		self::PLUGIN_FILE_OPEN_ERROR => 'cannot open file',
 		self::PLUGIN_FILE_EMPTY_BUFFER => 'buffer is empty',
@@ -655,19 +658,9 @@ class ShopgateBuilder {
 	public function buildRedirect() {
 		$merchantApi = $this->buildMerchantApi();
 		$redirect = new ShopgateMobileRedirect(
-				$this->config->getRedirectKeywordCachePath(),
-				$this->config->getRedirectSkipKeywordCachePath(),
-				$this->config->getServer(),
+				$this->config,
 				$merchantApi
 		);
-		
-		$redirect->setAlias($this->config->getAlias());
-		$redirect->setCustomMobileUrl($this->config->getCname());
-		$redirect->setLanguageCode($this->config->getLanguage());
-		$redirect->setParentElement($this->config->getMobileHeaderParent(), $this->config->getMobileHeaderPrepend());
-		
-		if ($this->config->getAlwaysUseSsl()) $redirect->setAlwaysUseSSL();
-		if ($this->config->getEnableRedirectKeywordUpdate()) $redirect->enableKeywordUpdate(ShopgateMobileRedirectInterface::DEFAULT_CACHE_TIME);
 		
 		return $redirect;
 	}
