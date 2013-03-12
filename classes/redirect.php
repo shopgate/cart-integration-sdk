@@ -473,7 +473,12 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 				// save keywords to their files
 				$this->saveKeywordsToFile($redirectKeywords, $this->config->getRedirectKeywordCachePath());
 				$this->saveKeywordsToFile($skipRedirectKeywords, $this->config->getRedirectSkipKeywordCachePath());
-			} catch (Exception $e) { /* do not abort */ }
+			} catch (Exception $e) {
+				/* do not abort */
+				// save old keywords
+				$this->saveKeywordsToFile($redirectKeywords, $this->config->getRedirectKeywordCachePath(), $redirectKeywordsFromFile['timestamp'] + 300);
+				$this->saveKeywordsToFile($skipRedirectKeywords, $this->config->getRedirectSkipKeywordCachePath(), $redirectKeywordsFromFile['timestamp'] + 300);
+			}
 		}
 		
 		// set keywords
@@ -487,8 +492,11 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	 * @param string[] $keywords The list of keywords to write to the file.
 	 * @param string $file The path to the file.
 	 */
-	protected function saveKeywordsToFile($keywords, $file) {
-		array_unshift($keywords, time()); // add timestamp to first line
+	protected function saveKeywordsToFile($keywords, $file, $timestamp = null) {
+		if(is_null($timestamp)){
+			$timestamp = time();
+		}
+		array_unshift($keywords, $timestamp); // add timestamp to first line
 		if (!@file_put_contents($file, implode("\n", $keywords))) {
 			// no logging - this could end up in spamming the logs
 			// $this->log(ShopgateLibraryException::buildLogMessageFor(ShopgateLibraryException::FILE_READ_WRITE_ERROR, 'Could not write to "'.$file.'".'));
