@@ -99,6 +99,11 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			if (!empty($this->params['use_errorhandler'])) {
 				set_error_handler('ShopgateErrorHandler');
 			}
+			
+			// check if the request is for the correct shop number
+			if (!empty($this->params['shop_number']) && ($this->params['shop_number'] != $this->config->getShopNumber())) {
+				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_UNKNOWN_SHOP_NUMBER, "'{$this->params['shop_number']}'");
+			}
 
 			// check if an action to call has been passed, is known and enabled
 			if (empty($this->params['action'])) {

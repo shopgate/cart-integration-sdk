@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.1.23'''
+* Bei Requests an die Shopgate Plugin API wird jetzt die Shopnummer überprüft.
+
 '''Version 2.1.22'''
 * Problem beim Abruf der Redirect-Keywords behoben
 
@@ -83,6 +86,9 @@
 
 
 '''English'''
+
+'''Version 2.1.23'''
+* On requests to the Shopgate Plugin API the shop number is checked now.
 
 '''Version 2.1.22'''
 * fixed issue on request for redirect keywords
