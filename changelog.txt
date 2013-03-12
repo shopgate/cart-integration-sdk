@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.1.22'''
+* Problem beim Abruf der Redirect-Keywords behoben
+
 '''Version 2.1.21'''
 * Problem beim Laden der Shopgate Konfigurationsdatei behoben
 
@@ -80,6 +83,9 @@
 
 
 '''English'''
+
+'''Version 2.1.22'''
+* fixed issue on request for redirect keywords
 
 '''Version 2.1.21'''
 * fixed issue with loading the Shopgate configuration file
