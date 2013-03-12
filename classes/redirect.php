@@ -475,7 +475,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 				$this->saveKeywordsToFile($skipRedirectKeywords, $this->config->getRedirectSkipKeywordCachePath());
 			} catch (Exception $e) {
 				/* do not abort */
-				$newTimestamp = ($redirectKeywordsFromFile['timestamp'] - ($this->redirectKeywordCacheTime * 3600)) + 300;
+				$newTimestamp = (time() - ($this->redirectKeywordCacheTime * 3600)) + 300;
 				// save old keywords
 				$this->saveKeywordsToFile($redirectKeywords, $this->config->getRedirectKeywordCachePath(), $newTimestamp);
 				$this->saveKeywordsToFile($skipRedirectKeywords, $this->config->getRedirectSkipKeywordCachePath(), $newTimestamp);
