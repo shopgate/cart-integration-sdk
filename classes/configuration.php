@@ -417,7 +417,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$config = null;
 		
 		// try loading files
-		if (!empty($path)) {
+		if (!empty($path) && file_exists($path)) {
 			// try $path
 			$config = $this->includeFile($path);
 			

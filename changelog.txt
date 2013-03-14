@@ -1,7 +1,13 @@
 '''Deutsch'''
 
+'''Version 2.1.22'''
+* Problem beim Abruf der Redirect-Keywords behoben
+
+'''Version 2.1.21'''
+* Problem beim Laden der Shopgate Konfigurationsdatei behoben
+
 '''Version 2.1.20'''
-* Problem mit der EInstellung "enable_clear_log_file" behoben
+* Problem mit der Einstellung "enable_clear_log_file" behoben
 
 '''Version 2.1.19'''
 * Javascript Header hinzugefügt, um den Onlineshop mit dem mobilen Shop zu "verlinken" 
@@ -77,6 +83,12 @@
 
 
 '''English'''
+
+'''Version 2.1.22'''
+* fixed issue on request for redirect keywords
+
+'''Version 2.1.21'''
+* fixed issue with loading the Shopgate configuration file
 
 '''Version 2.1.20'''
 * fixed issue with "enable_clear_log_file" setting
