@@ -4,6 +4,7 @@
 * bei Requests an die Shopgate Plugin API wird jetzt die Shopnummer überprüft
 * bei der Alias-Weiterleitung wird kein https:// mehr verwendet
 * beim Weiterleitung-CNAME ist nur noch http:// erlaubt
+* Fehler beim mehrfachen Laden der Konfiguration behoben
 
 '''Version 2.1.22'''
 * Problem beim Abruf der Redirect-Keywords behoben
@@ -93,6 +94,7 @@
 * on requests to the Shopgate Plugin API the shop number is checked now
 * mobile redirection via alias is done to a http:// URL now
 * the CNAME for mobile redirection must be http:// now
+* fixed an error when loading configuration more than once
 
 '''Version 2.1.22'''
 * fixed issue on request for redirect keywords

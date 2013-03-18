@@ -447,7 +447,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 			}
 			
 			$shopgate_config = null;
-			include_once($this->config_folder_path.DS.$file);
+			include($this->config_folder_path.DS.$file);
 			if (isset($shopgate_config) && isset($shopgate_config['shop_number']) && ($shopgate_config['shop_number'] == $shopNumber)) {
 				$configFile = $this->config_folder_path.DS.$file;
 				break;
