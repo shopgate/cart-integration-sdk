@@ -22,7 +22,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		'shop_number' => '/^[0-9]{5,}$/', // at least 5 digits
 		'apikey' => '/^[0-9a-f]{20}$/', // exactly 20 hexadecimal digits
 		'alias' => '/^[0-9a-zA-Z]+(([\.]?|[\-]+)[0-9a-zA-Z]+)*$/', // start and end with alpha-numerical characters, multiple dashes and single dots in between are ok
-		'cname' => '/^(https?:\/\/\S+)?$/i', // empty or a string beginning with "http://" or "https://" followed by any number of non-whitespace characters
+		'cname' => '/^(http:\/\/\S+)?$/i', // empty or a string beginning with "http://" followed by any number of non-whitespace characters
 		'server' => '/^(live|pg|custom)$/', // "live" or "pg" or "custom"
 		'api_url' => '/^(https?:\/\/\S+)?$/i', // empty or a string beginning with "http://" or "https://" followed by any number of non-whitespace characters (this is used for testing only, thus the lose validation)
 	);
@@ -447,7 +447,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 			}
 			
 			$shopgate_config = null;
-			include_once($this->config_folder_path.DS.$file);
+			include($this->config_folder_path.DS.$file);
 			if (isset($shopgate_config) && isset($shopgate_config['shop_number']) && ($shopgate_config['shop_number'] == $shopNumber)) {
 				$configFile = $this->config_folder_path.DS.$file;
 				break;
