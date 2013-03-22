@@ -6,17 +6,6 @@
 define('SHOPGATE_LIBRARY_VERSION', '2.1.22');
 define('SHOPGATE_LIBRARY_ENCODING' , 'UTF-8');
 define('SHOPGATE_BASE_DIR', realpath(dirname(__FILE__).'/../'));
-define('SHOPGATE_ITUNES_URL', 'http://itunes.apple.com/de/app/shopgate-eine-app-alle-shops/id365287459?mt=8');
-
-## QR-Code Config - Start
-if (!defined('QR_CACHEABLE'))			define('QR_CACHEABLE', false);
-if (!defined('QR_CACHE_DIR'))			define('QR_CACHE_DIR', false);
-if (!defined('QR_LOG_DIR'))				define('QR_LOG_DIR', dirname(__FILE__).'/../temp/');
-if (!defined('QR_FIND_BEST_MASK'))		define('QR_FIND_BEST_MASK', true);
-if (!defined('QR_FIND_FROM_RANDOM'))	define('QR_FIND_FROM_RANDOM', 2);
-if (!defined('QR_DEFAULT_MASK'))		define('QR_DEFAULT_MASK', 2);
-if (!defined('QR_PNG_MAXIMUM_SIZE'))	define('QR_PNG_MAXIMUM_SIZE',  1024);
-## QR-Code Config - End
 
 /**
  * Error handler for PHP errors.
@@ -73,6 +62,7 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_API_UNKNOWN_SHOP_NUMBER = 24;
 	
 	const PLUGIN_API_NO_ORDER_NUMBER = 30;
+	const PLUGIN_API_NO_CART = 31;
 	const PLUGIN_API_NO_USER = 35;
 	const PLUGIN_API_NO_PASS = 36;
 	const PLUGIN_API_UNKNOWN_LOGTYPE = 38;
@@ -140,6 +130,7 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_API_UNKNOWN_SHOP_NUMBER => 'unknown shop number received',
 
 		self::PLUGIN_API_NO_ORDER_NUMBER => 'parameter "order_number" missing',
+		self::PLUGIN_API_NO_CART => 'parameter "cart" missing',
 		self::PLUGIN_API_NO_USER => 'parameter "user" missing',
 		self::PLUGIN_API_NO_PASS => 'parameter "pass" missing',
 		self::PLUGIN_API_UNKNOWN_LOGTYPE => 'unknown logtype',
@@ -1776,6 +1767,7 @@ interface ShopgateContainerVisitor {
 	public function visitCartItem(ShopgateCartItem $c);
 	public function visitCartItemOption(ShopgateCartItemOption $c);
 	public function visitCartItemInput(ShopgateCartItemInput $c);
+	public function visitShopCoupon(ShopgateShopCoupon $c);
 	public function visitCoupon(ShopgateCoupon $c);
 	
 	public function visitCategory(ShopgateCategory $d);
@@ -1968,7 +1960,7 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 // 			$properties['invoice_address']->accept($this);
 // 			$properties['invoice_address'] = $this->object;
 // 		}
-	
+
 		// iterate lists of referred objects
 		$properties['coupons'] = $this->iterateObjectList($properties['coupons']);
 		$properties['items'] = $this->iterateObjectList($properties['items']);
@@ -2022,6 +2014,20 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 		// create new object with utf-8 en- / decoded data
 		try {
 			$this->object = new ShopgateCartItemInput($properties);
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+	
+	public function visitShopCoupon(ShopgateShopCoupon $c) {
+		$properties = $c->buildProperties();
+
+		// iterate the simple variables
+		$this->iterateSimpleProperties($properties);
+
+		// create new object with utf-8 en- / decoded data
+		try {
+			$this->object = new ShopgateShopCoupon($properties);
 		} catch (ShopgateLibraryException $e) {
 			$this->object = null;
 		}
@@ -2280,6 +2286,10 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 	}
 	
 	public function visitCartItemInput(ShopgateCartItemInput $c) {
+		$this->array = $this->iterateSimpleProperties($c->buildProperties());
+	}
+	
+	public function visitShopCoupon(ShopgateShopCoupon $c) {
 		$this->array = $this->iterateSimpleProperties($c->buildProperties());
 	}
 	

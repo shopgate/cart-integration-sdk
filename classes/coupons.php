@@ -26,9 +26,13 @@ class ShopgateCart extends ShopgateContainer {
 	protected $delivery_address;
 	
 	/**
-	 * @var ShopgateCoupon[]
+	 * @var ShopgateShopCoupon[]
 	 */
 	protected $coupons;
+	/**
+	 * @var ShopgateCoupon[]
+	 */
+	protected $shopgate_coupons;
 	
 	/**
 	 * @var ShopgateCartItem[]
@@ -121,17 +125,41 @@ class ShopgateCart extends ShopgateContainer {
 		}
 		
 		foreach ($value as $index => &$element) {
-			if ((!is_object($element) || !($element instanceof ShopgateCoupon)) && !is_array($element)) {
+			if ((!is_object($element) || !($element instanceof ShopgateShopCoupon)) && !is_array($element)) {
 				unset($value[$index]);
 				continue;
 			}
-		
+
 			if (is_array($element)) {
-				$element = new ShopgateCoupon($element);
+				$element = new ShopgateShopCoupon($element);
 			}
 		}
 		
 		$this->coupons = $value;
+	}
+	
+	public function getShopgateCoupons() {
+		return $this->shopgate_coupons;
+	}
+	
+	public function setShopgateCoupons($value) {
+// 		if (!is_array($value)) {
+// 			$this->shopgate_coupons = null;
+// 			return;
+// 		}
+		
+// 		foreach ($value as $index => &$element) {
+// 			if ((!is_object($element) || !($element instanceof ShopgateCoupon)) && !is_array($element)) {
+// 				unset($value[$index]);
+// 				continue;
+// 			}
+		
+// 			if (is_array($element)) {
+// 				$element = new ShopgateCoupon($element);
+// 			}
+// 		}
+		
+// 		$this->shopgate_coupons = $value;
 	}
 	
 	/**
@@ -223,37 +251,190 @@ class ShopgateCart extends ShopgateContainer {
 	}
 }
 
-class ShopgateCoupon extends ShopgateContainer {
-	protected $coupon_code;
+class ShopgateShopCoupon extends ShopgateContainer {
+	/**
+	 *
+	 * @var string
+	 */
+	protected $code;
+	/**
+	 *
+	 * @var int
+	 */
 	protected $order_index;
-	protected $reservation_id;
+	/**
+	 *
+	 * @var string
+	 */
+	protected $internal_info;
+	
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitShopCoupon($this);
+	}
+	
+	/**
+	 *
+	 * @return string
+	 */
+	public function getCode() {
+		return $this->code;
+	}
+	/**
+	 *
+	 * @param string $value
+	 */
+	public function setCode($value) {
+		$this->code = $value;
+	}
+	/**
+	 *
+	 * @return int
+	 */
+	public function getOrderIndex() {
+		return $this->order_index;
+	}
+	/**
+	 *
+	 * @param string $value
+	 */
+	public function setOrderIndex($value) {
+		$this->order_index = $value;
+	}
+	/**
+	 *
+	 * @return string
+	 */
+	public function getInternalInfo() {
+		return $this->internal_info;
+	}
+	/**
+	 *
+	 * @param string $value
+	 */
+	public function setInternalInfo($value) {
+		$this->internal_info = $value;
+	}
+}
+
+class ShopgateCoupon extends ShopgateContainer {
+	/**
+	 *
+	 * @var string
+	 */
+	protected $code;
+	/**
+	 *
+	 * @var string
+	 */
+	protected $name;
+	/**
+	 *
+	 * @var int
+	 */
+	protected $order_index;
+	/**
+	 *
+	 * @var float
+	 */
+	protected $amount;
+	/**
+	 *
+	 * @var boolean
+	 */
+	protected $is_free_shipping;
+	/**
+	 *
+	 * @var string
+	 */
+	protected $internal_info;
 	
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitCoupon($this);
 	}
 	
-	public function getCouponCode() {
-		return $this->coupon_code;
+	/**
+	 *
+	 * @return string
+	 */
+	public function getCode() {
+		return $this->code;
 	}
-	
-	public function setCouponCode($value) {
-		$this->coupon_code = $value;
+	/**
+	 *
+	 * @param string $value
+	 */
+	public function setCode($value) {
+		$this->code = $value;
 	}
-	
+	/**
+	 *
+	 * @return string
+	 */
+	public function getName() {
+		return $this->name;
+	}
+	/**
+	 *
+	 * @param string $value
+	 */
+	public function setName($value) {
+		$this->name = $value;
+	}
+	/**
+	 *
+	 * @return int
+	 */
 	public function getOrderIndex() {
 		return $this->order_index;
 	}
-	
+	/**
+	 *
+	 * @param string $value
+	 */
 	public function setOrderIndex($value) {
 		$this->order_index = $value;
 	}
-
-	public function getReservationId() {
-		return $this->reservation_id;
+	/**
+	 *
+	 * @return float
+	 */
+	public function getAmount() {
+		return $this->amount;
 	}
-	
-	public function setReservationId($value) {
-		$this->reservation_id = $value;
+	/**
+	 *
+	 * @param float $value
+	 */
+	public function setAmount($value) {
+		$this->amount = $value;
+	}
+	/**
+	 *
+	 * @return boolean
+	 */
+	public function getIsFreeShipping() {
+		return $this->is_free_shipping;
+	}
+	/**
+	 *
+	 * @param boolean $value
+	 */
+	public function setIsFreeShipping($value) {
+		$this->is_free_shipping = $value;
+	}
+	/**
+	 *
+	 * @return string
+	 */
+	public function getInternalInfo() {
+		return $this->internal_info;
+	}
+	/**
+	 *
+	 * @param string $value
+	 */
+	public function setInternalInfo($value) {
+		$this->internal_info = $value;
 	}
 }
 
