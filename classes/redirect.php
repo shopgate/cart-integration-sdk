@@ -415,7 +415,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		if(!empty($this->cname)){
 			return $this->cname;
 		} elseif(!empty($this->alias)){
-			return 'https://'.$this->alias.$this->getShopgateUrl();
+			return 'http://'.$this->alias.$this->getShopgateUrl();
 		}
 	}
 
