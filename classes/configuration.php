@@ -1164,7 +1164,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		if (file_exists($path)) {
 			ob_start();
 			include($path);
-			ob_clean();
+			ob_end_clean();
 		} else {
 			return false;
 		}

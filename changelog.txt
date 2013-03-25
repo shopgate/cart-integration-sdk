@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.1.24'''
+* Problem beim Laden der Konfiguration per ob_start() und ob_end_clean() behoben
+
 '''Version 2.1.23'''
 * bei Requests an die Shopgate Plugin API wird jetzt die Shopnummer überprüft
 * bei der Alias-Weiterleitung wird kein https:// mehr verwendet
@@ -89,6 +92,9 @@
 
 
 '''English'''
+
+'''Version 2.1.24'''
+* fixed issue with loading configuration via ob_start() / ob_end_clean()
 
 '''Version 2.1.23'''
 * on requests to the Shopgate Plugin API the shop number is checked now
