@@ -1533,7 +1533,7 @@ class ShopgateCoupon extends ShopgateContainer {
 	 * @param float $value
 	 */
 	public function setAmount($value) {
-		$this->amount = $value;
+		$this->amount = abs($value);
 	}
 	/**
 	 *
