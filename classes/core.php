@@ -1742,6 +1742,7 @@ interface ShopgateContainerVisitor {
 	public function visitOrderItem(ShopgateOrderItem $i);
 	public function visitOrderItemOption(ShopgateOrderItemOption $o);
 	public function visitOrderItemInput(ShopgateOrderItemInput $i);
+	public function visitOrderItemAttribute(ShopgateOrderItemAttribute $o);
 	public function visitOrderDeliveryNote(ShopgateDeliveryNote $d);
 	public function visitCategory(ShopgateCategory $d);
 	public function visitItem(ShopgateItem $i);
@@ -1898,6 +1899,18 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 		// create new object with utf-8 en- / decoded data
 		try {
 			$this->object = new ShopgateOrderItemInput($properties);
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+
+	public function visitOrderItemAttribute(ShopgateOrderItemAttribute $i) {
+		$properties = $i->buildProperties();
+		$this->iterateSimpleProperties($properties);
+		
+		// create new object with utf-8 en- / decoded data
+		try {
+			$this->object = new ShopgateOrderItemAttribute($properties);
 		} catch (ShopgateLibraryException $e) {
 			$this->object = null;
 		}
@@ -2133,6 +2146,11 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 
 	public function visitOrderItemInput(ShopgateOrderItemInput $i) {
 		// get properties and iterate (no complex types in ShopgateOrderItemInput objects)
+		$this->array = $this->iterateSimpleProperties($i->buildProperties());
+	}
+
+	public function visitOrderItemAttribute(ShopgateOrderItemAttribute $i) {
+		// get properties and iterate (no complex types in ShopgateOrderItemAttribute objects)
 		$this->array = $this->iterateSimpleProperties($i->buildProperties());
 	}
 
