@@ -46,17 +46,17 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	/**
 	 * @var ShopgateShopCoupon[]
 	 */
-	protected $coupons;
+	protected $coupons = array();
 	/**
 	 * @var ShopgateCoupon[]
 	 */
-	protected $shopgate_coupons;
+	protected $shopgate_coupons = array();
 	
 	/**
 	 *
 	 * @var ShopgateOrderItem[]
 	 */
-	protected $items;
+	protected $items = array();
 
 	/**********
 	 * Setter *
