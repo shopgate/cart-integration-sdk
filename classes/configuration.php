@@ -441,6 +441,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		// find all config files
 		$configFile = null;
 		$files = scandir($this->config_folder_path);
+		ob_start();
 		foreach ($files as $file) {
 			if (!is_file($this->config_folder_path.DS.$file)) {
 				continue;
@@ -453,7 +454,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 				break;
 			}
 		}
-		
+		ob_end_clean();
 		if (empty($configFile)) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR, 'no configuration file found for shop number "'.$shopNumber.'"', true, false);
 		}

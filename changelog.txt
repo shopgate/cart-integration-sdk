@@ -1,6 +1,7 @@
 '''Deutsch'''
 
 '''Version 2.1.25'''
+* Problem mit einer Ausgabe, während dem Laden der Konfigurationsdatei, behoben
 * Implementierung der neuen Shopgate MerchantAPI Felder "item_number_public" und "attributes", welche in der get_orders Action zurückgeliefert werden
 
 '''Version 2.1.24'''
@@ -97,6 +98,7 @@
 '''English'''
 
 '''Version 2.1.25'''
+* fixed issue with output by loading configuration file
 * implementation of the new Shopgate MerchantAPI fields "item_number_public" and "attributes" returned by the get_orders action
 
 '''Version 2.1.24'''
