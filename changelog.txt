@@ -3,6 +3,7 @@
 '''Version 2.1.25'''
 * Problem mit einer Ausgabe, während dem Laden der Konfigurationsdatei, behoben
 * Implementierung der neuen Shopgate MerchantAPI Felder "item_number_public" und "attributes", welche in der get_orders Action zurückgeliefert werden
+* Ein Fehler wurde behoben, wodurch das Umbenennen von CSV Dateien unter Windows Server Systemen fehlschlug
 
 '''Version 2.1.24'''
 * Problem beim Laden der Konfiguration per ob_start() und ob_end_clean() behoben
@@ -100,6 +101,7 @@
 '''Version 2.1.25'''
 * fixed issue with output by loading configuration file
 * implementation of the new Shopgate MerchantAPI fields "item_number_public" and "attributes" returned by the get_orders action
+* fixed an issue with renaming of csv files on windows server systems
 
 '''Version 2.1.24'''
 * fixed issue with loading configuration via ob_start() / ob_end_clean()
