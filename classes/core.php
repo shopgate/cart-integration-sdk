@@ -1608,6 +1608,10 @@ class ShopgateFileBuffer extends ShopgateObject implements ShopgateFileBufferInt
 		fclose($this->fileHandle);
 		$this->fileHandle = null;
 		
+		// FIX for Windows Servers
+		if(file_exists($this->filePath)) {
+			unlink($this->filePath);
+		}
 		rename($this->filePath.".tmp", $this->filePath);
 		
 		$this->log('Fertig, '.basename($this->filePath).' wurde erfolgreich erstellt', "access");
