@@ -794,6 +794,12 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 		);
 		
 		$response = $this->sendRequest($request);
+		
+		$responseData = $response->getData();
+		if(!isset($responseData["keywords"]) || !isset($responseData["skip_keywords"])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE, "\"keyword\" or \"skip_keyword\" is not set. Response: " . var_export($responseData, true));
+		}
+		
 		return $response->getData();
 	}
 	

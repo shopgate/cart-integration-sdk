@@ -3,20 +3,9 @@
 ###################################################################################
 # define constants
 ###################################################################################
-define('SHOPGATE_LIBRARY_VERSION', '2.1.23');
+define('SHOPGATE_LIBRARY_VERSION', '2.1.24');
 define('SHOPGATE_LIBRARY_ENCODING' , 'UTF-8');
 define('SHOPGATE_BASE_DIR', realpath(dirname(__FILE__).'/../'));
-define('SHOPGATE_ITUNES_URL', 'http://itunes.apple.com/de/app/shopgate-eine-app-alle-shops/id365287459?mt=8');
-
-## QR-Code Config - Start
-if (!defined('QR_CACHEABLE'))			define('QR_CACHEABLE', false);
-if (!defined('QR_CACHE_DIR'))			define('QR_CACHE_DIR', false);
-if (!defined('QR_LOG_DIR'))				define('QR_LOG_DIR', dirname(__FILE__).'/../temp/');
-if (!defined('QR_FIND_BEST_MASK'))		define('QR_FIND_BEST_MASK', true);
-if (!defined('QR_FIND_FROM_RANDOM'))	define('QR_FIND_FROM_RANDOM', 2);
-if (!defined('QR_DEFAULT_MASK'))		define('QR_DEFAULT_MASK', 2);
-if (!defined('QR_PNG_MAXIMUM_SIZE'))	define('QR_PNG_MAXIMUM_SIZE',  1024);
-## QR-Code Config - End
 
 /**
  * Error handler for PHP errors.
@@ -63,6 +52,7 @@ class ShopgateLibraryException extends Exception {
 	// Configuration failure
 	const CONFIG_INVALID_VALUE = 10;
 	const CONFIG_READ_WRITE_ERROR = 11;
+	const CONFIG_PLUGIN_NOT_ACTIVE = 12;
 
 	// Plugin API errors
 	const PLUGIN_API_NO_ACTION = 20;
@@ -122,6 +112,7 @@ class ShopgateLibraryException extends Exception {
 		// Configuration failure
 		self::CONFIG_INVALID_VALUE => 'invalid value in configuration',
 		self::CONFIG_READ_WRITE_ERROR => 'error reading or writing configuration',
+		self::CONFIG_PLUGIN_NOT_ACTIVE => 'plugin not activated',
 
 		// Plugin API errors
 		self::PLUGIN_API_NO_ACTION => 'no action specified',
@@ -1617,6 +1608,10 @@ class ShopgateFileBuffer extends ShopgateObject implements ShopgateFileBufferInt
 		fclose($this->fileHandle);
 		$this->fileHandle = null;
 		
+		// FIX for Windows Servers
+		if(file_exists($this->filePath)) {
+			unlink($this->filePath);
+		}
 		rename($this->filePath.".tmp", $this->filePath);
 		
 		$this->log('Fertig, '.basename($this->filePath).' wurde erfolgreich erstellt', "access");
@@ -1751,6 +1746,7 @@ interface ShopgateContainerVisitor {
 	public function visitOrderItem(ShopgateOrderItem $i);
 	public function visitOrderItemOption(ShopgateOrderItemOption $o);
 	public function visitOrderItemInput(ShopgateOrderItemInput $i);
+	public function visitOrderItemAttribute(ShopgateOrderItemAttribute $o);
 	public function visitOrderDeliveryNote(ShopgateDeliveryNote $d);
 	public function visitCategory(ShopgateCategory $d);
 	public function visitItem(ShopgateItem $i);
@@ -1907,6 +1903,18 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 		// create new object with utf-8 en- / decoded data
 		try {
 			$this->object = new ShopgateOrderItemInput($properties);
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+
+	public function visitOrderItemAttribute(ShopgateOrderItemAttribute $i) {
+		$properties = $i->buildProperties();
+		$this->iterateSimpleProperties($properties);
+		
+		// create new object with utf-8 en- / decoded data
+		try {
+			$this->object = new ShopgateOrderItemAttribute($properties);
 		} catch (ShopgateLibraryException $e) {
 			$this->object = null;
 		}
@@ -2142,6 +2150,11 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 
 	public function visitOrderItemInput(ShopgateOrderItemInput $i) {
 		// get properties and iterate (no complex types in ShopgateOrderItemInput objects)
+		$this->array = $this->iterateSimpleProperties($i->buildProperties());
+	}
+
+	public function visitOrderItemAttribute(ShopgateOrderItemAttribute $i) {
+		// get properties and iterate (no complex types in ShopgateOrderItemAttribute objects)
 		$this->array = $this->iterateSimpleProperties($i->buildProperties());
 	}
 
