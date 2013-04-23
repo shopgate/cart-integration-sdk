@@ -360,6 +360,8 @@ class ShopgateOrder extends ShopgateContainer {
 
 		if (is_array($value)) {
 			$value = new ShopgateAddress($value);
+			$value->setIsDeliveryAddress(false);
+			$value->setIsInvoiceAddress(true);
 		}
 
 		$this->invoice_address = $value;
@@ -378,6 +380,8 @@ class ShopgateOrder extends ShopgateContainer {
 
 		if (is_array($value)) {
 			$value = new ShopgateAddress($value);
+			$value->setIsDeliveryAddress(true);
+			$value->setIsInvoiceAddress(false);
 		}
 
 		$this->delivery_address = $value;
