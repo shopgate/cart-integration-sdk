@@ -1,9 +1,10 @@
 '''Deutsch'''
 
 '''Version 2.1.25'''
-* Problem mit einer Ausgabe, während dem Laden der Konfigurationsdatei, behoben
-* Implementierung der neuen Shopgate MerchantAPI Felder "item_number_public" und "attributes", welche in der get_orders Action zurückgeliefert werden
-* Ein Fehler wurde behoben, wodurch das Umbenennen von CSV Dateien unter Windows Server Systemen fehlschlug
+* Problem mit einer Ausgabe während dem Laden der Konfigurationsdatei behoben
+* Implementierung der neuen Shopgate-Merchant-API-Felder "item_number_public" und "attributes", welche in "get_orders" zurückgeliefert werden
+* Fehler behoben, durch den das Umbenennen von CSV-Dateien unter Windows-Server-Systemen fehlschlug
+* die Konvertierung der Zeichensätze wird jetzt optional mit iconv durchgeführt, wenn die mb_string-Erweiterung für PHP nicht installiert ist
 
 '''Version 2.1.24'''
 * Problem beim Laden der Konfiguration per ob_start() und ob_end_clean() behoben
@@ -99,9 +100,10 @@
 '''English'''
 
 '''Version 2.1.25'''
-* fixed issue with output by loading configuration file
-* implementation of the new Shopgate MerchantAPI fields "item_number_public" and "attributes" returned by the get_orders action
-* fixed an issue with renaming of csv files on windows server systems
+* fixed an issue producing an output during loading the configuration file
+* implementation of the new Shopgate Merchant API fields "item_number_public" and "attributes" returned by "get_orders"
+* fixed issue that caused renaming CSV files on Windows Server systems to fail
+* conversion of encodings is now performed via iconv if the mb_string extension for PHP is not installed
 
 '''Version 2.1.24'''
 * fixed issue with loading configuration via ob_start() / ob_end_clean()
