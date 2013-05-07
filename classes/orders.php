@@ -867,6 +867,7 @@ class ShopgateOrder extends ShopgateCartBase {
 
 class ShopgateOrderItem extends ShopgateContainer {
 	protected $item_number;
+	protected $item_number_public;
 
 	protected $quantity;
 
@@ -884,6 +885,8 @@ class ShopgateOrderItem extends ShopgateContainer {
 	protected $options = array();
 
 	protected $inputs = array();
+	
+	protected $attributes = array();
 
 
 	/**********
@@ -906,6 +909,15 @@ class ShopgateOrderItem extends ShopgateContainer {
 	 */
 	public function setItemNumber($value) {
 		$this->item_number = $value;
+	}
+
+	/**
+	 * Sets the item_number_public value
+	 *
+	 * @param string $value
+	 */
+	public function setItemNumberPublic($value) {
+		$this->item_number_public = $value;
 	}
 
 	/**
@@ -1012,6 +1024,32 @@ class ShopgateOrderItem extends ShopgateContainer {
 		$this->inputs = $value;
 	}
 
+	/**
+ 	 * Sets the attributes value
+ 	 *
+ 	 * @param ShopgateOrderItemAttribute[]|mixed[][] $value
+	 */
+	public function setAttributes($value) {
+		if (empty($value) || !is_array($value)) {
+			$this->attributes = array();
+			return;
+		}
+		
+		// convert sub-arrays into ShopgateOrderItemInputs objects if necessary
+		foreach ($value as $index => &$element) {
+			if ((!is_object($element) || !($element instanceof ShopgateOrderItemAttribute)) && !is_array($element)) {
+				unset($value[$index]);
+				continue;
+			}
+			
+			if (is_array(($element))) {
+				$element = new ShopgateOrderItemAttribute($element);
+			}
+		}
+		
+		$this->attributes = $value;
+	}
+
 
 	/**********
 	 * Getter *
@@ -1033,6 +1071,15 @@ class ShopgateOrderItem extends ShopgateContainer {
 	 */
 	public function getItemNumber() {
 		return $this->item_number;
+	}
+
+	/**
+	 * Returns the item_number_public value
+	 *
+	 * @return string
+	 */
+	public function getItemNumberPublic() {
+		return $this->item_number_public;
 	}
 
 	/**
@@ -1097,10 +1144,19 @@ class ShopgateOrderItem extends ShopgateContainer {
 	/**
 	 * Returns the inputs value
 	 *
-	 * @param ShopgateOrderItemInputs[]
+	 * @return ShopgateOrderItemInput[]
 	 */
 	public function getInputs() {
 		return $this->inputs;
+	}
+
+	/**
+	 * Returns the attributes value
+	 *
+	 * @return ShopgateOrderItemAttribute[]
+	 */
+	public function getAttributes() {
+		return $this->attributes;
 	}
 
 
@@ -1289,6 +1345,62 @@ class ShopgateOrderItemInput extends ShopgateContainer {
 	
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitOrderItemInput($this);
+	}
+}
+
+class ShopgateOrderItemAttribute extends ShopgateContainer {
+	protected $name;
+	protected $value;
+
+
+	/**********
+	 * Setter *
+	**********/
+
+	/**
+	 * Sets the name value
+	 *
+	 * @param string $value
+	 */
+	public function setName($value) {
+		$this->name = $value;
+	}
+
+	/**
+	 * Sets the value value
+	 *
+	 * @param string $value
+	 */
+	public function setValue($value) {
+		$this->value = $value;
+	}
+
+
+	/**********
+	 * Getter *
+	**********/
+
+	/**
+	 * Returns the name value
+	 *
+	 * @return String
+	 */
+	public function getName() {
+		return $this->name;
+	}
+
+	/**
+	 * Returns the value value
+	 *
+	 * @return String
+	 */
+	public function getValue() {
+		return $this->value;
+	}
+
+
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitOrderItemAttribute($this);
 	}
 }
 
