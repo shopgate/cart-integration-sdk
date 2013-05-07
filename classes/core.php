@@ -733,14 +733,10 @@ abstract class ShopgateObject {
 	/**
 	 * Encodes a string from a given encoding to UTF-8.
 	 *
-	 * This wraps the mb_convert_encoding() function of PHP.
-	 *
 	 * @param string $string The string to encode.
-	 * @param string|string[] $sourceEncoding The encoding(s) of $string.
+	 * @param string|string[] $sourceEncoding The (possible) encoding(s) of $string.
 	 * @param bool $force Set this true to enforce encoding even if the source encoding is already UTF-8.
 	 * @return string The UTF-8 encoded string.
-	 *
-	 * @see http://php.net/manual/de/function.mb-convert-encoding.php
 	 */
 	public function stringToUtf8($string, $sourceEncoding = 'ISO-8859-15', $force = false) {
 		$conditions =
@@ -750,25 +746,61 @@ abstract class ShopgateObject {
 		
 		return ($conditions)
 			? $string
-			: mb_convert_encoding($string, SHOPGATE_LIBRARY_ENCODING, $sourceEncoding);
+			: $this->convertEncoding($string, SHOPGATE_LIBRARY_ENCODING, $sourceEncoding);
 	}
 
 	/**
 	 * Decodes a string from UTF-8 to a given encoding.
 	 *
-	 * This wraps the mb_convert_encoding() function of PHP.
-	 *
 	 * @param string $string The string to decode.
 	 * @param string $destinationEncoding The desired encoding of the return value.
 	 * @param bool $force Set this true to enforce encoding even if the destination encoding is set to UTF-8.
 	 * @return string The UTF-8 decoded string.
-	 *
-	 * @see http://php.net/manual/de/function.mb-convert-encoding.php
 	 */
 	public function stringFromUtf8($string, $destinationEncoding = 'ISO-8859-15', $force = false) {
 		return ($destinationEncoding == SHOPGATE_LIBRARY_ENCODING) && !$force
 				? $string
-				: mb_convert_encoding($string, $destinationEncoding, SHOPGATE_LIBRARY_ENCODING);
+				: $this->convertEncoding($string, $destinationEncoding, SHOPGATE_LIBRARY_ENCODING);
+	}
+	
+	/**
+	 * Converts a string's encoding to another.
+	 * 
+	 * This wraps the mb_convert_encoding() and iconv() functions of PHP. If the mb_string extension is not installed,
+	 * iconv() will be used instead.
+	 * 
+	 * If iconv() must be used and an array is passed as $sourceEncoding all encodings will be tested and the (probably)
+	 * best encoding will be used for conversion.
+	 *
+	 * @see http://php.net/manual/en/function.mb-convert-encoding.php
+	 * @see http://php.net/manual/en/function.iconv.php
+	 * 
+	 * @param string $string The string to decode.
+	 * @param string $destinationEncoding The desired encoding of the return value.
+	 * @param string|string[] $sourceEncoding The (possible) encoding(s) of $string.
+	 * @return string The UTF-8 decoded string.
+	 */
+	protected function convertEncoding($string, $destinationEncoding, $sourceEncoding) {
+		if (function_exists('mb_convert_encoding')) {
+			return mb_convert_encoding($string, $destinationEncoding, $sourceEncoding);
+		} else {
+			// I have no excuse for the following. Please forgive me.
+			if (is_array($sourceEncoding)) {
+				$bestEncoding = '';
+				$bestScore = null;
+				foreach ($sourceEncoding as $encoding) {
+					$score = abs(strlen($string) - strlen(@iconv($encoding, $destinationEncoding, $string)));
+					if (is_null($bestScore) || ($score < $bestScore)) {
+						$bestScore = $score;
+						$bestEncoding = $encoding;
+					}
+				}
+				
+				$sourceEncoding = $bestEncoding;
+			}
+			
+			return @iconv($sourceEncoding, $destinationEncoding.'//IGNORE', $string);
+		}
 	}
 }
 
