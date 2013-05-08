@@ -377,11 +377,13 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$pass = $this->params['pass'];
 		$customer = new ShopgateCustomer($this->params['user_data']);
 		
-		$addresses = array();
-		foreach($this->params['addresses'] as $address) {
-			$addresses[] = new ShopgateAddress($address);
+		if(isset($this->params['addresses']) && is_array($this->params['addresses'])) {
+			$addresses = array();
+			foreach($this->params['addresses'] as $address) {
+				$addresses[] = new ShopgateAddress($address);
+			}
+			$customer->setAddresses($addresses);
 		}
-		$customer->setAddresses($addresses);
 		
 		$defaultData = array(
 				"customer_id" => null,
