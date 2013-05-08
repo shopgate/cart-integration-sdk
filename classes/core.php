@@ -350,35 +350,57 @@ class ShopgateLogger {
 	 */
 	private static $singleton;
 
-	private function __construct($accessLogPath, $requestLogPath, $errorLogPath, $debugLogErrorPath) {
-		$this->files[self::LOGTYPE_ACCESS]['path']  = $accessLogPath;
-		$this->files[self::LOGTYPE_REQUEST]['path'] = $requestLogPath;
-		$this->files[self::LOGTYPE_ERROR]['path']   = $errorLogPath;
-		$this->files[self::LOGTYPE_DEBUG]['path']   = $debugLogErrorPath;
+	private function __construct() {
 		$this->debug = false;
 	}
+	
 
 	/**
-	 * @param string $accessLogPath
-	 * @param string $requestLogPath
-	 * @param string $errorLogPath
-	 * @param string $debugLogPath
 	 * @return ShopgateLogger
 	 */
 	public static function getInstance($accessLogPath = null, $requestLogPath = null, $errorLogPath = null, $debugLogPath = null) {
 		if (empty(self::$singleton)) {
-			// fallback for the default log files if none are specified
+			self::$singleton = new self();
+			
+			// fall back to default log paths if none are specified
 			if (empty($accessLogPath))  $accessLogPath  = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs'.DS.ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'access.log';
 			if (empty($requestLogPath)) $requestLogPath = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs'.DS.ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'request.log';
 			if (empty($errorLogPath))   $errorLogPath   = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs'.DS.ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'error.log';
 			if (empty($debugLogPath))   $debugLogPath   = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs'.DS.ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'debug.log';
-				
-			self::$singleton = new self($accessLogPath, $requestLogPath, $errorLogPath, $debugLogPath);
 		}
-
+		
+		// set log file paths if requested
+		self::$singleton->setLogFilePaths($accessLogPath, $requestLogPath, $errorLogPath, $debugLogPath);
+		
 		return self::$singleton;
 	}
-
+	
+	/**
+	 * Sets the paths to the log files.
+	 * 
+	 * @param string $accessLogPath
+	 * @param string $requestLogPath
+	 * @param string $errorLogPath
+	 * @param string $debugLogPath
+	 */
+	public function setLogFilePaths($accessLogPath, $requestLogPath, $errorLogPath, $debugLogPath) {
+		if (!empty($accessLogPath)) {
+			$this->files[self::LOGTYPE_ACCESS]['path'] = $accessLogPath;
+		}
+		
+		if (!empty($requestLogPath)) {
+			$this->files[self::LOGTYPE_REQUEST]['path'] = $requestLogPath;
+		}
+		
+		if (!empty($errorLogPath)) {
+			$this->files[self::LOGTYPE_ERROR]['path'] = $errorLogPath;
+		}
+		
+		if (!empty($debugLogErrorPath)) {
+			$this->files[self::LOGTYPE_DEBUG]['path'] = $debugLogErrorPath;
+		}
+	}
+	
 	/**
 	 * Enables logging messages to debug log file.
 	 */
