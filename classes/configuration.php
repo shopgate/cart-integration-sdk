@@ -138,6 +138,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	/**
 	 * @var bool
 	 */
+	protected $enable_register;
+	
+	/**
+	 * @var bool
+	 */
 	protected $enable_get_items_csv;
 	
 	/**
@@ -820,6 +825,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return rtrim($this->cache_folder_path.DS.$this->redirect_skip_keyword_cache_filename, DS);
 	}
 	
+	public function getEnableRegister() {
+		return $this->enable_register;
+	}
+	
 	
 	###############
 	### Setters ###
@@ -1116,6 +1125,9 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		}
 	}
 	
+	public function setEnableRegister($value) {
+		$this->enable_register = $value;
+	}
 	
 	###############
 	### Helpers ###

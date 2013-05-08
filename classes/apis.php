@@ -76,7 +76,8 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				'clear_log_file',
 				'clear_cache',
 				'check_coupon',
-				'redeem_coupon'
+				'redeem_coupon',
+				'register'
 		);
 	}
 
@@ -359,6 +360,42 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$this->responseData["addresses"] = $addressList;
 	}
 
+	protected function register() {
+		if (!isset($this->params['user'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_USER);
+		}
+		
+		if (!isset($this->params['pass'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_PASS);
+		}
+		
+		if (!isset($this->params['user_data'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::UNKNOWN_ERROR_CODE, "missing user_data", true);
+		}
+		
+		$user = $this->params['user'];
+		$pass = $this->params['pass'];
+		$customer = new ShopgateCustomer($this->params['user_data']);
+		
+		$addresses = array();
+		foreach($this->params['addresses'] as $address) {
+			$addresses[] = new ShopgateAddress($address);
+		}
+		$customer->setAddresses($addresses);
+		
+		$defaultData = array(
+				"customer_id" => null,
+				"customer_number" => null,
+				"group_id" => null,
+				"group_number" => null
+		);
+		
+		$customerData = $this->plugin->register($user, $pass, $customer);
+		
+		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
+		$this->responseData = array_merge($this->responseData, $defaultData, $customerData);
+	}
+	
 	/**
 	 * Represents the "get_items_csv" action.
 	 *

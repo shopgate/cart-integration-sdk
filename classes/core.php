@@ -765,16 +765,16 @@ abstract class ShopgateObject {
 	
 	/**
 	 * Converts a string's encoding to another.
-	 * 
+	 *
 	 * This wraps the mb_convert_encoding() and iconv() functions of PHP. If the mb_string extension is not installed,
 	 * iconv() will be used instead.
-	 * 
+	 *
 	 * If iconv() must be used and an array is passed as $sourceEncoding all encodings will be tested and the (probably)
 	 * best encoding will be used for conversion.
 	 *
 	 * @see http://php.net/manual/en/function.mb-convert-encoding.php
 	 * @see http://php.net/manual/en/function.iconv.php
-	 * 
+	 *
 	 * @param string $string The string to decode.
 	 * @param string $destinationEncoding The desired encoding of the return value.
 	 * @param string|string[] $sourceEncoding The (possible) encoding(s) of $string.
@@ -1432,6 +1432,8 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @throws ShopgateLibraryException on invalid log in data or hard errors like database failure.
 	 */
 	public abstract function getCustomer($user, $pass);
+	
+	public function register($user, $pass, ShopgateCustomer $customer) { return array(); }
 
 	/**
 	 * Performs the necessary queries to add an order to the shop system's database.
