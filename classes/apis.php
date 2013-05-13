@@ -385,17 +385,15 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			$customer->setAddresses($addresses);
 		}
 		
-		$defaultData = array(
-				"customer_id" => null,
-				"customer_number" => null,
-				"group_id" => null,
-				"group_number" => null
-		);
+		$newCustomer = $this->plugin->register($user, $pass, $customer);
 		
-		$customerData = $this->plugin->register($user, $pass, $customer);
+		$customerData = $newCustomer->toArray();
+		$addressList = $customerData['addresses'];
+		unset($customerData['addresses']);
 		
 		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
-		$this->responseData = array_merge($this->responseData, $defaultData, $customerData);
+		$this->responseData["user_data"] = $customerData;
+		$this->responseData["addresses"] = $addressList;
 	}
 	
 	/**
