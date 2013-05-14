@@ -1433,7 +1433,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 */
 	public abstract function getCustomer($user, $pass);
 	
-	public function register($user, $pass, ShopgateCustomer $customer) { return array(); }
+	public function registerCustomer($user, $pass, ShopgateCustomer $customer) { return array(); }
 
 	/**
 	 * Performs the necessary queries to add an order to the shop system's database.

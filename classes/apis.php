@@ -67,7 +67,6 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				'cron',
 				'add_order',
 				'update_order',
-				'get_customer',
 				'get_items_csv',
 				'get_categories_csv',
 				'get_reviews_csv',
@@ -77,7 +76,8 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				'clear_cache',
 				'check_coupon',
 				'redeem_coupon',
-				'register'
+				'get_customer',
+				'register_customer',
 		);
 	}
 
@@ -360,7 +360,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$this->responseData["addresses"] = $addressList;
 	}
 
-	protected function register() {
+	protected function registerCustomer() {
 		if (!isset($this->params['user'])) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_USER);
 		}
@@ -385,7 +385,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			$customer->setAddresses($addresses);
 		}
 		
-		$newCustomer = $this->plugin->register($user, $pass, $customer);
+		$newCustomer = $this->plugin->registerCustomer($user, $pass, $customer);
 		
 		$customerData = $newCustomer->toArray();
 		$addressList = $customerData['addresses'];
