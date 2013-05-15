@@ -3,7 +3,7 @@
 ###################################################################################
 # define constants
 ###################################################################################
-define('SHOPGATE_LIBRARY_VERSION', '2.1.26');
+define('SHOPGATE_LIBRARY_VERSION', '2.2.0');
 define('SHOPGATE_LIBRARY_ENCODING' , 'UTF-8');
 define('SHOPGATE_BASE_DIR', realpath(dirname(__FILE__).'/../'));
 
@@ -63,6 +63,7 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_API_UNKNOWN_SHOP_NUMBER = 24;
 	
 	const PLUGIN_API_NO_ORDER_NUMBER = 30;
+	const PLUGIN_API_NO_CART = 31;
 	const PLUGIN_API_NO_USER = 35;
 	const PLUGIN_API_NO_PASS = 36;
 	const PLUGIN_API_UNKNOWN_LOGTYPE = 38;
@@ -100,6 +101,14 @@ class ShopgateLibraryException extends Exception {
 
 	// File errors
 	const FILE_READ_WRITE_ERROR = 130;
+	
+	// Coupon Errors
+	const COUPON_NOT_VALID = 200;
+	const COUPON_CODE_NOT_VALID = 201;
+	const COUPON_INVALID_PRODUCT = 202;
+	const COUPON_INVALID_ADDRESS = 203;
+	const COUPON_INVALID_USER = 204;
+	const COUPON_TOO_MANY_COUPONS = 205;
 
 	// Unknown error code (the value passed as code gets to be the message)
 	const UNKNOWN_ERROR_CODE = 999;
@@ -123,6 +132,7 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_API_UNKNOWN_SHOP_NUMBER => 'unknown shop number received',
 
 		self::PLUGIN_API_NO_ORDER_NUMBER => 'parameter "order_number" missing',
+		self::PLUGIN_API_NO_CART => 'parameter "cart" missing',
 		self::PLUGIN_API_NO_USER => 'parameter "user" missing',
 		self::PLUGIN_API_NO_PASS => 'parameter "pass" missing',
 		self::PLUGIN_API_UNKNOWN_LOGTYPE => 'unknown logtype',
@@ -159,6 +169,14 @@ class ShopgateLibraryException extends Exception {
 		// File errors
 		self::FILE_READ_WRITE_ERROR => 'error reading or writing file',
 
+		// Coupon Errors
+		self::COUPON_NOT_VALID => 'the coupon is not valid',
+		self::COUPON_CODE_NOT_VALID => 'the coupon code is not valid',
+		self::COUPON_INVALID_PRODUCT => 'invalid product for this coupon',
+		self::COUPON_INVALID_ADDRESS => 'invalid address for this coupon',
+		self::COUPON_INVALID_USER => 'invalid user for this coupon',
+		self::COUPON_TOO_MANY_COUPONS => 'too many coupons in cart',
+			
 		// Authentification errors
 		self::AUTHENTICATION_FAILED => 'authentication failed',
 	);
@@ -353,7 +371,6 @@ class ShopgateLogger {
 	private function __construct() {
 		$this->debug = false;
 	}
-	
 
 	/**
 	 * @return ShopgateLogger
@@ -377,7 +394,7 @@ class ShopgateLogger {
 	
 	/**
 	 * Sets the paths to the log files.
-	 * 
+	 *
 	 * @param string $accessLogPath
 	 * @param string $requestLogPath
 	 * @param string $errorLogPath
@@ -400,7 +417,7 @@ class ShopgateLogger {
 			$this->files[self::LOGTYPE_DEBUG]['path'] = $debugLogErrorPath;
 		}
 	}
-	
+
 	/**
 	 * Enables logging messages to debug log file.
 	 */
@@ -787,16 +804,16 @@ abstract class ShopgateObject {
 	
 	/**
 	 * Converts a string's encoding to another.
-	 * 
+	 *
 	 * This wraps the mb_convert_encoding() and iconv() functions of PHP. If the mb_string extension is not installed,
 	 * iconv() will be used instead.
-	 * 
+	 *
 	 * If iconv() must be used and an array is passed as $sourceEncoding all encodings will be tested and the (probably)
 	 * best encoding will be used for conversion.
 	 *
 	 * @see http://php.net/manual/en/function.mb-convert-encoding.php
 	 * @see http://php.net/manual/en/function.iconv.php
-	 * 
+	 *
 	 * @param string $string The string to decode.
 	 * @param string $destinationEncoding The desired encoding of the return value.
 	 * @param string|string[] $sourceEncoding The (possible) encoding(s) of $string.
@@ -1482,6 +1499,10 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 */
 	public abstract function updateOrder(ShopgateOrder $order);
 
+	public function redeemCoupons(ShopgateCart $cart) { }
+	
+	public function checkCart(ShopgateCart $cart) { }
+	
 	/**
 	 * Loads the products of the shop system's database and passes them to the buffer.
 	 *
@@ -1797,6 +1818,13 @@ interface ShopgateContainerVisitor {
 	public function visitOrderItemInput(ShopgateOrderItemInput $i);
 	public function visitOrderItemAttribute(ShopgateOrderItemAttribute $o);
 	public function visitOrderDeliveryNote(ShopgateDeliveryNote $d);
+	public function visitCart(ShopgateCart $c);
+	public function visitCartItem(ShopgateCartItem $c);
+	public function visitCartItemOption(ShopgateCartItemOption $c);
+	public function visitCartItemInput(ShopgateCartItemInput $c);
+	public function visitShopCoupon(ShopgateShopCoupon $c);
+	public function visitCoupon(ShopgateCoupon $c);
+	
 	public function visitCategory(ShopgateCategory $d);
 	public function visitItem(ShopgateItem $i);
 	public function visitItemOption(ShopgateItemOption $i);
@@ -1980,7 +2008,112 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 			$this->object = null;
 		}
 	}
+	
+	public function visitCart(ShopgateCart $c) {
+		// get properties
+		$properties = $c->buildProperties();
+	
+		// iterate the simple variables and arrays with simple variables recursively
+		$this->iterateSimpleProperties($properties);
+	
+		// visit delivery_address
+		if (!empty($properties['delivery_address']) && ($properties['delivery_address'] instanceof ShopgateAddress)) {
+			$properties['delivery_address']->accept($this);
+			$properties['delivery_address'] = $this->object;
+		}
+	
+		// visit invoice_address
+// 		if (!empty($properties['invoice_address']) && ($properties['invoice_address'] instanceof ShopgateAddress)) {
+// 			$properties['invoice_address']->accept($this);
+// 			$properties['invoice_address'] = $this->object;
+// 		}
 
+		// iterate lists of referred objects
+		$properties['coupons'] = $this->iterateObjectList($properties['coupons']);
+		$properties['items'] = $this->iterateObjectList($properties['items']);
+	
+		// create new object with utf-8 en- / decoded data
+		try {
+			$this->object = new ShopgateCart($properties);
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+
+	public function visitCartItem(ShopgateCartItem $c) {
+		$properties = $c->buildProperties();
+		
+		// iterate the simple variables
+		$this->iterateSimpleProperties($properties);
+		
+		// iterate lists of referred objects
+		$properties['options'] = $this->iterateObjectList($properties['options']);
+		$properties['inputs'] = $this->iterateObjectList($properties['inputs']);
+		
+		// create new object with utf-8 en- / decoded data
+		try {
+			$this->object = new ShopgateCartItem($properties);
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+
+	public function visitCartItemOption(ShopgateCartItemOption $c) {
+		$properties = $c->buildProperties();
+		
+		// iterate the simple variables
+		$this->iterateSimpleProperties($properties);
+		
+		// create new object with utf-8 en- / decoded data
+		try {
+			$this->object = new ShopgateCartItemOption($properties);
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+
+	public function visitCartItemInput(ShopgateCartItemInput $c) {
+		$properties = $c->buildProperties();
+		
+		// iterate the simple variables
+		$this->iterateSimpleProperties($properties);
+		
+		// create new object with utf-8 en- / decoded data
+		try {
+			$this->object = new ShopgateCartItemInput($properties);
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+	
+	public function visitShopCoupon(ShopgateShopCoupon $c) {
+		$properties = $c->buildProperties();
+
+		// iterate the simple variables
+		$this->iterateSimpleProperties($properties);
+
+		// create new object with utf-8 en- / decoded data
+		try {
+			$this->object = new ShopgateShopCoupon($properties);
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+	
+	public function visitCoupon(ShopgateCoupon $c) {
+		$properties = $c->buildProperties();
+		
+		// iterate the simple variables
+		$this->iterateSimpleProperties($properties);
+		
+		// create new object with utf-8 en- / decoded data
+		try {
+			$this->object = new ShopgateCoupon($properties);
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+	
 	public function visitCategory(ShopgateCategory $c) {
 		$properties = $c->buildProperties();
 
@@ -2212,6 +2345,30 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 		$this->array = $this->iterateSimpleProperties($d->buildProperties());
 	}
 
+	public function visitCart(ShopgateCart $c) {
+		$this->array = $this->iterateSimpleProperties($c->buildProperties());
+	}
+	
+	public function visitCartItem(ShopgateCartItem $c) {
+		$this->array = $this->iterateSimpleProperties($c->buildProperties());
+	}
+	
+	public function visitCartItemOption(ShopgateCartItemOption $c) {
+		$this->array = $this->iterateSimpleProperties($c->buildProperties());
+	}
+	
+	public function visitCartItemInput(ShopgateCartItemInput $c) {
+		$this->array = $this->iterateSimpleProperties($c->buildProperties());
+	}
+	
+	public function visitShopCoupon(ShopgateShopCoupon $c) {
+		$this->array = $this->iterateSimpleProperties($c->buildProperties());
+	}
+	
+	public function visitCoupon(ShopgateCoupon $c) {
+		$this->array = $this->iterateSimpleProperties($c->buildProperties());
+	}
+	
 	public function visitCategory(ShopgateCategory $d) {
 		$this->array = $this->iterateSimpleProperties($d->buildProperties());
 	}

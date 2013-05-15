@@ -128,6 +128,16 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	/**
 	 * @var bool
 	 */
+	protected $enable_check_cart;
+	
+	/**
+	 * @var bool
+	 */
+	protected $enable_redeem_coupons;
+	
+	/**
+	 * @var bool
+	 */
 	protected $enable_get_orders;
 	
 	/**
@@ -316,6 +326,8 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_ping = 1;
 		$this->enable_add_order = 0;
 		$this->enable_update_order = 0;
+		$this->enable_check_cart = 0;
+		$this->enable_redeem_coupons = 0;
 		$this->enable_get_orders = 0;
 		$this->enable_get_customer = 0;
 		$this->enable_get_items_csv = 0;
@@ -697,6 +709,14 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->enable_update_order;
 	}
 	
+	public function getEnableRedeemCoupons() {
+		return $this->enable_redeem_coupons;
+	}
+	
+	public function getEnableCheckCart() {
+		return $this->enable_check_cart;
+	}
+	
 	public function getEnableGetOrders() {
 		return $this->enable_get_orders;
 	}
@@ -931,6 +951,14 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	
 	public function setEnableUpdateOrder($value) {
 		$this->enable_update_order = $value;
+	}
+
+	public function setEnableRedeemCoupons($value) {
+		$this->enable_redeem_coupons = $value;
+	}
+	
+	public function setEnableCheckCart($value) {
+		$this->enable_check_cart = $value;
 	}
 	
 	public function setEnableGetOrders($value) {

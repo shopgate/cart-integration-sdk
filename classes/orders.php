@@ -1,5 +1,11 @@
 <?php
-class ShopgateOrder extends ShopgateContainer {
+
+/**
+ *
+ * @author Shopgate GmbH, 35510 Butzbach, DE
+ *
+ */
+abstract class ShopgateCartBase extends ShopgateContainer {
 	const SHOPGATE = "SHOPGATE";
 	const PREPAY = "PREPAY";
 	const CC = "CC";
@@ -10,9 +16,7 @@ class ShopgateOrder extends ShopgateContainer {
 	const PAYPAL = "PAYPAL";
 	const KLARNA_INV = "KLARNA_INV";
 	const BILLSAFE = "BILLSAFE";
-
-
-	protected $order_number;
+	
 	protected $customer_number;
 
 	protected $external_order_number;
@@ -25,22 +29,8 @@ class ShopgateOrder extends ShopgateContainer {
 	protected $phone;
 	protected $mobile;
 
-	protected $confirm_shipping_url;
-
-	protected $created_time;
-
 	protected $payment_method;
 	protected $payment_group;
-
-	protected $is_paid;
-
-	protected $payment_time;
-	protected $payment_transaction_number;
-	protected $payment_infos;
-
-	protected $is_shipping_blocked;
-	protected $is_shipping_completed;
-	protected $shipping_completed_time;
 
 	protected $amount_items;
 	protected $amount_shipping;
@@ -49,45 +39,28 @@ class ShopgateOrder extends ShopgateContainer {
 	protected $amount_shopgate_payment;
 	protected $amount_complete;
 	protected $currency;
-	protected $is_test;
-	protected $is_storno;
-	protected $is_customer_invoice_blocked;
 
 	protected $invoice_address;
 	protected $delivery_address;
 
-	protected $items;
-
-	protected $delivery_notes;
-
 	/**
-	 * Set to true if shipping information should be updated.
-	 *
-	 * @var bool
+	 * @var ShopgateShopCoupon[]
 	 */
-	protected $update_shipping = false;
-
+	protected $coupons = array();
 	/**
-	 * Set to true if payment information should be updated.
-	 *
-	 * @var bool
+	 * @var ShopgateCoupon[]
 	 */
-	protected $update_payment = false;
-
+	protected $shopgate_coupons = array();
+	
+	/**
+	 *
+	 * @var ShopgateOrderItem[]
+	 */
+	protected $items = array();
 
 	/**********
 	 * Setter *
-	 **********/
-
-	/**
-	 * The Shopgate order number
-	 *
-	 * Format: Exact 10 Digits
-	 * Sample: 1012001234
-	 *
-	 * @param string $value
-	 */
-	public function setOrderNumber($value) { $this->order_number = $value; }
+	**********/
 
 	/**
 	 * The customer number by shopgate
@@ -153,26 +126,6 @@ class ShopgateOrder extends ShopgateContainer {
 	public function setMobile($value) { $this->mobile = $value; }
 
 	/**
-	 * The confirm shipping url to confirm the shipping manual
-	 *
-	 * @param string $value
-	 */
-	public function setConfirmShippingUrl($value) { $this->confirm_shipping_url = $value; }
-
-	/**
-	 * The DateTime when the order was created
-	 *
-	 * If $format is empty, the default DateTime returne in ISO-8601 (date('c');)
-	 *
-	 * Format: ISO-8601 - 2012-02-08T009:20:25+01:00
-	 *
-	 * @see http://www.php.net/manual/de/function.date.php
-	 * @see http://en.wikipedia.org/wiki/ISO_8601
-	 * @param string $value
-	 */
-	public function setCreatedTime($value) { $this->created_time = $value; }
-
-	/**
 	 * The payment group for the order
 	 *
 	 * Sample: <ul><li>SHOPGATE</li><li>PREPAY</li><li>CC</li><li>INVOICE</li><li>DEBIT</li><li>COD</li><li>PAYPAL</li></ul>
@@ -193,65 +146,6 @@ class ShopgateOrder extends ShopgateContainer {
 	 * @param string $value
 	 */
 	public function setPaymentMethod($value) { $this->payment_method = $value; }
-
-	/**
-	 * Is the order is payed
-	 *
-	 * @param bool $value
-	 */
-	public function setIsPaid($value) { $this->is_paid = $value; }
-
-	/**
-	 * The Time when the order was payed
-	 *
-	 * If $format is empty, the default DateTime returne in ISO-8601 (date('c');)
-	 *
-	 * Format: ISO-8601 - 2012-02-08T009:20:25+01:00
-	 *
-	 * @see http://www.php.net/manual/de/function.date.php
-	 * @see http://en.wikipedia.org/wiki/ISO_8601
-	 * @param string $value
-	 */
-	public function setPaymentTime($value) {
-		$this->payment_time = $value;
-	}
-
-	/**
-	 * The Transactioncode for some paymentproviders
-	 *
-	 * @param string $value
-	 */
-	public function setPaymentTransactionNumber($value) { $this->payment_transaction_number = $value; }
-
-	/**
-	 * @param mixed[] $value An array of additional information about the payment depending on the payment type
-	 */
-	public function setPaymentInfos($value) { $this->payment_infos = $value; }
-
-	/**
-	 * Is the shipping is blocked
-	 *
-	 * @param string $value
-	 */
-	public function setIsShippingBlocked($value) { $this->is_shipping_blocked = $value; }
-
-	/**
-	 * Is the Shipping is completed
-	 */
-	public function setIsShippingCompleted($value) { $this->is_shipping_completed = $value; }
-
-	/**
-	 * The Time when the Shipping was set completed
-	 *
-	 * Format: ISO-8601 - 2012-02-08T009:20:25+01:00
-	 *
-	 * @see http://www.php.net/manual/de/function.date.php
-	 * @see http://en.wikipedia.org/wiki/ISO_8601
-	 * @param string $value
-	 */
-	public function setShippingCompletedTime($value) {
-		$this->shipping_completed_time = $value;
-	}
 
 	/**
 	 * The full amount of Items
@@ -308,46 +202,6 @@ class ShopgateOrder extends ShopgateContainer {
 	public function setCurrency($value) { $this->currency = $value; }
 
 	/**
-	 * If this flag is set to 1, the Order is a Test
-	 *
-	 * @param bool $value
-	 */
-	public function setIsTest($value) { $this->is_test = $value; }
-
-	/**
-	 * If this flag is set to 1 the order is cancelled
-	 *
-	 * @param bool $value
-	 */
-	public function setIsStorno($value) { $this->is_storno = $value; }
-
-	/**
-	 * If this flag is set to 1 the invoice is already sent to the customer. The merchant must not send the invoice
-	 *
-	 * @param bool $value
-	 */
-	public function setIsCustomerInvoiceBlocked($value) { $this->is_customer_invoice_blocked = $value; }
-
-	/**
-	 * If this flag is set to 1 the payment of the order must be updated
-	 *
-	 * @param bool $value
-	 */
-	public function setUpdatePayment($value) {
-		$this->update_payment = $value;
-	}
-
-	/**
-	 * If this flag is set to 1 the shipping of the order must be updated
-	 *
-	 * @param bool $value
-	 */
-	public function setUpdateShipping($value) {
-		$this->update_shipping = $value;
-	}
-
-
-	/**
 	 * The invoice address of the customer
 	 *
 	 * @param ShopgateAddress|mixed[] $value
@@ -387,6 +241,46 @@ class ShopgateOrder extends ShopgateContainer {
 		$this->delivery_address = $value;
 	}
 
+	public function setCoupons($value) {
+		if (!is_array($value)) {
+			$this->coupons = null;
+			return;
+		}
+	
+		foreach ($value as $index => &$element) {
+			if ((!is_object($element) || !($element instanceof ShopgateShopCoupon)) && !is_array($element)) {
+				unset($value[$index]);
+				continue;
+			}
+	
+			if (is_array($element)) {
+				$element = new ShopgateShopCoupon($element);
+			}
+		}
+	
+		$this->coupons = $value;
+	}
+	
+	public function setShopgateCoupons($value) {
+		if (!is_array($value)) {
+			$this->shopgate_coupons = null;
+			return;
+		}
+	
+		foreach ($value as $index => &$element) {
+			if ((!is_object($element) || !($element instanceof ShopgateCoupon)) && !is_array($element)) {
+				unset($value[$index]);
+				continue;
+			}
+	
+			if (is_array($element)) {
+				$element = new ShopgateCoupon($element);
+			}
+		}
+	
+		$this->shopgate_coupons = $value;
+	}
+	
 	/**
 	 * The list of itmes in the order
 	 *
@@ -412,50 +306,9 @@ class ShopgateOrder extends ShopgateContainer {
 		$this->items = $value;
 	}
 
-	/**
-	 * The list of delivery Notes of the order
-	 *
-	 * @param ShopgateDeliveryNote[]|mixed[][] $value
-	 */
-	public function setDeliveryNotes($value) {
-		if (empty($value)) {
-			$this->delivery_notes = null;
-			return;
-		}
-
-		if (!is_array($value)) {
-			$this->delivery_notes = null;
-			return;
-		}
-
-		foreach ($value as $index => &$element) {
-			if ((!is_object($element) || !($element instanceof ShopgateDeliveryNote)) && !is_array($element)) {
-				unset($value[$index]);
-				continue;
-			}
-
-			if (is_array($element)) {
-				$element = new ShopgateDeliveryNote($element);
-			}
-		}
-
-		$this->delivery_notes = $value;
-	}
-
-
 	/**********
 	 * Getter *
 	 **********/
-
-	/**
-	 * The Shopgate order number
-	 *
-	 * Format: Exact 10 Digits
-	 * Sample: 1012001234
-	 *
-	 * @return string
-	 */
-	public function getOrderNumber() { return $this->order_number; }
 
 	/**
 	 * The customer number by shopgate
@@ -466,20 +319,6 @@ class ShopgateOrder extends ShopgateContainer {
 	 * @return string
 	 */
 	public function getCustomerNumber() { return $this->customer_number; }
-
-	/**
-	 * The order number in your system
-	 *
-	 *  @return string
-	 */
-	public function getExternalOrderNumber() { return $this->external_order_number; }
-
-	/**
-	 * The order id in your system
-	 *
-	 * @return string
-	 */
-	public function getExternalOrderId() { return $this->external_order_id; }
 
 	/**
 	 * The customer number in your system
@@ -521,35 +360,6 @@ class ShopgateOrder extends ShopgateContainer {
 	public function getMobile() { return $this->mobile; }
 
 	/**
-	 * The confirm shipping url to confirm the shipping manual
-	 *
-	 *  @return string
-	 */
-	public function getConfirmShippingUrl() { return $this->confirm_shipping_url ; }
-
-	/**
-	 * The DateTime when the order was created
-	 *
-	 * If $format is empty, the default DateTime returne in ISO-8601 (date('c');)
-	 *
-	 * Format: ISO-8601 - 2012-02-08T009:20:25+01:00
-	 *
-	 * @see http://www.php.net/manual/de/function.date.php
-	 * @see http://en.wikipedia.org/wiki/ISO_8601
-	 * @param string format
-	 * @return string
-	 */
-	public function getCreatedTime($format = "") {
-		$time = $this->created_time;
-		if(!empty($format)) {
-			$timestamp = strtotime($time);
-			$time = date($format, $timestamp);
-		}
-
-		return $time;
-	}
-
-	/**
 	 * The payment method for the order
 	 *
 	 * Sample: <ul><li>SHOPGATE</li><li>PREPAY</li><li>DT_CC</li><li>BILLSAFE</li><li>KLARNA_INV</li><li>DEBIT</li><li>COD</li><li>PAYPAL</li></ul>
@@ -570,83 +380,6 @@ class ShopgateOrder extends ShopgateContainer {
 	 * @return string
 	 */
 	public function getPaymentGroup() { return $this->payment_group; }
-
-	/**
-	 * Is the order is payed
-	 *
-	 * @return bool
-	 */
-	public function getIsPaid() { return (bool) $this->is_paid; }
-
-	/**
-	 * The Time when the order was payed
-	 *
-	 * If $format is empty, the default DateTime returne in ISO-8601 (date('c');)
-	 *
-	 * Format: ISO-8601 - 2012-02-08T009:20:25+01:00
-	 *
-	 * @see http://www.php.net/manual/de/function.date.php
-	 * @see http://en.wikipedia.org/wiki/ISO_8601
-	 * @param string format
-	 * @return string
-	 */
-	public function getPaymentTime($format="") {
-		$time = $this->payment_time;
-		if(!empty($format)) {
-			$timestamp = strtotime($time);
-			$time = date($format, $timestamp);
-		}
-
-		return $time;
-	}
-
-	/**
-	 * The Transactioncode for some paymentproviders
-	 *
-	 * @return string
-	 */
-	public function getPaymentTransactionNumber() { return $this->payment_transaction_number; }
-
-	/**
-	 * Information about the selected payment type (like e.g. bank account number)
-	 *
-	 * @return mixed[]
-	 */
-	public function getPaymentInfos() { return $this->payment_infos; }
-
-	/**
-	 * Is the shipping is blocked
-	 *
-	 * @return bool
-	 */
-	public function getIsShippingBlocked() { return (bool) $this->is_shipping_blocked; }
-
-	/**
-	 * Is the Shipping is completed
-	 */
-	public function getIsShippingCompleted() { return (bool) $this->is_shipping_completed; }
-
-	/**
-	 * The Time when the Shipping was set completed
-	 *
-	 * If $format is empty, the default DateTime returne in ISO-8601 (date('c');)
-	 *
-	 * Format: ISO-8601 - 2012-02-08T009:20:25+01:00
-	 *
-	 * @see http://www.php.net/manual/de/function.date.php
-	 * @see http://en.wikipedia.org/wiki/ISO_8601
-	 * @param string format
-	 * @return string
-	 */
-	public function getShippingCompletedTime($format='') {
-		$time = $this->shipping_completed_time;
-		if(!empty($format)) {
-			$timestamp = strtotime($time);
-			$time = date($format, $timestamp);
-		}
-
-		return $time;
-	}
 
 	/**
 	 * The full amount of Items
@@ -703,47 +436,6 @@ class ShopgateOrder extends ShopgateContainer {
 	public function getCurrency() { return $this->currency; }
 
 	/**
-	 * If this flag is set to 1, the Order is a Test
-	 *
-	 * @return bool
-	 */
-	public function getIsTest() { return (bool) $this->is_test; }
-
-	/**
-	 * If this flag is set to 1 the order is cancelled
-	 *
-	 * @return bool
-	 */
-	public function getIsStorno() { return (bool) $this->is_storno; }
-
-	/**
-	 * If this flag is set to 1 the invoice is already sent to the customer. The merchant must not send the invoice
-	 *
-	 * @return bool
-	 */
-	public function getIsCustomerInvoiceBlocked() { return (bool) $this->is_customer_invoice_blocked; }
-
-
-	/**
-	 * If this flag is set to 1 the payment of the order must be updated
-	 *
-	 * @return bool
-	 */
-	public function getUpdatePayment() {
-		return (bool) $this->update_payment;
-	}
-
-	/**
-	 * If this flag is set to 1 the shipping of the order must be updated
-	 *
-	 * @return bool
-	 */
-	public function getUpdateShipping() {
-		return (bool) $this->update_shipping;
-	}
-
-
-	/**
 	 * The invoice address of the customer
 	 *
 	 * @return ShopgateAddress
@@ -757,24 +449,425 @@ class ShopgateOrder extends ShopgateContainer {
 	 */
 	public function getDeliveryAddress() { return $this->delivery_address; }
 
+	public function getCoupons() {
+		return $this->coupons;
+	}
+	
+	public function getShopgateCoupons() {
+		return $this->shopgate_coupons;
+	}
+	
 	/**
 	 * The list of itmes in the order
 	 *
 	 * @return ShopgateOrderItem[]
 	 */
 	public function getItems() { return $this->items; }
+}
 
+/**
+ *
+ * @author Shopgate GmbH, 35510 Butzbach, DE
+ *
+ */
+class ShopgateCart extends ShopgateCartBase {
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitCart($this);
+	}
+}
+
+/**
+ *
+ * @author Shopgate GmbH, 35510 Butzbach, DE
+ *
+ */
+class ShopgateOrder extends ShopgateCartBase {
+	protected $order_number;
+	
+	protected $confirm_shipping_url;
+	
+	protected $created_time;
+	
+	protected $is_paid;
+	
+	protected $payment_time;
+	protected $payment_transaction_number;
+	protected $payment_infos;
+	
+	protected $is_shipping_blocked;
+	protected $is_shipping_completed;
+	protected $shipping_completed_time;
+	
+	protected $is_test;
+	protected $is_storno;
+	protected $is_customer_invoice_blocked;
+	
+	/**
+	 * Set to true if shipping information should be updated.
+	 *
+	 * @var bool
+	 */
+	protected $update_shipping = false;
+	
+	/**
+	 * Set to true if payment information should be updated.
+	 *
+	 * @var bool
+	 */
+	protected $update_payment = false;
+	
+	protected $delivery_notes;
+	
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitOrder($this);
+	}
+
+	/**********
+	 * Setter *
+	**********/
+	
+		/**
+	 * The Shopgate order number
+	 *
+	 * Format: Exact 10 Digits
+	 * Sample: 1012001234
+	 *
+	 * @param string $value
+	 */
+	public function setOrderNumber($value) { $this->order_number = $value; }
+	
+	/**
+	 * The confirm shipping url to confirm the shipping manual
+	 *
+	 * @param string $value
+	 */
+	public function setConfirmShippingUrl($value) { $this->confirm_shipping_url = $value; }
+
+	/**
+	 * The DateTime when the order was created
+	 *
+	 * If $format is empty, the default DateTime returne in ISO-8601 (date('c');)
+	 *
+	 * Format: ISO-8601 - 2012-02-08T009:20:25+01:00
+	 *
+	 * @see http://www.php.net/manual/de/function.date.php
+	 * @see http://en.wikipedia.org/wiki/ISO_8601
+	 * @param string $value
+	 */
+	public function setCreatedTime($value) { $this->created_time = $value; }
+
+	/**
+	 * Is the order is payed
+	 *
+	 * @param bool $value
+	 */
+	public function setIsPaid($value) { $this->is_paid = $value; }
+
+	/**
+	 * The Time when the order was payed
+	 *
+	 * If $format is empty, the default DateTime returne in ISO-8601 (date('c');)
+	 *
+	 * Format: ISO-8601 - 2012-02-08T009:20:25+01:00
+	 *
+	 * @see http://www.php.net/manual/de/function.date.php
+	 * @see http://en.wikipedia.org/wiki/ISO_8601
+	 * @param string $value
+	 */
+	public function setPaymentTime($value) {
+		$this->payment_time = $value;
+	}
+	
+	/**
+	 * The Transactioncode for some paymentproviders
+	 *
+	 * @param string $value
+	 */
+	public function setPaymentTransactionNumber($value) { $this->payment_transaction_number = $value; }
+
+	/**
+	 * @param mixed[] $value An array of additional information about the payment depending on the payment type
+	 */
+	public function setPaymentInfos($value) { $this->payment_infos = $value; }
+
+	/**
+	 * Is the shipping is blocked
+	 *
+	 * @param string $value
+	 */
+	public function setIsShippingBlocked($value) { $this->is_shipping_blocked = $value; }
+	
+	/**
+	 * Is the Shipping is completed
+	 */
+	public function setIsShippingCompleted($value) { $this->is_shipping_completed = $value; }
+	
+	/**
+	 * The Time when the Shipping was set completed
+	 *
+	 * Format: ISO-8601 - 2012-02-08T009:20:25+01:00
+	 *
+	 * @see http://www.php.net/manual/de/function.date.php
+	 * @see http://en.wikipedia.org/wiki/ISO_8601
+	 * @param string $value
+	 */
+	public function setShippingCompletedTime($value) {
+		$this->shipping_completed_time = $value;
+	}
+	
+	/**
+	 * If this flag is set to 1, the Order is a Test
+	 *
+	 * @param bool $value
+	 */
+	public function setIsTest($value) { $this->is_test = $value; }
+	
+	/**
+	 * If this flag is set to 1 the order is cancelled
+	 *
+	 * @param bool $value
+	 */
+	public function setIsStorno($value) { $this->is_storno = $value; }
+	
+	/**
+	 * If this flag is set to 1 the invoice is already sent to the customer. The merchant must not send the invoice
+	 *
+	 * @param bool $value
+	 */
+	public function setIsCustomerInvoiceBlocked($value) { $this->is_customer_invoice_blocked = $value; }
+	
+	/**
+	 * If this flag is set to 1 the payment of the order must be updated
+	 *
+	 * @param bool $value
+	 */
+	public function setUpdatePayment($value) {
+		$this->update_payment = $value;
+	}
+	
+	/**
+	 * If this flag is set to 1 the shipping of the order must be updated
+	 *
+	 * @param bool $value
+	 */
+	public function setUpdateShipping($value) {
+		$this->update_shipping = $value;
+	}
+	
+	/**
+	 * The list of delivery Notes of the order
+	 *
+	 * @param ShopgateDeliveryNote[]|mixed[][] $value
+	 */
+	public function setDeliveryNotes($value) {
+		if (empty($value)) {
+			$this->delivery_notes = null;
+			return;
+		}
+	
+		if (!is_array($value)) {
+			$this->delivery_notes = null;
+			return;
+		}
+	
+		foreach ($value as $index => &$element) {
+			if ((!is_object($element) || !($element instanceof ShopgateDeliveryNote)) && !is_array($element)) {
+				unset($value[$index]);
+				continue;
+			}
+	
+			if (is_array($element)) {
+				$element = new ShopgateDeliveryNote($element);
+			}
+		}
+	
+		$this->delivery_notes = $value;
+	}
+	
+	/**********
+	 * Getter *
+	**********/
+	
+	/**
+	 * The Shopgate order number
+	 *
+	 * Format: Exact 10 Digits
+	 * Sample: 1012001234
+	 *
+	 * @return string
+	 */
+	public function getOrderNumber() { return $this->order_number; }
+	
+	/**
+	 * The order number in your system
+	 *
+	 *  @return string
+	 */
+	public function getExternalOrderNumber() { return $this->external_order_number; }
+	
+	/**
+	 * The order id in your system
+	 *
+	 * @return string
+	 */
+	public function getExternalOrderId() { return $this->external_order_id; }
+
+	/**
+	 * The confirm shipping url to confirm the shipping manual
+	 *
+	 *  @return string
+	 */
+	public function getConfirmShippingUrl() { return $this->confirm_shipping_url ; }
+	
+	/**
+	 * The DateTime when the order was created
+	 *
+	 * If $format is empty, the default DateTime returne in ISO-8601 (date('c');)
+	 *
+	 * Format: ISO-8601 - 2012-02-08T009:20:25+01:00
+	 *
+	 * @see http://www.php.net/manual/de/function.date.php
+	 * @see http://en.wikipedia.org/wiki/ISO_8601
+	 * @param string format
+	 * @return string
+	 */
+	public function getCreatedTime($format = "") {
+		$time = $this->created_time;
+		if(!empty($format)) {
+			$timestamp = strtotime($time);
+			$time = date($format, $timestamp);
+		}
+	
+		return $time;
+	}
+	
+	/**
+	 * Is the order is payed
+	 *
+	 * @return bool
+	 */
+	public function getIsPaid() { return (bool) $this->is_paid; }
+
+	/**
+	 * The Time when the order was payed
+	 *
+	 * If $format is empty, the default DateTime returne in ISO-8601 (date('c');)
+	 *
+	 * Format: ISO-8601 - 2012-02-08T009:20:25+01:00
+	 *
+	 * @see http://www.php.net/manual/de/function.date.php
+	 * @see http://en.wikipedia.org/wiki/ISO_8601
+	 * @param string format
+	 * @return string
+	 */
+	public function getPaymentTime($format="") {
+		$time = $this->payment_time;
+		if(!empty($format)) {
+			$timestamp = strtotime($time);
+			$time = date($format, $timestamp);
+		}
+
+		return $time;
+	}
+	
+	/**
+	 * The Transactioncode for some paymentproviders
+	 *
+	 * @return string
+	 */
+	public function getPaymentTransactionNumber() { return $this->payment_transaction_number; }
+	
+	/**
+	 * Information about the selected payment type (like e.g. bank account number)
+	 *
+	 * @return mixed[]
+	 */
+	public function getPaymentInfos() { return $this->payment_infos; }
+	
+	/**
+	 * Is the shipping is blocked
+	 *
+	 * @return bool
+	 */
+	public function getIsShippingBlocked() { return (bool) $this->is_shipping_blocked; }
+	
+	/**
+	 * Is the Shipping is completed
+	 */
+	public function getIsShippingCompleted() { return (bool) $this->is_shipping_completed; }
+	
+	/**
+	 * The Time when the Shipping was set completed
+	 *
+	 * If $format is empty, the default DateTime returne in ISO-8601 (date('c');)
+	 *
+	 * Format: ISO-8601 - 2012-02-08T009:20:25+01:00
+	 *
+	 * @see http://www.php.net/manual/de/function.date.php
+	 * @see http://en.wikipedia.org/wiki/ISO_8601
+	 * @param string format
+	 * @return string
+	 */
+	public function getShippingCompletedTime($format='') {
+		$time = $this->shipping_completed_time;
+		if(!empty($format)) {
+			$timestamp = strtotime($time);
+			$time = date($format, $timestamp);
+		}
+	
+		return $time;
+	}
+	
+	/**
+	 * If this flag is set to 1, the Order is a Test
+	 *
+	 * @return bool
+	 */
+	public function getIsTest() { return (bool) $this->is_test; }
+	
+	
+	/**
+	 * If this flag is set to 1 the order is cancelled
+	 *
+	 * @return bool
+	 */
+	public function getIsStorno() { return (bool) $this->is_storno; }
+	
+	/**
+	 * If this flag is set to 1 the invoice is already sent to the customer. The merchant must not send the invoice
+	 *
+	 * @return bool
+	 */
+	public function getIsCustomerInvoiceBlocked() { return (bool) $this->is_customer_invoice_blocked; }
+	
+	/**
+	 * If this flag is set to 1 the payment of the order must be updated
+	 *
+	 * @return bool
+	 */
+	public function getUpdatePayment() {
+		return (bool) $this->update_payment;
+	}
+	
+	/**
+	 * If this flag is set to 1 the shipping of the order must be updated
+	 *
+	 * @return bool
+	 */
+	public function getUpdateShipping() {
+		return (bool) $this->update_shipping;
+	}
+	
 	/**
 	 * The list of delivery Notes of the order
 	 *
 	 * @return ShopgateDeliveryNote[]
 	 */
 	public function getDeliveryNotes() { return $this->delivery_notes; }
-
-	public function accept(ShopgateContainerVisitor $v) {
-		$v->visitOrder($this);
-	}
 }
+
+
+
 
 class ShopgateOrderItem extends ShopgateContainer {
 	protected $item_number;
@@ -1398,5 +1491,192 @@ class ShopgateDeliveryNote extends ShopgateContainer {
 
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitOrderDeliveryNote($this);
+	}
+}
+
+class ShopgateShopCoupon extends ShopgateContainer {
+	/**
+	 *
+	 * @var string
+	 */
+	protected $code;
+	/**
+	 *
+	 * @var int
+	 */
+	protected $order_index;
+	/**
+	 *
+	 * @var string
+	 */
+	protected $internal_info;
+
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitShopCoupon($this);
+	}
+
+	/**
+	 *
+	 * @return string
+	 */
+	public function getCode() {
+		return $this->code;
+	}
+	/**
+	 *
+	 * @param string $value
+	 */
+	public function setCode($value) {
+		$this->code = $value;
+	}
+	/**
+	 *
+	 * @return int
+	 */
+	public function getOrderIndex() {
+		return $this->order_index;
+	}
+	/**
+	 *
+	 * @param string $value
+	 */
+	public function setOrderIndex($value) {
+		$this->order_index = $value;
+	}
+	/**
+	 *
+	 * @return string
+	 */
+	public function getInternalInfo() {
+		return $this->internal_info;
+	}
+	/**
+	 *
+	 * @param string $value
+	 */
+	public function setInternalInfo($value) {
+		$this->internal_info = $value;
+	}
+}
+
+class ShopgateCoupon extends ShopgateContainer {
+	/**
+	 *
+	 * @var string
+	 */
+	protected $code;
+	/**
+	 *
+	 * @var string
+	 */
+	protected $name;
+	/**
+	 *
+	 * @var int
+	 */
+	protected $order_index;
+	/**
+	 *
+	 * @var float
+	 */
+	protected $amount;
+	/**
+	 *
+	 * @var boolean
+	 */
+	protected $is_free_shipping;
+	/**
+	 *
+	 * @var string
+	 */
+	protected $internal_info;
+
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitCoupon($this);
+	}
+
+	/**
+	 *
+	 * @return string
+	 */
+	public function getCode() {
+		return $this->code;
+	}
+	/**
+	 *
+	 * @param string $value
+	 */
+	public function setCode($value) {
+		$this->code = $value;
+	}
+	/**
+	 *
+	 * @return string
+	 */
+	public function getName() {
+		return $this->name;
+	}
+	/**
+	 *
+	 * @param string $value
+	 */
+	public function setName($value) {
+		$this->name = $value;
+	}
+	/**
+	 *
+	 * @return int
+	 */
+	public function getOrderIndex() {
+		return $this->order_index;
+	}
+	/**
+	 *
+	 * @param string $value
+	 */
+	public function setOrderIndex($value) {
+		$this->order_index = $value;
+	}
+	/**
+	 *
+	 * @return float
+	 */
+	public function getAmount() {
+		return $this->amount;
+	}
+	/**
+	 *
+	 * @param float $value
+	 */
+	public function setAmount($value) {
+		$this->amount = abs($value);
+	}
+	/**
+	 *
+	 * @return boolean
+	 */
+	public function getIsFreeShipping() {
+		return $this->is_free_shipping;
+	}
+	/**
+	 *
+	 * @param boolean $value
+	 */
+	public function setIsFreeShipping($value) {
+		$this->is_free_shipping = $value;
+	}
+	/**
+	 *
+	 * @return string
+	 */
+	public function getInternalInfo() {
+		return $this->internal_info;
+	}
+	/**
+	 *
+	 * @param string $value
+	 */
+	public function setInternalInfo($value) {
+		$this->internal_info = $value;
 	}
 }
