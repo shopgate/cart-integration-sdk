@@ -1489,7 +1489,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * Performs the necessary queries to update an order in the shop system's database.
 	 *
 	 * @param ShopgateOrder $order The ShopgateOrder object to be update in the shop system's database.
-	 * @param bool $payment True if the payment status of an order should be updated, false otherwise.
 	 * @return array(
 	 *          <ul>
 	 *          	<li>'external_order_id' => <i>string</i>, # the ID of the order in your shop system's database</li>
@@ -1499,9 +1498,35 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 */
 	public abstract function updateOrder(ShopgateOrder $order);
 
-	public function redeemCoupons(ShopgateCart $cart) { }
+	/**
+	 * redeem the given coupons
+	 *
+	 * @link http://wiki.shopgate.com/Shopgate_Plugin_API_redeem_coupons#API_Response
+	 * @param ShopgateCart $cart
+	 * @return array(
+	 *          <ul>
+	 *          	<li>'coupons' => array(...), # list of all coupons</li>
+	 *          </ul>)
+	 * @throws ShopgateLibraryException if an error occurs.
+	 */
+	public abstract function redeemCoupons(ShopgateCart $cart);
 	
-	public function checkCart(ShopgateCart $cart) { }
+	/**
+	 * check the given cart in this system and return cart changes to shopgate.
+	 *
+	 * currently this function is used to validate coupons
+	 *
+	 * @link http://wiki.shopgate.com/Shopgate_Plugin_API_check_cart#API_Response
+	 * @param ShopgateCart $cart
+	 * @return array(
+	 *          <ul>
+	 *          	<li>'coupons' => array(...), # list of all coupons</li>
+	 *          	<li>'items' => array(...), # list of item changes (not supported yet)</li>
+	 *          	<li>'shippings' => array(...), # list of available shipping services for this cart (not supported yet)</li>
+	 *          </ul>)
+	 * @throws ShopgateLibraryException if an error occurs.
+	 */
+	public abstract function checkCart(ShopgateCart $cart);
 	
 	/**
 	 * Loads the products of the shop system's database and passes them to the buffer.

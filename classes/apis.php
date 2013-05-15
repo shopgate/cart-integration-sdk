@@ -341,6 +341,10 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		
 		$couponData = $this->plugin->redeemCoupons( $cart);
 		
+		if(!is_array($couponData)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT);
+		}
+		
 		$this->responseData = array_merge($couponData, $this->responseData);
 	}
 	
@@ -353,9 +357,12 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 
 		$cart = new ShopgateCart($this->params['cart']);
 		
-		$couponData = $this->plugin->checkCart($cart);
+		$cartData = $this->plugin->checkCart($cart);
+		if(!is_array($cartData)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT);
+		}
 		
-		$this->responseData = array_merge($couponData, $this->responseData);
+		$this->responseData = array_merge($cartData, $this->responseData);
 	}
 
 	/**
