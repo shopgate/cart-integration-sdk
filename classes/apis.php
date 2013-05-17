@@ -385,7 +385,13 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			$customer->setAddresses($addresses);
 		}
 		
-		$newCustomer = $this->plugin->registerCustomer($user, $pass, $customer);
+		if($this->config->getEnableGetCustomer()) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_DISABLED_ACTION, "Action 'get_customer' is not activated but is needed by register_customer", true);
+		}
+		
+		$this->plugin->registerCustomer($user, $pass, $customer);
+		
+		$newCustomer = $this->plugin->getCustomer($user, $pass);
 		
 		$customerData = $newCustomer->toArray();
 		$addressList = $customerData['addresses'];
