@@ -332,7 +332,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	
 	protected function redeemCoupons() {
 		if (!isset($this->params['cart'])) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ORDER_NUMBER);
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_CART);
 		}
 
 		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);

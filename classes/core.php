@@ -1844,9 +1844,6 @@ interface ShopgateContainerVisitor {
 	public function visitOrderItemAttribute(ShopgateOrderItemAttribute $o);
 	public function visitOrderDeliveryNote(ShopgateDeliveryNote $d);
 	public function visitCart(ShopgateCart $c);
-	public function visitCartItem(ShopgateOrderItem $c);
-	public function visitCartItemOption(ShopgateOrderItemOption $c);
-	public function visitCartItemInput(ShopgateOrderItemInput $c);
 	public function visitShopCoupon(ShopgateShopCoupon $c);
 	public function visitCoupon(ShopgateCoupon $c);
 	
@@ -2065,52 +2062,6 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 		}
 	}
 
-	public function visitCartItem(ShopgateOrderItem $c) {
-		$properties = $c->buildProperties();
-		
-		// iterate the simple variables
-		$this->iterateSimpleProperties($properties);
-		
-		// iterate lists of referred objects
-		$properties['options'] = $this->iterateObjectList($properties['options']);
-		$properties['inputs'] = $this->iterateObjectList($properties['inputs']);
-		
-		// create new object with utf-8 en- / decoded data
-		try {
-			$this->object = new ShopgateOrderItem($properties);
-		} catch (ShopgateLibraryException $e) {
-			$this->object = null;
-		}
-	}
-
-	public function visitCartItemOption(ShopgateOrderItemOption $c) {
-		$properties = $c->buildProperties();
-		
-		// iterate the simple variables
-		$this->iterateSimpleProperties($properties);
-		
-		// create new object with utf-8 en- / decoded data
-		try {
-			$this->object = new ShopgateOrderItemOption($properties);
-		} catch (ShopgateLibraryException $e) {
-			$this->object = null;
-		}
-	}
-
-	public function visitCartItemInput(ShopgateOrderItemInput $c) {
-		$properties = $c->buildProperties();
-		
-		// iterate the simple variables
-		$this->iterateSimpleProperties($properties);
-		
-		// create new object with utf-8 en- / decoded data
-		try {
-			$this->object = new ShopgateOrderItemInput($properties);
-		} catch (ShopgateLibraryException $e) {
-			$this->object = null;
-		}
-	}
-	
 	public function visitShopCoupon(ShopgateShopCoupon $c) {
 		$properties = $c->buildProperties();
 
@@ -2373,19 +2324,7 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 	public function visitCart(ShopgateCart $c) {
 		$this->array = $this->iterateSimpleProperties($c->buildProperties());
 	}
-	
-	public function visitCartItem(ShopgateOrderItem $c) {
-		$this->array = $this->iterateSimpleProperties($c->buildProperties());
-	}
-	
-	public function visitCartItemOption(ShopgateOrderItemOption $c) {
-		$this->array = $this->iterateSimpleProperties($c->buildProperties());
-	}
-	
-	public function visitCartItemInput(ShopgateOrderItemInput $c) {
-		$this->array = $this->iterateSimpleProperties($c->buildProperties());
-	}
-	
+
 	public function visitShopCoupon(ShopgateShopCoupon $c) {
 		$this->array = $this->iterateSimpleProperties($c->buildProperties());
 	}
