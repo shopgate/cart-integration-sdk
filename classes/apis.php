@@ -74,8 +74,8 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				'get_log_file',
 				'clear_log_file',
 				'clear_cache',
-				'check_coupon',
-				'redeem_coupon',
+				'check_cart',
+				'redeem_coupons',
 				'get_customer',
 				'register_customer',
 		);
@@ -329,6 +329,41 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			$this->responseData['external_order_id'] = $orderData;
 			$this->responseData['external_order_number'] = null;
 		}
+	}
+
+	protected function redeemCoupons() {
+		if (!isset($this->params['cart'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ORDER_NUMBER);
+		}
+
+		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
+
+		$cart = new ShopgateCart($this->params['cart']);
+		
+		$couponData = $this->plugin->redeemCoupons( $cart);
+		
+		if(!is_array($couponData)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT);
+		}
+		
+		$this->responseData = array_merge($couponData, $this->responseData);
+	}
+	
+	protected function checkCart() {
+		if (!isset($this->params['cart'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_CART);
+		}
+
+		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
+
+		$cart = new ShopgateCart($this->params['cart']);
+		
+		$cartData = $this->plugin->checkCart($cart);
+		if(!is_array($cartData)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT);
+		}
+		
+		$this->responseData = array_merge($cartData, $this->responseData);
 	}
 
 	/**
