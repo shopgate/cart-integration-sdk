@@ -110,6 +110,10 @@ class ShopgateLibraryException extends Exception {
 	const COUPON_INVALID_USER = 204;
 	const COUPON_TOO_MANY_COUPONS = 205;
 
+	const REGISTER_FAILED_TO_ADD_USER = 220;
+	const REGISTER_USER_ALREADY_EXISTS = 221;
+// 	const REGISTER_USER_ALREADY_EXISTS = 250;
+	
 	// Unknown error code (the value passed as code gets to be the message)
 	const UNKNOWN_ERROR_CODE = 999;
 
@@ -176,6 +180,9 @@ class ShopgateLibraryException extends Exception {
 		self::COUPON_INVALID_ADDRESS => 'invalid address for this coupon',
 		self::COUPON_INVALID_USER => 'invalid user for this coupon',
 		self::COUPON_TOO_MANY_COUPONS => 'too many coupons in cart',
+			
+		self::REGISTER_FAILED_TO_ADD_USER => 'failed to add user',
+		self::REGISTER_USER_ALREADY_EXISTS => 'the given username already exists',
 			
 		// Authentification errors
 		self::AUTHENTICATION_FAILED => 'authentication failed',

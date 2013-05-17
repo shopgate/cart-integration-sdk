@@ -420,7 +420,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			$customer->setAddresses($addresses);
 		}
 		
-		if($this->config->getEnableGetCustomer()) {
+		if(!$this->config->getEnableGetCustomer()) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_DISABLED_ACTION, "Action 'get_customer' is not activated but is needed by register_customer", true);
 		}
 		
