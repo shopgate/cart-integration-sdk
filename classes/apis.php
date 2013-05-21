@@ -330,6 +330,12 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		}
 	}
 	
+	/**
+	 * Represents the "redeem_coupons" action.
+	 * 
+	 * @throws ShopgateLibraryException
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_redeem_coupons
+	 */
 	protected function redeemCoupons() {
 		if (!isset($this->params['cart'])) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_CART);
@@ -338,16 +344,21 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
 
 		$cart = new ShopgateCart($this->params['cart']);
-		
-		$couponData = $this->plugin->redeemCoupons( $cart);
+		$couponData = $this->plugin->redeemCoupons($cart);
 		
 		if(!is_array($couponData)) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT);
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, 'Plugin Response: '.var_export($couponData, true));
 		}
 		
 		$this->responseData = array_merge($couponData, $this->responseData);
 	}
 	
+	/**
+	 * Represents the "check_cart" action.
+	 * 
+	 * @throws ShopgateLibraryException
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_check_cart
+	 */
 	protected function checkCart() {
 		if (!isset($this->params['cart'])) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_CART);
@@ -356,10 +367,10 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
 
 		$cart = new ShopgateCart($this->params['cart']);
-		
 		$cartData = $this->plugin->checkCart($cart);
+		
 		if(!is_array($cartData)) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT);
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, 'Plugin Response: '.var_export($cartData, true));
 		}
 		
 		$this->responseData = array_merge($cartData, $this->responseData);
