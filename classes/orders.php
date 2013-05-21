@@ -1,10 +1,4 @@
 <?php
-
-/**
- *
- * @author Shopgate GmbH, 35510 Butzbach, DE
- *
- */
 abstract class ShopgateCartBase extends ShopgateContainer {
 	const SHOPGATE = "SHOPGATE";
 	const PREPAY = "PREPAY";
@@ -43,19 +37,9 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	protected $invoice_address;
 	protected $delivery_address;
 
-	/**
-	 * @var ShopgateShopCoupon[]
-	 */
-	protected $coupons = array();
-	/**
-	 * @var ShopgateCoupon[]
-	 */
+	protected $external_coupons = array();
 	protected $shopgate_coupons = array();
 	
-	/**
-	 *
-	 * @var ShopgateOrderItem[]
-	 */
 	protected $items = array();
 
 	/**********
@@ -241,26 +225,32 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 		$this->delivery_address = $value;
 	}
 
-	public function setCoupons($value) {
+	/**
+	 * @param ShopgateExternalCoupon[] $value
+	 */
+	public function setExternalCoupons($value) {
 		if (!is_array($value)) {
-			$this->coupons = null;
+			$this->external_coupons = null;
 			return;
 		}
 	
 		foreach ($value as $index => &$element) {
-			if ((!is_object($element) || !($element instanceof ShopgateShopCoupon)) && !is_array($element)) {
+			if ((!is_object($element) || !($element instanceof ShopgateExternalCoupon)) && !is_array($element)) {
 				unset($value[$index]);
 				continue;
 			}
 	
 			if (is_array($element)) {
-				$element = new ShopgateShopCoupon($element);
+				$element = new ShopgateExternalCoupon($element);
 			}
 		}
 	
-		$this->coupons = $value;
+		$this->external_coupons = $value;
 	}
 	
+	/**
+	 * @param ShopgateShopgateCoupon[] $value
+	 */
 	public function setShopgateCoupons($value) {
 		if (!is_array($value)) {
 			$this->shopgate_coupons = null;
@@ -268,13 +258,13 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 		}
 	
 		foreach ($value as $index => &$element) {
-			if ((!is_object($element) || !($element instanceof ShopgateCoupon)) && !is_array($element)) {
+			if ((!is_object($element) || !($element instanceof ShopgateShopgateCoupon)) && !is_array($element)) {
 				unset($value[$index]);
 				continue;
 			}
 	
 			if (is_array($element)) {
-				$element = new ShopgateCoupon($element);
+				$element = new ShopgateShopgateCoupon($element);
 			}
 		}
 	
@@ -450,7 +440,7 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	public function getDeliveryAddress() { return $this->delivery_address; }
 
 	public function getCoupons() {
-		return $this->coupons;
+		return $this->external_coupons;
 	}
 	
 	public function getShopgateCoupons() {
@@ -465,22 +455,12 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	public function getItems() { return $this->items; }
 }
 
-/**
- *
- * @author Shopgate GmbH, 35510 Butzbach, DE
- *
- */
 class ShopgateCart extends ShopgateCartBase {
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitCart($this);
 	}
 }
 
-/**
- *
- * @author Shopgate GmbH, 35510 Butzbach, DE
- *
- */
 class ShopgateOrder extends ShopgateCartBase {
 	protected $order_number;
 	
@@ -526,7 +506,7 @@ class ShopgateOrder extends ShopgateCartBase {
 	 * Setter *
 	**********/
 	
-		/**
+	/**
 	 * The Shopgate order number
 	 *
 	 * Format: Exact 10 Digits
@@ -1494,7 +1474,7 @@ class ShopgateDeliveryNote extends ShopgateContainer {
 	}
 }
 
-class ShopgateShopCoupon extends ShopgateContainer {
+class ShopgateExternalCoupon extends ShopgateContainer {
 	/**
 	 *
 	 * @var string
@@ -1559,7 +1539,7 @@ class ShopgateShopCoupon extends ShopgateContainer {
 	}
 }
 
-class ShopgateCoupon extends ShopgateContainer {
+class ShopgateShopgateCoupon extends ShopgateContainer {
 	/**
 	 *
 	 * @var string
