@@ -413,8 +413,8 @@ class ShopgateLogger {
 			$this->files[self::LOGTYPE_ERROR]['path'] = $errorLogPath;
 		}
 		
-		if (!empty($debugLogErrorPath)) {
-			$this->files[self::LOGTYPE_DEBUG]['path'] = $debugLogErrorPath;
+		if (!empty($debugLogPath)) {
+			$this->files[self::LOGTYPE_DEBUG]['path'] = $debugLogPath;
 		}
 	}
 	
