@@ -439,7 +439,7 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	 */
 	public function getDeliveryAddress() { return $this->delivery_address; }
 
-	public function getCoupons() {
+	public function getExternalCoupons() {
 		return $this->external_coupons;
 	}
 	
