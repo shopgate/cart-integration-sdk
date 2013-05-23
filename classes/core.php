@@ -448,8 +448,9 @@ class ShopgateLogger {
 	 * <br />
 	 * to the selected log file. If an unknown log type is passed the message will be logged to the error log file.<br />
 	 * <br />
-	 * Logging to LOGTYPE_DEBUG only occurs after $this->enableDebug() has been called. The debug log file will be truncated
-	 * on opening.
+	 * Logging to LOGTYPE_DEBUG only is done after $this->enableDebug() has been called and $this->disableDebug() has not
+	 * been called after that. The debug log file will be truncated on opening by default. To prevent this call
+	 * $this->keepDebugLog(true).
 	 *
 	 * @param string $msg The error message.
 	 * @param string $type The log type, that would be one of the ShopgateLogger::LOGTYPE_* constants.
@@ -472,7 +473,7 @@ class ShopgateLogger {
 		}
 
 		// if debug logging is requested but not activated, simply return
-		if (($type === self::LOGTYPE_DEBUG) && !$this->debug ) {
+		if (($type === self::LOGTYPE_DEBUG) && !$this->debug) {
 			return true;
 		}
 
@@ -497,7 +498,7 @@ class ShopgateLogger {
 	 * @param bool $keep
 	 */
 	public function keepDebugLog($keep) {
-		if($keep)
+		if ($keep)
 			$this->files[self::LOGTYPE_DEBUG]["mode"]  = "a+";
 		else
 			$this->files[self::LOGTYPE_DEBUG]["mode"]  = "w+";

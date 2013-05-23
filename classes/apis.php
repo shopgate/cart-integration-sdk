@@ -128,8 +128,9 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			// enable debugging if requested
 			if (!empty($data['debug_log'])) {
 				ShopgateLogger::getInstance()->enableDebug();
+				ShopgateLogger::getInstance()->keepDebugLog(!empty($data['keep_debug_log']));
 			}
-
+			
 			// call the action
 			$action = $this->camelize($this->params['action']);
 			$this->{$action}();
