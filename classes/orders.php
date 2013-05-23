@@ -631,7 +631,9 @@ class ShopgateOrder extends ShopgateCartBase {
 	/**
 	 * @return string
 	 */
-	public function getConfirmShippingUrl() { return $this->confirm_shipping_url ; }
+	public function getConfirmShippingUrl() {
+		return $this->confirm_shipping_url;
+	}
 	
 	/**
 	 * @see http://www.php.net/manual/de/function.date.php

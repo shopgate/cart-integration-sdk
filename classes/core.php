@@ -1437,7 +1437,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * Important: Initialize $this->config here if you have your own config class.
 	 * 
-	 * @see 
+	 * @see http://wiki.shopgate.com/Shopgate_Library#startup.28.29
 	 */
 	public abstract function startup();
 
