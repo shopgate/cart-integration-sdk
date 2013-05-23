@@ -75,8 +75,8 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				'get_log_file',
 				'clear_log_file',
 				'clear_cache',
-				'check_coupon',
-				'redeem_coupon'
+				'check_cart',
+				'redeem_coupons'
 		);
 	}
 
@@ -100,8 +100,12 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				set_error_handler('ShopgateErrorHandler');
 			}
 			
-			// check if the request is for the correct shop number
-			if (!empty($this->params['shop_number']) && ($this->params['shop_number'] != $this->config->getShopNumber())) {
+			// check if the request is for the correct shop number or an adapter-plugin
+			if (
+					!$this->config->getIsShopgateAdapter() &&
+					!empty($this->params['shop_number']) &&
+					($this->params['shop_number'] != $this->config->getShopNumber())
+			) {
 				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_UNKNOWN_SHOP_NUMBER, "{$this->params['shop_number']}");
 			}
 
@@ -328,6 +332,52 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			$this->responseData['external_order_id'] = $orderData;
 			$this->responseData['external_order_number'] = null;
 		}
+	}
+	
+	/**
+	 * Represents the "redeem_coupons" action.
+	 * 
+	 * @throws ShopgateLibraryException
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_redeem_coupons
+	 */
+	protected function redeemCoupons() {
+		if (!isset($this->params['cart'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_CART);
+		}
+
+		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
+
+		$cart = new ShopgateCart($this->params['cart']);
+		$couponData = $this->plugin->redeemCoupons($cart);
+		
+		if(!is_array($couponData)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, 'Plugin Response: '.var_export($couponData, true));
+		}
+		
+		$this->responseData = array_merge($couponData, $this->responseData);
+	}
+	
+	/**
+	 * Represents the "check_cart" action.
+	 * 
+	 * @throws ShopgateLibraryException
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_check_cart
+	 */
+	protected function checkCart() {
+		if (!isset($this->params['cart'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_CART);
+		}
+
+		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
+
+		$cart = new ShopgateCart($this->params['cart']);
+		$cartData = $this->plugin->checkCart($cart);
+		
+		if(!is_array($cartData)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, 'Plugin Response: '.var_export($cartData, true));
+		}
+		
+		$this->responseData = array_merge($cartData, $this->responseData);
 	}
 
 	/**
