@@ -294,6 +294,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	protected $redirect_skip_keyword_cache_filename;
 
 	/**
+	 * @var bool True if the plugin is an adapter between Shopgate's and a third-party-API and servers multiple shops on both ends.
+	 */
+	protected $is_shopgate_adapter;
+	
+	/**
 	 * @var array<string, mixed> Additional shop system specific settings that cannot (or should not) be generalized and thus be defined by a plugin itself.
 	 */
 	protected $additionalSettings = array();
@@ -368,6 +373,8 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		
 		$this->redirect_keyword_cache_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'redirect_keywords.txt';
 		$this->redirect_skip_keyword_cache_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'skip_redirect_keywords.txt';
+		
+		$this->is_shopgate_adapter = false;
 		
 		// call possible sub class' startup()
 		if (!$this->startup()) {
@@ -881,6 +888,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return rtrim($this->cache_folder_path.DS.$this->redirect_skip_keyword_cache_filename, DS);
 	}
 	
+	public function getIsShopgateAdapter() {
+		return $this->is_shopgate_adapter;
+	}
+	
 	
 	###############
 	### Setters ###
@@ -1183,6 +1194,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 			$this->cache_folder_path = $dir;
 			$this->redirect_skip_keyword_cache_filename = $file;
 		}
+	}
+	
+	public function setIsShopgateAdapter($value) {
+		$this->is_shopgate_adapter = $value;
 	}
 	
 	
@@ -1996,7 +2011,7 @@ interface ShopgateConfigInterface {
 	/**
 	 * @return bool
 	 */
-	public function getEnableClearLogfile();
+	public function getEnableClearLogFile();
 
 	/**
 	 * @return string The ISO 3166 ALPHA-2 code of the language the plugin uses for export.
@@ -2142,6 +2157,11 @@ interface ShopgateConfigInterface {
 	 * @return string The path to the cache file for mobile device skip detection keywords.
 	 */
 	public function getRedirectSkipKeywordCachePath();
+	
+	/**
+	 * @return bool True if the plugin is an adapter between Shopgate's and a third-party-API and servers multiple shops on both ends.
+	 */
+	public function getIsShopgateAdapter();
 
 	/**
 	 * @param string $value The name of the plugin / shop system the plugin is for.
@@ -2276,7 +2296,7 @@ interface ShopgateConfigInterface {
 	/**
 	 * @param bool $value
 	 */
-	public function setEnableClearLogfile($value);
+	public function setEnableClearLogFile($value);
 
 	/**
 	 * @param string $value The ISO 3166 ALPHA-2 code of the language the plugin uses for export.
@@ -2422,6 +2442,11 @@ interface ShopgateConfigInterface {
 	 * @param string $value The path to the cache file for mobile device skip detection keywords.
 	 */
 	public function setRedirectSkipKeywordCachePath($value);
+
+	/**
+	 *  @param bool $value True if the plugin is an adapter between Shopgate's and a third-party-API and servers multiple shops on both ends.
+	 */
+	public function setIsShopgateAdapter($value);
 
 	/**
 	 * Returns an additional setting.
