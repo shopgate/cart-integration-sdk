@@ -1342,22 +1342,21 @@ class ShopgateDeliveryNote extends ShopgateContainer {
 	}
 }
 
-class ShopgateExternalCoupon extends ShopgateContainer {
-	protected $code;
+abstract class ShopgateCoupon extends ShopgateContainer {
+	
 	protected $order_index;
+	
+	protected $code;
+	protected $name;
+	protected $description;
+	protected $amount;
+	protected $currency;
+	protected $is_free_shipping;
 	protected $internal_info;
-
-
+	
 	##########
 	# Setter #
 	##########
-	
-	/**
-	 * @param string $value
-	 */
-	public function setCode($value) {
-		$this->code = $value;
-	}
 	
 	/**
 	 * @param int $value
@@ -1365,58 +1364,6 @@ class ShopgateExternalCoupon extends ShopgateContainer {
 	public function setOrderIndex($value) {
 		$this->order_index = $value;
 	}
-	
-	/**
-	 * @param string $value
-	 */
-	public function setInternalInfo($value) {
-		$this->internal_info = $value;
-	}
-	
-	
-	##########
-	# Getter #
-	##########
-	
-	/**
-	 * @return string
-	 */
-	public function getCode() {
-		return $this->code;
-	}
-	
-	/**
-	 * @return int
-	 */
-	public function getOrderIndex() {
-		return $this->order_index;
-	}
-	
-	/**
-	 * @return string
-	 */
-	public function getInternalInfo() {
-		return $this->internal_info;
-	}
-	
-	
-	public function accept(ShopgateContainerVisitor $v) {
-		$v->visitShopCoupon($this);
-	}
-}
-
-class ShopgateShopgateCoupon extends ShopgateContainer {
-	protected $code;
-	protected $name;
-	protected $order_index;
-	protected $amount;
-	protected $is_free_shipping;
-	protected $internal_info;
-
-
-	##########
-	# Setter #
-	##########
 	
 	/**
 	 * @param string $value
@@ -1433,17 +1380,25 @@ class ShopgateShopgateCoupon extends ShopgateContainer {
 	}
 	
 	/**
-	 * @param int $value
+	 *
+	 * @param string $value
 	 */
-	public function setOrderIndex($value) {
-		$this->order_index = $value;
+	public function setDescription($value) {
+		$this->description = $value;
 	}
 	
 	/**
 	 * @param float $value
 	 */
 	public function setAmount($value) {
-		$this->amount = abs($value);
+		$this->amount = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setCurrency($value) {
+		$this->currency = $value;
 	}
 	
 	/**
@@ -1459,10 +1414,17 @@ class ShopgateShopgateCoupon extends ShopgateContainer {
 	public function setInternalInfo($value) {
 		$this->internal_info = $value;
 	}
-
+	
 	##########
 	# Getter #
 	##########
+
+	/**
+	 * @return int
+	 */
+	public function getOrderIndex() {
+		return $this->order_index;
+	}
 	
 	/**
 	 * @return string
@@ -1479,10 +1441,11 @@ class ShopgateShopgateCoupon extends ShopgateContainer {
 	}
 	
 	/**
-	 * @return int
+	 *
+	 * @return string
 	 */
-	public function getOrderIndex() {
-		return $this->order_index;
+	public function getDescription() {
+		return $this->description;
 	}
 	
 	/**
@@ -1490,6 +1453,13 @@ class ShopgateShopgateCoupon extends ShopgateContainer {
 	 */
 	public function getAmount() {
 		return $this->amount;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getCurrency() {
+		return $this->currency;
 	}
 	
 	/**
@@ -1506,8 +1476,66 @@ class ShopgateShopgateCoupon extends ShopgateContainer {
 		return $this->internal_info;
 	}
 	
+}
+
+class ShopgateExternalCoupon extends ShopgateCoupon {
+	
+	protected $is_valid;
+	protected $not_valid_message;
+	
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitExternalCoupon($this);
+	}
+	
+	##########
+	# Setter #
+	##########
+	
+	/**
+	 * @param bool $value
+	 */
+	public function setIsValid($value) {
+		$this->is_valid = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setNotValidMessage($value) {
+		$this->not_valid_message = $value;
+	}
+	
+	##########
+	# Getter #
+	##########
+	
+	/**
+	 * @return bool
+	 */
+	public function getIsValid() {
+		return $this->is_valid;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getNotValidMessage() {
+		return $this->not_valid_message;
+	}
+}
+
+class ShopgateShopgateCoupon extends ShopgateCoupon {
 
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitCoupon($this);
 	}
+	
+	##########
+	# Setter #
+	##########
+	
+	##########
+	# Getter #
+	##########
+
 }

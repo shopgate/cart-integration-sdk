@@ -337,7 +337,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	
 	/**
 	 * Represents the "redeem_coupons" action.
-	 * 
+	 *
 	 * @throws ShopgateLibraryException
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_redeem_coupons
 	 */
@@ -355,12 +355,20 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, 'Plugin Response: '.var_export($couponData, true));
 		}
 		
-		$this->responseData = array_merge($couponData, $this->responseData);
+		$responseData = array("external_coupons" => array());
+		foreach($couponData as $coupon) {
+			$coupon = $coupon->toArray();
+			unset($coupon["order_index"]);
+			
+			$responseData["external_coupons"][] = $coupon;
+		}
+		
+		$this->responseData = array_merge($responseData, $this->responseData);
 	}
 	
 	/**
 	 * Represents the "check_cart" action.
-	 * 
+	 *
 	 * @throws ShopgateLibraryException
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_check_cart
 	 */
@@ -374,11 +382,26 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$cart = new ShopgateCart($this->params['cart']);
 		$cartData = $this->plugin->checkCart($cart);
 		
+		$responseData = array(
+// 				"items" => array(),
+				"external_coupons" => array(),
+// 				"shippings" => array(),
+		);
+		
 		if(!is_array($cartData)) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, 'Plugin Response: '.var_export($cartData, true));
 		}
 		
-		$this->responseData = array_merge($cartData, $this->responseData);
+		$coupons = array();
+		foreach($cartData["external_coupons"] as $coupon) {
+			$coupon = $coupon->toArray();
+			unset($coupon["order_index"]);
+				
+			$coupons[] = $coupon;
+		}
+		$responseData["external_coupons"] = $coupons;
+		
+		$this->responseData = array_merge($responseData, $this->responseData);
 	}
 
 	/**

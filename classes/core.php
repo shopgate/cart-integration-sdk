@@ -1437,7 +1437,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * This method gets called on instantiation of a ShopgatePlugin child class and serves as __construct() replacement.
 	 *
 	 * Important: Initialize $this->config here if you have your own config class.
-	 * 
+	 *
 	 * @see http://wiki.shopgate.com/Shopgate_Library#startup.28.29
 	 */
 	public abstract function startup();
@@ -1482,7 +1482,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @see http://wiki.shopgate.com/Merchant_API_get_orders#API_Response
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_add_order#API_Response
-	 * 
+	 *
 	 * @param ShopgateOrder $order The ShopgateOrder object to be added to the shop system's database.
 	 * @return array(
 	 *          <ul>
@@ -1498,7 +1498,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @see http://wiki.shopgate.com/Merchant_API_get_orders#API_Response
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_update_order#API_Response
-	 * 
+	 *
 	 * @param ShopgateOrder $order The ShopgateOrder object to be updated in the shop system's database.
 	 * @return array(
 	 *          <ul>
@@ -1513,12 +1513,9 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * Redeems coupons that are passed along with a ShopgateCart object.
 	 *
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_redeem_coupons#API_Response
-	 * 
+	 *
 	 * @param ShopgateCart $cart The ShopgateCart object containing the coupons that should be redeemed.
-	 * @return array(
-	 *          <ul>
-	 *          	<li>'coupons' => array(...), # list of all coupons</li>
-	 *          </ul>)
+	 * @return ShopgateExternalCoupon[]
 	 * @throws ShopgateLibraryException if an error occurs.
 	 */
 	public abstract function redeemCoupons(ShopgateCart $cart);
@@ -1529,11 +1526,11 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * This currently only supports the validation of coupons.
 	 *
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_check_cart#API_Response
-	 * 
+	 *
 	 * @param ShopgateCart $cart The ShopgateCart object to be checked and validated.
 	 * @return array(
 	 *          <ul>
-	 *          	<li>'coupons' => array(...), # list of all coupons</li>
+	 *          	<li>'external_coupons' => ShopgateExternalCoupon[], # list of all coupons</li>
 	 *          	<li>'items' => array(...), # list of item changes (not supported yet)</li>
 	 *          	<li>'shippings' => array(...), # list of available shipping services for this cart (not supported yet)</li>
 	 *          </ul>)
@@ -1551,7 +1548,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @see http://wiki.shopgate.com/CSV_File_Items
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_items_csv
-	 * 
+	 *
 	 * @throws ShopgateLibraryException
 	 */
 	protected abstract function createItemsCsv();
@@ -1564,7 +1561,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @see http://wiki.shopgate.com/CSV_File_Categories
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_categories_csv
-	 * 
+	 *
 	 * @throws ShopgateLibraryException
 	 */
 	protected abstract function createCategoriesCsv();
@@ -1577,7 +1574,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @see http://wiki.shopgate.com/CSV_File_Reviews
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_reviews_csv
-	 * 
+	 *
 	 * @throws ShopgateLibraryException
 	 */
 	protected abstract function createReviewsCsv();
