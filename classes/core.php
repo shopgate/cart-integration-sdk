@@ -2467,11 +2467,9 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 	}
 
 	protected function sanitizeSimpleVar($v) {
-		if (is_int($v)) {
+		if (is_bool($v)) {
 			return (int) $v;
-		} elseif (is_bool($v)) {
-			return (int) $v;
-		} elseif (is_string($v)) {
+		} else {
 			return $v;
 		}
 	}
