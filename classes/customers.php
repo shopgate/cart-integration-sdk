@@ -307,9 +307,9 @@ class ShopgateAddress extends ShopgateContainer {
 	protected $mail;
 
 
-	/**********
-	 * Setter *
-	 **********/
+	##########
+	# Setter #
+	##########
 
 	/**
 	 * @param string $value
@@ -457,9 +457,9 @@ class ShopgateAddress extends ShopgateContainer {
 	}
 
 
-	/**********
-	 * Getter *
-	 **********/
+	##########
+	# Getter #
+	##########
 
 	/**
 	 * @return string
