@@ -357,6 +357,10 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		
 		$responseData = array("external_coupons" => array());
 		foreach($couponData as $coupon) {
+			if (!is_object($coupon) || !($coupon instanceof ShopgateExternalCoupon)) {
+				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, 'Plugin Response: '.var_export($coupon, true));
+			}
+			
 			$coupon = $coupon->toArray();
 			unset($coupon["order_index"]);
 			
@@ -394,6 +398,10 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		
 		$coupons = array();
 		foreach($cartData["external_coupons"] as $coupon) {
+			if (!is_object($coupon) || !($coupon instanceof ShopgateExternalCoupon)) {
+				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, 'Plugin Response: '.var_export($coupon, true));
+			}
+			
 			$coupon = $coupon->toArray();
 			unset($coupon["order_index"]);
 				
