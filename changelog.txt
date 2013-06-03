@@ -1,5 +1,9 @@
 '''Deutsch'''
 
+'''Version 2.2.0'''
+* Es sind zwei neue Methoden hinzugekommen, die implementiert werden müssen: ShopgatePlugin::redeemCoupons() und ::checkCart(). Dadurch werden durch das Shopsystem angebotene Gutscheine auch im Mobilshop verwendbar
+* Der Parameter "keep_debug_log" verhindert das Überschreiben der Debug-Log bei eingehenden API-Requests
+
 '''Version 2.1.26'''
 * die Konvertierung der Zeichensätze wird jetzt optional mit iconv durchgeführt, wenn die mb_string-Erweiterung für PHP nicht installiert ist
 * Logik zur dateibasierten Verarbeitung einer globalen Konfiguration und mehreren sprachabhängigen Konfigurationen implementiert
@@ -101,6 +105,10 @@
 
 
 '''English'''
+
+'''Version 2.2.0'''
+* two new methods have been added and must be implemented: ShopgatePlugin::redeemCoupons() and ::checkCart(). These make coupons offered by the shoppingsystem available to the mobile shop
+* add the parameter "keep_debug_log" to incoming requests to prevent the debug log file from being discarded
 
 '''Version 2.1.26'''
 * conversion of encodings is now performed via iconv if the mb_string extension for PHP is not installed
