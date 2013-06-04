@@ -2,7 +2,7 @@
 $buildConfig = array (
 	'major' => 2,
 	'minor' => 2,
-	'build' => -1,
+	'build' => 0,
 	'shopgate_library_path' => "",
 	'plugin_name' => "library",
 	'display_name' => "Shopgate Library",
@@ -15,5 +15,6 @@ $buildConfig = array (
 		),
 	),
 	'zip_basedir' => "shopgate_library",
-	'exclude_files' => array (),
+	'exclude_files' => array (
+	),
 );
