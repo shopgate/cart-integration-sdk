@@ -1,5 +1,9 @@
 '''Deutsch'''
 
+
+'''Version 2.2.1'''
+* Neuen Schalter für die Standard-Weiterleitung von Contentseiten zur mobilen Startseite wurde in der Klasse ShopgateConfig hinzugefügt
+
 '''Version 2.2.0'''
 * Es sind zwei neue Methoden hinzugekommen, die implementiert werden müssen: ShopgatePlugin::redeemCoupons() und ::checkCart(). Dadurch werden durch das Shopsystem angebotene Gutscheine auch im Mobilshop verwendbar
 * Der Parameter "keep_debug_log" verhindert das Überschreiben der Debug-Log bei eingehenden API-Requests
@@ -105,6 +109,9 @@
 
 
 '''English'''
+
+'''Version 2.2.1'''
+* added switch for default redirect from content pages to mobile homepage in class ShopgateConfig
 
 '''Version 2.2.0'''
 * two new methods have been added and must be implemented: ShopgatePlugin::redeemCoupons() and ::checkCart(). These make coupons offered by the shoppingsystem available to the mobile shop
