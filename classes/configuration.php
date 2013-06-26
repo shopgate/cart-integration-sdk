@@ -97,7 +97,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	protected $enable_redirect_keyword_update;
 	
 	/**
-	 * @var bool true to enable default redirect for mobile devices from content sites to mobile website (homepage)
+	 * @var bool true to enable default redirect for mobile devices from content sites to mobile website (welcome page)
 	 */
 	protected $enable_default_redirect;
 	
@@ -726,12 +726,12 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->enable_update_order;
 	}
 	
-	public function getEnableRedeemCoupons() {
-		return $this->enable_redeem_coupons;
-	}
-	
 	public function getEnableCheckCart() {
 		return $this->enable_check_cart;
+	}
+	
+	public function getEnableRedeemCoupons() {
+		return $this->enable_redeem_coupons;
 	}
 	
 	public function getEnableGetOrders() {
@@ -978,12 +978,12 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_update_order = $value;
 	}
 
-	public function setEnableRedeemCoupons($value) {
-		$this->enable_redeem_coupons = $value;
-	}
-	
 	public function setEnableCheckCart($value) {
 		$this->enable_check_cart = $value;
+	}
+	
+	public function setEnableRedeemCoupons($value) {
+		$this->enable_redeem_coupons = $value;
 	}
 	
 	public function setEnableGetOrders($value) {
@@ -1953,6 +1953,11 @@ interface ShopgateConfigInterface {
 	public function getEnableRedirectKeywordUpdate();
 	
 	/**
+	 * @return bool true to enable default redirect for mobile devices from content sites to mobile website (welcome page)
+	 */
+	public function getEnableDefaultRedirect();
+	
+	/**
 	 * @return string The encoding the shop system is using internally.
 	 */
 	public function getEncoding();
@@ -1976,7 +1981,17 @@ interface ShopgateConfigInterface {
 	 * @return bool
 	 */
 	public function getEnableUpdateOrder();
+	
+	/**
+	 * @return bool
+	 */
+	public function getEnableCheckCart();
 
+	/**
+	 * @return bool
+	 */
+	public function getEnableRedeemCoupons();
+	
 	/**
 	 * @return bool
 	 */
@@ -2026,6 +2041,16 @@ interface ShopgateConfigInterface {
 	 * @return bool
 	 */
 	public function getEnableClearLogFile();
+	
+	/**
+	 * @return bool
+	 */
+	public function getEnableClearCache();
+	
+	/**
+	 * @return string The ISO 3166 ALPHA-2 code of the country the plugin uses for export.
+	 */
+	public function getCountry();
 
 	/**
 	 * @return string The ISO 3166 ALPHA-2 code of the language the plugin uses for export.
@@ -2238,6 +2263,11 @@ interface ShopgateConfigInterface {
 	public function setEnableRedirectKeywordUpdate($value);
 	
 	/**
+	 * @param bool true to enable default redirect for mobile devices from content sites to mobile website (welcome page)
+	 */
+	public function setEnableDefaultRedirect($value);
+	
+	/**
 	 * @param string $value The encoding the shop system is using internally.
 	 */
 	public function setEncoding($value);
@@ -2261,7 +2291,17 @@ interface ShopgateConfigInterface {
 	 * @param bool $value
 	 */
 	public function setEnableUpdateOrder($value);
+	
+	/**
+	 * @param bool $value
+	 */
+	public function setEnableCheckCart($value);
 
+	/**
+	 * @param bool $value
+	 */
+	public function setEnableRedeemCoupons($value);
+	
 	/**
 	 * @param bool $value
 	 */
@@ -2311,7 +2351,17 @@ interface ShopgateConfigInterface {
 	 * @param bool $value
 	 */
 	public function setEnableClearLogFile($value);
-
+	
+	/**
+	 * @param bool $value
+	 */
+	public function setEnableClearCache($value);
+	
+	/**
+	 * @param string The ISO 3166 ALPHA-2 code of the country the plugin uses for export.
+	 */
+	public function setCountry($value);
+	
 	/**
 	 * @param string $value The ISO 3166 ALPHA-2 code of the language the plugin uses for export.
 	 */
@@ -2336,12 +2386,12 @@ interface ShopgateConfigInterface {
 	 * @param int $value The capacity (number of lines) of the buffer used for the export actions.
 	 */
 	public function setExportBufferCapacity($value);
-
+	
 	/**
 	 * @param int $value The maximum number of attributes per product that are created. If the number is exceeded, attributes should be converted to options.
 	 */
 	public function setMaxAttributes($value);
-
+	
 	/**
 	 * @param string $value The path to the folder where the export CSV files are stored and retrieved from.
 	 */
@@ -2411,64 +2461,64 @@ interface ShopgateConfigInterface {
 	 * @param string $value The path to where the items CSV file is stored and retrieved from.
 	 */
 	public function setItemsCsvPath($value);
-
+	
 	/**
 	 * @param string $value The path to where the categories CSV file is stored and retrieved from.
 	 */
 	public function setCategoriesCsvPath($value);
-
+	
 	/**
 	 * @param string $value The path to where the reviews CSV file is stored and retrieved from.
 	 */
 	public function setReviewsCsvPath($value);
-
+	
 	/**
 	 * @param string $value The path to where the pages CSV file is stored and retrieved from.
 	 */
 	public function setPagesCsvPath($value);
-
+	
 	/**
 	 * @param string $value The path to the access log file.
 	 */
 	public function setAccessLogPath($value);
-
+	
 	/**
 	 * @param string $value The path to the request log file.
 	 */
 	public function setRequestLogPath($value);
-
+	
 	/**
 	 * @param string $value The path to the error log file.
 	 */
 	public function setErrorLogPath($value);
-
+	
 	/**
 	 * @param string $value The path to the debug log file.
 	 */
 	public function setDebugLogPath($value);
-
+	
 	/**
 	 * @param string $value The path to the cache file for mobile device detection keywords.
 	 */
 	public function setRedirectKeywordCachePath($value);
-
+	
 	/**
 	 * @param string $value The path to the cache file for mobile device skip detection keywords.
 	 */
 	public function setRedirectSkipKeywordCachePath($value);
-
+	
 	/**
 	 *  @param bool $value True if the plugin is an adapter between Shopgate's and a third-party-API and servers multiple shops on both ends.
 	 */
 	public function setIsShopgateAdapter($value);
-
+	
 	/**
 	 * Returns an additional setting.
 	 *
 	 * @param string $setting The name of the setting.
 	 */
 	public function returnAdditionalSetting($setting);
-
+	
 	/**
 	 * Returns the additional settings array.
 	 *
@@ -2478,7 +2528,7 @@ interface ShopgateConfigInterface {
 	 * @return array<string, mixed> The additional settings a plugin may have defined.
 	 */
 	public function returnAdditionalSettings();
-
+	
 	/**
 	 * Returns the configuration as an array.
 	 *
