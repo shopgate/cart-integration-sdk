@@ -814,15 +814,16 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 		return $response;
 	}
 	
-	public function addOrderDeliveryNote($orderNumber, $shippingServiceId, $trackingNumber, $markAsCompleted = false) {
+	public function addOrderDeliveryNote($orderNumber, $shippingServiceId, $trackingNumber, $markAsCompleted = false, $sendCustomerMail = true) {
 		$request = array(
-				'action' => 'add_order_delivery_note',
-				'order_number' => $orderNumber,
-				'shipping_service_id' => $shippingServiceId,
-				'tracking_number' => (string) $trackingNumber,
-				'mark_as_completed' => $markAsCompleted,
+			'action' => 'add_order_delivery_note',
+			'order_number' => $orderNumber,
+			'shipping_service_id' => $shippingServiceId,
+			'tracking_number' => (string) $trackingNumber,
+			'mark_as_completed' => $markAsCompleted,
+			'send_customer_mail' => $sendCustomerMail,
 		);
-		
+	
 		return $this->sendRequest($request);
 	}
 	
@@ -1436,6 +1437,7 @@ interface ShopgateMerchantApiInterface {
 	 * @param string $shippingServiceId
 	 * @param int $trackingNumber
 	 * @param bool $markAsCompleted
+	 * @param bool $sendCustomerMail
 	 *
 	 * @return ShopgateMerchantApiResponse
 	 *
@@ -1444,7 +1446,7 @@ interface ShopgateMerchantApiInterface {
 	 *
 	 * @see http://wiki.shopgate.com/Merchant_API_add_order_delivery_note/
 	 */
-	public function addOrderDeliveryNote($orderNumber, $shippingServiceId, $trackingNumber, $markAsCompleted = false);
+	public function addOrderDeliveryNote($orderNumber, $shippingServiceId, $trackingNumber, $markAsCompleted = false, $sendCustomerMail = true);
 	
 	/**
 	 * Represents the "set_order_shipping_completed" action.
