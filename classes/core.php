@@ -3,7 +3,7 @@
 ###################################################################################
 # define constants
 ###################################################################################
-define('SHOPGATE_LIBRARY_VERSION', '2.2.0');
+define('SHOPGATE_LIBRARY_VERSION', '2.1.27');
 define('SHOPGATE_LIBRARY_ENCODING' , 'UTF-8');
 define('SHOPGATE_BASE_DIR', realpath(dirname(__FILE__).'/../'));
 
@@ -1508,35 +1508,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @throws ShopgateLibraryException if an error occurs.
 	 */
 	public abstract function updateOrder(ShopgateOrder $order);
-
-	/**
-	 * Redeems coupons that are passed along with a ShopgateCart object.
-	 *
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_redeem_coupons#API_Response
-	 *
-	 * @param ShopgateCart $cart The ShopgateCart object containing the coupons that should be redeemed.
-	 * @return ShopgateExternalCoupon[]
-	 * @throws ShopgateLibraryException if an error occurs.
-	 */
-	public abstract function redeemCoupons(ShopgateCart $cart);
-	
-	/**
-	 * Checks the content of a cart to be valid and returns necessary changes if applicable.
-	 *
-	 * This currently only supports the validation of coupons.
-	 *
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_check_cart#API_Response
-	 *
-	 * @param ShopgateCart $cart The ShopgateCart object to be checked and validated.
-	 * @return array(
-	 *          <ul>
-	 *          	<li>'external_coupons' => ShopgateExternalCoupon[], # list of all coupons</li>
-	 *          	<li>'items' => array(...), # list of item changes (not supported yet)</li>
-	 *          	<li>'shippings' => array(...), # list of available shipping services for this cart (not supported yet)</li>
-	 *          </ul>)
-	 * @throws ShopgateLibraryException if an error occurs.
-	 */
-	public abstract function checkCart(ShopgateCart $cart);
 	
 	/**
 	 * Loads the products of the shop system's database and passes them to the buffer.
