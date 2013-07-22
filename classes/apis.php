@@ -101,8 +101,12 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				set_error_handler('ShopgateErrorHandler');
 			}
 			
-			// check if the request is for the correct shop number
-			if (!empty($this->params['shop_number']) && ($this->params['shop_number'] != $this->config->getShopNumber())) {
+			// check if the request is for the correct shop number or an adapter-plugin
+			if (
+					!$this->config->getIsShopgateAdapter() &&
+					!empty($this->params['shop_number']) &&
+					($this->params['shop_number'] != $this->config->getShopNumber())
+			) {
 				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_UNKNOWN_SHOP_NUMBER, "{$this->params['shop_number']}");
 			}
 
@@ -125,8 +129,9 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			// enable debugging if requested
 			if (!empty($data['debug_log'])) {
 				ShopgateLogger::getInstance()->enableDebug();
+				ShopgateLogger::getInstance()->keepDebugLog(!empty($data['keep_debug_log']));
 			}
-
+			
 			// call the action
 			$action = $this->camelize($this->params['action']);
 			$this->{$action}();
@@ -331,24 +336,47 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		}
 	}
 
+	/**
+	 * Represents the "redeem_coupons" action.
+	 *
+	 * @throws ShopgateLibraryException
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_redeem_coupons
+	 */
 	protected function redeemCoupons() {
 		if (!isset($this->params['cart'])) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ORDER_NUMBER);
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_CART);
 		}
 
 		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
 
 		$cart = new ShopgateCart($this->params['cart']);
-		
-		$couponData = $this->plugin->redeemCoupons( $cart);
+		$couponData = $this->plugin->redeemCoupons($cart);
 		
 		if(!is_array($couponData)) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT);
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, 'Plugin Response: '.var_export($couponData, true));
 		}
 		
-		$this->responseData = array_merge($couponData, $this->responseData);
+		$responseData = array("external_coupons" => array());
+		foreach($couponData as $coupon) {
+			if (!is_object($coupon) || !($coupon instanceof ShopgateExternalCoupon)) {
+				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, 'Plugin Response: '.var_export($coupon, true));
+			}
+			
+			$coupon = $coupon->toArray();
+			unset($coupon["order_index"]);
+			
+			$responseData["external_coupons"][] = $coupon;
+		}
+		
+		$this->responseData = array_merge($responseData, $this->responseData);
 	}
 	
+	/**
+	 * Represents the "check_cart" action.
+	 *
+	 * @throws ShopgateLibraryException
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_check_cart
+	 */
 	protected function checkCart() {
 		if (!isset($this->params['cart'])) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_CART);
@@ -357,13 +385,32 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
 
 		$cart = new ShopgateCart($this->params['cart']);
-		
 		$cartData = $this->plugin->checkCart($cart);
+		
+		$responseData = array(
+// 				"items" => array(),
+				"external_coupons" => array(),
+// 				"shippings" => array(),
+		);
+		
 		if(!is_array($cartData)) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT);
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, 'Plugin Response: '.var_export($cartData, true));
 		}
 		
-		$this->responseData = array_merge($cartData, $this->responseData);
+		$coupons = array();
+		foreach($cartData["external_coupons"] as $coupon) {
+			if (!is_object($coupon) || !($coupon instanceof ShopgateExternalCoupon)) {
+				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, 'Plugin Response: '.var_export($coupon, true));
+			}
+			
+			$coupon = $coupon->toArray();
+			unset($coupon["order_index"]);
+				
+			$coupons[] = $coupon;
+		}
+		$responseData["external_coupons"] = $coupons;
+		
+		$this->responseData = array_merge($responseData, $this->responseData);
 	}
 
 	/**
@@ -812,15 +859,16 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 		return $response;
 	}
 	
-	public function addOrderDeliveryNote($orderNumber, $shippingServiceId, $trackingNumber, $markAsCompleted = false) {
+	public function addOrderDeliveryNote($orderNumber, $shippingServiceId, $trackingNumber, $markAsCompleted = false, $sendCustomerMail = true) {
 		$request = array(
-				'action' => 'add_order_delivery_note',
-				'order_number' => $orderNumber,
-				'shipping_service_id' => $shippingServiceId,
-				'tracking_number' => (string) $trackingNumber,
-				'mark_as_completed' => $markAsCompleted,
+			'action' => 'add_order_delivery_note',
+			'order_number' => $orderNumber,
+			'shipping_service_id' => $shippingServiceId,
+			'tracking_number' => (string) $trackingNumber,
+			'mark_as_completed' => $markAsCompleted,
+			'send_customer_mail' => $sendCustomerMail,
 		);
-		
+	
 		return $this->sendRequest($request);
 	}
 	
@@ -1434,6 +1482,7 @@ interface ShopgateMerchantApiInterface {
 	 * @param string $shippingServiceId
 	 * @param int $trackingNumber
 	 * @param bool $markAsCompleted
+	 * @param bool $sendCustomerMail
 	 *
 	 * @return ShopgateMerchantApiResponse
 	 *
@@ -1442,7 +1491,7 @@ interface ShopgateMerchantApiInterface {
 	 *
 	 * @see http://wiki.shopgate.com/Merchant_API_add_order_delivery_note/
 	 */
-	public function addOrderDeliveryNote($orderNumber, $shippingServiceId, $trackingNumber, $markAsCompleted = false);
+	public function addOrderDeliveryNote($orderNumber, $shippingServiceId, $trackingNumber, $markAsCompleted = false, $sendCustomerMail = true);
 	
 	/**
 	 * Represents the "set_order_shipping_completed" action.

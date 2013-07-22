@@ -654,6 +654,7 @@ interface ShopgateMobileRedirectInterface {
 	/**
 	 * Sets the description to be displayed to the left of the button.
 	 *
+	 * @deprecated
 	 * @param string $description
 	 */
 	public function setButtonDescription($description);
@@ -661,18 +662,23 @@ interface ShopgateMobileRedirectInterface {
 	/**
 	 * Sets the alias of the Shopgate shop
 	 *
+	 * @deprecated
 	 * @param string $alias
 	 */
 	public function setAlias($alias);
 	
 	/**
 	 * Sets the cname of the shop
+	 * 
+	 * @deprecated
+	 * @param string $cname
 	 */
 	public function setCustomMobileUrl($cname);
 	
 	/**
 	 * Sets the parent element the Mobile Header should be attached to.
 	 *
+	 * @deprecated
 	 * @param string $identifier CSS style identifier for the parent element.
 	 * @param bool $prepend True to add the Mobile Header as first child of the parent element, false to append it.
 	 */
@@ -681,18 +687,22 @@ interface ShopgateMobileRedirectInterface {
 	/**
 	 * Enables updating of the keywords that identify mobile devices from Shopgate Merchant API.
 	 *
+	 * @deprecated
 	 * @param int $cacheTime Time the keywords are cached in hours. Will be set to at least ShopgateMobileRedirectInterface::MIN_CACHE_TIME.
 	 */
 	public function enableKeywordUpdate($cacheTime = ShopgateMobileRedirectInterface::DEFAULT_CACHE_TIME);
 	
 	/**
 	 * Disables updating of the keywords that identify mobile devices from Shopgate Merchant API.
+	 * 
+	 * @deprecated
 	 */
 	public function disableKeywordUpdate();
 	
 	/**
 	 * Appends a new keyword to the redirect keywords list.
 	 *
+	 * @deprecated
 	 * @param string $keyword The redirect keyword to append.
 	 */
 	public function addRedirectKeyword($keyword);
@@ -700,6 +710,7 @@ interface ShopgateMobileRedirectInterface {
 	/**
 	 * Removes a keyword or an array of redirect keywords from the keywords list.
 	 *
+	 * @deprecated
 	 * @param string|string[] $keyword The redirect keyword or keywords to remove.
 	 */
 	public function removeRedirectKeyword($keyword);
@@ -707,6 +718,7 @@ interface ShopgateMobileRedirectInterface {
 	/**
 	 * Replaces the current list of redirect keywords with a given list.
 	 *
+	 * @deprecated
 	 * @param string[] $redirectKeywords The new list of redirect keywords.
 	 */
 	public function setRedirectKeywords(array $redirectKeywords);
@@ -714,6 +726,7 @@ interface ShopgateMobileRedirectInterface {
 	/**
 	 * Replaces the current list of skiüp redirect keywords with a given list.
 	 *
+	 * @deprecated
 	 * @param string[] $skipRedirectKeywords The new list of skip redirect keywords.
 	 */
 	public function setSkipRedirectKeywords(array $skipRedirectKeywords);
@@ -723,12 +736,15 @@ interface ShopgateMobileRedirectInterface {
 	 *
 	 * This will cause slower download of nonsensitive material (the mobile header button images) from Shopgate.
 	 * Activate only if the secure connection is determined incorrectly (e.g. because of third-party components).
+	 * 
+	 * @deprecated
 	 */
 	public function setAlwaysUseSSL();
 
 	/**
 	 * Detects by redirect keywords (and skip redirect keywords) if a request was sent by a mobile device.
 	 *
+	 * @deprecated
 	 * @return bool true if a mobile device could be detected, false otherwise.
 	 */
 	public function isMobileRequest();
@@ -736,6 +752,7 @@ interface ShopgateMobileRedirectInterface {
 	/**
 	 * Detects whether the customer wants to be redirected.
 	 *
+	 * @deprecated
 	 * @return bool true if the customer wants to be redirected, false otherwise.
 	 */
 	public function isRedirectAllowed();
@@ -746,6 +763,7 @@ interface ShopgateMobileRedirectInterface {
 	 * If the $url parameter is no valid URL the method will simply return false and do nothing else.
 	 * Otherwise it will output the necessary redirection headers and stop script execution.
 	 *
+	 * @deprecated
 	 * @param string $url the URL to redirect to
 	 * @param bool $setCookie true to set the redirection cookie and activate redirection
 	 * @return false if the passed $url parameter is no valid URL
@@ -753,9 +771,9 @@ interface ShopgateMobileRedirectInterface {
 	public function redirect($url);
 
 	/**
-	 * @deprecated
 	 * Returns the javascript and HTML for the mobile redirect button
 	 *
+	 * @deprecated
 	 * @return string
 	 */
 	public function getMobileHeader();
@@ -832,12 +850,15 @@ interface ShopgateMobileRedirectInterface {
 	
 	/**
 	 * Create a mobile-shop-url to the startmenu
+	 * 
+	 * @deprecated
 	 */
 	public function getShopUrl();
 
 	/**
 	 * Create a mobile-product-url to a item
 	 *
+	 * @deprecated
 	 * @param string $itemNumber
 	 */
 	public function getItemUrl($itemNumber);
@@ -845,6 +866,7 @@ interface ShopgateMobileRedirectInterface {
 	/**
 	 * Create a mobile-product-url to a item with item_number_public
 	 *
+	 * @deprecated
 	 * @param string $itemNumberPublic
 	 */
 	public function getItemPublicUrl($itemNumberPublic);
@@ -852,6 +874,7 @@ interface ShopgateMobileRedirectInterface {
 	/**
 	 * Create a mobile-category-url to a category
 	 *
+	 * @deprecated
 	 * @param string $categoryNumber
 	 */
 	public function getCategoryUrl($categoryNumber);
@@ -859,6 +882,7 @@ interface ShopgateMobileRedirectInterface {
 	/**
 	 * Create a mobile-cms-url to a cms-page
 	 *
+	 * @deprecated
 	 * @param string $cmsPage
 	 */
 	public function getCmsUrl($cmsPage);
@@ -866,6 +890,7 @@ interface ShopgateMobileRedirectInterface {
 	/**
 	 * Create a mobile-brand-url to a page with results for a specific manufacturer
 	 *
+	 * @deprecated
 	 * @param string $manufacturerName
 	 */
 	public function getBrandUrl($manufacturerName);
@@ -873,6 +898,7 @@ interface ShopgateMobileRedirectInterface {
 	/**
 	 * Create a mobile-search-url to a page with search results
 	 *
+	 * @deprecated
 	 * @param string $searchQuery
 	 */
 	public function getSearchUrl($searchQuery);

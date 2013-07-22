@@ -97,6 +97,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	protected $enable_redirect_keyword_update;
 	
 	/**
+	 * @var bool true to enable default redirect for mobile devices from content sites to mobile website (welcome page)
+	 */
+	protected $enable_default_redirect;
+	
+	/**
 	 * @var string the encoding the shop system is using internally
 	 */
 	protected $encoding;
@@ -299,6 +304,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	protected $redirect_skip_keyword_cache_filename;
 
 	/**
+	 * @var bool True if the plugin is an adapter between Shopgate's and a third-party-API and servers multiple shops on both ends.
+	 */
+	protected $is_shopgate_adapter;
+	
+	/**
 	 * @var array<string, mixed> Additional shop system specific settings that cannot (or should not) be generalized and thus be defined by a plugin itself.
 	 */
 	protected $additionalSettings = array();
@@ -325,6 +335,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->shop_is_active = 0;
 		$this->always_use_ssl = 0;
 		$this->enable_redirect_keyword_update = 0;
+		$this->enable_default_redirect = 1;
 		$this->encoding = 'UTF-8';
 		$this->export_convert_encoding = 1;
 		
@@ -373,6 +384,8 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		
 		$this->redirect_keyword_cache_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'redirect_keywords.txt';
 		$this->redirect_skip_keyword_cache_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'skip_redirect_keywords.txt';
+		
+		$this->is_shopgate_adapter = false;
 		
 		// call possible sub class' startup()
 		if (!$this->startup()) {
@@ -694,6 +707,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->enable_redirect_keyword_update;
 	}
 	
+	public function getEnableDefaultRedirect() {
+		return $this->enable_default_redirect;
+	}
+	
 	public function getEncoding() {
 		return $this->encoding;
 	}
@@ -714,12 +731,12 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->enable_update_order;
 	}
 	
-	public function getEnableRedeemCoupons() {
-		return $this->enable_redeem_coupons;
-	}
-	
 	public function getEnableCheckCart() {
 		return $this->enable_check_cart;
+	}
+	
+	public function getEnableRedeemCoupons() {
+		return $this->enable_redeem_coupons;
 	}
 	
 	public function getEnableGetOrders() {
@@ -886,6 +903,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return rtrim($this->cache_folder_path.DS.$this->redirect_skip_keyword_cache_filename, DS);
 	}
 	
+	public function getIsShopgateAdapter() {
+		return $this->is_shopgate_adapter;
+	}
+	
 	public function getEnableRegisterCustomer() {
 		return $this->enable_register_customer;
 	}
@@ -942,6 +963,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_redirect_keyword_update = $value;
 	}
 	
+	public function setEnableDefaultRedirect($value) {
+		$this->enable_default_redirect = $value;
+	}
+	
 	public function setEncoding($value) {
 		$this->encoding = $value;
 	}
@@ -962,12 +987,12 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_update_order = $value;
 	}
 
-	public function setEnableRedeemCoupons($value) {
-		$this->enable_redeem_coupons = $value;
-	}
-	
 	public function setEnableCheckCart($value) {
 		$this->enable_check_cart = $value;
+	}
+	
+	public function setEnableRedeemCoupons($value) {
+		$this->enable_redeem_coupons = $value;
 	}
 	
 	public function setEnableGetOrders($value) {
@@ -1192,6 +1217,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 			$this->cache_folder_path = $dir;
 			$this->redirect_skip_keyword_cache_filename = $file;
 		}
+	}
+	
+	public function setIsShopgateAdapter($value) {
+		$this->is_shopgate_adapter = $value;
 	}
 	
 	public function setEnableRegisterCustomer($value) {
@@ -1936,6 +1965,11 @@ interface ShopgateConfigInterface {
 	public function getEnableRedirectKeywordUpdate();
 	
 	/**
+	 * @return bool true to enable default redirect for mobile devices from content sites to mobile website (welcome page)
+	 */
+	public function getEnableDefaultRedirect();
+	
+	/**
 	 * @return string The encoding the shop system is using internally.
 	 */
 	public function getEncoding();
@@ -1960,6 +1994,16 @@ interface ShopgateConfigInterface {
 	 */
 	public function getEnableUpdateOrder();
 
+	/**
+	 * @return bool
+	 */
+	public function getEnableCheckCart();
+
+	/**
+	 * @return bool
+	 */
+	public function getEnableRedeemCoupons();
+	
 	/**
 	 * @return bool
 	 */
@@ -2008,7 +2052,17 @@ interface ShopgateConfigInterface {
 	/**
 	 * @return bool
 	 */
-	public function getEnableClearLogfile();
+	public function getEnableClearLogFile();
+	
+	/**
+	 * @return bool
+	 */
+	public function getEnableClearCache();
+	
+	/**
+	 * @return string The ISO 3166 ALPHA-2 code of the country the plugin uses for export.
+	 */
+	public function getCountry();
 
 	/**
 	 * @return string The ISO 3166 ALPHA-2 code of the language the plugin uses for export.
@@ -2156,6 +2210,11 @@ interface ShopgateConfigInterface {
 	public function getRedirectSkipKeywordCachePath();
 
 	/**
+	 * @return bool True if the plugin is an adapter between Shopgate's and a third-party-API and servers multiple shops on both ends.
+	 */
+	public function getIsShopgateAdapter();
+
+	/**
 	 * @param string $value The name of the plugin / shop system the plugin is for.
 	 */
 	public function setPluginName($value);
@@ -2216,6 +2275,11 @@ interface ShopgateConfigInterface {
 	public function setEnableRedirectKeywordUpdate($value);
 	
 	/**
+	 * @param bool true to enable default redirect for mobile devices from content sites to mobile website (welcome page)
+	 */
+	public function setEnableDefaultRedirect($value);
+	
+	/**
 	 * @param string $value The encoding the shop system is using internally.
 	 */
 	public function setEncoding($value);
@@ -2240,6 +2304,16 @@ interface ShopgateConfigInterface {
 	 */
 	public function setEnableUpdateOrder($value);
 
+	/**
+	 * @param bool $value
+	 */
+	public function setEnableCheckCart($value);
+
+	/**
+	 * @param bool $value
+	 */
+	public function setEnableRedeemCoupons($value);
+	
 	/**
 	 * @param bool $value
 	 */
@@ -2288,7 +2362,17 @@ interface ShopgateConfigInterface {
 	/**
 	 * @param bool $value
 	 */
-	public function setEnableClearLogfile($value);
+	public function setEnableClearLogFile($value);
+	
+	/**
+	 * @param bool $value
+	 */
+	public function setEnableClearCache($value);
+	
+	/**
+	 * @param string The ISO 3166 ALPHA-2 code of the country the plugin uses for export.
+	 */
+	public function setCountry($value);
 
 	/**
 	 * @param string $value The ISO 3166 ALPHA-2 code of the language the plugin uses for export.
@@ -2435,6 +2519,11 @@ interface ShopgateConfigInterface {
 	 */
 	public function setRedirectSkipKeywordCachePath($value);
 
+	/**
+	 *  @param bool $value True if the plugin is an adapter between Shopgate's and a third-party-API and servers multiple shops on both ends.
+	 */
+	public function setIsShopgateAdapter($value);
+	
 	/**
 	 * Returns an additional setting.
 	 *
