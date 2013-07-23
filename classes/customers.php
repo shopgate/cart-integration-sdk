@@ -8,6 +8,9 @@ class ShopgateCustomer extends ShopgateContainer {
 	protected $customer_group;
 	protected $customer_group_id;
 	
+	protected $tax_class_key;
+	protected $tax_class_id;
+	
 	protected $first_name;
 	protected $last_name;
 	
@@ -64,6 +67,20 @@ class ShopgateCustomer extends ShopgateContainer {
 		}
 	}
 	
+	/**
+	 * @param string $value
+	 */
+	public function setTaxClassKey($value) {
+		$this->tax_class_key = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setTaxClassId($value) {
+		$this->tax_class_id = $value;
+	}
+
 	/**
 	 * @param string $value
 	 */
@@ -176,6 +193,16 @@ class ShopgateCustomer extends ShopgateContainer {
 		return $this->customer_group_id;
 	}
 	
+	/**
+	 * @return string
+	 */
+	public function getTaxClassKey() { return $this->tax_class_key; }
+	
+	/**
+	 * @return string
+	 */
+	public function getTaxClassId() { return $this->tax_class_id; }
+
 	/**
 	 * @return string
 	 */

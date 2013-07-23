@@ -1111,9 +1111,11 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			/* responsible fields */
 			'item_number' 				=> "",
 			'item_name' 				=> "",
-			'unit_amount' 				=> "",
+			'unit_amount'	 			=> "",
+//			'unit_amount_net' 			=> "",
 			'currency' 					=> "EUR",
-			'tax_percent' 				=> "",
+			'tax_percent'				=> "",
+//			'tax_class'					=> "",
 			'description' 				=> "",
 			'urls_images' 				=> "",
 			'categories' 				=> "",
@@ -1126,6 +1128,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			/* additional fields */
 			'item_number_public'		=> "",
 			'old_unit_amount'			=> "",
+//			'old_unit_amount_net'		=> "",
 			'properties'				=> "",
 			'msrp' 						=> "",
 			'shipping_costs_per_order' 	=> "0",
@@ -1508,7 +1511,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @throws ShopgateLibraryException if an error occurs.
 	 */
 	public abstract function updateOrder(ShopgateOrder $order);
-
+	
 	/**
 	 * Redeems coupons that are passed along with a ShopgateCart object.
 	 *
