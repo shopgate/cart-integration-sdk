@@ -432,6 +432,8 @@ class ShopgateOrder extends ShopgateCartBase {
 	protected $order_number;
 	
 	protected $confirm_shipping_url;
+	protected $shipping_group;
+	protected $shipping_type;
 	
 	protected $created_time;
 	
@@ -476,6 +478,22 @@ class ShopgateOrder extends ShopgateCartBase {
 		$this->confirm_shipping_url = $value;
 	}
 
+	/**
+	 *
+	 * @param string $value
+	 */
+	public function setShippingGroup($value) {
+		$this->shipping_group = $value;
+	}
+	
+	/**
+	 *
+	 * @param string $value
+	 */
+	public function setShippingType($value) {
+		$this->shipping_type = $value;
+	}
+	
 	/**
 	 * @see http://www.php.net/manual/de/function.date.php
 	 * @see http://en.wikipedia.org/wiki/ISO_8601
@@ -633,6 +651,22 @@ class ShopgateOrder extends ShopgateCartBase {
 	 */
 	public function getConfirmShippingUrl() {
 		return $this->confirm_shipping_url;
+	}
+	
+	/**
+	 *
+	 * @return string
+	 */
+	public function getShippingGroup() {
+		return $this->shipping_group;
+	}
+	
+	/**
+	 *
+	 * @return string
+	 */
+	public function getShippingType() {
+		return $this->shipping_type;
 	}
 	
 	/**
