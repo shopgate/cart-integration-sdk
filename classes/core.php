@@ -2006,10 +2006,10 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 			$properties['invoice_address'] = $this->object;
 		}
 		
-		// visit shipping_info
-		if (!empty($properties['shipping_info']) && ($properties['shipping_info'] instanceof ShopgateShippingInfo)) {
-			$properties['shipping_info']->accept($this);
-			$properties['shipping_info'] = $this->object;
+		// visit shipping_infos
+		if (!empty($properties['shipping_infos']) && ($properties['shipping_infos'] instanceof ShopgateShippingInfo)) {
+			$properties['shipping_infos']->accept($this);
+			$properties['shipping_infos'] = $this->object;
 		}
 
 		// iterate lists of referred objects
@@ -2349,9 +2349,9 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 		}
 		
 		// visit shipping info
-		if (!empty($properties['shipping_info']) && ($properties['shipping_info'] instanceof ShopgateShippingInfo)) {
-			$properties['shipping_info']->accept($this);
-			$properties['shipping_info'] = $this->array;
+		if (!empty($properties['shipping_infos']) && ($properties['shipping_infos'] instanceof ShopgateShippingInfo)) {
+			$properties['shipping_infos']->accept($this);
+			$properties['shipping_infos'] = $this->array;
 		}
 
 		// visit the items and delivery notes arrays

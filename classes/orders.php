@@ -435,7 +435,7 @@ class ShopgateOrder extends ShopgateCartBase {
 	
 	protected $shipping_group;
 	protected $shipping_type;
-	protected $shipping_info;
+	protected $shipping_infos;
 	
 	protected $created_time;
 	
@@ -500,9 +500,9 @@ class ShopgateOrder extends ShopgateCartBase {
 	 *
 	 * @param ShopgateShippingInfo $value
 	 */
-	public function setShippingInfo($value) {
+	public function setShippingInfos($value) {
 		if (!is_object($value) && !($value instanceof ShopgateShippingInfo) && !is_array($value)) {
-			$this->shipping_info = null;
+			$this->shipping_infos = null;
 			return;
 		}
 	
@@ -510,7 +510,7 @@ class ShopgateOrder extends ShopgateCartBase {
 			$value = new ShopgateShippingInfo($value);
 		}
 	
-		$this->shipping_info = $value;
+		$this->shipping_infos = $value;
 	}
 	
 	/**
@@ -692,8 +692,8 @@ class ShopgateOrder extends ShopgateCartBase {
 	 *
 	 * @return ShopgateShippingInfo
 	 */
-	public function getShippingInfo() {
-		return $this->shipping_info;
+	public function getShippingInfos() {
+		return $this->shipping_infos;
 	}
 	
 	/**
