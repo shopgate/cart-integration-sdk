@@ -432,8 +432,10 @@ class ShopgateOrder extends ShopgateCartBase {
 	protected $order_number;
 	
 	protected $confirm_shipping_url;
+	
 	protected $shipping_group;
 	protected $shipping_type;
+	protected $shipping_info;
 	
 	protected $created_time;
 	
@@ -492,6 +494,23 @@ class ShopgateOrder extends ShopgateCartBase {
 	 */
 	public function setShippingType($value) {
 		$this->shipping_type = $value;
+	}
+	
+	/**
+	 *
+	 * @param ShopgateShippingInfo $value
+	 */
+	public function setShippingInfo($value) {
+		if (!is_object($value) && !($value instanceof ShopgateShippingInfo) && !is_array($value)) {
+			$this->shipping_info = null;
+			return;
+		}
+	
+		if (is_array($value)) {
+			$value = new ShopgateShippingInfo($value);
+		}
+	
+		$this->shipping_info = $value;
 	}
 	
 	/**
@@ -667,6 +686,14 @@ class ShopgateOrder extends ShopgateCartBase {
 	 */
 	public function getShippingType() {
 		return $this->shipping_type;
+	}
+	
+	/**
+	 *
+	 * @return ShopgateShippingInfo
+	 */
+	public function getShippingInfo() {
+		return $this->shipping_info;
 	}
 	
 	/**
@@ -1338,18 +1365,110 @@ class ShopgateOrderItemAttribute extends ShopgateContainer {
 	}
 }
 
+class ShopgateShippingInfo extends ShopgateContainer {
+	protected $name;
+	protected $description;
+	protected $amount;
+	protected $weight;
+	protected $api_response;
+	
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitOrderShipping($this);
+	}
+	
+	/**
+	 *
+	 * @return string
+	 */
+	public function getName() {
+		return $this->name;
+	}
+	/**
+	 *
+	 * @param string $value
+	 */
+	public function setName($value) {
+		$this->name = $value;
+	}
+	
+	/**
+	 *
+	 * @return string
+	 */
+	public function getDescription() {
+		return $this->description;
+	}
+	/**
+	 *
+	 * @param string $value
+	 */
+	public function setDescription($value) {
+		$this->description = $value;
+	}
+	
+	/**
+	 *
+	 * @return float
+	 */
+	public function getAmount() {
+		return $this->amount;
+	}
+	/**
+	 *
+	 * @param float $value
+	 */
+	public function setAmount($value) {
+		$this->amount = $value;
+	}
+	
+	/**
+	 *
+	 * @return int
+	 */
+	public function getWeight() {
+		return $this->weight;
+	}
+	/**
+	 *
+	 * @param int $value
+	 */
+	public function setWeight($value) {
+		$this->weight = $value;
+	}
+	
+	/**
+	 *
+	 * @return mixed[]
+	 */
+	public function getApiResponse() {
+		return $this->api_response;
+	}
+	/**
+	 *
+	 * @param string|mixed[] $value
+	 */
+	public function setApiResponse($value) {
+		if(is_string($value)) {
+			$value = $this->jsonDecode($value, true);
+		}
+		
+		$this->api_response = $value;
+	}
+}
+
 class ShopgateDeliveryNote extends ShopgateContainer {
-	const DHL = "DHL"; // DHL
-	const DHLEXPRESS = "DHLEXPRESS"; // DHLEXPRESS
-	const DP = "DP"; // Deutsche Post
-	const DPD = "DPD"; // Deutscher Paket Dienst
-	const FEDEX = "FEDEX"; // FedEx
-	const GLS = "GLS"; // GLS
-	const HLG = "HLG"; // Hermes
-	const OTHER = "OTHER"; // Anderer Lieferant
-	const TNT = "TNT"; // TNT
-	const TOF = "TOF"; // Trnas-o-Flex
-	const UPS = "UPS"; // UPS
+	const DHL			= "DHL"; // DHL
+	const DHLEXPRESS	= "DHLEXPRESS"; // DHLEXPRESS
+	const DP			= "DP"; // Deutsche Post
+	const DPD			= "DPD"; // Deutscher Paket Dienst
+	const FEDEX			= "FEDEX"; // FedEx
+	const GLS			= "GLS"; // GLS
+	const HLG			= "HLG"; // Hermes
+	const OTHER			= "OTHER"; // Anderer Lieferant
+	const TNT			= "TNT"; // TNT
+	const TOF			= "TOF"; // Trnas-o-Flex
+	const UPS			= "UPS"; // UPS
+	const USPS			= "USPS"; // USPS
 
 	protected $shipping_service_id = ShopgateDeliveryNote::DHL;
 	protected $tracking_number = "";
