@@ -2082,7 +2082,7 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 	}
 	
 	public function visitOrderShipping(ShopgateShippingInfo $o) {
-		$properties = $i->buildProperties();
+		$properties = $o->buildProperties();
 		$this->iterateSimpleProperties($properties);
 		
 		// create new object with utf-8 en- / decoded data
