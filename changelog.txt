@@ -4,6 +4,7 @@
 '''Version 2.2.1'''
 * Neuen Schalter für die Standard-Weiterleitung von Contentseiten zur mobilen Startseite in der Klasse ShopgateConfig hinzugefügt
 * Paramater send_customer_mail zu Merchant API Methode addOrderDeliveryNote() hinzugefügt 
+* Neues Shopgate Versandsystem wird jetzt unterstützt
 
 '''Version 2.2.0'''
 * Es sind zwei neue Methoden hinzugekommen, die implementiert werden müssen: ShopgatePlugin::redeemCoupons() und ::checkCart(). Dadurch werden durch das Shopsystem angebotene Gutscheine auch im Mobilshop verwendbar
@@ -114,6 +115,7 @@
 '''Version 2.2.1'''
 * added switch for default redirect from content pages to mobile homepage in class ShopgateConfig
 * added paramater send_customer_mail to Merchant API method addOrderDeliveryNote()
+* support for new Shopgate shipping system
 
 '''Version 2.2.0'''
 * two new methods have been added and must be implemented: ShopgatePlugin::redeemCoupons() and ::checkCart(). These make coupons offered by the shoppingsystem available to the mobile shop
