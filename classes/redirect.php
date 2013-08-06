@@ -93,6 +93,11 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	protected $redirectType;
 	
 	/**
+	 * @var bool true if redirecting unknown pages should be enabled
+	 */
+	protected $enableDefaultRedirect;
+	
+	/**
 	 * @var string itemNumber used for creating a mobile product url
 	 */
 	protected $itemNumber;
@@ -257,7 +262,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	public function redirect($url, $autoRedirect = true) {
 		
 		if(!$this->isRedirectAllowed() || !$this->isMobileRequest() || !$autoRedirect){
-			return $this->getJsHeader();
+			return $this->getJsHeader($url);
 		}
 		
 		// validate url
@@ -300,7 +305,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		return $html;
 	}
 
-	protected function getJsHeader() {
+	protected function getJsHeader($mobileRedirectUrl = null) {
 		if (!file_exists($this->jsHeaderTemplatePath)) {
 			return '';
 		}
@@ -310,72 +315,70 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 			return '';
 		}
 		
-		$mobileRedirectUrl = '';
+		if (empty($mobileRedirectUrl)) {
+			$mobileRedirectUrl = $this->getShopUrl();
+		}
+		
 		$additionalParameters = '';
 		$redirectCode = '';
 		switch($this->redirectType){
 			case 'item':
 				if(!isset($this->itemNumber) || $this->itemNumber == ''){
-					$this->redirectType = 'start';
+					$this->redirectType = 'default';
 					break;
 				}
 				$redirectCode = 'item';
 				$additionalParameters .= '_shopgate.item_number = "'.$this->itemNumber.'";';
-				$mobileRedirectUrl = $this->getItemUrl($this->itemNumber);
 				break;
 			case 'itempublic':
 				if(!isset($this->itemNumberPublic) || $this->itemNumberPublic == ''){
-					$this->redirectType = 'start';
+					$this->redirectType = 'default';
 					break;
 				}
 				$redirectCode = 'item';
 				$additionalParameters .= '_shopgate.item_number_public = "'.$this->itemNumberPublic.'";';
-				$mobileRedirectUrl = $this->getItemPublicUrl($this->itemNumberPublic);
 				break;
 			case 'category':
 				if(!isset($this->categoryNumber) || $this->categoryNumber == ''){
-					$this->redirectType = 'start';
+					$this->redirectType = 'default';
 					break;
 				}
 				$redirectCode = 'category';
 				$additionalParameters .= '_shopgate.category_number = "'.$this->categoryNumber.'";';
-				$mobileRedirectUrl = $this->getCategoryUrl($this->categoryNumber);
 				break;
 			case 'cms':
 				if(!isset($this->cmsPage) || $this->cmsPage == ''){
-					$this->redirectType = 'start';
+					$this->redirectType = 'default';
 					break;
 				}
 				$redirectCode = 'cms';
 				$additionalParameters .= '_shopgate.cms_page = "'.$this->cmsPage .'";';
-				$mobileRedirectUrl = $this->getCmsUrl($this->cmsPage);
 				break;
 			case 'brand':
 				if(!isset($this->manufacturerName) || $this->manufacturerName == ''){
-					$this->redirectType = 'start';
+					$this->redirectType = 'default';
 					break;
 				}
 				$redirectCode = 'brand';
 				$additionalParameters .= '_shopgate.brand_name = "'.$this->manufacturerName.'";';
-				$mobileRedirectUrl = $this->getBrandUrl($this->manufacturerName);
 				break;
 			case 'search':
 				if(!isset($this->searchQuery) || $this->searchQuery == ''){
-					$this->redirectType = 'start';
+					$this->redirectType = 'default';
 					break;
 				}
 				$redirectCode = 'search';
 				$additionalParameters .= '_shopgate.search_query = "'.$this->searchQuery.'";';
-				$mobileRedirectUrl = $this->getSearchUrl($this->searchQuery);
 				break;
-			default: case 'start':
-				$this->redirectType = 'start';
+			case 'start':
+				$redirectCode = 'start';
 				break;
+			default:
+				$redirectCode = 'default';
 		}
 		
-		if($this->redirectType == 'start'){
-			$mobileRedirectUrl = $this->getShopUrl();
-			$redirectCode = 'start';
+		if($this->redirectType == 'default'){
+			$additionalParameters .= '_shopgate.is_default_redirect_disabled = '.(($this->enableDefaultRedirect) ? 'true' : 'false').';';
 		}
 		
 		switch($this->config->getServer()){
@@ -540,6 +543,17 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	#############################
 
 	
+	public function buildScriptDefault($autoRedirect = true) {
+		$this->redirectType = 'default';
+		$this->enableDefaultRedirect = $this->config->getEnableDefaultRedirect();
+		return $this->redirect($this->getShopUrl(), $autoRedirect);
+	}
+	
+	public function buildScriptShop($autoRedirect = true){
+		$this->redirectType = 'start';
+		return $this->redirect($this->getShopUrl(), $autoRedirect);
+	}
+	
 	public function buildScriptItem($itemNumber, $autoRedirect = true){
 		$this->itemNumber = $itemNumber;
 		$this->redirectType = 'item';
@@ -556,11 +570,6 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		$this->categoryNumber = $categoryNumber;
 		$this->redirectType = 'category';
 		return $this->redirect($this->getCategoryUrl($categoryNumber), $autoRedirect);
-	}
-	
-	public function buildScriptShop($autoRedirect = true){
-		$this->redirectType = 'start';
-		return $this->redirect($this->getShopUrl(), $autoRedirect);
 	}
 	
 	public function buildScriptCms($cmsPage, $autoRedirect = true){
