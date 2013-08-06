@@ -702,23 +702,21 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 	 */
 	private $apiUrl;
 	
-	private $curlOpt = array();
-	
 	public function __construct(ShopgateAuthentificationServiceInterface $authService, $shopNumber, $apiUrl) {
 		$this->authService = $authService;
 		$this->shopNumber = $shopNumber;
 		$this->apiUrl = $apiUrl;
-		$this->curlOpt = $this->getCurlOptArray();
 	}
 	
 	/**
 	 * Returns an array of curl-options for requests
 	 *
-	 * @return mixed[]
+	 * @param mixed[] $override cURL options to override for this request.
+	 * @return mixed[] The default cURL options for a Shopgate Merchant API request merged with the options in $override.
 	 */
-	protected function getCurlOptArray() {
+	protected function getCurlOptArray($override = array()) {
 		$opt = array();
-
+		
 		$opt[CURLOPT_HEADER] = false;
 		$opt[CURLOPT_USERAGENT] = 'ShopgatePlugin/'.(defined('SHOPGATE_PLUGIN_VERSION') ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin');
 		$opt[CURLOPT_SSL_VERIFYPEER] = false;
@@ -733,29 +731,31 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 		$opt[CURLOPT_TIMEOUT] = 30; // Default timeout 30sec
 		$opt[CURLOPT_POST] = true;
 		
-		return $opt;
+		return array_merge($opt, $override);
 	}
 	
 	/**
 	 * Prepares the request and sends it to the configured Shopgate Merchant API.
 	 *
 	 * @param mixed[] $parameters The parameters to send.
+	 * @param mixed[] $curlOptOverride cURL options to override for this request.
 	 * @return ShopgateMerchantApiResponse The response object.
 	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
 	 */
-	protected function sendRequest($parameters) {
+	protected function sendRequest($parameters, $curlOptOverride = array()) {
 		$parameters['shop_number'] = $this->shopNumber;
 		$parameters['trace_id'] = 'spa-'.uniqid();
 		
 		$this->log('Sending request to "'.$this->apiUrl.'": '.ShopgateLogger::getInstance()->cleanParamsForLog($parameters), ShopgateLogger::LOGTYPE_REQUEST);
 		
+		// init new auth session and generate cURL options
 		$this->authService->startNewSession();
+		$curlOpt = $this->getCurlOptArray($curlOptOverride);
 		
+		// init cURL connection and send the request
 		$curl = curl_init($this->apiUrl);
-		
 		curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($parameters));
-		curl_setopt_array($curl, $this->curlOpt);
-		
+		curl_setopt_array($curl, $curlOpt);
 		$response = curl_exec($curl);
 		$info = curl_getinfo($curl);
 		curl_close($curl);
@@ -857,26 +857,20 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 	 * @deprecated
 	 */
 	public function getMobileRedirectKeywords() {
-		// Set timeout to 1 second
-		$this->curlOpt[CURLOPT_TIMEOUT] = 1;
-		
 		$request = array(
 				'action' => 'get_mobile_redirect_keywords',
 		);
 		
-		$response = $this->sendRequest($request);
+		$response = $this->sendRequest($request, array(CURLOPT_TIMEOUT => 1));
 		return $response->getData();
 	}
 	
 	public function getMobileRedirectUserAgents() {
-		// Set timeout to 1 second
-		$this->curlOpt[CURLOPT_TIMEOUT] = 1;
-		
 		$request = array(
 				'action' => 'get_mobile_redirect_user_agents',
 		);
 		
-		$response = $this->sendRequest($request);
+		$response = $this->sendRequest($request, array(CURLOPT_TIMEOUT => 1));
 		
 		$responseData = $response->getData();
 		if(!isset($responseData["keywords"]) || !isset($responseData["skip_keywords"])) {
