@@ -1518,7 +1518,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_redeem_coupons#API_Response
 	 *
 	 * @param ShopgateCart $cart The ShopgateCart object containing the coupons that should be redeemed.
-	 * @return ShopgateExternalCoupon[]
+	 * @return array('external_coupons' => ShopgateExternalCoupon[])
 	 * @throws ShopgateLibraryException if an error occurs.
 	 */
 	public abstract function redeemCoupons(ShopgateCart $cart);

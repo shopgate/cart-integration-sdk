@@ -257,7 +257,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$responses['execution_time'] = $runtime;
 
 		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
-		$this->responseData = array_merge($responses);
+		$this->responseData = $responses;
 	}
 
 	/**
@@ -283,7 +283,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		
 		$orderData = $this->plugin->addOrder($orders[0]);
 		if (is_array($orderData)) {
-			$this->responseData = array_merge($orderData, $this->responseData);
+			$this->responseData = $orderData;
 		} else {
 			$this->responseData['external_order_id'] = $orderData;
 			$this->responseData['external_order_number'] = null;
@@ -328,7 +328,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		
 		$orderData = $this->plugin->updateOrder($orders[0]);
 		if (is_array($orderData)) {
-			$this->responseData = array_merge($orderData, $this->responseData);
+			$this->responseData = $orderData;
 		} else {
 			$this->responseData['external_order_id'] = $orderData;
 			$this->responseData['external_order_number'] = null;
@@ -345,14 +345,21 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		if (!isset($this->params['cart'])) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_CART);
 		}
-
+		
 		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
-
+		
 		$cart = new ShopgateCart($this->params['cart']);
 		$couponData = $this->plugin->redeemCoupons($cart);
 		
 		if(!is_array($couponData)) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, 'Plugin Response: '.var_export($couponData, true));
+		}
+		
+		// Workaround:
+		// $couponData was specified to be a ShopgateExternalCoupon[].
+		// Now supports the same format as checkCart(), i.e. array('external_coupons' => ShopgateExternalCoupon[]).
+		if (empty($couponData['external_coupons'])) {
+			$couponData['external_coupons'] = $couponData;
 		}
 		
 		$responseData = array("external_coupons" => array());
@@ -367,7 +374,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			$responseData["external_coupons"][] = $coupon;
 		}
 		
-		$this->responseData = array_merge($responseData, $this->responseData);
+		$this->responseData = $responseData;
 	}
 	
 	/**
@@ -409,7 +416,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		}
 		$responseData["external_coupons"] = $coupons;
 		
-		$this->responseData = array_merge($responseData, $this->responseData);
+		$this->responseData = $responseData;
 	}
 
 	/**
@@ -1135,8 +1142,14 @@ class ShopgateAuthentificationService extends ShopgateObject implements Shopgate
 	 * @param string $customerNumber
 	 * @param int $timestamp
 	 * @param string $apiKey
+	 * @throws ShopgateLibraryException when no customer number or API key is set
+	 * @return string The SHA-1 hash Auth Token for Shopgate's Authentication
 	 */
 	protected function buildCustomAuthToken($prefix, $customerNumber, $timestamp, $apiKey) {
+		if (empty($customerNumber) || empty($apiKey)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_INVALID_VALUE, 'Shopgate customer number or  API key not set.', true, false);
+		}
+		
 		return sha1("{$prefix}-{$customerNumber}-{$timestamp}-{$apiKey}");
 	}
 }
