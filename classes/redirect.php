@@ -260,7 +260,6 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	}
 
 	public function redirect($url, $autoRedirect = true) {
-		
 		if(!$this->isRedirectAllowed() || !$this->isMobileRequest() || !$autoRedirect || !$this->enableDefaultRedirect) {
 			return $this->getJsHeader($url);
 		}
@@ -324,7 +323,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		switch($this->redirectType){
 			case 'item':
 				if(!isset($this->itemNumber) || $this->itemNumber == ''){
-					$this->redirectType = 'default';
+					$redirectCode = 'default';
 					break;
 				}
 				$redirectCode = 'item';
@@ -332,7 +331,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 				break;
 			case 'itempublic':
 				if(!isset($this->itemNumberPublic) || $this->itemNumberPublic == ''){
-					$this->redirectType = 'default';
+					$redirectCode = 'default';
 					break;
 				}
 				$redirectCode = 'item';
@@ -340,7 +339,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 				break;
 			case 'category':
 				if(!isset($this->categoryNumber) || $this->categoryNumber == ''){
-					$this->redirectType = 'default';
+					$redirectCode = 'default';
 					break;
 				}
 				$redirectCode = 'category';
@@ -348,7 +347,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 				break;
 			case 'cms':
 				if(!isset($this->cmsPage) || $this->cmsPage == ''){
-					$this->redirectType = 'default';
+					$redirectCode = 'default';
 					break;
 				}
 				$redirectCode = 'cms';
@@ -356,7 +355,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 				break;
 			case 'brand':
 				if(!isset($this->manufacturerName) || $this->manufacturerName == ''){
-					$this->redirectType = 'default';
+					$redirectCode = 'default';
 					break;
 				}
 				$redirectCode = 'brand';
@@ -364,7 +363,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 				break;
 			case 'search':
 				if(!isset($this->searchQuery) || $this->searchQuery == ''){
-					$this->redirectType = 'default';
+					$redirectCode = 'default';
 					break;
 				}
 				$redirectCode = 'search';
@@ -377,7 +376,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 				$redirectCode = 'default';
 		}
 		
-		if($this->redirectType == 'default'){
+		if($redirectCode == 'default') {
 			$additionalParameters .= '_shopgate.is_default_redirect_disabled = '.((!$this->enableDefaultRedirect) ? 'true' : 'false').';';
 		}
 		
@@ -403,7 +402,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		$html = str_replace('{$additional_parameters}', $additionalParameters, $html);
 		$html = str_replace('{$ssl_url}', $sslUrl, $html);
 		$html = str_replace('{$non_ssl_url}', $nonSslUrl, $html);
-
+		
 		return $html;
 	}
 
