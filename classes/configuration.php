@@ -1948,7 +1948,7 @@ interface ShopgateConfigInterface {
 	public function getAlwaysUseSsl();
 
 	/**
-	 * @return int (hours) The update period for keywords that identify mobile devices. Leave empty to download once and then always use the cached keywords
+	 * @return bool true to enable updates of keywords that identify mobile devices
 	 */
 	public function getEnableRedirectKeywordUpdate();
 	
@@ -2258,7 +2258,7 @@ interface ShopgateConfigInterface {
 	public function setAlwaysUseSsl($value);
 
 	/**
-	 * @param bool $value (hours) The update period for keywords that identify mobile devices. Leave empty to download once and then always use the cached keywords
+	 * @param bool $value true to enable updates of keywords that identify mobile devices
 	 */
 	public function setEnableRedirectKeywordUpdate($value);
 	
