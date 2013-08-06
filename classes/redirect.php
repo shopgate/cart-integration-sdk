@@ -378,7 +378,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		}
 		
 		if($this->redirectType == 'default'){
-			$additionalParameters .= '_shopgate.is_default_redirect_disabled = '.(($this->enableDefaultRedirect) ? 'true' : 'false').';';
+			$additionalParameters .= '_shopgate.is_default_redirect_disabled = '.((!$this->enableDefaultRedirect) ? 'true' : 'false').';';
 		}
 		
 		switch($this->config->getServer()){
