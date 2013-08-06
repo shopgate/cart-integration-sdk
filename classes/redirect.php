@@ -137,7 +137,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		$this->setCustomMobileUrl($shopgateConfig->getCname());
 
 		if($this->config->getEnableRedirectKeywordUpdate()){
-			$this->enableKeywordUpdate($this->config->getEnableRedirectKeywordUpdate());
+			$this->enableKeywordUpdate();
 		} else {
 			$this->disableKeywordUpdate();
 		}
