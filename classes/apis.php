@@ -358,8 +358,8 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		// Workaround:
 		// $couponData was specified to be a ShopgateExternalCoupon[].
 		// Now supports the same format as checkCart(), i.e. array('external_coupons' => ShopgateExternalCoupon[]).
-		if (empty($couponData['external_coupons'])) {
-			$couponData['external_coupons'] = $couponData;
+		if (!empty($couponData['external_coupons']) && is_array($couponData['external_coupons'])) {
+			$couponData = $couponData['external_coupons'];
 		}
 		
 		$responseData = array("external_coupons" => array());
@@ -738,7 +738,7 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 		$opt[CURLOPT_TIMEOUT] = 30; // Default timeout 30sec
 		$opt[CURLOPT_POST] = true;
 		
-		return array_merge($opt, $override);
+		return ($override + $opt);
 	}
 	
 	/**
