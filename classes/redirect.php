@@ -2,7 +2,7 @@
 
 class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRedirectInterface {
 	/**
-	 * @var string alias name of shop at Shopgate, e.g. 'yourshop' to redirect to 'https://yourshop.shopgate.com'
+	 * @var string alias name of shop at Shopgate, e.g. 'yourshop' to redirect to 'http://yourshop.shopgate.com'
 	 */
 	protected $alias = '';
 	
@@ -381,18 +381,23 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		}
 		
 		switch($this->config->getServer()){
+			default: // fall through to 'live'
+			case 'live':
+				$sslUrl = ShopgateMobileRedirectInterface::SHOPGATE_STATIC_SSL;
+				$nonSslUrl = ShopgateMobileRedirectInterface::SHOPGATE_STATIC;
+			break;
+			case 'sl':
+				$sslUrl = ShopgateMobileRedirectInterface::SHOPGATE_SL_STATIC_SSL;
+				$nonSslUrl = ShopgateMobileRedirectInterface::SHOPGATE_SL_STATIC;
+			break;
 			case 'pg':
-				$sslUrl = 'https://static-ssl.shopgatepg.com';
-				$nonSslUrl = 'http://static.shopgatepg.com';
-				break;
+				$sslUrl = ShopgateMobileRedirectInterface::SHOPGATE_PG_STATIC_SSL;
+				$nonSslUrl = ShopgateMobileRedirectInterface::SHOPGATE_PG_STATIC;
+			break;
 			case 'custom':
 				$sslUrl = 'https://shopgatedev-public.s3.amazonaws.com';
 				$nonSslUrl = 'http://shopgatedev-public.s3.amazonaws.com';
-				break;
-			case 'live': default:
-				$sslUrl = 'https://static-ssl.shopgate.com';
-				$nonSslUrl = 'http://static.shopgate.com';
-				break;
+			break;
 		}
 		
 		// set parameters
@@ -433,6 +438,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		switch ($this->config->getServer()) {
 			default: // fall through to "live"
 			case 'live':	return ShopgateMobileRedirectInterface::SHOPGATE_LIVE_ALIAS;
+			case 'sl':		return ShopgateMobileRedirectInterface::SHOPGATE_SL_ALIAS;
 			case 'pg':		return ShopgateMobileRedirectInterface::SHOPGATE_PG_ALIAS;
 			case 'custom':	return '.localdev.cc/php/shopgate/index.php'; // for Shopgate development & testing
 		}
@@ -633,11 +639,23 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 interface ShopgateMobileRedirectInterface {
 	const SHOPGATE_STATIC = 'http://static.shopgate.com';
 	const SHOPGATE_STATIC_SSL = 'https://static-ssl.shopgate.com';
-
+	
+	const SHOPGATE_PG_STATIC = 'http://static.shopgatepg.com';
+	const SHOPGATE_PG_STATIC_SSL = 'https://static-ssl.shopgatepg.com';
+	
+	const SHOPGATE_SL_STATIC = 'http://static.shopgatesl.com';
+	const SHOPGATE_SL_STATIC_SSL = 'https://static-ssl.shopgatesl.com';
+	
+	
 	/**
 	 * @var string the URL that is appended to the end of a shop alias (aka subdomain) if the shop is live
 	 */
 	const SHOPGATE_LIVE_ALIAS = '.shopgate.com';
+	
+	/**
+	 * @var string the URL that is appended to the end of a shop alias (aka subdomain) if the shop is on spotlight
+	 */
+	const SHOPGATE_SL_ALIAS = '.shopgatesl.com';
 
 	/**
 	 * @var string the URL that is appended to the end of a shop alias (aka subdomain) if the shop is on playground
