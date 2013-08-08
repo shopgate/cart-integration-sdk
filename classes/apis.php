@@ -830,7 +830,7 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 			'mark_as_completed' => $markAsCompleted,
 			'send_customer_mail' => $sendCustomerMail,
 		);
-	
+		
 		return $this->sendRequest($request);
 	}
 	
