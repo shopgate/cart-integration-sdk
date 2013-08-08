@@ -347,6 +347,7 @@ class ShopgateLogger {
 	const LOGTYPE_DEBUG = 'debug';
 
 	const OBFUSCATION_STRING = 'XXXXXXXX';
+	const REMOVED_STRING = '<removed>';
 
 	/**
 	 * @var bool
@@ -563,7 +564,8 @@ class ShopgateLogger {
 	public function cleanParamsForLog($data) {
 		foreach ($data as $key => &$value) {
 			switch ($key) {
-				case 'pass': $value = self::OBFUSCATION_STRING;
+				case 'pass': $value = self::OBFUSCATION_STRING; break;
+				case 'cart': $value = self::REMOVED_STRING; break;
 			}
 		}
 

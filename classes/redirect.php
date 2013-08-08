@@ -260,7 +260,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	}
 
 	public function redirect($url, $autoRedirect = true) {
-		if(!$this->isRedirectAllowed() || !$this->isMobileRequest() || !$autoRedirect || !$this->enableDefaultRedirect) {
+		if(!$this->isRedirectAllowed() || !$this->isMobileRequest() || !$autoRedirect || (($this->redirectType == 'default') && !$this->enableDefaultRedirect)) {
 			return $this->getJsHeader($url);
 		}
 		
