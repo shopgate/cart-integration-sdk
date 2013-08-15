@@ -1361,7 +1361,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @param array $shopgateItemArray
 	 * @param mixed $dataObject or $dataArray to access
 	 */
-	protected final function executeLoaders(array $loaders)
+	protected final function executeLoaders(array $loaders/*, &$csvArray, $item[, ...]*/)
 	{
 		$arguments = func_get_args();
 		array_shift($arguments);
@@ -1372,6 +1372,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 				$result = call_user_func_array( array( $this, $method ), $arguments );
 
  				if($result) {
+ 					// put back the result into argument-list (&$csvArray)
 					$arguments[0] = $result;
  				}
 			}
@@ -1389,7 +1390,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		$actions = array();
 		$subjectName = trim($subjectName);
 		if(!empty($subjectName)) {
-			$subjectName = ($subjectName);
 			$methodName = 'buildDefault'.$this->camelize($subjectName, true).'Row';
 			if(method_exists($this, $methodName)) {
 				foreach(array_keys($this->{$methodName}() ) as $sKey) {
