@@ -60,11 +60,7 @@ class ShopgateCustomer extends ShopgateContainer {
 	 * @param string $value
 	 */
 	public function setCustomerGroupId($value) {
-		if (is_numeric($value)) {
-			$this->customer_group_id = (int) $value;
-		} else {
-			$this->customer_group_id = null;
-		}
+		$this->customer_group_id = $value;
 	}
 	
 	/**
