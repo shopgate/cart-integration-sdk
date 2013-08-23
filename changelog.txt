@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.3.0'''
+* Neue Funktion get_settings() zum Exportieren der Steuersätze, -klassen, und -regeln des Shops (und zukünftig weiterer Einstellungen)
+
 '''Version 2.2.2'''
 * die Header für die Authentifizierung werden jetzt bei jedem Request per ShopgateMerchantApi-Klasse neu generiert
 * die Einstellung "enable_get_redirect_keywords" wird jetzt konsequent als Boolean genutzt, die Nutzung als Zeitangabe für die Cache-Lifetime entfällt
@@ -118,6 +121,9 @@
 
 
 '''English'''
+
+'''Version 2.3.0'''
+* New function get_settings() for exporting the shop's tax rates, tax rules and tax classes (and other settings in the future)
 
 '''Version 2.2.2'''
 * the authentication headers are regenerated on every call via the ShopgateMerchantApi class

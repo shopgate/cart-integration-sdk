@@ -1544,6 +1544,26 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	public abstract function checkCart(ShopgateCart $cart);
 	
 	/**
+	 * Returns an array of certain settings of the shop. (Currently mainly tax settings.)
+	 *
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_settings#API_Response
+	 *
+	 * @return array(
+	 *          <ul>
+	 *						<li>'tax' => Contains the tax settings as follows:
+	 *							<ul>
+	 *								<li>'tax_classes_products' => A list of product tax class identifiers.</li>
+	 *								<li>'tax_classes_customers' => A list of customer tax classes.</li>
+	 *								<li>'tax_rates' => A list of tax rates.</li>
+	 *								<li>'tax_rules' => A list of tax rule containers.</li>
+	 *							</ul>
+	 *						</li>
+	 *          </ul>) 
+	 * @throws ShopgateLibraryException on invalid log in data or hard errors like database failure.
+	 */
+	public abstract function getSettings();
+	
+	/**
 	 * Loads the products of the shop system's database and passes them to the buffer.
 	 *
 	 * If $this->splittedExport is set to "true", you MUST regard $this->offset and $this->limit when fetching items from the database.

@@ -76,7 +76,8 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				'clear_log_file',
 				'clear_cache',
 				'check_cart',
-				'redeem_coupons'
+				'redeem_coupons',
+				'get_settings',
 		);
 	}
 
@@ -191,7 +192,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$this->responseData['plugin_info'] = $this->plugin->createPluginInfo();
 		$this->responseData['permissions'] = $this->getPermissions();
 		$this->responseData['php_version'] = phpversion();
-		$this->responseData['php_config'] = $this->getSettings();
+		$this->responseData['php_config'] = $this->getPhpSettings();
 		$this->responseData['php_curl'] = function_exists('curl_version') ? curl_version() : 'No PHP-CURL installed';
 		$this->responseData['php_extensions'] = get_loaded_extensions();
 		$this->responseData['shopgate_library_version'] = SHOPGATE_LIBRARY_VERSION;
@@ -420,6 +421,19 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	}
 
 	/**
+	 * Represents the "get_settings" action.
+	 *
+	 * @throws ShopgateLibraryException
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_check_cart
+	 */
+	protected function getSettings() {
+		$this->responseData = $this->plugin->getSettings();
+		
+		// set data and return response
+		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
+	}
+	
+	/**
 	 * Represents the "get_customer" action.
 	 *
 	 * @throws ShopgateLibraryException
@@ -621,7 +635,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	### Helpers ###
 	###############
 	
-	private function getSettings() {
+	private function getPhpSettings() {
 		$settingDetails = array();
 
 		$allSettings = function_exists('ini_get_all') ? ini_get_all() : array();

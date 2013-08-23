@@ -195,6 +195,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 */
 	protected $enable_clear_cache;
 	
+	/**
+	 * @var bool
+	 */
+	protected $enable_get_settings;
+	
 	#######################################################
 	### Options regarding shop system specific settings ###
 	#######################################################
@@ -779,6 +784,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->enable_clear_cache;
 	}
 	
+	public function getEnableGetSettings() {
+		return $this->enable_get_settings;
+	}
+	
 	public function getCountry() {
 		return strtoupper($this->country);
 	}
@@ -1029,6 +1038,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	
 	public function setEnableClearCache($value) {
 		$this->enable_clear_cache = $value;
+	}
+	
+	public function setEnableGetSettings($value) {
+		$this->enable_get_settings = $value;
 	}
 	
 	public function setCountry($value) {
