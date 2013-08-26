@@ -846,23 +846,24 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 		return $response;
 	}
 	
-	public function addOrderDeliveryNote($orderNumber, $shippingServiceId, $trackingNumber, $markAsCompleted = false, $sendCustomerMail = true) {
+	public function addOrderDeliveryNote($orderNumber, $shippingServiceId, $trackingNumber, $markAsCompleted = false, $sendCustomerEmail = false) {
 		$request = array(
 			'action' => 'add_order_delivery_note',
 			'order_number' => $orderNumber,
 			'shipping_service_id' => $shippingServiceId,
 			'tracking_number' => (string) $trackingNumber,
 			'mark_as_completed' => $markAsCompleted,
-			'send_customer_mail' => $sendCustomerMail,
+			'send_customer_email' => $sendCustomerEmail,
 		);
 		
 		return $this->sendRequest($request);
 	}
 	
-	public function setOrderShippingCompleted($orderNumber) {
+	public function setOrderShippingCompleted($orderNumber, $sendCustomerEmail = false) {
 		$request = array(
-				'action' => 'set_order_shipping_completed',
-				'order_number' => $orderNumber,
+			'action' => 'set_order_shipping_completed',
+			'order_number' => $orderNumber,
+			'send_customer_email' => $sendCustomerEmail,
 		);
 		
 		return $this->sendRequest($request);
@@ -870,12 +871,12 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 	
 	public function cancelOrder($orderNumber, $cancelCompleteOrder = false, $cancellationItems = array(), $cancelShipping = false, $cancellationNote = '') {
 		$request = array(
-				'action' => 'cancel_order',
-				'order_number' => $orderNumber,
-				'cancel_complete_order' => $cancelCompleteOrder,
-				'cancellation_items' => $cancellationItems,
-				'cancel_shipping' => $cancelShipping,
-				'cancellation_note' => $cancellationNote,
+			'action' => 'cancel_order',
+			'order_number' => $orderNumber,
+			'cancel_complete_order' => $cancelCompleteOrder,
+			'cancellation_items' => $cancellationItems,
+			'cancel_shipping' => $cancelShipping,
+			'cancellation_note' => $cancellationNote,
 		);
 		
 		return $this->sendRequest($request);
