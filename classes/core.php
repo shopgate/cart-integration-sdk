@@ -19,8 +19,25 @@ define('SHOPGATE_BASE_DIR', realpath(dirname(__FILE__).'/../'));
  * @see http://php.net/manual/en/function.set-error-handler.php
  */
 function ShopgateErrorHandler($errno, $errstr, $errfile, $errline) {
-	// make no difference between exceptions and E_WARNING
-	$msg = "Fatal PHP Error [Nr. $errno : $errfile / $errline] ";
+	switch ($errno) {
+		case E_NOTICE:
+		case E_USER_NOTICE:
+			$severity = "Notice";
+			break;
+		case E_WARNING:
+		case E_USER_WARNING:
+			$severity = "Warning";
+			break;
+		case E_ERROR:
+		case E_USER_ERROR:
+			$severity = "Fatal Error";
+			break;
+		default:
+			$severity = "Unknown Error";
+			break;
+	}
+
+	$msg = "$severity [Nr. $errno : $errfile / $errline] ";
 	$msg .= "$errstr";
 	$msg .= "\n". print_r(debug_backtrace(false), true);
 

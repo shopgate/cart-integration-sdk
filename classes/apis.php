@@ -132,9 +132,8 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				ShopgateLogger::getInstance()->keepDebugLog(!empty($data['keep_debug_log']));
 			}
 			// enable error handler if requested
-			if (!empty($data['handle_errors'])) {
-				error_reporting($data['handle_errors']);
-				set_error_handler(ShopgateErrorHandler);
+			if (!empty($data['error_reporting'])) {
+				error_reporting($data['error_reporting']);
 			}
 			
 			// call the action
