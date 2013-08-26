@@ -2,6 +2,7 @@
 
 '''Version 2.3.0'''
 * Neue Funktion get_settings() zum Exportieren der Steuersätze, -klassen, und -regeln des Shops (und zukünftig weiterer Einstellungen)
+* Bei API-calls kann nun ein Feld "handle_errors" übergeben werden. Der übergebene Wert wird an error_reporting() weitergereicht.
 
 '''Version 2.2.2'''
 * die Header für die Authentifizierung werden jetzt bei jedem Request per ShopgateMerchantApi-Klasse neu generiert
@@ -124,6 +125,7 @@
 
 '''Version 2.3.0'''
 * New function get_settings() for exporting the shop's tax rates, tax rules and tax classes (and other settings in the future)
+* API calls can now contain a new field called "handle_errors". The given value will be passed on to error_reporting().
 
 '''Version 2.2.2'''
 * the authentication headers are regenerated on every call via the ShopgateMerchantApi class
