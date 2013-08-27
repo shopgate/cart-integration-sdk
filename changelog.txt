@@ -5,7 +5,6 @@
 * Standard-Wert für send_customer_email für Methode add_order_delifery_note auf false geändert
 * Bei API-calls kann nun ein Feld "handle_errors" übergeben werden. Der übergebene Wert wird an error_reporting() weitergereicht
 
-
 '''Version 2.2.2'''
 * die Header für die Authentifizierung werden jetzt bei jedem Request per ShopgateMerchantApi-Klasse neu generiert
 * die Einstellung "enable_get_redirect_keywords" wird jetzt konsequent als Boolean genutzt, die Nutzung als Zeitangabe für die Cache-Lifetime entfällt
