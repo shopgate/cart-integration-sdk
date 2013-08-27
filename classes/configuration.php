@@ -355,6 +355,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_cron = 0;
 		$this->enable_clear_log_file = 1;
 		$this->enable_clear_cache = 1;
+		$this->enable_get_settings = 0;
 		
 		$this->country = 'DE';
 		$this->language = 'de';
@@ -1870,7 +1871,7 @@ interface ShopgateConfigInterface {
 	
 	/**
 	 * Checks if there is more than one configuration file available.
-	 * 
+	 *
 	 * @return bool true if multiple configuration files are available, false otherwise.
 	 */
 	public function checkMultipleConfigs();
