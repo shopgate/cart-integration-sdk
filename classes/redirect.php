@@ -260,6 +260,10 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	}
 
 	public function redirect($url, $autoRedirect = true) {
+		if (!$this->config->getShopNumber()) {
+			return '';
+		}
+
 		if(!$this->isRedirectAllowed() || !$this->isMobileRequest() || !$autoRedirect || (($this->redirectType == 'default') && !$this->enableDefaultRedirect)) {
 			return $this->getJsHeader($url);
 		}
@@ -311,6 +315,10 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		
 		$html = @file_get_contents($this->jsHeaderTemplatePath);
 		if (empty($html)) {
+			return '';
+		}
+		
+		if (!$this->config->getShopNumber()) {
 			return '';
 		}
 		
@@ -695,7 +703,7 @@ interface ShopgateMobileRedirectInterface {
 	
 	/**
 	 * Sets the cname of the shop
-	 * 
+	 *
 	 * @deprecated
 	 * @param string $cname
 	 */
@@ -720,7 +728,7 @@ interface ShopgateMobileRedirectInterface {
 	
 	/**
 	 * Disables updating of the keywords that identify mobile devices from Shopgate Merchant API.
-	 * 
+	 *
 	 * @deprecated
 	 */
 	public function disableKeywordUpdate();
@@ -762,7 +770,7 @@ interface ShopgateMobileRedirectInterface {
 	 *
 	 * This will cause slower download of nonsensitive material (the mobile header button images) from Shopgate.
 	 * Activate only if the secure connection is determined incorrectly (e.g. because of third-party components).
-	 * 
+	 *
 	 * @deprecated
 	 */
 	public function setAlwaysUseSSL();
@@ -876,7 +884,7 @@ interface ShopgateMobileRedirectInterface {
 	
 	/**
 	 * Create a mobile-shop-url to the startmenu
-	 * 
+	 *
 	 * @deprecated
 	 */
 	public function getShopUrl();

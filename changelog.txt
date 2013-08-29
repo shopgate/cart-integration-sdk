@@ -1,5 +1,9 @@
 '''Deutsch'''
 
+'''Version 2.3.1'''
+* Wenn keine Shopnumber gesetzt ist, wird der Redirect Script nicht in die Seite gerendert
+* bei einem Ping wird die Dateigröße und der Besitzer ausgelesen
+
 '''Version 2.3.0'''
 * Neue Funktion get_settings() zum Exportieren der Steuersätze, -klassen, und -regeln des Shops (und zukünftig weiterer Einstellungen)
 * Standard-Wert für send_customer_email für Methode add_order_delifery_note auf false geändert
@@ -123,6 +127,10 @@
 
 
 '''English'''
+
+'''Version 2.3.1'''
+* if shop number is missing the js redirect script is not rendered
+* ping returns size and ownership of files from now on 
 
 '''Version 2.3.0'''
 * New function get_settings() for exporting the shop's tax rates, tax rules and tax classes (and other settings in the future)

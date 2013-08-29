@@ -692,29 +692,57 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		);
 
 		foreach ($files as $file) {
-			$permission = array();
-			$permission['file'] = $file;
-			$permission['exist'] = (bool) file_exists($file);
-			$permission['writeable'] = (bool) is_writable($file);
-			$permission['permission'] = '-';
-			if (file_exists($file)) {
-				$permission['last_modification_time'] = date('d.m.Y H:i:s.', filemtime($file));
-			}
-			
-			$fInfo = pathinfo($file);
-			if (file_exists($file)) {
-				$permission['permission'] = substr(sprintf('%o', fileperms($file)), -4);
-			} else {
-				if (file_exists($fInfo['dirname'])) {
-					$permission['parent_permission'] = substr(sprintf('%o', fileperms($fInfo['dirname'])), -4);
-				}
-			}
-
-			$permissions[] = $permission;
+			$permissions[] = $this->_getFileMeta($file, 1);
 		}
 
 		return $permissions;
 	}
+
+	/**
+	 * get meta data for given file.
+	 * if file doesn't exists, move up to parent directory
+	 *
+	 * @param string $file (max numbers of parent directory lookups)
+	 * @param number $parentLevel
+	 * @return array with file meta data
+	 */
+	private function _getFileMeta($file, $parentLevel = 0) {
+		$meta = array('file' => $file);
+
+		if ($meta['exist'] = (bool) file_exists($file)) {
+			$meta['writeable'] = (bool) is_writable($file);
+
+			$uid = fileowner($file);
+			if (function_exists('posix_getpwuid')) {
+				$uinfo = posix_getpwuid($uid);
+				$uid = $uinfo['name'];
+			}
+
+			$gid = filegroup($file);
+			if (function_exists('posix_getgrgid')) {
+				$ginfo = posix_getgrgid($gid);
+				$gid = $ginfo['name'];
+			}
+
+			$meta['owner'] = $uid;
+			$meta['group'] = $gid;
+			$meta['permission'] = substr(sprintf('%o', fileperms($file)), -4);
+			$meta['last_modification_time'] = date('d.m.Y H:i:s', filemtime($file));
+
+			if (is_file($file)) {
+				$meta['filesize'] = round(filesize($file)/(1024*1024), 4) .' MB';
+			}
+		}
+		else if ($parentLevel > 0) {
+			$fInfo = pathinfo($file);
+			if (file_exists($fInfo['dirname'])) {
+				$meta['parent_dir'] = $this->_getFileMeta($fInfo['dirname'], --$parentLevel);
+			}
+		}
+
+		return $meta;
+	}
+
 }
 
 class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiInterface {
