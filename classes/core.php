@@ -372,6 +372,16 @@ class ShopgateLogger {
 	private $debug;
 	
 	/**
+	 * @var string[] Names of the fields that should be obfuscated on logging.
+	 */
+	private $obfuscationFields;
+	
+	/**
+	 * @var string Names of the fields that should be removed from logging.
+	 */
+	private $removeFields;
+	
+	/**
 	 * @var mixed[]
 	 */
 	private $files = array(
@@ -388,6 +398,8 @@ class ShopgateLogger {
 
 	private function __construct() {
 		$this->debug = false;
+		$this->obfuscationFields = array('pass');
+		$this->removeFields = array('cart');
 	}
 	
 	/**
@@ -569,6 +581,24 @@ class ShopgateLogger {
 
 		return $text;
 	}
+	
+	/**
+	 * Adds field names to the list of fields that should be obfuscated in the logs.
+	 *
+	 * @param string[] $fieldNames
+	 */
+	public function addObfuscationFields(array $fieldNames) {
+		$this->obfuscationFields = array_merge($fieldNames, $this->obfuscationFields);
+	}
+
+	/**
+	 * Adds field names to the list of fields that should be removed from the logs.
+	 *
+	 * @param string[] $fieldNames
+	 */
+	public function addRemoveFields(array $fieldNames) {
+		$this->removeFields = array_merge($fieldNames, $this->removeFields);
+	}
 
 	/**
 	 * Function to prepare the parameters of an API request for logging.
@@ -580,9 +610,12 @@ class ShopgateLogger {
 	 */
 	public function cleanParamsForLog($data) {
 		foreach ($data as $key => &$value) {
-			switch ($key) {
-				case 'pass': $value = self::OBFUSCATION_STRING; break;
-				case 'cart': $value = self::REMOVED_STRING; break;
+			if (in_array($key, $this->obfuscationFields)) {
+				$value = self::OBFUSCATION_STRING;
+			}
+			
+			if (in_array($key, $this->removeFields)) {
+				$value = self::REMOVED_STRING;
 			}
 		}
 
@@ -1575,7 +1608,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *								<li>'tax_rules' => A list of tax rule containers.</li>
 	 *							</ul>
 	 *						</li>
-	 *          </ul>) 
+	 *          </ul>)
 	 * @throws ShopgateLibraryException on invalid log in data or hard errors like database failure.
 	 */
 	public abstract function getSettings();
