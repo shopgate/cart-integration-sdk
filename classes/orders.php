@@ -1,15 +1,36 @@
 <?php
 abstract class ShopgateCartBase extends ShopgateContainer {
+	
 	const SHOPGATE = "SHOPGATE";
 	const PREPAY = "PREPAY";
-	const CC = "CC";
-	const DT_CC = "DT_CC";
-	const INVOICE = "INVOICE";
+	
 	const DEBIT = "DEBIT";
 	const COD = "COD";
-	const PAYPAL = "PAYPAL";
+	
+	const INVOICE = "INVOICE";
 	const KLARNA_INV = "KLARNA_INV";
 	const BILLSAFE = "BILLSAFE";
+	const MSTPAY_INV = "MSTPAY_INV";
+	
+	const PAYPAL = "PAYPAL";
+	const MASTPAY_PP = "MASTPAY_PP";
+	const SAGEPAY_PP = "SAGEPAY_PP";
+	
+	const CC = "CC";
+	const DT_CC = "DT_CC";
+	const AUTHN_CC = "AUTHN_CC";
+	const FRSTDAT_CC = "FRSTDAT_CC";
+	const MASTPAY_CC = "MASTPAY_CC";
+	const BRAINTR_CC = "BRAINTR_CC";
+	const CYBRSRC_CC = "CYBRSRC_CC";
+	const DTCASH_CC = "DTCASH_CC";
+	const OGONE_CC = "OGONE_CC";
+	const SAGEPAY_CC = "SAGEPAY_CC";
+	const EWAY_CC = "EWAY_CC";
+	const PAYJUNC_CC = "PAYJUNC_CC";
+	const PP_WSPP_CC = "PP_WSPP_CC";
+	
+	const PAYU = "PAYU";
 	
 	protected $customer_number;
 
