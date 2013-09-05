@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.3.2'''
+* Logging verbessert, wenn Datei nicht geöffnet werden konnte
+
 '''Version 2.3.1'''
 * Wenn keine Shopnumber gesetzt ist, wird der Redirect Script nicht in die Seite gerendert
 * bei einem Ping wird die Dateigröße und der Besitzer ausgelesen
@@ -127,6 +130,9 @@
 
 
 '''English'''
+
+'''Version 2.3.2'''
+* improved logging when a file couldn't be opened
 
 '''Version 2.3.1'''
 * if shop number is missing the js redirect script is not rendered

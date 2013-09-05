@@ -585,7 +585,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		
 		$logFilePointer = @fopen($logFilePath, 'w');
 		if ($logFilePointer === false) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, "Cannot open file {$logFilePath}");
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, "File: $logFilePath", true);
 		}
 		fclose($logFilePointer);
 		
@@ -1263,7 +1263,7 @@ class ShopgatePluginApiResponseTextPlain extends ShopgatePluginApiResponse {
 class ShopgatePluginApiResponseTextCsv extends ShopgatePluginApiResponse {
 	public function setData($data) {
 		if (!file_exists($data)) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$data);
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$data, true);
 		}
 		
 		$this->data = $data;
@@ -1272,7 +1272,7 @@ class ShopgatePluginApiResponseTextCsv extends ShopgatePluginApiResponse {
 	public function send() {
 		$fp = @fopen($this->data, 'r');
 		if (!$fp) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$this->data);
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$this->data, true);
 		}
 		
 		// output headers ...
