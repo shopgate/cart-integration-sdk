@@ -2,6 +2,8 @@
 
 '''Version 2.3.2'''
 * Logging verbessert, wenn Datei nicht geöffnet werden konnte
+* neue payment method ids hinzugefügt
+* Logger erlaubt jetzt, Feldnamen, die in den Logs verschleiert oder entfernt werden sollen, dynamisch hinzuzufügen
 
 '''Version 2.3.1'''
 * Wenn keine Shopnumber gesetzt ist, wird der Redirect Script nicht in die Seite gerendert
@@ -133,6 +135,8 @@
 
 '''Version 2.3.2'''
 * improved logging when a file couldn't be opened
+* added new payment method ids
+* Logger now allows to dynamically add field names that should be disuised in or removed from the log
 
 '''Version 2.3.1'''
 * if shop number is missing the js redirect script is not rendered
