@@ -1320,7 +1320,7 @@ class ShopgatePluginApiResponseAppJson extends ShopgatePluginApiResponse {
 		$data['error'] = $this->error;
 		$data['error_text'] = $this->error_text;
 		$data['trace_id'] = $this->trace_id;
-		$data['version'] = $this->version;
+		$data['shopgate_library_version'] = $this->version;
 		if (!empty($this->pluginVersion)) {
 			$data['plugin_version'] = $this->pluginVersion;
 		}
