@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.3.3'''
+* Lizenz Header hinzugefügt
+
 '''Version 2.3.2'''
 * Logging verbessert, wenn Datei nicht geöffnet werden konnte
 * neue payment method ids hinzugefügt
@@ -132,6 +135,9 @@
 
 
 '''English'''
+
+'''Version 2.3.3'''
+* added license header
 
 '''Version 2.3.2'''
 * improved logging when a file couldn't be opened
