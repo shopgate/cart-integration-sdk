@@ -499,7 +499,7 @@ class ShopgateOrder extends ShopgateCartBase {
 	protected $update_shipping = false;
 	protected $update_payment = false;
 	
-	protected $delivery_notes;
+	protected $delivery_notes = array();
 	
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitOrder($this);
