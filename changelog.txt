@@ -1,5 +1,9 @@
 '''Deutsch'''
 
+'''Version 2.3.4'''
+* Bugfix in der ShopgateOrder Klasse - delivery_notes wird nun mit einem Leerarray initialisiert
+* Beim Ausführen von Loader-Methoden werden detailliertere Exception-Meldungen erzeugt
+
 '''Version 2.3.3'''
 * Lizenz Header hinzugefügt
 
@@ -135,6 +139,10 @@
 
 
 '''English'''
+
+'''Version 2.3.4'''
+* bugfix inside of the ShopgateOrder class - delivery_notes are now initialized with an empty array
+* on execution of loader methods, all thrown exceptions are processed to get more details
 
 '''Version 2.3.3'''
 * added license header

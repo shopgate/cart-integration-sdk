@@ -1440,7 +1440,11 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		foreach ($loaders as $method) {
 			if (method_exists($this, $method)) {
 				$this->log("Call Function {$method}", ShopgateLogger::LOGTYPE_DEBUG);
-				$result = call_user_func_array( array( $this, $method ), $arguments );
+				try {
+					$result = call_user_func_array( array( $this, $method ), $arguments );
+				} catch (Exception $e) {
+					throw new ShopgateLibraryException("An exception has been thrown in loader method '{$method}'. Exception '".get_class($e)."': [Code: {$e->getCode()}] {$e->getMessage()}");
+				}
 
  				if($result) {
  					// put back the result into argument-list (&$csvArray)
