@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.3.5'''
+* je eine index.php zu jedem Verzeichnis hinzugefügt
+
 '''Version 2.3.4'''
 * Bugfix in der ShopgateOrder Klasse - delivery_notes wird nun mit einem Leerarray initialisiert
 * Beim Ausführen von Loader-Methoden werden detailliertere Exception-Meldungen erzeugt
@@ -139,6 +142,9 @@
 
 
 '''English'''
+
+'''Version 2.3.5'''
+* added index.php to each directory
 
 '''Version 2.3.4'''
 * bugfix inside of the ShopgateOrder class - delivery_notes are now initialized with an empty array
