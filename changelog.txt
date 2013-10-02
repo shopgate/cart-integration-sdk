@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.3.6'''
+* shopgate_license.txt hinzugefügt
+
 '''Version 2.3.5'''
 * je eine index.php zu jedem Verzeichnis hinzugefügt
 
@@ -142,6 +145,9 @@
 
 
 '''English'''
+
+'''Version 2.3.6'''
+* added shopgate_license.txt
 
 '''Version 2.3.5'''
 * added index.php to each directory
