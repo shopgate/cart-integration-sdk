@@ -82,22 +82,22 @@ class ShopgateLibraryException extends Exception {
 	 * @var string
 	 */
 	private $additionalInformation;
-
+	
 	// Initizialization / instantiation of plugin failure
 	//const INIT_EMPTY_CONFIG = 1;
 	const INIT_LOGFILE_OPEN_ERROR = 2;
-
+	
 	// Configuration failure
 	const CONFIG_INVALID_VALUE = 10;
 	const CONFIG_READ_WRITE_ERROR = 11;
 	const CONFIG_PLUGIN_NOT_ACTIVE = 12;
-
+	
 	// Plugin API errors
 	const PLUGIN_API_NO_ACTION = 20;
 	const PLUGIN_API_UNKNOWN_ACTION = 21;
 	const PLUGIN_API_DISABLED_ACTION = 22;
 	const PLUGIN_API_WRONG_RESPONSE_FORMAT = 23;
-
+	
 	const PLUGIN_API_UNKNOWN_SHOP_NUMBER = 24;
 	
 	const PLUGIN_API_NO_ORDER_NUMBER = 30;
@@ -107,7 +107,7 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_API_UNKNOWN_LOGTYPE = 38;
 	const PLUGIN_API_CRON_NO_JOBS = 40;
 	const PLUGIN_API_CRON_NO_JOB_NAME = 41;
-
+	
 	// Plugin errors
 	const PLUGIN_DUPLICATE_ORDER = 60;
 	const PLUGIN_ORDER_NOT_FOUND = 61;
@@ -115,7 +115,7 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_ORDER_ITEM_NOT_FOUND = 63;
 	const PLUGIN_ORDER_STATUS_IS_SENT = 64;
 	const PLUGIN_ORDER_ALREADY_UP_TO_DATE = 65;
-
+	
 	const PLUGIN_NO_ADDRESSES_FOUND = 70;
 	const PLUGIN_WRONG_USERNAME_OR_PASSWORD = 71;
 	
@@ -126,17 +126,17 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_DATABASE_ERROR = 83;
 	const PLUGIN_UNKNOWN_COUNTRY_CODE = 84;
 	const PLUGIN_UNKNOWN_STATE_CODE = 85;
-
+	
 	const PLUGIN_CRON_UNSUPPORTED_JOB = 91;
-
+	
 	// Merchant API errors
 	const MERCHANT_API_NO_CONNECTION = 100;
 	const MERCHANT_API_INVALID_RESPONSE = 101;
 	const MERCHANT_API_ERROR_RECEIVED = 102;
-
+	
 	// Authentification errors
 	const AUTHENTICATION_FAILED = 120;
-
+	
 	// File errors
 	const FILE_READ_WRITE_ERROR = 130;
 	
@@ -147,20 +147,23 @@ class ShopgateLibraryException extends Exception {
 	const COUPON_INVALID_ADDRESS = 203;
 	const COUPON_INVALID_USER = 204;
 	const COUPON_TOO_MANY_COUPONS = 205;
-
+	
+	// extended error code format that contains information on multiple errors
+	const MULTIPLE_ERRORS = 998;
+	
 	// Unknown error code (the value passed as code gets to be the message)
 	const UNKNOWN_ERROR_CODE = 999;
-
+	
 	protected static $errorMessages = array(
 		// Initizialization / instantiation of plugin failure
 		//self::INIT_EMPTY_CONFIG => 'empty configuration',
 		self::INIT_LOGFILE_OPEN_ERROR => 'cannot open/create logfile(s)',
-
+		
 		// Configuration failure
 		self::CONFIG_INVALID_VALUE => 'invalid value in configuration',
 		self::CONFIG_READ_WRITE_ERROR => 'error reading or writing configuration',
 		self::CONFIG_PLUGIN_NOT_ACTIVE => 'plugin not activated',
-
+		
 		// Plugin API errors
 		self::PLUGIN_API_NO_ACTION => 'no action specified',
 		self::PLUGIN_API_UNKNOWN_ACTION  => 'unknown action requested',
@@ -168,7 +171,7 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_API_WRONG_RESPONSE_FORMAT => 'wrong response format',
 		
 		self::PLUGIN_API_UNKNOWN_SHOP_NUMBER => 'unknown shop number received',
-
+		
 		self::PLUGIN_API_NO_ORDER_NUMBER => 'parameter "order_number" missing',
 		self::PLUGIN_API_NO_CART => 'parameter "cart" missing',
 		self::PLUGIN_API_NO_USER => 'parameter "user" missing',
@@ -176,7 +179,7 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_API_UNKNOWN_LOGTYPE => 'unknown logtype',
 		self::PLUGIN_API_CRON_NO_JOBS => 'parameter "jobs" missing',
 		self::PLUGIN_API_CRON_NO_JOB_NAME => 'field "job_name" in parameter "jobs" missing',
-
+		
 		// Plugin errors
 		self::PLUGIN_DUPLICATE_ORDER => 'duplicate order',
 		self::PLUGIN_ORDER_NOT_FOUND => 'order not found',
@@ -184,11 +187,11 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_ORDER_ITEM_NOT_FOUND => 'order item not found',
 		self::PLUGIN_ORDER_STATUS_IS_SENT => 'order status is "sent"',
 		self::PLUGIN_ORDER_ALREADY_UP_TO_DATE => 'order is already up to date',
-
+		
 		self::PLUGIN_NO_ADDRESSES_FOUND => 'no addresses found for customer',
 		self::PLUGIN_WRONG_USERNAME_OR_PASSWORD => 'wrong username or password',
-
-	
+		
+		
 		self::PLUGIN_FILE_DELETE_ERROR => 'cannot delete file(s)',
 		self::PLUGIN_FILE_NOT_FOUND => 'file not found',
 		self::PLUGIN_FILE_OPEN_ERROR => 'cannot open file',
@@ -196,17 +199,17 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_DATABASE_ERROR => 'database error',
 		self::PLUGIN_UNKNOWN_COUNTRY_CODE => 'unknown country code',
 		self::PLUGIN_UNKNOWN_STATE_CODE => 'unknown state code',
-
+		
 		self::PLUGIN_CRON_UNSUPPORTED_JOB => 'unsupported job',
-
+		
 		// Merchant API errors
 		self::MERCHANT_API_NO_CONNECTION => 'no connection to server',
 		self::MERCHANT_API_INVALID_RESPONSE => 'error parsing response',
 		self::MERCHANT_API_ERROR_RECEIVED => 'error code received',
-
+		
 		// File errors
 		self::FILE_READ_WRITE_ERROR => 'error reading or writing file',
-
+		
 		// Coupon Errors
 		self::COUPON_NOT_VALID => 'invalid coupon',
 		self::COUPON_CODE_NOT_VALID => 'invalid coupon code',
@@ -214,9 +217,11 @@ class ShopgateLibraryException extends Exception {
 		self::COUPON_INVALID_ADDRESS => 'invalid address for coupon',
 		self::COUPON_INVALID_USER => 'invalid user for coupon',
 		self::COUPON_TOO_MANY_COUPONS => 'too many coupons in cart',
-			
+		
 		// Authentification errors
 		self::AUTHENTICATION_FAILED => 'authentication failed',
+		
+		self::MULTIPLE_ERRORS => '',
 	);
 
 
