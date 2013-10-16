@@ -249,10 +249,10 @@ class ShopgateLibraryException extends Exception {
 			$code = self::UNKNOWN_ERROR_CODE;
 		}
 
-		if($appendAdditionalInformationToMessage){
+		if ($appendAdditionalInformationToMessage){
 			$message .= ': '.$additionalInformation;
 		}
-
+		
 		// Save additional information
 		$this->additionalInformation = $additionalInformation;
 
@@ -263,6 +263,11 @@ class ShopgateLibraryException extends Exception {
 			if (ShopgateLogger::getInstance()->log($code.' - '.$logMessage) === false) {
 				$message .= ' (unable to log)';
 			}
+		}
+
+		// in case of multiple errors the message should not have any other text attached to it
+		if ($code == self::MULTIPLE_ERRORS) {
+			$message = $additionalInformation;
 		}
 
 		// Call default Exception class constructor
