@@ -727,7 +727,7 @@ class ShopgateBuilder {
 		$pluginApi = new ShopgatePluginApi($this->config, $authService, $merchantApi, $plugin);
 		
 		// instantiate export file buffer
-		$fileBuffer = new ShopgateFileBuffer($this->config->getExportBufferCapacity(), $this->config->getExportConvertEncoding());
+		$fileBuffer = new ShopgateFileBuffer($this->config->getExportBufferCapacity(), $this->config->getExportConvertEncoding(), $this->config->getEncoding());
 		
 		// inject apis into plugin
 		$plugin->setConfig($this->config);
@@ -1725,9 +1725,7 @@ class ShopgateFileBuffer extends ShopgateObject implements ShopgateFileBufferInt
 	/**
 	 * @var string[]
 	 */
-	private $allowedEncodings = array(
-			SHOPGATE_LIBRARY_ENCODING, 'ASCII', 'CP1252', 'ISO-8859-15', 'UTF-16LE','ISO-8859-1'
-	);
+	protected $allowedEncodings;
 	
 	/**
 	 * @var bool true to enable automatic encoding conversion to utf-8
@@ -1767,11 +1765,19 @@ class ShopgateFileBuffer extends ShopgateObject implements ShopgateFileBufferInt
 	 * @param int $capacity
 	 * @param bool $encoding true to enable automatic encoding conversion to utf-8
 	 */
-	public function __construct($capacity, $convertEncoding = true) {
+	public function __construct($capacity, $convertEncoding = true, $sourceEncoding = null) {
 		$this->timeStart = time();
 		$this->buffer = array();
 		$this->capacity = $capacity;
 		$this->convertEncoding = $convertEncoding;
+		
+		$this->allowedEncodings = array(
+			SHOPGATE_LIBRARY_ENCODING, 'ASCII', 'CP1252', 'ISO-8859-15', 'UTF-16LE', 'ISO-8859-1'
+		);
+		
+		if (!empty($sourceEncoding)) {
+			array_splice($this->allowedEncodings, 1, 0, $sourceEncoding);
+		}
 	}
 
 	public function setFile($filePath) {
