@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.3.7'''
+* das in der ShopgateConfig hinterlegte Encoding wird jetzt auch beim Export berücksichtigt
+
 '''Version 2.3.6'''
 * shopgate_license.txt hinzugefügt
 
@@ -139,12 +142,15 @@
 * Bei Plugin-API-Anfragen wird jetzt auch die Plugin-Version zurückgegeben, falls gesetzt.
 
 '''Version 2.1.5'''
-* Fehler in der Verwendung der alten Konfiguaration behoben
+* Fehler in der Verwendung der alten Konfiguration behoben
 * changelog.txt hinzugefügt
 
 
 
 '''English'''
+
+'''Version 2.3.7'''
+* ShopgateConfig's "encoding" setting is now used for exporting products as well
 
 '''Version 2.3.6'''
 * added shopgate_license.txt
