@@ -1978,7 +1978,7 @@ interface ShopgateContainerVisitor {
 	public function visitOrderItemOption(ShopgateOrderItemOption $o);
 	public function visitOrderItemInput(ShopgateOrderItemInput $i);
 	public function visitOrderItemAttribute(ShopgateOrderItemAttribute $o);
-	public function visitOrderShipping(ShopgateShippingInfo $o);
+	public function visitShippingInfo(ShopgateShippingInfo $o);
 	public function visitOrderDeliveryNote(ShopgateDeliveryNote $d);
 	public function visitExternalCoupon(ShopgateExternalCoupon $c);
 	public function visitShopgateCoupon(ShopgateShopgateCoupon $c);
@@ -2085,6 +2085,12 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 		if (!empty($properties['invoice_address']) && ($properties['invoice_address'] instanceof ShopgateAddress)) {
 			$properties['invoice_address']->accept($this);
 			$properties['invoice_address'] = $this->object;
+		}
+
+		// visit shipping_infos
+		if (!empty($properties['shipping_infos']) && ($properties['shipping_infos'] instanceof ShopgateShippingInfo)) {
+			$properties['shipping_infos']->accept($this);
+			$properties['shipping_infos'] = $this->object;
 		}
 
 		// iterate lists of referred objects
@@ -2194,7 +2200,7 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 		}
 	}
 	
-	public function visitOrderShipping(ShopgateShippingInfo $o) {
+	public function visitShippingInfo(ShopgateShippingInfo $o) {
 		$properties = $o->buildProperties();
 		$this->iterateSimpleProperties($properties);
 		
@@ -2434,6 +2440,12 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 			$properties['invoice_address'] = $this->array;
 		}
 
+		// visit shipping info
+		if (!empty($properties['shipping_infos']) && ($properties['shipping_infos'] instanceof ShopgateShippingInfo)) {
+			$properties['shipping_infos']->accept($this);
+			$properties['shipping_infos'] = $this->array;
+		}
+
 		// iterate lists of referred objects
 		$properties['external_coupons'] = $this->iterateObjectList($properties['external_coupons']);
 		$properties['shopgate_coupons'] = $this->iterateObjectList($properties['shopgate_coupons']);
@@ -2507,7 +2519,7 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 		$this->array = $this->iterateSimpleProperties($i->buildProperties());
 	}
 	
-	public function visitOrderShipping(ShopgateShippingInfo $i) {
+	public function visitShippingInfo(ShopgateShippingInfo $i) {
 		// get properties and iterate (no complex types in ShopgateOrderItemAttribute objects)
 		$this->array = $this->iterateSimpleProperties($i->buildProperties());
 	}

@@ -66,6 +66,10 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	protected $phone;
 	protected $mobile;
 
+	protected $shipping_group;
+	protected $shipping_type;
+	protected $shipping_infos;
+	
 	protected $payment_method;
 	protected $payment_group;
 
@@ -145,6 +149,39 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 		$this->mobile = $value;
 	}
 
+	/**
+	 *
+	 * @param string $value
+	 */
+	public function setShippingGroup($value) {
+		$this->shipping_group = $value;
+	}
+	
+	/**
+	 *
+	 * @param string $value
+	 */
+	public function setShippingType($value) {
+		$this->shipping_type = $value;
+	}
+	
+	/**
+	 *
+	 * @param ShopgateShippingInfo $value
+	 */
+	public function setShippingInfos($value) {
+		if (!is_object($value) && !($value instanceof ShopgateShippingInfo) && !is_array($value)) {
+			$this->shipping_infos = null;
+			return;
+		}
+	
+		if (is_array($value)) {
+			$value = new ShopgateShippingInfo($value);
+		}
+	
+		$this->shipping_infos = $value;
+	}
+	
 	/**
 	 * @see http://wiki.shopgate.com/Merchant_API_payment_infos/
 	 * @param string $value
@@ -364,6 +401,30 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	}
 
 	/**
+	 *
+	 * @return string
+	 */
+	public function getShippingGroup() {
+		return $this->shipping_group;
+	}
+	
+	/**
+	 *
+	 * @return string
+	 */
+	public function getShippingType() {
+		return $this->shipping_type;
+	}
+	
+	/**
+	 *
+	 * @return ShopgateShippingInfo
+	 */
+	public function getShippingInfos() {
+		return $this->shipping_infos;
+	}
+	
+	/**
 	 * @see http://wiki.shopgate.com/Merchant_API_payment_infos/
 	 * @return string
 	 */
@@ -476,10 +537,6 @@ class ShopgateOrder extends ShopgateCartBase {
 	
 	protected $confirm_shipping_url;
 	
-	protected $shipping_group;
-	protected $shipping_type;
-	protected $shipping_infos;
-	
 	protected $created_time;
 	
 	protected $is_paid;
@@ -523,39 +580,6 @@ class ShopgateOrder extends ShopgateCartBase {
 		$this->confirm_shipping_url = $value;
 	}
 
-	/**
-	 *
-	 * @param string $value
-	 */
-	public function setShippingGroup($value) {
-		$this->shipping_group = $value;
-	}
-	
-	/**
-	 *
-	 * @param string $value
-	 */
-	public function setShippingType($value) {
-		$this->shipping_type = $value;
-	}
-	
-	/**
-	 *
-	 * @param ShopgateShippingInfo $value
-	 */
-	public function setShippingInfos($value) {
-		if (!is_object($value) && !($value instanceof ShopgateShippingInfo) && !is_array($value)) {
-			$this->shipping_infos = null;
-			return;
-		}
-	
-		if (is_array($value)) {
-			$value = new ShopgateShippingInfo($value);
-		}
-	
-		$this->shipping_infos = $value;
-	}
-	
 	/**
 	 * @see http://www.php.net/manual/de/function.date.php
 	 * @see http://en.wikipedia.org/wiki/ISO_8601
@@ -713,30 +737,6 @@ class ShopgateOrder extends ShopgateCartBase {
 	 */
 	public function getConfirmShippingUrl() {
 		return $this->confirm_shipping_url;
-	}
-	
-	/**
-	 *
-	 * @return string
-	 */
-	public function getShippingGroup() {
-		return $this->shipping_group;
-	}
-	
-	/**
-	 *
-	 * @return string
-	 */
-	public function getShippingType() {
-		return $this->shipping_type;
-	}
-	
-	/**
-	 *
-	 * @return ShopgateShippingInfo
-	 */
-	public function getShippingInfos() {
-		return $this->shipping_infos;
 	}
 	
 	/**
@@ -1416,7 +1416,7 @@ class ShopgateShippingInfo extends ShopgateContainer {
 	protected $api_response;
 	
 	public function accept(ShopgateContainerVisitor $v) {
-		$v->visitOrderShipping($this);
+		$v->visitShippingInfo($this);
 	}
 	
 	/**
