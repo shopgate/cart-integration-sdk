@@ -1588,6 +1588,9 @@ abstract class ShopgateCoupon extends ShopgateContainer {
 	protected $name;
 	protected $description;
 	protected $amount;
+	protected $amount_net;
+	protected $amount_gross;
+	protected $tax_type = 'auto';
 	protected $currency;
 	protected $is_free_shipping;
 	protected $internal_info;
@@ -1627,9 +1630,31 @@ abstract class ShopgateCoupon extends ShopgateContainer {
 	
 	/**
 	 * @param float $value
+	 * @deprecated
 	 */
 	public function setAmount($value) {
 		$this->amount = $value;
+	}
+	
+	/**
+	 * @param float $value
+	 */
+	public function setAmountNet($value) {
+		$this->amount_net = $value;
+	}
+	
+	/**
+	 * @param float $value
+	 */
+	public function setAmountGross($value) {
+		$this->amount_gross = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setTaxType($value) {
+		$this->tax_type = $value;
 	}
 	
 	/**
@@ -1688,9 +1713,31 @@ abstract class ShopgateCoupon extends ShopgateContainer {
 	
 	/**
 	 * @return float
+	 * @deprecated
 	 */
 	public function getAmount() {
 		return $this->amount;
+	}
+	
+	/**
+	 * @return float
+	 */
+	public function getAmountNet() {
+		return $this->amount_net;
+	}
+	
+	/**
+	 * @return float
+	 */
+	public function getAmountGross() {
+		return $this->amount_gross;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getTaxType() {
+		return $this->tax_type;
 	}
 	
 	/**
