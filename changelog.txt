@@ -1,7 +1,8 @@
 '''Deutsch'''
 
-'''Version 2.3.x'''
+'''Version 2.3.8'''
 * Unterstützung für erweiterte Informationen zum Versand, die jetzt durch check_cart und redeem_coupon zur Verfügung gestellt werden
+* Konstanten zur Umrechnung von Gewichten
 
 '''Version 2.3.7'''
 * das in der ShopgateConfig hinterlegte Encoding wird jetzt auch beim Export berücksichtigt
@@ -152,8 +153,9 @@
 
 '''English'''
 
-'''Version 2.3.x'''
+'''Version 2.3.8'''
 * handle extended shipping information that is provided in check_cart and redeem_coupon now
+* constant values to use for converting weights
 
 '''Version 2.3.7'''
 * ShopgateConfig's "encoding" setting is now used for exporting products as well

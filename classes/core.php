@@ -940,6 +940,10 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	const PRODUCT_STATUS_ACTIVE = 'active';
 	const PRODUCT_STATUS_INACTIVE = 'inactive';
 	
+	/** convert weight units **/
+	const CONVERT_POUNDS_TO_GRAM_FACTOR = 453.59237;
+	const CONVERT_OUNCES_TO_GRAM_FACTOR = 28.3495231;
+	
 	/**
 	 * @var ShopgateBuilder
 	 */
