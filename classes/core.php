@@ -516,18 +516,22 @@ class ShopgateLogger {
 			case 'GIGABYTE':
 			case 'GIGABYTES':
 				$this->memoryAnalyserLoggingSizeUnit = 'GB';
+				break;
 			case 'MB':
 			case 'MEGABYTE':
 			case 'MEGABYTES':
 				$this->memoryAnalyserLoggingSizeUnit = 'MB';
+				break;
 			case 'KB':
 			case 'KILOBYTE':
 			case 'KILOBYTES':
 				$this->memoryAnalyserLoggingSizeUnit = 'KB';
-			case 'BYTES':
-			case 'BYTE':
+				break;
+// 			case 'BYTES':
+// 			case 'BYTE':
 			default:
-				'BYTES';
+				$this->memoryAnalyserLoggingSizeUnit = 'BYTES';
+				break;
 		}
 	}
 	
@@ -1618,21 +1622,13 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @return string
 	 */
 	protected function getMemoryUsageString($sizeUnit) {
-		switch(strtoupper(trim($this->memoryAnalyserLoggingSizeUnit))) {
+		switch(strtoupper(trim(ShopgateLogger::getInstance()->getMemoryAnalyserLoggingSizeUnit()))) {
 			case 'GB':
-			case 'GIGABYTE':
-			case 'GIGABYTES':
 				return (memory_get_usage()/(1024*1024*1024)) . " GB (real usage ".(memory_get_usage(true)/(1024*1024*1024))." GB)";
 			case 'MB':
-			case 'MEGABYTE':
-			case 'MEGABYTES':
 				return (memory_get_usage()/(1024*1024)) . " MB (real usage ".(memory_get_usage(true)/(1024*1024))." MB)";
 			case 'KB':
-			case 'KILOBYTE':
-			case 'KILOBYTES':
 				return (memory_get_usage()/1024) . " KB (real usage ".(memory_get_usage(true)/1024)." KB)";
-			case 'BYTES':
-			case 'BYTE':
 			default:
 				return memory_get_usage() . " Bytes (real usage ".memory_get_usage(true)." Bytes)";
 		}
