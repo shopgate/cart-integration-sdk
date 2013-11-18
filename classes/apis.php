@@ -157,9 +157,12 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			if (!empty($data['error_reporting'])) {
 				error_reporting($data['error_reporting']);
 			}
-			// enable error handler if requested
+			// memory logging size unit setup
 			if (!empty($data['memory_logging_unit'])) {
 				ShopgateLogger::getInstance()->setMemoryAnalyserLoggingSizeUnit($data['memory_logging_unit']);
+			} else {
+				// MB by default if none is set
+				ShopgateLogger::getInstance()->setMemoryAnalyserLoggingSizeUnit('MB');
 			}
 			
 			// call the action
