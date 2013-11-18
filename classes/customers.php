@@ -635,6 +635,27 @@ class ShopgateAddress extends ShopgateContainer {
 	protected function splitStreetData($street, $type = 'street') {
 		$splittedArray = array();
 		$street = trim($street);
+		$street = str_replace("\n", '', $street);
+		
+		//contains only digits OR no digits at all --> don't split
+		if (preg_match("/^[0-9]+$/i", $street)  || preg_match("/^[^0-9]+$/i", $street)) {
+			return ($type == 'street') ? $street : "";
+		}
+		
+		//number at the end ("Schlossstr. 10", "Schlossstr. 10a", "Schlossstr. 10a+b"...)
+		if (preg_match("/^([^0-9]+)([0-9]+ ?[a-z]?([ \-\&\+]+[a-z])?)$/i", $street, $matches)) {
+			return trim(($type == 'street') ? $matches[1] : $matches[2]);
+		}
+		
+		//number at the end ("Schlossstr. 10-12", "Schlossstr. 10 & 12"...)
+		if (preg_match("/^([^0-9]+)([0-9]+([ \-\&\+]+[0-9]+)?)$/i", $street, $matches)) {
+			return trim(($type == 'street') ? $matches[1] : $matches[2]);
+		}
+		
+		//number at the beginning (e.g. "2225 E. Bayshore Road", "2225-2227 E. Bayshore Road")
+		if (preg_match("/^([0-9]+([ \-\&\+]+[0-9]+)?)([^0-9]+.*)$/i", $street, $matches)) {
+			return trim(($type == 'street') ? $matches[3] : $matches[1]);
+		}
 		
 		if(!preg_match("/^(.+)\s(.*[0-9]+.*)$/is", $street, $splittedArray)) {
 			// for "My-Little-Street123"

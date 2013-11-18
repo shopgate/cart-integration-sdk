@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.3.9'''
+* Funktion splitStreetData() in Klasse ShopgateAddress verbessert, da diese Straße und Hausnr. in manchen Fällen falsch aufgeteilt hat.
+
 '''Version 2.3.8'''
 * Unterstützung für erweiterte Informationen zum Versand, die jetzt durch check_cart und redeem_coupon zur Verfügung gestellt werden
 * Konstanten zur Umrechnung von Gewichten
@@ -152,6 +155,9 @@
 
 
 '''English'''
+
+'''Version 2.3.9'''
+* Improved function splitStreetData() in class ShopgateAddress, because street and number were not split correctly in some cases.
 
 '''Version 2.3.8'''
 * handle extended shipping information that is provided in check_cart and redeem_coupon now
