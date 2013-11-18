@@ -403,6 +403,11 @@ class ShopgateLogger {
 	private $debug;
 	
 	/**
+	 * @var string
+	 */
+	private $memoryAnalyserLoggingSizeUnit;
+	
+	/**
 	 * @var string[] Names of the fields that should be obfuscated on logging.
 	 */
 	private $obfuscationFields;
@@ -429,6 +434,7 @@ class ShopgateLogger {
 
 	private function __construct() {
 		$this->debug = false;
+		$this->memoryAnalyserLoggingSizeUnit = 'MB';
 		$this->obfuscationFields = array('pass');
 		$this->removeFields = array('cart');
 	}
@@ -498,6 +504,39 @@ class ShopgateLogger {
 	 */
 	public function isDebugEnabled() {
 		return $this->debug;
+	}
+	
+	/**
+	 * Sets the unit in which the memory usage logger outputs its values in
+	 * @param string $sizeUnit ('MB', 'BYTES', 'GB', 'KB', ...)
+	 */
+	public function setMemoryAnalyserLoggingSizeUnit($sizeUnit) {
+		switch(strtoupper(trim($sizeUnit))) {
+			case 'GB':
+			case 'GIGABYTE':
+			case 'GIGABYTES':
+				$this->memoryAnalyserLoggingSizeUnit = 'GB';
+			case 'MB':
+			case 'MEGABYTE':
+			case 'MEGABYTES':
+				$this->memoryAnalyserLoggingSizeUnit = 'MB';
+			case 'KB':
+			case 'KILOBYTE':
+			case 'KILOBYTES':
+				$this->memoryAnalyserLoggingSizeUnit = 'KB';
+			case 'BYTES':
+			case 'BYTE':
+			default:
+				'BYTES';
+		}
+	}
+	
+	/**
+	 * returns the unit in which the memory usage logger outputs its values in
+	 * @return string
+	 */
+	public function getMemoryAnalyserLoggingSizeUnit() {
+		return $this->memoryAnalyserLoggingSizeUnit;
 	}
 	
 	/**
@@ -923,6 +962,57 @@ abstract class ShopgateObject {
 			}
 			
 			return @iconv($sourceEncoding, $destinationEncoding.'//IGNORE', $string);
+		}
+	}
+
+	/**
+	 * Takes any big object that can contain recursion and dumps it to the output buffer
+	 *
+	 * @param mixed $subject
+	 * @param array $ignore
+	 */
+	protected function user_print_r($subject, $ignore = array(), $depth = 1, $refChain = array()){
+		static $maxDepth = 5;
+		if ($depth > 20) return;
+		if (is_object($subject)) {
+			foreach ($refChain as $refVal)
+			if ($refVal === $subject) {
+				echo "*RECURSION*\n";
+				return;
+			}
+			array_push($refChain, $subject);
+			echo get_class($subject) . " Object ( \n";
+			$subject = (array) $subject;
+			foreach ($subject as $key => $val)
+			if (is_array($ignore) && !in_array($key, $ignore, 1)) {
+				echo str_repeat(" ", $depth * 4) . '[';
+				if ($key{0} == "\0") {
+					$keyParts = explode("\0", $key);
+					echo $keyParts[2] . (($keyParts[1] == '*')  ? ':protected' : ':private');
+				} else
+					echo $key;
+				echo '] => ';
+				if($depth == $maxDepth){
+					return;
+				}
+				$this->user_print_r($val, $ignore, $depth + 1, $refChain);
+			}
+			echo str_repeat(" ", ($depth - 1) * 4) . ")\n";
+			array_pop($refChain);
+		} elseif (is_array($subject)) {
+			echo "Array ( \n";
+			foreach ($subject as $key => $val) {
+				if (is_array($ignore) && !in_array($key, $ignore, 1)) {
+					echo str_repeat(" ", $depth * 4) . '[' . $key . '] => ';
+					if($depth==$maxDepth){
+						return;
+					}
+					$this->user_print_r($val, $ignore, $depth + 1, $refChain);
+				}
+			}
+			echo str_repeat(" ", ($depth - 1) * 4) . ")\n";
+		} else {
+			echo $subject . "\n";
 		}
 	}
 }
@@ -1453,11 +1543,11 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	
 		foreach ($loaders as $method) {
 			if (method_exists($this, $method)) {
-				$this->log("Call Function {$method}", ShopgateLogger::LOGTYPE_DEBUG);
+				$this->log("Calling function \"{$method}\": Actual memory usage before method: " . $this->getMemoryUsageString(), ShopgateLogger::LOGTYPE_DEBUG);
 				try {
 					$result = call_user_func_array( array( $this, $method ), $arguments );
 				} catch (Exception $e) {
-					throw new ShopgateLibraryException("An exception has been thrown in loader method '{$method}'. Exception '".get_class($e)."': [Code: {$e->getCode()}] {$e->getMessage()}");
+					throw new ShopgateLibraryException("An exception has been thrown in loader method \"{$method}\". Memory usage ".$this->getMemoryUsageString()." Exception '".get_class($e)."': [Code: {$e->getCode()}] {$e->getMessage()}");
 				}
 
  				if($result) {
@@ -1521,6 +1611,33 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		return $this->getCreateCsvLoaders("review");
 	}
 
+	/**
+	 * Gets the used memory and real used memory and returns it as a string
+	 *
+	 * @param $sizeUnit (GB / MB / KB / BYTES)
+	 * @return string
+	 */
+	protected function getMemoryUsageString($sizeUnit) {
+		switch(strtoupper(trim($this->memoryAnalyserLoggingSizeUnit))) {
+			case 'GB':
+			case 'GIGABYTE':
+			case 'GIGABYTES':
+				return (memory_get_usage()/(1024*1024*1024)) . " GB (real usage ".(memory_get_usage(true)/(1024*1024*1024))." GB)";
+			case 'MB':
+			case 'MEGABYTE':
+			case 'MEGABYTES':
+				return (memory_get_usage()/(1024*1024)) . " MB (real usage ".(memory_get_usage(true)/(1024*1024))." MB)";
+			case 'KB':
+			case 'KILOBYTE':
+			case 'KILOBYTES':
+				return (memory_get_usage()/1024) . " KB (real usage ".(memory_get_usage(true)/1024)." KB)";
+			case 'BYTES':
+			case 'BYTE':
+			default:
+				return memory_get_usage() . " Bytes (real usage ".memory_get_usage(true)." Bytes)";
+		}
+	}
+	
 	#################################################################################
 	## Following methods are the callbacks that need to be implemented by plugins. ##
 	#################################################################################
