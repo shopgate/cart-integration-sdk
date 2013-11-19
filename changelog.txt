@@ -1,6 +1,6 @@
 '''Deutsch'''
 
-'''Version 2.3.x'''
+'''Version 2.3.9'''
 * Die ShopgateObject Klasse enthält nun eine Methode zur Ausgabe von Objekten mit interner Rekursion (u_print_r).
 * Die ShopgatePlugin Klasse beinhaltet nun eine Hilfsmethode zur Ermittlung des verbrauchten Arbeitsspeichers inkl. Umrechnung auf die benötigte Einheit.
 * Bei der Ausführung von "executeLoaders" kann nun das Logging des verbrauchten Arbeitsspeichers vor und nach jeder ausgeführten Methode aktiviert werden.
@@ -159,7 +159,7 @@
 
 '''English'''
 
-'''Version 2.3.x'''
+'''Version 2.3.9'''
 * the ShopgateObject class now features a method for dumping objects that can't be dumped using var_dump, because of internal recursion (u_print_r).
 * the ShopgatePlugin class now contains a helper method to retrieve the used ram that is also converted into the desired size-unit.
 * when executing loaders using the "executeLoaders" method the logging of used ram can be activated so the ram before and after each called method is logged.
