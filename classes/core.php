@@ -1621,7 +1621,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @param $sizeUnit (GB / MB / KB / BYTES)
 	 * @return string
 	 */
-	protected function getMemoryUsageString($sizeUnit) {
+	protected function getMemoryUsageString($sizeUnit = 'MB') {
 		switch(strtoupper(trim(ShopgateLogger::getInstance()->getMemoryAnalyserLoggingSizeUnit()))) {
 			case 'GB':
 				return (memory_get_usage()/(1024*1024*1024)) . " GB (real usage ".(memory_get_usage(true)/(1024*1024*1024))." GB)";
