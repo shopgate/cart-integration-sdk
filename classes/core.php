@@ -1084,6 +1084,21 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	protected $exchangeRate = 1;
 	
 	/**
+	 * @var int the number of attributes in the item csv file header
+	 */
+	protected $defaultItemRowAttributeCount = 10;
+	
+	/**
+	 * @var int the number of options in the item csv file header
+	 */
+	protected $defaultItemRowOptionCount = 10;
+	
+	/**
+	 * @var int the number of inputs in the item csv file header
+	 */
+	protected $defaultItemRowInputCount = 10;
+	
+	/**
 	 * @param ShopgateBuilder $builder If empty, the default ShopgateBuilder will be instantiated.
 	 */
 	public final function __construct(ShopgateBuilder $builder = null) {
@@ -1277,6 +1292,54 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	}
 
 	/**
+	 * set the number of attributes to put in the csv head row
+	 * @param int $attributeCount
+	 */
+	protected function setDefaultItemRowAttributeCount($attributeCount=10) {
+		$this->defaultItemRowAttributeCount = max(1, $attributeCount);
+	}
+	
+	/**
+	 * get the number of attributes to put in the csv head row
+	 * @return int
+	 */
+	protected function getDefaultItemRowAttributeCount() {
+		return $this->defaultItemRowAttributeCount;
+	}
+	
+	/**
+	 * set the number of options to put in the csv head row
+	 * @param int $optionCount
+	 */
+	protected function setDefaultItemRowOptionCount($optionCount=10) {
+		$this->defaultItemRowOptionCount = max(1, $optionCount);
+	}
+	
+	/**
+	 * get the number of options to put in the csv head row
+	 * @return int
+	 */
+	protected function getDefaultItemRowOptionCount() {
+		return $this->defaultItemRowOptionCount;
+	}
+	
+	/**
+	 * set the number of inputs to put in the csv head row
+	 * @param number $inputCount
+	 */
+	protected function setDefaultItemRowInputCount($inputCount=10) {
+		$this->defaultItemRowInputCount = max(1, $inputCount);
+	}
+	
+	/**
+	 * get the number of inputs to put in the csv head row
+	 * @return int
+	 */
+	protected function getDefaultItemRowInputCount() {
+		return $this->defaultItemRowInputCount;
+	}
+	
+	/**
 	 * @deprecated Use ShopgatePlugin::buildDefaultItemRow().
 	 */
 	protected function buildDefaultProductRow() {
@@ -1288,15 +1351,43 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @see http://wiki.shopgate.com/CSV_File_Items/
 	 */
 	protected function buildDefaultItemRow() {
+
+		// prepare attributes
+		$attributes = array(
+			'has_children' => '0',
+			'parent_item_number' => ''
+		);
+		for ($attr = 1; $attr <= $this->defaultItemRowAttributeCount; $attr++) {
+			$attributes['attribute_' . $attr] = '';
+		}
+		
+		// prepare options
+		$options = array('has_options' => '0');
+		for ($opt = 1; $opt <= $this->defaultItemRowOptionCount; $opt++) {
+			$options['option_' . $opt] = '';
+			$options['option_' . $opt . '_values'] = '';
+		}
+		
+		// prepare inputs
+		$inputs = array('has_input_fields' => '0');
+		for ($inp = 1; $inp <= $this->defaultItemRowInputCount; $inp++) {
+			$inputs['input_field_' . $inp . '_number'] = '';
+			$inputs['input_field_' . $inp . '_type'] = '';
+			$inputs['input_field_' . $inp . '_label'] = '';
+			$inputs['input_field_' . $inp . '_infotext'] = '';
+			$inputs['input_field_' . $inp . '_required'] = '';
+			$inputs['input_field_' . $inp . '_add_amount'] = '';
+		}
+		
 		$row = array(
 			/* responsible fields */
 			'item_number' 				=> "",
 			'item_name' 				=> "",
 			'unit_amount'	 			=> "",
-//			'unit_amount_net' 			=> "",
+			//			'unit_amount_net' 			=> "",
 			'currency' 					=> "EUR",
 			'tax_percent'				=> "",
-//			'tax_class'					=> "",
+			//			'tax_class'					=> "",
 			'description' 				=> "",
 			'urls_images' 				=> "",
 			'categories' 				=> "",
@@ -1309,7 +1400,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			/* additional fields */
 			'item_number_public'		=> "",
 			'old_unit_amount'			=> "",
-//			'old_unit_amount_net'		=> "",
+			//			'old_unit_amount_net'		=> "",
 			'properties'				=> "",
 			'msrp' 						=> "",
 			'shipping_costs_per_order' 	=> "0",
@@ -1336,106 +1427,13 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			'related_shop_item_numbers' => "",
 			'age_rating' 				=> "",
 			'weight' 					=> "",
-			'block_pricing' 			=> "",
+			'block_pricing' 			=> ""
 			/* parent/child relationship */
-			'has_children' 				=> "0",
-			'parent_item_number' 		=> "",
-			'attribute_1' 				=> "",
-			'attribute_2' 				=> "",
-			'attribute_3' 				=> "",
-			'attribute_4' 				=> "",
-			'attribute_5' 				=> "",
-			'attribute_6' 				=> "",
-			'attribute_7' 				=> "",
-			'attribute_8' 				=> "",
-			'attribute_9' 				=> "",
-			'attribute_10' 				=> "",
-			/* options */
-			'has_options' 				=> "0",
-			'option_1' 					=> "",
-			'option_1_values' 			=> "",
-			'option_2' 					=> "",
-			'option_2_values' 			=> "",
-			'option_3' 					=> "",
-			'option_3_values' 			=> "",
-			'option_4' 					=> "",
-			'option_4_values' 			=> "",
-			'option_5' 					=> "",
-			'option_5_values' 			=> "",
-			'option_6' 					=> "",
-			'option_6_values' 			=> "",
-			'option_7' 					=> "",
-			'option_7_values' 			=> "",
-			'option_8' 					=> "",
-			'option_8_values' 			=> "",
-			'option_9' 					=> "",
-			'option_9_values' 			=> "",
-			'option_10' 				=> "",
-			'option_10_values' 			=> "",
-			/* inputfields */
-			'has_input_fields' 			=> "0",
-			'input_field_1_number'		=> "",
-			'input_field_1_type'		=> "",
-			'input_field_1_label'		=> "",
-			'input_field_1_infotext'	=> "",
-			'input_field_1_required'	=> "",
-			'input_field_1_add_amount'	=> "",
-			'input_field_2_number'		=> "",
-			'input_field_2_type'		=> "",
-			'input_field_2_label'		=> "",
-			'input_field_2_infotext'	=> "",
-			'input_field_2_required'	=> "",
-			'input_field_2_add_amount'	=> "",
-			'input_field_3_number'		=> "",
-			'input_field_3_type'		=> "",
-			'input_field_3_label'		=> "",
-			'input_field_3_infotext'	=> "",
-			'input_field_3_required'	=> "",
-			'input_field_3_add_amount'	=> "",
-			'input_field_4_number'		=> "",
-			'input_field_4_type'		=> "",
-			'input_field_4_label'		=> "",
-			'input_field_4_infotext'	=> "",
-			'input_field_4_required'	=> "",
-			'input_field_4_add_amount'	=> "",
-			'input_field_5_number'		=> "",
-			'input_field_5_type'		=> "",
-			'input_field_5_label'		=> "",
-			'input_field_5_infotext'	=> "",
-			'input_field_5_required'	=> "",
-			'input_field_5_add_amount'	=> "",
-			'input_field_6_number'		=> "",
-			'input_field_6_type'		=> "",
-			'input_field_6_label'		=> "",
-			'input_field_6_infotext'	=> "",
-			'input_field_6_required'	=> "",
-			'input_field_6_add_amount'	=> "",
-			'input_field_7_number'		=> "",
-			'input_field_7_type'		=> "",
-			'input_field_7_label'		=> "",
-			'input_field_7_infotext'	=> "",
-			'input_field_7_required'	=> "",
-			'input_field_7_add_amount'	=> "",
-			'input_field_8_number'		=> "",
-			'input_field_8_type'		=> "",
-			'input_field_8_label'		=> "",
-			'input_field_8_infotext'	=> "",
-			'input_field_8_required'	=> "",
-			'input_field_8_add_amount'	=> "",
-			'input_field_9_number'		=> "",
-			'input_field_9_type'		=> "",
-			'input_field_9_label'		=> "",
-			'input_field_9_infotext'	=> "",
-			'input_field_9_required'	=> "",
-			'input_field_9_add_amount'	=> "",
-			'input_field_10_number'		=> "",
-			'input_field_10_type'		=> "",
-			'input_field_10_label'		=> "",
-			'input_field_10_infotext'	=> "",
-			'input_field_10_required'	=> "",
-			'input_field_10_add_amount'	=> "",
-		);
-
+		) +
+		$attributes +
+		$options +
+		$inputs;
+		
 		return $row;
 	}
 

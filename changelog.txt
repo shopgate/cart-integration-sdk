@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.3.10'''
+* Beim Item Export besteht die Möglichkeit beliebig viele Optionen, Inputs und Attribute zu exportieren
+
 '''Version 2.3.9'''
 * Die ShopgateObject Klasse enthält nun eine Methode zur Ausgabe von Objekten mit interner Rekursion (u_print_r).
 * Die ShopgatePlugin Klasse beinhaltet nun eine Hilfsmethode zur Ermittlung des verbrauchten Arbeitsspeichers inkl. Umrechnung auf die benötigte Einheit.
@@ -158,6 +161,9 @@
 
 
 '''English'''
+
+'''Version 2.3.10'''
+* it's possible to export any number of options, inputs and attributes while exporting item csv files
 
 '''Version 2.3.9'''
 * the ShopgateObject class now features a method for dumping objects that can't be dumped using var_dump, because of internal recursion (u_print_r).
