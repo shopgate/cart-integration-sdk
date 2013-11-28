@@ -107,6 +107,7 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_API_UNKNOWN_LOGTYPE = 38;
 	const PLUGIN_API_CRON_NO_JOBS = 40;
 	const PLUGIN_API_CRON_NO_JOB_NAME = 41;
+	const PLUGIN_API_NO_SHOPGATE_SETTINGS = 50;
 	
 	// Plugin errors
 	const PLUGIN_DUPLICATE_ORDER = 60;
@@ -179,6 +180,7 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_API_UNKNOWN_LOGTYPE => 'unknown logtype',
 		self::PLUGIN_API_CRON_NO_JOBS => 'parameter "jobs" missing',
 		self::PLUGIN_API_CRON_NO_JOB_NAME => 'field "job_name" in parameter "jobs" missing',
+		self::PLUGIN_API_NO_SHOPGATE_SETTINGS => 'parameter "shopgate_settings" missing',
 		
 		// Plugin errors
 		self::PLUGIN_DUPLICATE_ORDER => 'duplicate order',

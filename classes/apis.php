@@ -100,6 +100,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				'check_cart',
 				'redeem_coupons',
 				'get_settings',
+				'set_settings',
 		);
 	}
 
@@ -210,7 +211,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	/**
 	 * Represents the "ping" action.
 	 *
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_ping/
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_ping
 	 */
 	protected function ping() {
 		// obfuscate data relevant for authentication
@@ -298,7 +299,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 * Represents the "add_order" action.
 	 *
 	 * @throws ShopgateLibraryException
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_add_order/
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_add_order
 	 */
 	protected function addOrder() {
 		if (!isset($this->params['order_number'])) {
@@ -328,7 +329,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 * Represents the "update_order" action.
 	 *
 	 * @throws ShopgateLibraryException
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_update_order/
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_update_order
 	 */
 	protected function updateOrder() {
 		if (!isset($this->params['order_number'])) {
@@ -452,12 +453,12 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		
 		$this->responseData = $responseData;
 	}
-
+	
 	/**
 	 * Represents the "get_settings" action.
 	 *
 	 * @throws ShopgateLibraryException
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_check_cart
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_settings
 	 */
 	protected function getSettings() {
 		$this->responseData = $this->plugin->getSettings();
@@ -467,10 +468,57 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	}
 	
 	/**
+	 * Represents the "set_settings" action.
+	 *
+	 * @throws ShopgateLibraryException
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_set_settings
+	 */
+	protected function setSettings() {
+		if (empty($this->params['shopgate_settings']) || !is_array($this->params['shopgate_settings'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_SHOPGATE_SETTINGS, 'Request: '.var_export($this->params, true));
+		}
+		// settings that may never be changed:
+		$shopgateSettingsBlacklist = array(
+				'shop_number', 'customer_number', 'apikey', 'plugin_name',
+				'export_folder_path', 'log_folder_path', 'cache_folder_path',
+				'items_csv_filename', 'categories_csv_filename', 'reviews_csv_filename', 'pages_csv_filename',
+				'access_log_filename', 'error_log_filename', 'request_log_filename', 'debug_log_filename',
+				'redirect_keyword_cache_filename', 'redirect_skip_keyword_cache_filename',
+		);
+		
+		// filter the new settings
+		$shopgateSettingsNew = array();
+		foreach ($this->params['shopgate_settings'] as $setting) {
+			if (!isset($setting['name'])) {
+				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_SHOPGATE_SETTINGS, 'Wrong format: '.var_export($setting, true));
+			}
+			
+			if (in_array($setting['name'], $shopgateSettingsBlacklist)) {
+				continue;
+			}
+			
+			$shopgateSettingsNew[$setting['name']] = isset($setting['value']) ? $setting['value'] : null;
+		}
+		
+		$oldShopgateConfig = $this->config->toArray();
+		$this->config->load($shopgateSettingsNew);
+		$this->config->save(array_keys($shopgateSettingsNew), true);
+		
+		$shopgateSettingsDiff = array();
+		foreach ($shopgateSettingsNew as $setting => $value) {
+			$diff[] = array('name' => $setting, 'old' => $oldShopgateConfig[$setting], 'new' => $value);
+		}
+		
+		// set data and return response
+		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
+		$this->responseData['shopgate_settings'] = $diff;
+	}
+	
+	/**
 	 * Represents the "get_customer" action.
 	 *
 	 * @throws ShopgateLibraryException
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_customer/
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_customer
 	 */
 	protected function getCustomer() {
 		if (!isset($this->params['user'])) {
@@ -499,7 +547,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 * Represents the "get_items_csv" action.
 	 *
 	 * @throws ShopgateLibraryException
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_items_csv/
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_items_csv
 	 */
 	protected function getItemsCsv() {
 		if (isset($this->params['limit']) && isset($this->params['offset'])) {
@@ -519,7 +567,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 * Represents the "get_categories_csv" action.
 	 *
 	 * @throws ShopgateLibraryException
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_categories_csv/
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_categories_csv
 	 */
 	protected function getCategoriesCsv() {
 		// generate / update categories csv file
@@ -534,7 +582,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 * Represents the "get_reviews_csv" action.
 	 *
 	 * @throws ShopgateLibraryException
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_reviews_csv/
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_reviews_csv
 	 */
 	protected function getReviewsCsv() {
 		if (isset($this->params['limit']) && isset($this->params['offset'])) {
@@ -555,7 +603,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 *
 	 * @todo
 	 * @throws ShopgateLibraryException
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_pages_csv/
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_pages_csv
 	 */
 	protected function getPagesCsv() {
 		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseTextCsv($this->trace_id);
@@ -566,7 +614,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 * Represents the "get_log_file" action.
 	 *
 	 * @throws ShopgateLibraryException
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_log_file/
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_log_file
 	 */
 	protected function getLogFile() {
 		// disable debug log for this action
@@ -588,7 +636,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 * Represents the "clear_log_file" action.
 	 *
 	 * @throws ShopgateLibraryException
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_clear_log_file/
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_clear_log_file
 	 */
 	private function clearLogFile() {
 		if (empty($this->params['log_type'])) {
@@ -626,7 +674,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 * Represents the "clear_cache" action.
 	 *
 	 * @throws ShopgateLibraryException
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_clear_cache/
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_clear_cache
 	 */
 	private function clearCache() {
 	
@@ -654,7 +702,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 * Represents the "get_orders" action.
 	 *
 	 * @throws ShopgateLibraryException
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_orders/
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_orders
 	 * @todo
 	 */
 	protected function getOrders() {
@@ -1478,7 +1526,7 @@ class ShopgateMerchantApiResponse extends ShopgateContainer {
  *
  * It provides all available actions and calls the plugin implementation's callback methods for data retrieval if necessary.
  *
- * @see http://wiki.shopgate.com/Shopgate_Plugin_API/
+ * @see http://wiki.shopgate.com/Shopgate_Plugin_API
  * @author Shopgate GmbH, 35510 Butzbach, DE
  */
 interface ShopgatePluginApiInterface {
@@ -1515,7 +1563,7 @@ interface ShopgateMerchantApiInterface {
 	 * @throws ShopgateLibraryException in case the connection can't be established
 	 * @throws ShopgateMerchantApiException in case the response is invalid or an error occured
 	 *
-	 * @see http://wiki.shopgate.com/Merchant_API_get_orders/
+	 * @see http://wiki.shopgate.com/Merchant_API_get_orders
 	 */
 	public function getOrders($parameters);
 	
@@ -1533,7 +1581,7 @@ interface ShopgateMerchantApiInterface {
 	 * @throws ShopgateLibraryException in case the connection can't be established
 	 * @throws ShopgateMerchantApiException in case the response is invalid or an error occured
 	 *
-	 * @see http://wiki.shopgate.com/Merchant_API_add_order_delivery_note/
+	 * @see http://wiki.shopgate.com/Merchant_API_add_order_delivery_note
 	 */
 	public function addOrderDeliveryNote($orderNumber, $shippingServiceId, $trackingNumber, $markAsCompleted = false, $sendCustomerMail = true);
 	
@@ -1547,7 +1595,7 @@ interface ShopgateMerchantApiInterface {
 	 * @throws ShopgateLibraryException in case the connection can't be established
 	 * @throws ShopgateMerchantApiException in case the response is invalid or an error occured
 	 *
-	 * @see http://wiki.shopgate.com/Merchant_API_set_order_shipping_completed/
+	 * @see http://wiki.shopgate.com/Merchant_API_set_order_shipping_completed
 	 */
 	public function setOrderShippingCompleted($orderNumber);
 	
@@ -1565,7 +1613,7 @@ interface ShopgateMerchantApiInterface {
 	 * @throws ShopgateLibraryException in case the connection can't be established
 	 * @throws ShopgateMerchantApiException in case the response is invalid or an error occured
 	 *
-	 * @see http://wiki.shopgate.com/Merchant_API_cancel_order/
+	 * @see http://wiki.shopgate.com/Merchant_API_cancel_order
 	 */
 	public function cancelOrder($orderNumber, $cancelCompleteOrder = false, $cancellationItems = array(), $cancelShipping = false, $cancellationNote = '');
 	
@@ -1611,7 +1659,7 @@ interface ShopgateMerchantApiInterface {
 	 * @throws ShopgateLibraryException in case the connection can't be established
 	 * @throws ShopgateMerchantApiException in case the response is invalid or an error occured
 	 *
-	 * @see http://wiki.shopgate.com/Merchant_API_get_items/
+	 * @see http://wiki.shopgate.com/Merchant_API_get_items
 	 */
 	public function getItems($parameters);
 	
@@ -1625,7 +1673,7 @@ interface ShopgateMerchantApiInterface {
 	 * @throws ShopgateLibraryException in case the connection can't be established
 	 * @throws ShopgateMerchantApiException in case the response is invalid or an error occured
 	 *
-	 * @see http://wiki.shopgate.com/Merchant_API_add_item/
+	 * @see http://wiki.shopgate.com/Merchant_API_add_item
 	 */
 	public function addItem($item);
 	
@@ -1639,7 +1687,7 @@ interface ShopgateMerchantApiInterface {
 	 * @throws ShopgateLibraryException in case the connection can't be established
 	 * @throws ShopgateMerchantApiException in case the response is invalid or an error occured
 	 *
-	 * @see http://wiki.shopgate.com/Merchant_API_update_item/
+	 * @see http://wiki.shopgate.com/Merchant_API_update_item
 	 */
 	public function updateItem($item);
 	
@@ -1653,7 +1701,7 @@ interface ShopgateMerchantApiInterface {
 	 * @throws ShopgateLibraryException in case the connection can't be established
 	 * @throws ShopgateMerchantApiException in case the response is invalid or an error occured
 	 *
-	 * @see http://wiki.shopgate.com/Merchant_API_delete_item/
+	 * @see http://wiki.shopgate.com/Merchant_API_delete_item
 	 */
 	public function deleteItem($itemNumber);
 	
@@ -1667,7 +1715,7 @@ interface ShopgateMerchantApiInterface {
 	 * @throws ShopgateLibraryException in case the connection can't be established
 	 * @throws ShopgateMerchantApiException in case the response is invalid or an error occured
 	 *
-	 * @see http://wiki.shopgate.com/Merchant_API_batch_add_items/
+	 * @see http://wiki.shopgate.com/Merchant_API_batch_add_items
 	 */
 	public function batchAddItems($items);
 	
@@ -1681,7 +1729,7 @@ interface ShopgateMerchantApiInterface {
 	 * @throws ShopgateLibraryException in case the connection can't be established
 	 * @throws ShopgateMerchantApiException in case the response is invalid or an error occured
 	 *
-	 * @see http://wiki.shopgate.com/Merchant_API_batch_update_items/
+	 * @see http://wiki.shopgate.com/Merchant_API_batch_update_items
 	 */
 	public function batchUpdateItems($items);
 	
@@ -1698,7 +1746,7 @@ interface ShopgateMerchantApiInterface {
 	 * @throws ShopgateLibraryException in case the connection can't be established
 	 * @throws ShopgateMerchantApiException in case the response is invalid or an error occured
 	 *
-	 * @see http://wiki.shopgate.com/Merchant_API_get_categories/
+	 * @see http://wiki.shopgate.com/Merchant_API_get_categories
 	 */
 	public function getCategories($parameters);
 	
@@ -1712,7 +1760,7 @@ interface ShopgateMerchantApiInterface {
 	 * @throws ShopgateLibraryException in case the connection can't be established
 	 * @throws ShopgateMerchantApiException in case the response is invalid or an error occured
 	 *
-	 * @see http://wiki.shopgate.com/Merchant_API_add_category/
+	 * @see http://wiki.shopgate.com/Merchant_API_add_category
 	 */
 	public function addCategory($category);
 	
@@ -1726,7 +1774,7 @@ interface ShopgateMerchantApiInterface {
 	 * @throws ShopgateLibraryException in case the connection can't be established
 	 * @throws ShopgateMerchantApiException in case the response is invalid or an error occured
 	 *
-	 * @see http://wiki.shopgate.com/Merchant_API_update_category/
+	 * @see http://wiki.shopgate.com/Merchant_API_update_category
 	 */
 	public function updateCategory($category);
 	
@@ -1742,7 +1790,7 @@ interface ShopgateMerchantApiInterface {
 	 * @throws ShopgateLibraryException in case the connection can't be established
 	 * @throws ShopgateMerchantApiException in case the response is invalid or an error occured
 	 *
-	 * @see http://wiki.shopgate.com/Merchant_API_delete_category/
+	 * @see http://wiki.shopgate.com/Merchant_API_delete_category
 	 */
 	public function deleteCategory($categoryNumber, $deleteSubCategories = false, $deleteItems = false);
 	
@@ -1758,7 +1806,7 @@ interface ShopgateMerchantApiInterface {
 	 * @throws ShopgateLibraryException in case the connection can't be established
 	 * @throws ShopgateMerchantApiException in case the response is invalid or an error occured
 	 *
-	 * @see http://wiki.shopgate.com/Merchant_API_add_item_to_category/
+	 * @see http://wiki.shopgate.com/Merchant_API_add_item_to_category
 	 */
 	public function addItemToCategory($itemNumber, $categoryNumber, $orderIndex = null);
 	
