@@ -1675,9 +1675,9 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * Override this to append additional information about shop system to the response of the Debug action.
 	 *
-	 * @return mixed[] An array with additional information.
+	 * @return mixed[] An string with additional information.
 	 */
-	public function createPluginDebug() { return array(); }
+	public function getDebugInfo() { return ''; }
 
 	/**
 	 * This performs the necessary queries to build a ShopgateCustomer object for the given log in credentials.

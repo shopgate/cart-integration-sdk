@@ -175,6 +175,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	/**
 	 * @var bool
 	 */
+	protected $enable_get_debug_info;
+	
+	/**
+	 * @var bool
+	 */
 	protected $enable_get_items_csv;
 	
 	/**
@@ -373,6 +378,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_redeem_coupons = 0;
 		$this->enable_get_orders = 0;
 		$this->enable_get_customer = 0;
+		$this->enable_get_debug_info = 0;
 		$this->enable_get_items_csv = 0;
 		$this->enable_get_categories_csv = 0;
 		$this->enable_get_reviews_csv = 0;
@@ -880,6 +886,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->enable_get_customer;
 	}
 	
+	public function getEnableGetDebugInfo() {
+		return $this->enable_get_debug_info;
+	}
+	
 	public function getEnableGetItemsCsv() {
 		return $this->enable_get_items_csv;
 	}
@@ -1138,6 +1148,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	
 	public function setEnableGetCustomer($value) {
 		$this->enable_get_customer = $value;
+	}
+	
+	public function setEnableGetDebugInfo($value) {
+		$this->enable_get_debug_info = $value;
 	}
 	
 	public function setEnableGetItemsCsv($value) {
@@ -1636,6 +1650,7 @@ class ShopgateConfigOld extends ShopgateObject {
 		'enable_add_order' => true,
 		'enable_update_order' => true,
 		'enable_get_customer' => true,
+		'enable_get_debug_info' => true,
 		'enable_get_categories_csv' => true,
 		'enable_get_orders' => true,
 		'enable_get_items_csv' => true,

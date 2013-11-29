@@ -90,6 +90,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				'add_order',
 				'update_order',
 				'get_customer',
+				'get_debug_info',
 				'get_items_csv',
 				'get_categories_csv',
 				'get_reviews_csv',
@@ -224,7 +225,6 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$this->responseData['pong'] = 'OK';
 		$this->responseData['configuration'] = $config;
 		$this->responseData['plugin_info'] = $this->plugin->createPluginInfo();
-		$this->responseData['plugin_debug'] = $this->plugin->createPluginDebug();
 		$this->responseData['permissions'] = $this->getPermissions();
 		$this->responseData['php_version'] = phpversion();
 		$this->responseData['php_config'] = $this->getPhpSettings();
