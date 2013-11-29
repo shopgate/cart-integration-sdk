@@ -224,6 +224,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$this->responseData['pong'] = 'OK';
 		$this->responseData['configuration'] = $config;
 		$this->responseData['plugin_info'] = $this->plugin->createPluginInfo();
+		$this->responseData['plugin_debug'] = $this->plugin->createPluginDebug();
 		$this->responseData['permissions'] = $this->getPermissions();
 		$this->responseData['php_version'] = phpversion();
 		$this->responseData['php_config'] = $this->getPhpSettings();
