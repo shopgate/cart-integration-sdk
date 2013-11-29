@@ -1671,6 +1671,15 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	public function createPluginInfo() { return array(); }
 
 	/**
+	 * Callback function for the Shopgate Plugin API Debug action.
+	 *
+	 * Override this to append additional information about shop system to the response of the Debug action.
+	 *
+	 * @return mixed[] An array with additional information.
+	 */
+	public function createPluginDebug() { return array(); }
+
+	/**
 	 * This performs the necessary queries to build a ShopgateCustomer object for the given log in credentials.
 	 *
 	 * The method should not abort on soft errors like when the street or phone number of a customer can't be found.
