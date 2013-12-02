@@ -2100,7 +2100,7 @@ interface ShopgateConfigInterface {
 	/**
 	 * @return bool
 	 */
-	public function setEnableGetDebugInfo();
+	public function getEnableGetDebugInfo();
 
 	/**
 	 * @return bool
