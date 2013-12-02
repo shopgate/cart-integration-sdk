@@ -244,7 +244,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 */
 	protected function getDebugInfo() {
 		// prepare response data array 		
-		$this->responseData = $this->plugin->gedDebugInfo();
+		$this->responseData = $this->plugin->getDebugInfo();
 		
 	
 		// set data and return response
