@@ -180,6 +180,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	/**
 	 * @var bool
 	 */
+	protected $enable_register_customer;
+	
+	/**
+	 * @var bool
+	 */
 	protected $enable_get_items_csv;
 	
 	/**
@@ -390,6 +395,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_clear_cache = 1;
 		$this->enable_get_settings = 0;
 		$this->enable_set_settings = 1;
+		$this->enable_register_customer = 0;
 		
 		$this->country = 'DE';
 		$this->language = 'de';
@@ -1058,7 +1064,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->is_shopgate_adapter;
 	}
 	
-	
+	public function getEnableRegisterCustomer() {
+		return $this->enable_register_customer;
+	}
+
 	###############
 	### Setters ###
 	###############
@@ -1382,6 +1391,9 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->is_shopgate_adapter = $value;
 	}
 	
+	public function setEnableRegisterCustomer($value) {
+		$this->enable_register_customer = $value;
+	}
 	
 	###############
 	### Helpers ###

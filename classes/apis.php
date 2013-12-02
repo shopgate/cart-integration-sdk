@@ -89,7 +89,6 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				'cron',
 				'add_order',
 				'update_order',
-				'get_customer',
 				'get_debug_info',
 				'get_items_csv',
 				'get_categories_csv',
@@ -100,6 +99,8 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				'clear_cache',
 				'check_cart',
 				'redeem_coupons',
+				'get_customer',
+				'register_customer',
 				'get_settings',
 				'set_settings',
 		);
@@ -243,7 +244,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_ping
 	 */
 	protected function getDebugInfo() {
-		// prepare response data array 		
+		// prepare response data array
 		$this->responseData = $this->plugin->getDebugInfo();
 		
 	
@@ -559,6 +560,51 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$this->responseData["addresses"] = $addressList;
 	}
 
+	protected function registerCustomer() {
+		if (!isset($this->params['user'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_USER);
+		}
+		
+		if (!isset($this->params['pass'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_PASS);
+		}
+		
+		// TODO
+		if (!isset($this->params['user_data'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::UNKNOWN_ERROR_CODE, "missing user_data", true);
+		}
+		
+		if(!$this->config->getEnableGetCustomer()) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_DISABLED_ACTION, "Action 'get_customer' is not activated but is needed by register_customer", true);
+		}
+		
+		$user = $this->params['user'];
+		$pass = $this->params['pass'];
+		$customer = new ShopgateCustomer($this->params['user_data']);
+		
+		$userData = $this->params["user_data"];
+
+		if(isset($userData['addresses']) && is_array($userData['addresses'])) {
+			$addresses = array();
+			foreach($userData['addresses'] as $address) {
+				$addresses[] = new ShopgateAddress($address);
+			}
+			$customer->setAddresses($addresses);
+		}
+		
+		$this->plugin->registerCustomer($user, $pass, $customer);
+		
+		$newCustomer = $this->plugin->getCustomer($user, $pass);
+		
+		$customerData = $newCustomer->toArray();
+		$addressList = $customerData['addresses'];
+		unset($customerData['addresses']);
+		
+		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
+		$this->responseData["user_data"] = $customerData;
+		$this->responseData["addresses"] = $addressList;
+	}
+	
 	/**
 	 * Represents the "get_items_csv" action.
 	 *

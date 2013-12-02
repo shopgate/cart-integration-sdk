@@ -108,7 +108,7 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_API_CRON_NO_JOBS = 40;
 	const PLUGIN_API_CRON_NO_JOB_NAME = 41;
 	const PLUGIN_API_NO_SHOPGATE_SETTINGS = 50;
-	
+
 	// Plugin errors
 	const PLUGIN_DUPLICATE_ORDER = 60;
 	const PLUGIN_ORDER_NOT_FOUND = 61;
@@ -149,6 +149,9 @@ class ShopgateLibraryException extends Exception {
 	const COUPON_INVALID_USER = 204;
 	const COUPON_TOO_MANY_COUPONS = 205;
 	
+	const REGISTER_FAILED_TO_ADD_USER = 220;
+	const REGISTER_USER_ALREADY_EXISTS = 221;
+	
 	// extended error code format that contains information on multiple errors
 	const MULTIPLE_ERRORS = 998;
 	
@@ -181,7 +184,7 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_API_CRON_NO_JOBS => 'parameter "jobs" missing',
 		self::PLUGIN_API_CRON_NO_JOB_NAME => 'field "job_name" in parameter "jobs" missing',
 		self::PLUGIN_API_NO_SHOPGATE_SETTINGS => 'parameter "shopgate_settings" missing',
-		
+
 		// Plugin errors
 		self::PLUGIN_DUPLICATE_ORDER => 'duplicate order',
 		self::PLUGIN_ORDER_NOT_FOUND => 'order not found',
@@ -219,6 +222,9 @@ class ShopgateLibraryException extends Exception {
 		self::COUPON_INVALID_ADDRESS => 'invalid address for coupon',
 		self::COUPON_INVALID_USER => 'invalid user for coupon',
 		self::COUPON_TOO_MANY_COUPONS => 'too many coupons in cart',
+		
+		self::REGISTER_FAILED_TO_ADD_USER => 'failed to add user',
+		self::REGISTER_USER_ALREADY_EXISTS => 'the given username already exists',
 		
 		// Authentification errors
 		self::AUTHENTICATION_FAILED => 'authentication failed',
@@ -460,7 +466,7 @@ class ShopgateLogger {
 		
 		return self::$singleton;
 	}
-	
+
 	/**
 	 * Sets the paths to the log files.
 	 *
@@ -1692,7 +1698,21 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @throws ShopgateLibraryException on invalid log in data or hard errors like database failure.
 	 */
 	public abstract function getCustomer($user, $pass);
-
+	
+	/**
+	 * This method creates a new user account / user addresses for a customer in the shop system's database
+	 *
+	 * The method should not abort on soft errors like when the street or phone number of a customer is not set.
+	 *
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_register_customer#API_Response
+	 *
+	 * @param string $user The user name the customer entered at Shopgate.
+	 * @param string $pass The password the customer entered at Shopgate.
+	 * @param ShopgateCustomer A ShopgateCustomer object to be added to the shop system's database.
+	 * @throws ShopgateLibraryException if an error occures
+	 */
+	public abstract function registerCustomer($user, $pass, ShopgateCustomer $customer);
+	
 	/**
 	 * Performs the necessary queries to add an order to the shop system's database.
 	 *
