@@ -242,16 +242,9 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 *
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_ping
 	 */
-	protected function gedDebugInfo() {
-		// obfuscate data relevant for authentication
-		$config = $this->config->toArray();
-		$config['customer_number']	= ShopgateLogger::OBFUSCATION_STRING;
-		$config['shop_number']		= ShopgateLogger::OBFUSCATION_STRING;
-		$config['apikey']			= ShopgateLogger::OBFUSCATION_STRING;
-	
-		// prepare response data array
-		$this->responseData['configuration'] = $config;
-		$this->responseData['plugin_debug'] = $this->plugin->gedDebugInfo();
+	protected function getDebugInfo() {
+		// prepare response data array 		
+		$this->responseData = $this->plugin->gedDebugInfo();
 		
 	
 		// set data and return response
