@@ -2,6 +2,7 @@
 
 '''Version 2.4.0'''
 * Die Methode register_customer wurde hinzugefügt
+* Die Action get_debug_info wurde hinzugefügt
 
 '''Version 2.3.10'''
 * Beim Item Export besteht die Möglichkeit beliebig viele Optionen, Inputs und Attribute zu exportieren
@@ -167,6 +168,7 @@
 
 '''Version 2.4.0'''
 * method register_customer was added
+* action get_debug_info was added
 
 '''Version 2.3.10'''
 * it's possible to export any number of options, inputs and attributes while exporting item csv files
