@@ -2096,6 +2096,12 @@ interface ShopgateConfigInterface {
 	 */
 	public function getEnableGetCustomer();
 
+
+	/**
+	 * @return bool
+	 */
+	public function setEnableGetDebugInfo();
+
 	/**
 	 * @return bool
 	 */
@@ -2415,6 +2421,12 @@ interface ShopgateConfigInterface {
 	 * @param bool $value
 	 */
 	public function setEnableGetCustomer($value);
+
+	/**
+	 * @param bool $value
+	 */
+	public function setEnableGetDebugInfo($value);
+
 
 	/**
 	 * @param bool $value
