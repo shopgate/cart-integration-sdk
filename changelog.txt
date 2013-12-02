@@ -1,7 +1,7 @@
 '''Deutsch'''
 
 '''Version 2.4.0'''
-* Die Methode register_customer wurde hinzugefügt
+* Die Action register_customer wurde hinzugefügt
 * Die Action get_debug_info wurde hinzugefügt
 
 '''Version 2.3.10'''
@@ -167,7 +167,7 @@
 '''English'''
 
 '''Version 2.4.0'''
-* method register_customer was added
+* action register_customer was added
 * action get_debug_info was added
 
 '''Version 2.3.10'''
