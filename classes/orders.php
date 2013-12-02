@@ -1,15 +1,58 @@
 <?php
+/*
+* Shopgate GmbH
+*
+* URHEBERRECHTSHINWEIS
+*
+* Dieses Plugin ist urheberrechtlich geschützt. Es darf ausschließlich von Kunden der Shopgate GmbH
+* zum Zwecke der eigenen Kommunikation zwischen dem IT-System des Kunden mit dem IT-System der
+* Shopgate GmbH über www.shopgate.com verwendet werden. Eine darüber hinausgehende Vervielfältigung, Verbreitung,
+* öffentliche Zugänglichmachung, Bearbeitung oder Weitergabe an Dritte ist nur mit unserer vorherigen
+* schriftlichen Zustimmung zulässig. Die Regelungen der §§ 69 d Abs. 2, 3 und 69 e UrhG bleiben hiervon unberührt.
+*
+* COPYRIGHT NOTICE
+*
+* This plugin is the subject of copyright protection. It is only for the use of Shopgate GmbH customers,
+* for the purpose of facilitating communication between the IT system of the customer and the IT system
+* of Shopgate GmbH via www.shopgate.com. Any reproduction, dissemination, public propagation, processing or
+* transfer to third parties is only permitted where we previously consented thereto in writing. The provisions
+* of paragraph 69 d, sub-paragraphs 2, 3 and paragraph 69, sub-paragraph e of the German Copyright Act shall remain unaffected.
+*
+*  @author Shopgate GmbH <interfaces@shopgate.com>
+*/
+
 abstract class ShopgateCartBase extends ShopgateContainer {
+	
 	const SHOPGATE = "SHOPGATE";
 	const PREPAY = "PREPAY";
-	const CC = "CC";
-	const DT_CC = "DT_CC";
-	const INVOICE = "INVOICE";
+	
 	const DEBIT = "DEBIT";
 	const COD = "COD";
-	const PAYPAL = "PAYPAL";
+	
+	const INVOICE = "INVOICE";
 	const KLARNA_INV = "KLARNA_INV";
 	const BILLSAFE = "BILLSAFE";
+	const MSTPAY_INV = "MSTPAY_INV";
+	
+	const PAYPAL = "PAYPAL";
+	const MASTPAY_PP = "MASTPAY_PP";
+	const SAGEPAY_PP = "SAGEPAY_PP";
+	
+	const CC = "CC";
+	const DT_CC = "DT_CC";
+	const AUTHN_CC = "AUTHN_CC";
+	const FRSTDAT_CC = "FRSTDAT_CC";
+	const MASTPAY_CC = "MASTPAY_CC";
+	const BRAINTR_CC = "BRAINTR_CC";
+	const CYBRSRC_CC = "CYBRSRC_CC";
+	const DTCASH_CC = "DTCASH_CC";
+	const OGONE_CC = "OGONE_CC";
+	const SAGEPAY_CC = "SAGEPAY_CC";
+	const EWAY_CC = "EWAY_CC";
+	const PAYJUNC_CC = "PAYJUNC_CC";
+	const PP_WSPP_CC = "PP_WSPP_CC";
+	
+	const PAYU = "PAYU";
 	
 	protected $customer_number;
 
@@ -23,6 +66,10 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	protected $phone;
 	protected $mobile;
 
+	protected $shipping_group;
+	protected $shipping_type;
+	protected $shipping_infos;
+	
 	protected $payment_method;
 	protected $payment_group;
 
@@ -102,6 +149,39 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 		$this->mobile = $value;
 	}
 
+	/**
+	 *
+	 * @param string $value
+	 */
+	public function setShippingGroup($value) {
+		$this->shipping_group = $value;
+	}
+	
+	/**
+	 *
+	 * @param string $value
+	 */
+	public function setShippingType($value) {
+		$this->shipping_type = $value;
+	}
+	
+	/**
+	 *
+	 * @param ShopgateShippingInfo $value
+	 */
+	public function setShippingInfos($value) {
+		if (!is_object($value) && !($value instanceof ShopgateShippingInfo) && !is_array($value)) {
+			$this->shipping_infos = null;
+			return;
+		}
+	
+		if (is_array($value)) {
+			$value = new ShopgateShippingInfo($value);
+		}
+	
+		$this->shipping_infos = $value;
+	}
+	
 	/**
 	 * @see http://wiki.shopgate.com/Merchant_API_payment_infos/
 	 * @param string $value
@@ -321,6 +401,30 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	}
 
 	/**
+	 *
+	 * @return string
+	 */
+	public function getShippingGroup() {
+		return $this->shipping_group;
+	}
+	
+	/**
+	 *
+	 * @return string
+	 */
+	public function getShippingType() {
+		return $this->shipping_type;
+	}
+	
+	/**
+	 *
+	 * @return ShopgateShippingInfo
+	 */
+	public function getShippingInfos() {
+		return $this->shipping_infos;
+	}
+	
+	/**
 	 * @see http://wiki.shopgate.com/Merchant_API_payment_infos/
 	 * @return string
 	 */
@@ -452,7 +556,7 @@ class ShopgateOrder extends ShopgateCartBase {
 	protected $update_shipping = false;
 	protected $update_payment = false;
 	
-	protected $delivery_notes;
+	protected $delivery_notes = array();
 	
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitOrder($this);
@@ -774,6 +878,8 @@ class ShopgateOrderItem extends ShopgateContainer {
 	protected $unit_amount_with_tax;
 
 	protected $tax_percent;
+	protected $tax_class_key;
+	protected $tax_class_id;
 
 	protected $currency;
 
@@ -837,6 +943,24 @@ class ShopgateOrderItem extends ShopgateContainer {
 	 */
 	public function setTaxPercent($value) {
 		$this->tax_percent = $value;
+	}
+	
+	/**
+	 * Sets the tax_class_key value
+	 *
+	 * @param string $value
+	 */
+	public function setTaxClassKey($value) {
+		$this->tax_class_key = $value;
+	}
+	
+	/**
+	 * Sets the tax_class_id
+	 *
+	 * @param string $value
+	 */
+	public function setTaxClassId($value) {
+		$this->tax_class_id = $value;
 	}
 
 	/**
@@ -977,6 +1101,22 @@ class ShopgateOrderItem extends ShopgateContainer {
 	 */
 	public function getTaxPercent() {
 		return $this->tax_percent;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getTaxClassKey() {
+		return $this->tax_class_key;
+	}
+	
+	/**
+	 * Returns the tax_class_id
+	 *
+	 * @return string
+	 */
+	public function getTaxClassId() {
+		return $this->tax_class_id;
 	}
 
 	/**
@@ -1268,19 +1408,117 @@ class ShopgateOrderItemAttribute extends ShopgateContainer {
 	}
 }
 
-class ShopgateDeliveryNote extends ShopgateContainer {
-	const DHL = "DHL"; // DHL
-	const DHLEXPRESS = "DHLEXPRESS"; // DHLEXPRESS
-	const DP = "DP"; // Deutsche Post
-	const DPD = "DPD"; // Deutscher Paket Dienst
-	const FEDEX = "FEDEX"; // FedEx
-	const GLS = "GLS"; // GLS
-	const HLG = "HLG"; // Hermes
-	const OTHER = "OTHER"; // Anderer Lieferant
-	const TNT = "TNT"; // TNT
-	const TOF = "TOF"; // Trnas-o-Flex
-	const UPS = "UPS"; // UPS
+class ShopgateShippingInfo extends ShopgateContainer {
+	protected $name;
+	protected $description;
+	protected $amount;
+	protected $weight;
+	protected $api_response;
+	
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitShippingInfo($this);
+	}
+	
+	/**
+	 *
+	 * @return string
+	 */
+	public function getName() {
+		return $this->name;
+	}
+	/**
+	 *
+	 * @param string $value
+	 */
+	public function setName($value) {
+		$this->name = $value;
+	}
+	
+	/**
+	 *
+	 * @return string
+	 */
+	public function getDescription() {
+		return $this->description;
+	}
+	/**
+	 *
+	 * @param string $value
+	 */
+	public function setDescription($value) {
+		$this->description = $value;
+	}
+	
+	/**
+	 *
+	 * @return float
+	 */
+	public function getAmount() {
+		return $this->amount;
+	}
+	/**
+	 *
+	 * @param float $value
+	 */
+	public function setAmount($value) {
+		$this->amount = $value;
+	}
+	
+	/**
+	 *
+	 * @return int
+	 */
+	public function getWeight() {
+		return $this->weight;
+	}
+	/**
+	 *
+	 * @param int $value
+	 */
+	public function setWeight($value) {
+		$this->weight = $value;
+	}
+	
+	/**
+	 *
+	 * @return mixed[]
+	 */
+	public function getApiResponse() {
+		return $this->api_response;
+	}
+	/**
+	 *
+	 * @param string|mixed[] $value
+	 */
+	public function setApiResponse($value) {
+		if(is_string($value)) {
+			$value = $this->jsonDecode($value, true);
+		}
+		
+		$this->api_response = $value;
+	}
+}
 
+class ShopgateDeliveryNote extends ShopgateContainer {
+	// shipping groups
+	const DHL			= "DHL"; // DHL
+	const DHLEXPRESS	= "DHLEXPRESS"; // DHLEXPRESS
+	const DP			= "DP"; // Deutsche Post
+	const DPD			= "DPD"; // Deutscher Paket Dienst
+	const FEDEX			= "FEDEX"; // FedEx
+	const GLS			= "GLS"; // GLS
+	const HLG			= "HLG"; // Hermes
+	const OTHER			= "OTHER"; // Anderer Lieferant
+	const TNT			= "TNT"; // TNT
+	const TOF			= "TOF"; // Trnas-o-Flex
+	const UPS			= "UPS"; // UPS
+	const USPS			= "USPS"; // USPS
+
+	// shipping types
+	const MANUAL		= "MANUAL";
+	const USPS_API_V1	= "USPS_API_V1";
+	const UPS_API_V1	= "UPS_API_V1";
+	
 	protected $shipping_service_id = ShopgateDeliveryNote::DHL;
 	protected $tracking_number = "";
 	protected $shipping_time = null;
@@ -1350,6 +1588,9 @@ abstract class ShopgateCoupon extends ShopgateContainer {
 	protected $name;
 	protected $description;
 	protected $amount;
+	protected $amount_net;
+	protected $amount_gross;
+	protected $tax_type = 'auto';
 	protected $currency;
 	protected $is_free_shipping;
 	protected $internal_info;
@@ -1389,9 +1630,31 @@ abstract class ShopgateCoupon extends ShopgateContainer {
 	
 	/**
 	 * @param float $value
+	 * @deprecated
 	 */
 	public function setAmount($value) {
 		$this->amount = $value;
+	}
+	
+	/**
+	 * @param float $value
+	 */
+	public function setAmountNet($value) {
+		$this->amount_net = $value;
+	}
+	
+	/**
+	 * @param float $value
+	 */
+	public function setAmountGross($value) {
+		$this->amount_gross = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setTaxType($value) {
+		$this->tax_type = $value;
 	}
 	
 	/**
@@ -1450,9 +1713,31 @@ abstract class ShopgateCoupon extends ShopgateContainer {
 	
 	/**
 	 * @return float
+	 * @deprecated
 	 */
 	public function getAmount() {
 		return $this->amount;
+	}
+	
+	/**
+	 * @return float
+	 */
+	public function getAmountNet() {
+		return $this->amount_net;
+	}
+	
+	/**
+	 * @return float
+	 */
+	public function getAmountGross() {
+		return $this->amount_gross;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getTaxType() {
+		return $this->tax_type;
 	}
 	
 	/**

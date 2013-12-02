@@ -1,4 +1,26 @@
 <?php
+/*
+* Shopgate GmbH
+*
+* URHEBERRECHTSHINWEIS
+*
+* Dieses Plugin ist urheberrechtlich geschützt. Es darf ausschließlich von Kunden der Shopgate GmbH
+* zum Zwecke der eigenen Kommunikation zwischen dem IT-System des Kunden mit dem IT-System der
+* Shopgate GmbH über www.shopgate.com verwendet werden. Eine darüber hinausgehende Vervielfältigung, Verbreitung,
+* öffentliche Zugänglichmachung, Bearbeitung oder Weitergabe an Dritte ist nur mit unserer vorherigen
+* schriftlichen Zustimmung zulässig. Die Regelungen der §§ 69 d Abs. 2, 3 und 69 e UrhG bleiben hiervon unberührt.
+*
+* COPYRIGHT NOTICE
+*
+* This plugin is the subject of copyright protection. It is only for the use of Shopgate GmbH customers,
+* for the purpose of facilitating communication between the IT system of the customer and the IT system
+* of Shopgate GmbH via www.shopgate.com. Any reproduction, dissemination, public propagation, processing or
+* transfer to third parties is only permitted where we previously consented thereto in writing. The provisions
+* of paragraph 69 d, sub-paragraphs 2, 3 and paragraph 69, sub-paragraph e of the German Copyright Act shall remain unaffected.
+*
+*  @author Shopgate GmbH <interfaces@shopgate.com>
+*/
+
 class ShopgateCustomer extends ShopgateContainer {
 	const MALE = "m";
 	const FEMALE = "f";
@@ -7,6 +29,9 @@ class ShopgateCustomer extends ShopgateContainer {
 	protected $customer_number;
 	protected $customer_group;
 	protected $customer_group_id;
+	
+	protected $tax_class_key;
+	protected $tax_class_id;
 	
 	protected $first_name;
 	protected $last_name;
@@ -57,13 +82,23 @@ class ShopgateCustomer extends ShopgateContainer {
 	 * @param string $value
 	 */
 	public function setCustomerGroupId($value) {
-		if (is_numeric($value)) {
-			$this->customer_group_id = (int) $value;
-		} else {
-			$this->customer_group_id = null;
-		}
+		$this->customer_group_id = $value;
 	}
 	
+	/**
+	 * @param string $value
+	 */
+	public function setTaxClassKey($value) {
+		$this->tax_class_key = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setTaxClassId($value) {
+		$this->tax_class_id = $value;
+	}
+
 	/**
 	 * @param string $value
 	 */
@@ -176,6 +211,16 @@ class ShopgateCustomer extends ShopgateContainer {
 		return $this->customer_group_id;
 	}
 	
+	/**
+	 * @return string
+	 */
+	public function getTaxClassKey() { return $this->tax_class_key; }
+	
+	/**
+	 * @return string
+	 */
+	public function getTaxClassId() { return $this->tax_class_id; }
+
 	/**
 	 * @return string
 	 */
@@ -590,6 +635,27 @@ class ShopgateAddress extends ShopgateContainer {
 	protected function splitStreetData($street, $type = 'street') {
 		$splittedArray = array();
 		$street = trim($street);
+		$street = str_replace("\n", '', $street);
+		
+		//contains only digits OR no digits at all --> don't split
+		if (preg_match("/^[0-9]+$/i", $street)  || preg_match("/^[^0-9]+$/i", $street)) {
+			return ($type == 'street') ? $street : "";
+		}
+		
+		//number at the end ("Schlossstr. 10", "Schlossstr. 10a", "Schlossstr. 10a+b"...)
+		if (preg_match("/^([^0-9]+)([0-9]+ ?[a-z]?([ \-\&\+]+[a-z])?)$/i", $street, $matches)) {
+			return trim(($type == 'street') ? $matches[1] : $matches[2]);
+		}
+		
+		//number at the end ("Schlossstr. 10-12", "Schlossstr. 10 & 12"...)
+		if (preg_match("/^([^0-9]+)([0-9]+([ \-\&\+]+[0-9]+)?)$/i", $street, $matches)) {
+			return trim(($type == 'street') ? $matches[1] : $matches[2]);
+		}
+		
+		//number at the beginning (e.g. "2225 E. Bayshore Road", "2225-2227 E. Bayshore Road")
+		if (preg_match("/^([0-9]+([ \-\&\+]+[0-9]+)?)([^0-9]+.*)$/i", $street, $matches)) {
+			return trim(($type == 'street') ? $matches[3] : $matches[1]);
+		}
 		
 		if(!preg_match("/^(.+)\s(.*[0-9]+.*)$/is", $street, $splittedArray)) {
 			// for "My-Little-Street123"

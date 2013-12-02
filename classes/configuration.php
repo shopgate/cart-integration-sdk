@@ -1,4 +1,26 @@
 <?php
+/*
+* Shopgate GmbH
+*
+* URHEBERRECHTSHINWEIS
+*
+* Dieses Plugin ist urheberrechtlich geschützt. Es darf ausschließlich von Kunden der Shopgate GmbH
+* zum Zwecke der eigenen Kommunikation zwischen dem IT-System des Kunden mit dem IT-System der
+* Shopgate GmbH über www.shopgate.com verwendet werden. Eine darüber hinausgehende Vervielfältigung, Verbreitung,
+* öffentliche Zugänglichmachung, Bearbeitung oder Weitergabe an Dritte ist nur mit unserer vorherigen
+* schriftlichen Zustimmung zulässig. Die Regelungen der §§ 69 d Abs. 2, 3 und 69 e UrhG bleiben hiervon unberührt.
+*
+* COPYRIGHT NOTICE
+*
+* This plugin is the subject of copyright protection. It is only for the use of Shopgate GmbH customers,
+* for the purpose of facilitating communication between the IT system of the customer and the IT system
+* of Shopgate GmbH via www.shopgate.com. Any reproduction, dissemination, public propagation, processing or
+* transfer to third parties is only permitted where we previously consented thereto in writing. The provisions
+* of paragraph 69 d, sub-paragraphs 2, 3 and paragraph 69, sub-paragraph e of the German Copyright Act shall remain unaffected.
+*
+*  @author Shopgate GmbH <interfaces@shopgate.com>
+*/
+
 /**
  * Manages configuration for library _and_ plugin options.
  *
@@ -23,7 +45,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		'apikey' => '/^[0-9a-f]{20}$/', // exactly 20 hexadecimal digits
 		'alias' => '/^[0-9a-zA-Z]+(([\.]?|[\-]+)[0-9a-zA-Z]+)*$/', // start and end with alpha-numerical characters, multiple dashes and single dots in between are ok
 		'cname' => '/^(http:\/\/\S+)?$/i', // empty or a string beginning with "http://" followed by any number of non-whitespace characters
-		'server' => '/^(live|pg|custom)$/', // "live" or "pg" or "custom"
+		'server' => '/^(live|pg|sl|custom)$/', // "live" or "pg" or "sl" or "custom"
 		'api_url' => '/^(https?:\/\/\S+)?$/i', // empty or a string beginning with "http://" or "https://" followed by any number of non-whitespace characters (this is used for testing only, thus the lose validation)
 	);
 	
@@ -200,6 +222,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 */
 	protected $enable_clear_cache;
 	
+	/**
+	 * @var bool
+	 */
+	protected $enable_get_settings;
+	
 	#######################################################
 	### Options regarding shop system specific settings ###
 	#######################################################
@@ -355,6 +382,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_cron = 0;
 		$this->enable_clear_log_file = 1;
 		$this->enable_clear_cache = 1;
+		$this->enable_get_settings = 0;
 		
 		$this->country = 'DE';
 		$this->language = 'de';
@@ -690,6 +718,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		switch ($this->getServer()) {
 			default: // fall through to 'live'
 			case 'live':   return ShopgateConfigInterface::SHOPGATE_API_URL_LIVE;
+			case 'sl':     return ShopgateConfigInterface::SHOPGATE_API_URL_SL;
 			case 'pg':     return ShopgateConfigInterface::SHOPGATE_API_URL_PG;
 			case 'custom': return $this->api_url;
 		}
@@ -781,6 +810,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	
 	public function getEnableClearCache() {
 		return $this->enable_clear_cache;
+	}
+	
+	public function getEnableGetSettings() {
+		return $this->enable_get_settings;
 	}
 	
 	public function getCountry() {
@@ -1037,6 +1070,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	
 	public function setEnableClearCache($value) {
 		$this->enable_clear_cache = $value;
+	}
+	
+	public function setEnableGetSettings($value) {
+		$this->enable_get_settings = $value;
 	}
 	
 	public function setCountry($value) {
@@ -1788,6 +1825,7 @@ class ShopgateConfigOld extends ShopgateObject {
  */
 interface ShopgateConfigInterface {
 	const SHOPGATE_API_URL_LIVE = 'https://api.shopgate.com/merchant/';
+	const SHOPGATE_API_URL_SL   = 'https://api.shopgatesl.com/merchant/';
 	const SHOPGATE_API_URL_PG   = 'https://api.shopgatepg.com/merchant/';
 	
 	const SHOPGATE_FILE_PREFIX = 'shopgate_';
@@ -1867,7 +1905,7 @@ interface ShopgateConfigInterface {
 	
 	/**
 	 * Checks if there is more than one configuration file available.
-	 * 
+	 *
 	 * @return bool true if multiple configuration files are available, false otherwise.
 	 */
 	public function checkMultipleConfigs();
@@ -1960,7 +1998,7 @@ interface ShopgateConfigInterface {
 	public function getAlwaysUseSsl();
 
 	/**
-	 * @return int (hours) The update period for keywords that identify mobile devices. Leave empty to download once and then always use the cached keywords
+	 * @return bool true to enable updates of keywords that identify mobile devices
 	 */
 	public function getEnableRedirectKeywordUpdate();
 	
@@ -2270,7 +2308,7 @@ interface ShopgateConfigInterface {
 	public function setAlwaysUseSsl($value);
 
 	/**
-	 * @param bool $value (hours) The update period for keywords that identify mobile devices. Leave empty to download once and then always use the cached keywords
+	 * @param bool $value true to enable updates of keywords that identify mobile devices
 	 */
 	public function setEnableRedirectKeywordUpdate($value);
 	

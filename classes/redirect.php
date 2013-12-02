@@ -1,8 +1,29 @@
 <?php
+/*
+* Shopgate GmbH
+*
+* URHEBERRECHTSHINWEIS
+*
+* Dieses Plugin ist urheberrechtlich geschützt. Es darf ausschließlich von Kunden der Shopgate GmbH
+* zum Zwecke der eigenen Kommunikation zwischen dem IT-System des Kunden mit dem IT-System der
+* Shopgate GmbH über www.shopgate.com verwendet werden. Eine darüber hinausgehende Vervielfältigung, Verbreitung,
+* öffentliche Zugänglichmachung, Bearbeitung oder Weitergabe an Dritte ist nur mit unserer vorherigen
+* schriftlichen Zustimmung zulässig. Die Regelungen der §§ 69 d Abs. 2, 3 und 69 e UrhG bleiben hiervon unberührt.
+*
+* COPYRIGHT NOTICE
+*
+* This plugin is the subject of copyright protection. It is only for the use of Shopgate GmbH customers,
+* for the purpose of facilitating communication between the IT system of the customer and the IT system
+* of Shopgate GmbH via www.shopgate.com. Any reproduction, dissemination, public propagation, processing or
+* transfer to third parties is only permitted where we previously consented thereto in writing. The provisions
+* of paragraph 69 d, sub-paragraphs 2, 3 and paragraph 69, sub-paragraph e of the German Copyright Act shall remain unaffected.
+*
+*  @author Shopgate GmbH <interfaces@shopgate.com>
+*/
 
 class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRedirectInterface {
 	/**
-	 * @var string alias name of shop at Shopgate, e.g. 'yourshop' to redirect to 'https://yourshop.shopgate.com'
+	 * @var string alias name of shop at Shopgate, e.g. 'yourshop' to redirect to 'http://yourshop.shopgate.com'
 	 */
 	protected $alias = '';
 	
@@ -93,6 +114,11 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	protected $redirectType;
 	
 	/**
+	 * @var bool true if redirecting unknown pages should be enabled
+	 */
+	protected $enableDefaultRedirect;
+	
+	/**
 	 * @var string itemNumber used for creating a mobile product url
 	 */
 	protected $itemNumber;
@@ -137,7 +163,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		$this->setCustomMobileUrl($shopgateConfig->getCname());
 
 		if($this->config->getEnableRedirectKeywordUpdate()){
-			$this->enableKeywordUpdate($this->config->getEnableRedirectKeywordUpdate());
+			$this->enableKeywordUpdate();
 		} else {
 			$this->disableKeywordUpdate();
 		}
@@ -255,9 +281,12 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	}
 
 	public function redirect($url, $autoRedirect = true) {
-		
-		if(!$this->isRedirectAllowed() || !$this->isMobileRequest() || !$autoRedirect){
-			return $this->getJsHeader();
+		if (!$this->config->getShopNumber()) {
+			return '';
+		}
+
+		if(!$this->isRedirectAllowed() || !$this->isMobileRequest() || !$autoRedirect || (($this->redirectType == 'default') && !$this->enableDefaultRedirect)) {
+			return $this->getJsHeader($url);
 		}
 		
 		// validate url
@@ -300,7 +329,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		return $html;
 	}
 
-	protected function getJsHeader() {
+	protected function getJsHeader($mobileRedirectUrl = null) {
 		if (!file_exists($this->jsHeaderTemplatePath)) {
 			return '';
 		}
@@ -310,87 +339,94 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 			return '';
 		}
 		
-		$mobileRedirectUrl = '';
+		if (!$this->config->getShopNumber()) {
+			return '';
+		}
+		
+		if (empty($mobileRedirectUrl)) {
+			$mobileRedirectUrl = $this->getShopUrl();
+		}
+		
 		$additionalParameters = '';
 		$redirectCode = '';
 		switch($this->redirectType){
 			case 'item':
 				if(!isset($this->itemNumber) || $this->itemNumber == ''){
-					$this->redirectType = 'start';
+					$redirectCode = 'default';
 					break;
 				}
 				$redirectCode = 'item';
 				$additionalParameters .= '_shopgate.item_number = "'.$this->itemNumber.'";';
-				$mobileRedirectUrl = $this->getItemUrl($this->itemNumber);
 				break;
 			case 'itempublic':
 				if(!isset($this->itemNumberPublic) || $this->itemNumberPublic == ''){
-					$this->redirectType = 'start';
+					$redirectCode = 'default';
 					break;
 				}
 				$redirectCode = 'item';
 				$additionalParameters .= '_shopgate.item_number_public = "'.$this->itemNumberPublic.'";';
-				$mobileRedirectUrl = $this->getItemPublicUrl($this->itemNumberPublic);
 				break;
 			case 'category':
 				if(!isset($this->categoryNumber) || $this->categoryNumber == ''){
-					$this->redirectType = 'start';
+					$redirectCode = 'default';
 					break;
 				}
 				$redirectCode = 'category';
 				$additionalParameters .= '_shopgate.category_number = "'.$this->categoryNumber.'";';
-				$mobileRedirectUrl = $this->getCategoryUrl($this->categoryNumber);
 				break;
 			case 'cms':
 				if(!isset($this->cmsPage) || $this->cmsPage == ''){
-					$this->redirectType = 'start';
+					$redirectCode = 'default';
 					break;
 				}
 				$redirectCode = 'cms';
 				$additionalParameters .= '_shopgate.cms_page = "'.$this->cmsPage .'";';
-				$mobileRedirectUrl = $this->getCmsUrl($this->cmsPage);
 				break;
 			case 'brand':
 				if(!isset($this->manufacturerName) || $this->manufacturerName == ''){
-					$this->redirectType = 'start';
+					$redirectCode = 'default';
 					break;
 				}
 				$redirectCode = 'brand';
 				$additionalParameters .= '_shopgate.brand_name = "'.$this->manufacturerName.'";';
-				$mobileRedirectUrl = $this->getBrandUrl($this->manufacturerName);
 				break;
 			case 'search':
 				if(!isset($this->searchQuery) || $this->searchQuery == ''){
-					$this->redirectType = 'start';
+					$redirectCode = 'default';
 					break;
 				}
 				$redirectCode = 'search';
 				$additionalParameters .= '_shopgate.search_query = "'.$this->searchQuery.'";';
-				$mobileRedirectUrl = $this->getSearchUrl($this->searchQuery);
 				break;
-			default: case 'start':
-				$this->redirectType = 'start';
+			case 'start':
+				$redirectCode = 'start';
 				break;
+			default:
+				$redirectCode = 'default';
 		}
 		
-		if($this->redirectType == 'start'){
-			$mobileRedirectUrl = $this->getShopUrl();
-			$redirectCode = 'start';
+		if($redirectCode == 'default') {
+			$additionalParameters .= '_shopgate.is_default_redirect_disabled = '.((!$this->enableDefaultRedirect) ? 'true' : 'false').';';
 		}
 		
 		switch($this->config->getServer()){
+			default: // fall through to 'live'
+			case 'live':
+				$sslUrl = ShopgateMobileRedirectInterface::SHOPGATE_STATIC_SSL;
+				$nonSslUrl = ShopgateMobileRedirectInterface::SHOPGATE_STATIC;
+			break;
+			case 'sl':
+				$sslUrl = ShopgateMobileRedirectInterface::SHOPGATE_SL_STATIC_SSL;
+				$nonSslUrl = ShopgateMobileRedirectInterface::SHOPGATE_SL_STATIC;
+			break;
 			case 'pg':
-				$sslUrl = 'https://static-ssl.shopgatepg.com';
-				$nonSslUrl = 'http://static.shopgatepg.com';
-				break;
+				$sslUrl = ShopgateMobileRedirectInterface::SHOPGATE_PG_STATIC_SSL;
+				$nonSslUrl = ShopgateMobileRedirectInterface::SHOPGATE_PG_STATIC;
+			break;
 			case 'custom':
 				$sslUrl = 'https://shopgatedev-public.s3.amazonaws.com';
 				$nonSslUrl = 'http://shopgatedev-public.s3.amazonaws.com';
-				break;
-			case 'live': default:
-				$sslUrl = 'https://static-ssl.shopgate.com';
-				$nonSslUrl = 'http://static.shopgate.com';
-				break;
+			break;
 		}
 		
 		// set parameters
@@ -400,7 +436,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		$html = str_replace('{$additional_parameters}', $additionalParameters, $html);
 		$html = str_replace('{$ssl_url}', $sslUrl, $html);
 		$html = str_replace('{$non_ssl_url}', $nonSslUrl, $html);
-
+		
 		return $html;
 	}
 
@@ -431,6 +467,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		switch ($this->config->getServer()) {
 			default: // fall through to "live"
 			case 'live':	return ShopgateMobileRedirectInterface::SHOPGATE_LIVE_ALIAS;
+			case 'sl':		return ShopgateMobileRedirectInterface::SHOPGATE_SL_ALIAS;
 			case 'pg':		return ShopgateMobileRedirectInterface::SHOPGATE_PG_ALIAS;
 			case 'custom':	return '.localdev.cc/php/shopgate/index.php'; // for Shopgate development & testing
 		}
@@ -540,6 +577,17 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	#############################
 
 	
+	public function buildScriptDefault($autoRedirect = true) {
+		$this->redirectType = 'default';
+		$this->enableDefaultRedirect = $this->config->getEnableDefaultRedirect();
+		return $this->redirect($this->getShopUrl(), $autoRedirect);
+	}
+	
+	public function buildScriptShop($autoRedirect = true){
+		$this->redirectType = 'start';
+		return $this->redirect($this->getShopUrl(), $autoRedirect);
+	}
+	
 	public function buildScriptItem($itemNumber, $autoRedirect = true){
 		$this->itemNumber = $itemNumber;
 		$this->redirectType = 'item';
@@ -556,11 +604,6 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		$this->categoryNumber = $categoryNumber;
 		$this->redirectType = 'category';
 		return $this->redirect($this->getCategoryUrl($categoryNumber), $autoRedirect);
-	}
-	
-	public function buildScriptShop($autoRedirect = true){
-		$this->redirectType = 'start';
-		return $this->redirect($this->getShopUrl(), $autoRedirect);
 	}
 	
 	public function buildScriptCms($cmsPage, $autoRedirect = true){
@@ -625,11 +668,23 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 interface ShopgateMobileRedirectInterface {
 	const SHOPGATE_STATIC = 'http://static.shopgate.com';
 	const SHOPGATE_STATIC_SSL = 'https://static-ssl.shopgate.com';
-
+	
+	const SHOPGATE_PG_STATIC = 'http://static.shopgatepg.com';
+	const SHOPGATE_PG_STATIC_SSL = 'https://static-ssl.shopgatepg.com';
+	
+	const SHOPGATE_SL_STATIC = 'http://static.shopgatesl.com';
+	const SHOPGATE_SL_STATIC_SSL = 'https://static-ssl.shopgatesl.com';
+	
+	
 	/**
 	 * @var string the URL that is appended to the end of a shop alias (aka subdomain) if the shop is live
 	 */
 	const SHOPGATE_LIVE_ALIAS = '.shopgate.com';
+	
+	/**
+	 * @var string the URL that is appended to the end of a shop alias (aka subdomain) if the shop is on spotlight
+	 */
+	const SHOPGATE_SL_ALIAS = '.shopgatesl.com';
 
 	/**
 	 * @var string the URL that is appended to the end of a shop alias (aka subdomain) if the shop is on playground
@@ -669,7 +724,7 @@ interface ShopgateMobileRedirectInterface {
 	
 	/**
 	 * Sets the cname of the shop
-	 * 
+	 *
 	 * @deprecated
 	 * @param string $cname
 	 */
@@ -694,7 +749,7 @@ interface ShopgateMobileRedirectInterface {
 	
 	/**
 	 * Disables updating of the keywords that identify mobile devices from Shopgate Merchant API.
-	 * 
+	 *
 	 * @deprecated
 	 */
 	public function disableKeywordUpdate();
@@ -736,7 +791,7 @@ interface ShopgateMobileRedirectInterface {
 	 *
 	 * This will cause slower download of nonsensitive material (the mobile header button images) from Shopgate.
 	 * Activate only if the secure connection is determined incorrectly (e.g. because of third-party components).
-	 * 
+	 *
 	 * @deprecated
 	 */
 	public function setAlwaysUseSSL();
@@ -850,7 +905,7 @@ interface ShopgateMobileRedirectInterface {
 	
 	/**
 	 * Create a mobile-shop-url to the startmenu
-	 * 
+	 *
 	 * @deprecated
 	 */
 	public function getShopUrl();
