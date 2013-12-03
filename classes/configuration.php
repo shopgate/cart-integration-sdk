@@ -1662,7 +1662,6 @@ class ShopgateConfigOld extends ShopgateObject {
 		'enable_add_order' => true,
 		'enable_update_order' => true,
 		'enable_get_customer' => true,
-		'enable_get_debug_info' => true,
 		'enable_get_categories_csv' => true,
 		'enable_get_orders' => true,
 		'enable_get_items_csv' => true,

@@ -1,8 +1,8 @@
 '''Deutsch'''
 
 '''Version 2.4.0'''
-* Die Action register_customer wurde hinzugefügt
-* Die Action get_debug_info wurde hinzugefügt
+* Die Actions register_customer, get_debug_info und set_settings wurden hinzugefügt
+* Der <link>-Tag wird nur noch bei einem freigeschalteten Shop in den <head>-Tag ausgegeben
 
 '''Version 2.3.10'''
 * Beim Item Export besteht die Möglichkeit beliebig viele Optionen, Inputs und Attribute zu exportieren
@@ -167,8 +167,8 @@
 '''English'''
 
 '''Version 2.4.0'''
-* action register_customer was added
-* action get_debug_info was added
+* actions register_customer, get_debug_info and set_settings was added
+* the <link> tag is now displayed in the <head> tag on activated shops only
 
 '''Version 2.3.10'''
 * it's possible to export any number of options, inputs and attributes while exporting item csv files

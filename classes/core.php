@@ -104,6 +104,7 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_API_NO_CART = 31;
 	const PLUGIN_API_NO_USER = 35;
 	const PLUGIN_API_NO_PASS = 36;
+	const PLUGIN_API_NO_USER_DATA = 37;
 	const PLUGIN_API_UNKNOWN_LOGTYPE = 38;
 	const PLUGIN_API_CRON_NO_JOBS = 40;
 	const PLUGIN_API_CRON_NO_JOB_NAME = 41;
@@ -180,6 +181,7 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_API_NO_CART => 'parameter "cart" missing',
 		self::PLUGIN_API_NO_USER => 'parameter "user" missing',
 		self::PLUGIN_API_NO_PASS => 'parameter "pass" missing',
+		self::PLUGIN_API_NO_USER_DATA => 'parameter "user_data" missing',
 		self::PLUGIN_API_UNKNOWN_LOGTYPE => 'unknown logtype',
 		self::PLUGIN_API_CRON_NO_JOBS => 'parameter "jobs" missing',
 		self::PLUGIN_API_CRON_NO_JOB_NAME => 'field "job_name" in parameter "jobs" missing',

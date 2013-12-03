@@ -569,9 +569,8 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_PASS);
 		}
 		
-		// TODO
 		if (!isset($this->params['user_data'])) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::UNKNOWN_ERROR_CODE, "missing user_data", true);
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_USER_DATA, "missing user_data", true);
 		}
 		
 		if(!$this->config->getEnableGetCustomer()) {
