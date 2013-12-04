@@ -505,6 +505,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		
 		// filter the new settings
 		$shopgateSettingsNew = array();
+		$shopgateSettingsOld = $this->config->toArray();
 		foreach ($this->params['shopgate_settings'] as $setting) {
 			if (!isset($setting['name'])) {
 				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_SHOPGATE_SETTINGS, 'Wrong format: '.var_export($setting, true));
@@ -514,16 +515,19 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				continue;
 			}
 			
+			if (!in_array($setting['name'], array_keys($shopgateSettingsOld))) {
+				continue;
+			}
+			
 			$shopgateSettingsNew[$setting['name']] = isset($setting['value']) ? $setting['value'] : null;
 		}
 		
-		$oldShopgateConfig = $this->config->toArray();
 		$this->config->load($shopgateSettingsNew);
 		$this->config->save(array_keys($shopgateSettingsNew), true);
 		
 		$shopgateSettingsDiff = array();
 		foreach ($shopgateSettingsNew as $setting => $value) {
-			$diff[] = array('name' => $setting, 'old' => $oldShopgateConfig[$setting], 'new' => $value);
+			$diff[] = array('name' => $setting, 'old' => $shopgateSettingsOld[$setting], 'new' => $value);
 		}
 		
 		// set data and return response
