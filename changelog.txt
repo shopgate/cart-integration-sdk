@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.3.11'''
+* Es werden zwei neue Features aus der Produkt-CSV-Export-Spezifikation unterstützt. Namentlich sind dies die Felder "is_hidden" und "related_shop_items".
+
 '''Version 2.3.10'''
 * Beim Item Export besteht die Möglichkeit beliebig viele Optionen, Inputs und Attribute zu exportieren
 
@@ -161,6 +164,9 @@
 
 
 '''English'''
+
+'''Version 2.3.11'''
+* Two new features regarting the product csv file specification are now supported. These are the "is_hidden" and the "related_shop_items" fields)
 
 '''Version 2.3.10'''
 * it's possible to export any number of options, inputs and attributes while exporting item csv files
