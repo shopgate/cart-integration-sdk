@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.4.1'''
+* Neuer Fehler code hinzugefügt (mail versand)
+
 '''Version 2.4.0'''
 * Die Actions register_customer, get_debug_info und set_settings wurden hinzugefügt
 * Der <link>-Tag wird nur noch bei einem freigeschalteten Shop in den <head>-Tag ausgegeben
@@ -165,6 +168,9 @@
 
 
 '''English'''
+
+'''Version 2.4.0'''
+* added new errorcode (sending mail)
 
 '''Version 2.4.0'''
 * actions register_customer, get_debug_info and set_settings was added
