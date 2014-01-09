@@ -1,7 +1,11 @@
 '''Deutsch'''
 
+'''Version 2.4.2'''
+* zusätzliche Benutzerangaben für Bestellungen und Adressen eingefügt (ShopgateCartBase::$custom_fields, ShopgateAddress::$custom_fields)
+* Optimierung des Speicherverbrauchs und der CPU-Nutzung durch die Behebung eines Fehlers
+
 '''Version 2.4.1'''
-* Neuer Fehler code hinzugefügt (mail versand)
+* neuen Fehlercode hinzugefügt (90 - error sending mail)
 
 '''Version 2.4.0'''
 * Die Actions register_customer, get_debug_info und set_settings wurden hinzugefügt
@@ -169,8 +173,12 @@
 
 '''English'''
 
-'''Version 2.4.0'''
-* added new errorcode (sending mail)
+'''Version 2.4.2'''
+* added custom input fields for user details to orders and addresses (ShopgateOrder::$custom_fields, ShopgateAddress::$custom_fields)
+* fixed an error and decreased memory and CPU time consumption by a significant amount
+
+'''Version 2.4.1'''
+* added new error code (90 - error sending mail)
 
 '''Version 2.4.0'''
 * actions register_customer, get_debug_info and set_settings was added

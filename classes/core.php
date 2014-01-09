@@ -209,7 +209,7 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_UNKNOWN_COUNTRY_CODE => 'unknown country code',
 		self::PLUGIN_UNKNOWN_STATE_CODE => 'unknown state code',
 		
-		self::PLUGIN_EMAIL_SEND_ERROR => 'Error while sending order confirmation mail',
+		self::PLUGIN_EMAIL_SEND_ERROR => 'error sending email',
 		
 		self::PLUGIN_CRON_UNSUPPORTED_JOB => 'unsupported job',
 		
@@ -2142,6 +2142,7 @@ interface ShopgateContainerVisitor {
 	public function visitOrderItemOption(ShopgateOrderItemOption $o);
 	public function visitOrderItemInput(ShopgateOrderItemInput $i);
 	public function visitOrderItemAttribute(ShopgateOrderItemAttribute $o);
+	public function visitOrderCustomField(ShopgateOrderCustomField $c);
 	public function visitShippingInfo(ShopgateShippingInfo $o);
 	public function visitOrderDeliveryNote(ShopgateDeliveryNote $d);
 	public function visitExternalCoupon(ShopgateExternalCoupon $c);
@@ -2210,6 +2211,7 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 		$this->iterateSimpleProperties($properties);
 
 		// iterate ShopgateAddress objects
+		$properties['custom_fields'] = $this->iterateObjectList($properties['custom_fields']);
 		$properties['addresses'] = $this->iterateObjectList($properties['addresses']);
 
 		// create new object with utf-8 en- / decoded data
@@ -2223,6 +2225,8 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 	public function visitAddress(ShopgateAddress $a) {
 		$properties = $a->buildProperties();
 		$this->iterateSimpleProperties($properties);
+		
+		$properties['custom_fields'] = $this->iterateObjectList($properties['custom_fields']);
 
 		// create new object with utf-8 en- / decoded data
 		try {
@@ -2276,7 +2280,7 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 
 		// iterate the simple variables and arrays with simple variables recursively
 		$this->iterateSimpleProperties($properties);
-
+		
 		// visit delivery_address
 		if (!empty($properties['delivery_address']) && ($properties['delivery_address'] instanceof ShopgateAddress)) {
 			$properties['delivery_address']->accept($this);
@@ -2296,6 +2300,7 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 		}
 
 		// iterate lists of referred objects
+		$properties['custom_fields'] = $this->iterateObjectList($properties['custom_fields']);
 		$properties['external_coupons'] = $this->iterateObjectList($properties['external_coupons']);
 		$properties['shopgate_coupons'] = $this->iterateObjectList($properties['shopgate_coupons']);
 		$properties['items'] = $this->iterateObjectList($properties['items']);
@@ -2359,6 +2364,18 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 		// create new object with utf-8 en- / decoded data
 		try {
 			$this->object = new ShopgateOrderItemAttribute($properties);
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+	
+	public function visitOrderCustomField(ShopgateOrderCustomField $c) {
+		$properties = $c->buildProperties();
+		$this->iterateSimpleProperties($properties);
+		
+		// create new object with utf-8 en- / decoded data
+		try {
+			$this->object = new ShopgateOrderCustomField($properties);
 		} catch (ShopgateLibraryException $e) {
 			$this->object = null;
 		}
@@ -2574,6 +2591,7 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 		$properties = $this->iterateSimpleProperties($properties);
 
 		// iterate ShopgateAddress objects
+		$properties['custom_fields'] = $this->iterateObjectList($properties['custom_fields']);
 		$properties['addresses'] = $this->iterateObjectList($properties['addresses']);
 
 		// set last value to converted array
@@ -2581,8 +2599,14 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 	}
 
 	public function visitAddress(ShopgateAddress $a) {
-		// get properties and iterate (no complex types in ShopgateAddress objects)
-		$this->array = $this->iterateSimpleProperties($a->buildProperties());
+		// get and iterate simple properties
+		$properties = $this->iterateSimpleProperties($a->buildProperties());
+		
+		// iterate ShopgateOrderCustomField objects
+		$properties['custom_fields'] = $this->iterateObjectList($properties['custom_fields']);
+		
+		// update array
+		$this->array = $properties;
 	}
 
 	public function visitCart(ShopgateCart $c) {
@@ -2644,6 +2668,7 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 		}
 
 		// visit the items and delivery notes arrays
+		$properties['custom_fields'] = $this->iterateObjectList($properties['custom_fields']);
 		$properties['external_coupons'] = $this->iterateObjectList($properties['external_coupons']);
 		$properties['shopgate_coupons'] = $this->iterateObjectList($properties['shopgate_coupons']);
 		$properties['items'] = $this->iterateObjectList($properties['items']);
@@ -2681,6 +2706,11 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 	public function visitOrderItemAttribute(ShopgateOrderItemAttribute $i) {
 		// get properties and iterate (no complex types in ShopgateOrderItemAttribute objects)
 		$this->array = $this->iterateSimpleProperties($i->buildProperties());
+	}
+	
+	public function visitOrderCustomField(ShopgateOrderCustomField $c) {
+		// get properties and iterate (no complex types in ShopgateOrderCustomField objects)
+		$this->array = $this->iterateSimpleProperties($c->buildProperties());
 	}
 	
 	public function visitShippingInfo(ShopgateShippingInfo $i) {

@@ -65,6 +65,8 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	protected $mail;
 	protected $phone;
 	protected $mobile;
+	
+	protected $custom_fields;
 
 	protected $shipping_group;
 	protected $shipping_type;
@@ -148,7 +150,29 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	public function setMobile($value) {
 		$this->mobile = $value;
 	}
-
+	
+	/**
+	 * @param ShopgateOrderCustomField[] $value
+	 */
+	public function setCustomFields($value) {
+		if (!is_array($value)) {
+			$this->custom_fields = null;
+		}
+		
+		foreach ($value as $index => &$element) {
+			if ((!is_object($element) || !($element instanceof ShopgateOrderCustomField)) && !is_array($element)) {
+				unset($value[$index]);
+				continue;
+			}
+			
+			if (is_array($element)) {
+				$element = new ShopgateOrderCustomField($element);
+			}
+		}
+		
+		$this->custom_fields = $value;
+	}
+	
 	/**
 	 *
 	 * @param string $value
@@ -398,6 +422,13 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	 */
 	public function getMobile() {
 		return $this->mobile;
+	}
+	
+	/**
+	 * @return ShopgateOrderCustomField[]
+	 */
+	public function getCustomFields() {
+		return $this->custom_fields;
 	}
 
 	/**
@@ -1823,4 +1854,67 @@ class ShopgateShopgateCoupon extends ShopgateCoupon {
 	# Getter #
 	##########
 
+}
+
+class ShopgateOrderCustomField extends ShopgateContainer {
+	protected $label;
+	protected $internal_field_name;
+	protected $value;
+	
+	
+	##########
+	# Setter #
+	##########
+	
+	/**
+	 * @param string $value
+	 */
+	public function setLabel($value) {
+		$this->label = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setInternalFieldName($value) {
+		$this->internal_field_name = $value;
+	}
+	
+	/**
+	 * @param mixed $value
+	 */
+	public function setValue($value) {
+		$this->value = $value;
+	}
+	
+	
+	##########
+	# Getter #
+	##########
+	
+	/**
+	 * @return string
+	 */
+	public function getLabel() {
+		return $this->label;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getInternalFieldName() {
+		return $this->internal_field_name;
+	}
+	
+	/**
+	 * @return mixed
+	 */
+	public function getValue() {
+		return $this->value;
+	}
+	
+	
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitOrderCustomField($this);
+	}
 }

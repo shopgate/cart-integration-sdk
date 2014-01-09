@@ -112,7 +112,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 
 		// save the params
 		$this->params = $data;
-		
+
 		// save trace_id
 		if (isset($this->params['trace_id'])) {
 			$this->trace_id = $this->params['trace_id'];
@@ -167,7 +167,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				// MB by default if none is set
 				ShopgateLogger::getInstance()->setMemoryAnalyserLoggingSizeUnit('MB');
 			}
-			
+
 			// call the action
 			$action = $this->camelize($this->params['action']);
 			$this->{$action}();
@@ -197,7 +197,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		if (empty($this->response)) {
 			trigger_error('No response object defined. This should _never_ happen.', E_USER_ERROR);
 		}
-		
+
 		$this->response->setData($this->responseData);
 		$this->response->send();
 		
@@ -397,7 +397,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		if (!isset($this->params['cart'])) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_CART);
 		}
-		
+
 		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
 		
 		$cart = new ShopgateCart($this->params['cart']);
@@ -444,7 +444,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 
 		$cart = new ShopgateCart($this->params['cart']);
 		$cartData = $this->plugin->checkCart($cart);
-		
+
 		$responseData = array(
 // 				"items" => array(),
 				"external_coupons" => array(),
