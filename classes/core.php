@@ -832,6 +832,11 @@ class ShopgateBuilder {
  */
 abstract class ShopgateObject {
 	/**
+	 * @var array cache already camelized strings
+	 */
+	protected $camelizeCache = array();
+	
+	/**
 	 * Convenience method for logging to the ShopgateLogger.
 	 *
 	 * @param string $msg The error message.
@@ -854,12 +859,19 @@ abstract class ShopgateObject {
 	 * @return string The camelized string.
 	 */
 	public function camelize($str, $capitalizeFirst = false) {
-		$str = strtolower($str);
-		if ($capitalizeFirst) {
-			$str[0] = strtoupper($str[0]);
+		$hash = md5($str . $capitalizeFirst);
+		if (empty($this->camelizeCache[$hash])) {
+			$str = strtolower($str);
+			if ($capitalizeFirst) {
+				$str[0] = strtoupper($str[0]);
+			}
+
+			$this->camelizeCache[$hash] = preg_replace_callback('/_([a-z0-9])/', function ($c) {
+				return strtoupper($c[1]);
+			}, $str);
 		}
-		$func = create_function('$c', 'return strtoupper($c[1]);');
-		return preg_replace_callback('/_([a-z0-9])/', $func, $str);
+
+		return $this->camelizeCache[$hash];
 	}
 
 	/**
