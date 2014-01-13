@@ -103,6 +103,8 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				'register_customer',
 				'get_settings',
 				'set_settings',
+				'get_orders',
+				'sync_favourite_list',
 		);
 	}
 
@@ -534,7 +536,62 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
 		$this->responseData['shopgate_settings'] = $diff;
 	}
+
+	protected function getOrders(){
+		if (!isset($this->params['customer_token'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_NO_CUSTOMER_TOKEN);
+		}
+		if (!isset($this->params['customer_language'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_NO_CUSTOMER_LANGUAGE);
+		}
 	
+		if (empty($this->response)) {
+			$this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
+		}
+	
+		$orders = $this->plugin->getOrders(
+				$this->params['customer_token'],
+				$this->params['customer_language'],
+				isset($this->params['limit']) ? $this->params['limit'] : 10,
+				isset($this->params['offset']) ? $this->params['offset'] : 0,
+				isset($this->params['order_date_from']) ? $this->params['order_date_from'] : '',
+				$this->params['sort_order']
+		);
+	
+		$this->responseData['orders'] = $orders;
+	}
+	
+	protected function syncFavouriteList(){
+		if (!isset($this->params['customer_token'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_NO_CUSTOMER_TOKEN);
+		}
+		if (!isset($this->params['items']) || !is_array($this->params['items'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ITEMS);
+		}
+		if (empty($this->response)) {
+			$this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
+		}
+	
+		$syncItems = array();
+		foreach ($this->params['items'] as $syncItem) {
+			if (!isset($syncItem['item_number'])) {
+				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_ITEM_FORMAT, 'missing required param "item_number"');
+			}
+			if (!isset($syncItem['item_number_public'])) {
+				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_ITEM_FORMAT, 'missing required param "item_number_public"');
+			}
+			if (!isset($syncItem['status'])) {
+				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_ITEM_FORMAT, 'missing required param "status"');
+			}
+	
+			$syncItems[] = new ShopgateOrderItemSync($syncItem);
+		}
+	
+		$newFavList = $this->plugin->syncFavouriteList($syncItems, $this->params['customer_token']);
+		$this->responseData['items'] = $newFavList;
+	}
+
+
 	/**
 	 * Represents the "get_customer" action.
 	 *

@@ -22,7 +22,7 @@
 */
 
 abstract class ShopgateCartBase extends ShopgateContainer {
-	
+
 	const SHOPGATE = "SHOPGATE";
 	const PREPAY = "PREPAY";
 	
@@ -54,52 +54,574 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	
 	const PAYU = "PAYU";
 	
-	protected $customer_number;
-
-	protected $external_order_number;
-	protected $external_order_id;
-
-	protected $external_customer_number;
-	protected $external_customer_id;
-
-	protected $mail;
-	protected $phone;
-	protected $mobile;
 	
+	/**
+	 * @var string
+	 */
+	protected $mail;
+
+	/**
+	 * @var ShopgateOrderCustomField[]
+	 */
 	protected $custom_fields;
 
-	protected $shipping_group;
-	protected $shipping_type;
-	protected $shipping_infos;
-	
+	/**
+	 * @var string
+	 */
 	protected $payment_method;
-	protected $payment_group;
 
-	protected $amount_items;
-	protected $amount_shipping;
-	protected $amount_shop_payment;
-	protected $payment_tax_percent;
-	protected $amount_shopgate_payment;
-	protected $amount_complete;
-	protected $currency;
+	/**
+	 * ShopgateExternalCoupon[]
+	 * @var array
+	 */
+	protected $external_coupons;
 
+	/**
+	 * @var ShopgateAddress
+	 */
 	protected $invoice_address;
+
+	/**
+	 * @var ShopgateAddress
+	 */
 	protected $delivery_address;
 
-	protected $external_coupons = array();
-	protected $shopgate_coupons = array();
-	
-	protected $items = array();
+	/**
+	 * @var ShopgateOrderBaseItem[]
+	 */
+	protected $items;
 
-	##########
-	# Setter #
-	##########
+	/**
+	 * @param string $value
+	 */
+	public function setMail($value) {
+		$this->mail = $value;
+	}
+
+	/**
+	 * ShopgateOrderCustomField[] | array[]
+	 * @param mixed $value
+	 */
+	public function setCustomFields($value) {
+		// TODO: $this->custom_fields = $this->validateList($value, 'ShopgateOrderCustomField');
+		/**
+		 * e.g.:
+		 * public function validateList(array $rawList, $className) {
+		 *	foreach ($rawList as $index => &$element) {
+		 *		if (is_array($element)) {
+		 *			// implies that the class is known (included or required)!
+		 *			$element = new $className($element);
+		 *		}
+		 *		else if (!(is_object($element) && get_class($element) === $className)) {
+		 *			unset($rawList[$index]);
+		 *		}
+		 *	}
+		 *	return count($rawList) ? $rawList : null;
+		 * }
+		 */
+		
+		if (!is_array($value)) {
+			$this->custom_fields = null;
+			return;
+		}
+	
+		foreach ($value as $index => &$element) {
+			if (is_array($element)) {
+				$element = new ShopgateOrderCustomField($element);
+			}
+			else if ( !is_object($element) || !($element instanceof ShopgateOrderCustomField) ) {
+				unset($value[$index]);
+			}
+		}
+	
+		$this->custom_fields = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setPaymentMethod($value) {
+		$this->payment_method = $value;
+	}
+
+	/**
+	 * mixed: ShopgateExternalCoupon[] | array[]
+	 * @param array $value
+	 */
+	public function setExternalCoupons($value) {
+		// TODO: $this->external_coupons = $this->validateList($value, 'ShopgateExternalCoupon'); // vgl. $this->setCustomFields(array)
+	
+		if (!is_array($value)) {
+			$this->external_coupons = null;
+			return;
+		}
+	
+		foreach ($value as $index => &$element) {
+			if (is_array($element)) {
+				$element = new ShopgateExternalCoupon($element);
+			}
+			else if ( !is_object($element) || !($element instanceof ShopgateExternalCoupon) ) {
+				unset($value[$index]);
+			}
+		}
+	
+		$this->external_coupons = $value;
+	}
+	
+	/**
+	 * ShopgateAddress | array
+	 * @param mixed $value
+	 */
+	public function setInvoiceAddress($value) {
+		if (is_array($value)) {
+			$value = new ShopgateAddress($value);
+			$value->setIsDeliveryAddress(false);
+			$value->setIsInvoiceAddress(true);
+		}
+		else if ( !is_object($value) || !($value instanceof ShopgateAddress) ) {
+			$value = null;
+		}
+
+		$this->invoice_address = $value;
+	}
+	
+	/**
+	 * ShopgateAddress | array
+	 * @param mixed $value
+	 */
+	public function setDeliveryAddress($value) {
+		if (is_array($value)) {
+			$value = new ShopgateAddress($value);
+			$value->setIsDeliveryAddress(true);
+			$value->setIsInvoiceAddress(false);
+		}
+		
+		if ( !is_object($value) || !($value instanceof ShopgateAddress) ) {
+			$value = null;
+		}
+	
+		$this->delivery_address = $value;
+	}
+	
+	/**
+	 * ShopgateOrderBaseItem[] | array[]
+	 * @param array $value
+	 */
+	public function setItems($value) {
+		if (!is_array($value)) {
+			$this->items = null;
+			return;
+		}
+	
+		foreach ($value as $index => &$element) {
+			if (is_array($element)) {
+				$element = $this->getOrderItem($element);
+			}
+			
+			/**
+			 * TODO instanceof garantiert NICHT die korrekte Ausprägung!
+			 * deshalb:
+			 * - hier abstract
+			 * - evtl.: parent: $this->validateList($value, '{Ausprägung}'); vgl.: $this->setCustomFields(array)
+			 */
+			else if ( !is_object($element) || !($element instanceof ShopgateOrderBaseItem) ) {
+				unset($value[$index]);
+			}
+		}
+	
+		$this->items = $value;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getMail() {
+		return $this->mail;
+	}
+
+	/**
+	 * @return ShopgateOrderCustomField[]
+	 */
+	public function getCustomFields() {
+		return $this->custom_fields;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getPaymentMethod() {
+		return $this->payment_method;
+	}
+
+	/**
+	 * @return array ShopgateExternalCoupon[]
+	 */
+	public function getExternalCoupons() {
+		return $this->external_coupons;
+	}
+
+	/**
+	 * @return ShopgateAddress
+	 */
+	public function getInvoiceAddress() {
+		return $this->invoice_address;
+	}
+
+	/**
+	 * @return ShopgateAddress
+	 */
+	public function getDeliveryAddress() {
+		return $this->delivery_address;
+	}
+
+	/**
+	 * @return ShopgateOrderBaseItem[]
+	 */
+	public function getItems() {
+		return $this->items;
+	}
+
+	/**
+	 * @param array $options
+	 * @return ShopgateOrderBaseItem
+	 */
+	protected abstract function getOrderItem(array $options);
+	
+}
+
+class ShopgateCart extends ShopgateCartBase {
+
+	/**
+	 * @var string
+	 */
+	protected $customer_number;
+	
+	/**
+	 * @var string
+	 */
+	protected $external_customer_number;
+	
+	/**
+	 * @var string
+	 */
+	protected $external_customer_id;
+
+	/**
+	 * @var string
+	 */
+	protected $external_customer_group;
+
+	/**
+	 * @var string
+	 */
+	protected $external_customer_group_id;
+
+	/**
+	 * @var float
+	 */
+	protected $amount_shipping;
+	
+	/**
+	 * @var string
+	 */
+	protected $shipping_group;
+	
+	/**
+	 * @var string
+	 */
+	protected $shipping_type;
+	
+	/**
+	 * @var ShopgateShippingInfo
+	 */
+	protected $shipping_infos;
+
+	/**
+	 * @var string
+	 */
+	protected $payment_group;
+
+	/**
+	 * @var ShopgateCoupons[] 
+	 */
+	protected $shopgate_coupons;
+
 	
 	/**
 	 * @param string $value
 	 */
 	public function setCustomerNumber($value) {
 		$this->customer_number = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setExternalCustomerNumber($value) {
+		$this->external_customer_number = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setExternalCustomerId($value) {
+		$this->external_customer_id = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setExternalCustomerGroup($value) {
+		$this->external_customer_group = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setExternalCustomerGroupId($value) {
+		$this->external_customer_group_id = $value;
+	}
+	
+	/**
+	 * @param float $value
+	 */
+	public function setAmountShipping($value) {
+		$this->amount_shipping = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setShippingGroup($value) {
+		$this->shipping_group = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setShippingType($value) {
+		$this->shipping_type = $value;
+	}
+	
+	/**
+	 * ShopgateShippingInfo | array
+	 * @param array $value
+	 */
+	public function setShippingInfos($value) {
+		if (is_array($value)) {
+			$value = new ShopgateShippingInfo($value);
+		}
+		else if ( !is_object($value) || !($value instanceof ShopgateShippingInfo) ) {
+			$value = null;
+		}
+	
+		$this->shipping_infos = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setPaymentGroup($value) {
+		$this->payment_group = $value;
+	} 
+	
+	/**
+	 * mixed: ShopgateCoupon[] | array[]
+	 * @param array $value
+	 */
+	public function setShopgateCoupons($value) {
+		// TODO: $this->shopgate_coupons = $this->validateList($value, 'ShopgateCoupon');
+	
+		if (!is_array($value)) {
+			$this->shopgate_coupons = null;
+			return;
+		}
+	
+		foreach ($value as $index => &$element) {
+			if (is_array($element)) {
+				$element = new ShopgateCoupon($element);
+			}
+			else if ( !is_object($element) || !($element instanceof ShopgateCoupon) ) {
+				unset($value[$index]);
+			}
+		}
+	
+		$this->shopgate_coupons = $value;
+	}
+	
+	
+	/**
+	 * @return string
+	 */
+	public function getCustomerNumber() {
+		return $this->customer_number;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getExternalCustomerNumber() {
+		return $this->external_customer_number;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getExternalCustomerId() {
+		return $this->external_customer_id;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getExternalCustomerGroup() {
+		return $this->external_customer_group;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getExternalCustomerGroupId() {
+		return $this->external_customer_group_id;
+	}
+	
+	/**
+	 * @return float
+	 */
+	public function getAmountShipping() {
+		return $this->amount_shipping;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getShippingGroup() {
+		return $this->shipping_group;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getShippingType() {
+		return $this->shipping_type;
+	}
+	
+	/**
+	 * @return ShopgateShippingInfo[]
+	 */
+	public function getShippingInfos() {
+		return $this->shipping_infos;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getPaymentGroup() {
+		return $this->payment_group;
+	}
+
+	/**
+	 * @return ShopgateCoupons[]
+	 */
+	public function getShopgateCoupons() {
+		return $this->shopgate_coupons;
+	}
+
+	/**
+	 * @see ShopgateCartBase::getOrderItem()
+	 * @return ShopgateOrderItem
+	 */
+	protected function getOrderItem(array $options) {
+		return new ShopgateOrderItem($options);
+	}
+
+	/**
+	 * @see ShopgateContainer::accept()
+	 */
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitCart($this);
+	}
+
+}
+
+abstract class ShopgateOrderBase extends ShopgateCartBase {
+
+	/**
+	 * @var string
+	 */
+	protected $order_number;
+
+	/**
+	 * @var string
+	 */
+	protected $external_order_number;
+
+	/**
+	 * @var string
+	 */
+	protected $external_order_id;
+
+	/**
+	 * @var string
+	 */
+	protected $created_time;
+
+	/**
+	 * @var string
+	 */
+	protected $phone;
+
+	/**
+	 * @var string
+	 */
+	protected $mobile;
+
+	/**
+	 * @var string
+	 */
+	protected $currency;
+
+	/**
+	 * @var float
+	 */
+	protected $amount_complete;
+
+	/**
+	 * @var bool
+	 */
+	protected $is_shipping_completed;
+
+	/**
+	 * @var string
+	 */
+	protected $shipping_completed_time;
+
+	/**
+	 * @var bool
+	 */
+	protected $is_paid;
+
+	/**
+	 * @var string
+	 */
+	protected $payment_time;
+
+	/**
+	 * @var string
+	 */
+	protected $payment_transaction_number;
+
+	/**
+	 * @var ShopgateDeliveryNote[]
+	 */
+	protected $delivery_notes;
+
+
+	/**
+	 * @param string $value
+	 */
+	public function setOrderNumber($value) {
+		$this->order_number = $value;
 	}
 
 	/**
@@ -119,22 +641,8 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	/**
 	 * @param string $value
 	 */
-	public function setExternalCustomerNumber($value) {
-		$this->external_customer_number = $value;
-	}
-
-	/**
-	 * @param string $value
-	 */
-	public function setExternalCustomerId($value) {
-		$this->external_customer_id = $value;
-	}
-
-	/**
-	 * @param string $value
-	 */
-	public function setMail($value) {
-		$this->mail = $value;
+	public function setCreatedTime($value) {
+		$this->created_time = $value;
 	}
 
 	/**
@@ -150,113 +658,14 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	public function setMobile($value) {
 		$this->mobile = $value;
 	}
-	
+
 	/**
-	 * @param ShopgateOrderCustomField[] $value
-	 */
-	public function setCustomFields($value) {
-		if (!is_array($value)) {
-			$this->custom_fields = null;
-		}
-		
-		foreach ($value as $index => &$element) {
-			if ((!is_object($element) || !($element instanceof ShopgateOrderCustomField)) && !is_array($element)) {
-				unset($value[$index]);
-				continue;
-			}
-			
-			if (is_array($element)) {
-				$element = new ShopgateOrderCustomField($element);
-			}
-		}
-		
-		$this->custom_fields = $value;
-	}
-	
-	/**
-	 *
 	 * @param string $value
 	 */
-	public function setShippingGroup($value) {
-		$this->shipping_group = $value;
-	}
-	
-	/**
-	 *
-	 * @param string $value
-	 */
-	public function setShippingType($value) {
-		$this->shipping_type = $value;
-	}
-	
-	/**
-	 *
-	 * @param ShopgateShippingInfo $value
-	 */
-	public function setShippingInfos($value) {
-		if (!is_object($value) && !($value instanceof ShopgateShippingInfo) && !is_array($value)) {
-			$this->shipping_infos = null;
-			return;
-		}
-	
-		if (is_array($value)) {
-			$value = new ShopgateShippingInfo($value);
-		}
-	
-		$this->shipping_infos = $value;
-	}
-	
-	/**
-	 * @see http://wiki.shopgate.com/Merchant_API_payment_infos/
-	 * @param string $value
-	 */
-	public function setPaymentGroup($value) {
-		$this->payment_group = $value;
+	public function setCurrency($value) {
+		$this->currency = $value;
 	}
 
-	/**
-	 * @see http://wiki.shopgate.com/Merchant_API_payment_infos/
-	 * @param string $value
-	 */
-	public function setPaymentMethod($value) {
-		$this->payment_method = $value;
-	}
-
-	/**
-	 * @param float $value
-	 */
-	public function setAmountItems($value) {
-		$this->amount_items = $value;
-	}
-
-	/**
-	 * @param float $value
-	 */
-	public function setAmountShipping($value) {
-		$this->amount_shipping = $value;
-	}
-
-	/**
-	 * @param float $value
-	 */
-	public function setAmountShopPayment($value) {
-		$this->amount_shop_payment = $value;
-	}
-
-	/**
-	 * @param float $value
-	 */
-	public function setPaymentTaxPercent($value) {
-		$this->payment_tax_percent = $value;
-	}
-	
-	/**
-	 * @param float $value
-	 */
-	public function setAmountShopgatePayment($value) {
-		$this->amount_shopgate_payment = $value;
-	}
-	
 	/**
 	 * @param float $value
 	 */
@@ -265,149 +674,91 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	}
 
 	/**
-	 * @see http://de.wikipedia.org/wiki/ISO_4217
+	 * @param bool $value
+	 */
+	public function setIsShippingCompleted($value) {
+		$this->is_shipping_completed = $value;
+	}
+
+	/**
 	 * @param string $value
 	 */
-	public function setCurrency($value) {
-		$this->currency = $value;
+	public function setShippingCompletedTime($value) {
+		$this->shipping_completed_time = $value;
 	}
 
 	/**
-	 * @param ShopgateAddress|mixed[] $value
+	 * @param bool $value
 	 */
-	public function setInvoiceAddress($value) {
-		if (!is_object($value) && !($value instanceof ShopgateAddress) && !is_array($value)) {
-			$this->invoice_address = null;
-			return;
-		}
-
-		if (is_array($value)) {
-			$value = new ShopgateAddress($value);
-			$value->setIsDeliveryAddress(false);
-			$value->setIsInvoiceAddress(true);
-		}
-
-		$this->invoice_address = $value;
+	public function setIsPaid($value) {
+		$this->is_paid = $value;
 	}
 
 	/**
-	 * @param ShopgateAddress|mixed[] $value
+	 * @param string $value
 	 */
-	public function setDeliveryAddress($value) {
-		if (!is_object($value) && !($value instanceof ShopgateAddress) && !is_array($value)) {
-			$this->delivery_address = null;
-			return;
-		}
-
-		if (is_array($value)) {
-			$value = new ShopgateAddress($value);
-			$value->setIsDeliveryAddress(true);
-			$value->setIsInvoiceAddress(false);
-		}
-
-		$this->delivery_address = $value;
+	public function setPaymentTime($value) {
+		$this->payment_time = $value;
 	}
 
 	/**
-	 * @param ShopgateExternalCoupon[] $value
+	 * @param string $value
 	 */
-	public function setExternalCoupons($value) {
+	public function setPaymentTransactionNumber($value) {
+		$this->payment_transaction_number = $value;
+	}
+
+	/**
+	 * mixed: ShopgateDeliveryNote[] | array[]
+	 * @param array $value
+	 */
+	public function setDeliveryNotes($value) {
+		// TODO: $this->delivery_notes = $this->validateList($value, 'ShopgateDeliveryNote');
+
 		if (!is_array($value)) {
-			$this->external_coupons = null;
-			return;
-		}
-	
-		foreach ($value as $index => &$element) {
-			if ((!is_object($element) || !($element instanceof ShopgateExternalCoupon)) && !is_array($element)) {
-				unset($value[$index]);
-				continue;
-			}
-	
-			if (is_array($element)) {
-				$element = new ShopgateExternalCoupon($element);
-			}
-		}
-	
-		$this->external_coupons = $value;
-	}
-	
-	/**
-	 * @param ShopgateShopgateCoupon[] $value
-	 */
-	public function setShopgateCoupons($value) {
-		if (!is_array($value)) {
-			$this->shopgate_coupons = null;
-			return;
-		}
-	
-		foreach ($value as $index => &$element) {
-			if ((!is_object($element) || !($element instanceof ShopgateShopgateCoupon)) && !is_array($element)) {
-				unset($value[$index]);
-				continue;
-			}
-	
-			if (is_array($element)) {
-				$element = new ShopgateShopgateCoupon($element);
-			}
-		}
-	
-		$this->shopgate_coupons = $value;
-	}
-	
-	/**
-	 * @param ShopgateOrderItem[]|mixed[][] $value
-	 */
-	public function setItems($value) {
-		if (!is_array($value)) {
-			$this->items = null;
+			$this->delivery_notes = null;
 			return;
 		}
 
 		foreach ($value as $index => &$element) {
-			if ((!is_object($element) || !($element instanceof ShopgateOrderItem)) && !is_array($element)) {
-				unset($value[$index]);
-				continue;
-			}
-
 			if (is_array($element)) {
-				$element = new ShopgateOrderItem($element);
+				$element = new ShopgateDeliveryNote($element);
+			}
+			else if ( !is_object($element) || !($element instanceof ShopgateDeliveryNote) ) {
+				unset($value[$index]);
 			}
 		}
 
-		$this->items = $value;
+		$this->delivery_notes = $value;
 	}
 
 
-	##########
-	# Getter #
-	##########
-	
 	/**
 	 * @return string
 	 */
-	public function getCustomerNumber() {
-		return $this->customer_number;
+	public function getOrderNumber() {
+		return $this->order_number;
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getExternalCustomerNumber() {
-		return $this->external_customer_number;
+	public function getExternalOrderNumber() {
+		return $this->external_order_number;
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getExternalCustomerId() {
-		return $this->external_customer_id;
+	public function getExternalOrderId() {
+		return $this->external_order_id;
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getMail() {
-		return $this->mail;
+	public function getCreatedTime() {
+		return $this->created_time;
 	}
 
 	/**
@@ -423,87 +774,12 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	public function getMobile() {
 		return $this->mobile;
 	}
-	
-	/**
-	 * @return ShopgateOrderCustomField[]
-	 */
-	public function getCustomFields() {
-		return $this->custom_fields;
-	}
 
 	/**
-	 *
 	 * @return string
 	 */
-	public function getShippingGroup() {
-		return $this->shipping_group;
-	}
-	
-	/**
-	 *
-	 * @return string
-	 */
-	public function getShippingType() {
-		return $this->shipping_type;
-	}
-	
-	/**
-	 *
-	 * @return ShopgateShippingInfo
-	 */
-	public function getShippingInfos() {
-		return $this->shipping_infos;
-	}
-	
-	/**
-	 * @see http://wiki.shopgate.com/Merchant_API_payment_infos/
-	 * @return string
-	 */
-	public function getPaymentMethod() {
-		return $this->payment_method;
-	}
-
-	/**
-	 * @see http://wiki.shopgate.com/Merchant_API_payment_infos/
-	 * @return string
-	 */
-	public function getPaymentGroup() {
-		return $this->payment_group;
-	}
-
-	/**
-	 * @return float
-	 */
-	public function getAmountItems() {
-		return $this->amount_items;
-	}
-
-	/**
-	 * @return float
-	 */
-	public function getAmountShipping() {
-		return $this->amount_shipping;
-	}
-
-	/**
-	 * @return float
-	 */
-	public function getAmountShopPayment() {
-		return $this->amount_shop_payment;
-	}
-
-	/**
-	 * @return float
-	 */
-	public function getPaymentTaxPercent() {
-		return $this->payment_tax_percent;
-	}
-
-	/**
-	 * @return float
-	 */
-	public function getAmountShopgatePayment() {
-		return $this->amount_shopgate_payment;
+	public function getCurrency() {
+		return $this->currency;
 	}
 
 	/**
@@ -514,96 +790,173 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	}
 
 	/**
-	 * @see http://de.wikipedia.org/wiki/ISO_4217
+	 * @return bool
+	 */
+	public function getIsShippingCompleted() {
+		return $this->is_shipping_completed;
+	}
+
+	/**
 	 * @return string
 	 */
-	public function getCurrency() {
-		return $this->currency;
+	public function getShippingCompletedTime() {
+		return $this->shipping_completed_time;
 	}
 
 	/**
-	 * @return ShopgateAddress
+	 * @return bool
 	 */
-	public function getInvoiceAddress() {
-		return $this->invoice_address;
+	public function getIsPaid() {
+		return $this->is_paid;
 	}
 
 	/**
-	 * @return ShopgateAddress
+	 * @return string
 	 */
-	public function getDeliveryAddress() {
-		return $this->delivery_address;
+	public function getPaymentTime() {
+		return $this->payment_time;
 	}
 
 	/**
-	 * @return ShopgateExternalCoupon[]
+	 * @return string
 	 */
-	public function getExternalCoupons() {
-		return $this->external_coupons;
+	public function getPaymentTransactionNumber() {
+		return $this->payment_transaction_number;
 	}
-	
+
 	/**
-	 * @return ShopgateShopgateCoupon[]
+	 * @return ShopgateDeliveryNote[]
 	 */
-	public function getShopgateCoupons() {
-		return $this->shopgate_coupons;
+	public function getDeliveryNotes() {
+		return $this->delivery_notes;
 	}
-	
-	/**
-	 * @return ShopgateOrderItem[]
-	 */
-	public function getItems() {
-		return $this->items;
-	}
+
 }
 
-class ShopgateCart extends ShopgateCartBase {
-	public function accept(ShopgateContainerVisitor $v) {
-		$v->visitCart($this);
-	}
-}
+class ShopgateOrder extends ShopgateOrderBase { // Merchant API
 
-class ShopgateOrder extends ShopgateCartBase {
-	protected $order_number;
+	/**
+	 * @var string
+	 */
+	protected $customer_number;
 	
+	/**
+	 * @var string
+	 */
+	protected $external_customer_number;
+	
+	/**
+	 * @var string
+	 */
+	protected $external_customer_id;
+
+	/**
+	 * @var string
+	 */
 	protected $confirm_shipping_url;
-	
-	protected $created_time;
-	
-	protected $is_paid;
-	
-	protected $payment_time;
-	protected $payment_transaction_number;
-	protected $payment_infos;
-	
-	protected $is_shipping_blocked;
-	protected $is_shipping_completed;
-	protected $shipping_completed_time;
-	
-	protected $is_test;
-	protected $is_storno;
-	protected $is_customer_invoice_blocked;
-	
-	protected $update_shipping = false;
-	protected $update_payment = false;
-	
-	protected $delivery_notes = array();
-	
-	public function accept(ShopgateContainerVisitor $v) {
-		$v->visitOrder($this);
-	}
 
-	##########
-	# Setter #
-	##########
+	/**
+	 * @var float
+	 */
+	protected $amount_shopgate_payment;
+
+	/**
+	 * @var float
+	 */
+	protected $amount_shop_payment;
+
+	/**
+	 * @var float
+	 */
+	protected $amount_items;
+
+	/**
+	 * @var float
+	 */
+	protected $amount_shipping;
+	
+	/**
+	 * @var string
+	 */
+	protected $shipping_group;
+	
+	/**
+	 * @var string
+	 */
+	protected $shipping_type;
+	
+	/**
+	 * @var ShopgateShippingInfo
+	 */
+	protected $shipping_infos;
+	
+	/**
+	 * @var bool
+	 */
+	protected $is_shipping_blocked;
+
+	/**
+	 * @var float
+	 */
+	protected $payment_tax_percent;
+
+	/**
+	 * @var string
+	 */
+	protected $payment_group;
+	
+	/**
+	 * @var array
+	 */
+	protected $payment_infos;
+
+	/**
+	 * @var bool
+	 */
+	protected $is_customer_invoice_blocked;
+
+	/**
+	 * @var bool
+	 */
+	protected $is_storno;
+	
+	/**
+	 * @var bool
+	 */
+	protected $is_test;
+	
+	/**
+	 * @var bool
+	 */
+	protected $update_shipping;
+
+	/**
+	 * @var bool
+	 */
+	protected $update_payment;
+	
 	
 	/**
 	 * @param string $value
 	 */
-	public function setOrderNumber($value) {
-		$this->order_number = $value;
+	public function setCustomerNumber($value) {
+		$this->customer_number = $value;
 	}
 	
+	/**
+	 * @param string $value
+	 */
+	public function setExternalCustomerNumber($value) {
+		$this->external_customer_number = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setExternalCustomerId($value) {
+		$this->external_customer_id = $value;
+	}
+
 	/**
 	 * @param string $value
 	 */
@@ -612,80 +965,88 @@ class ShopgateOrder extends ShopgateCartBase {
 	}
 
 	/**
-	 * @see http://www.php.net/manual/de/function.date.php
-	 * @see http://en.wikipedia.org/wiki/ISO_8601
-	 * @param string $value
+	 * @param float $value
 	 */
-	public function setCreatedTime($value) {
-		$this->created_time = $value;
+	public function setAmountShopgatePayment($value) {
+		$this->amount_shopgate_payment = $value;
 	}
-
+	
 	/**
-	 * @param bool $value
+	 * @param float $value
 	 */
-	public function setIsPaid($value) {
-		$this->is_paid = $value;
+	public function setAmountShopPayment($value) {
+		$this->amount_shop_payment = $value;
 	}
-
+	
 	/**
-	 * @see http://www.php.net/manual/de/function.date.php
-	 * @see http://en.wikipedia.org/wiki/ISO_8601
-	 * @param string $value
+	 * @param float $value
 	 */
-	public function setPaymentTime($value) {
-		$this->payment_time = $value;
+	public function setAmountItems($value) {
+		$this->amount_items = $value;
+	}
+	
+	/**
+	 * @param float $value
+	 */
+	public function setAmountShipping($value) {
+		$this->amount_shipping = $value;
 	}
 	
 	/**
 	 * @param string $value
 	 */
-	public function setPaymentTransactionNumber($value) {
-		$this->payment_transaction_number = $value;
+	public function setShippingGroup($value) {
+		$this->shipping_group = $value;
 	}
-
+	
 	/**
-	 * @see http://wiki.shopgate.com/Merchant_API_payment_infos/
-	 * @param mixed[] $value An array of additional information about the payment depending on the payment type
+	 * @param string $value
 	 */
-	public function setPaymentInfos($value) {
-		$this->payment_infos = $value;
+	public function setShippingType($value) {
+		$this->shipping_type = $value;
 	}
-
+	
+	/**
+	 * ShopgateShippingInfo | array
+	 * @param array $value
+	 */
+	public function setShippingInfos($value) {
+		if (is_array($value)) {
+			$value = new ShopgateShippingInfo($value);
+		}
+		else if ( !is_object($value) || !($value instanceof ShopgateShippingInfo) ) {
+			$value = null;
+		}
+	
+		$this->shipping_infos = $value;
+	}
+	
 	/**
 	 * @param bool $value
 	 */
 	public function setIsShippingBlocked($value) {
 		$this->is_shipping_blocked = $value;
 	}
-	
+
 	/**
-	 * @param bool $value
+	 * @param float
 	 */
-	public function setIsShippingCompleted($value) {
-		$this->is_shipping_completed = $value;
+	public function setPaymentTaxPercent($value) {
+		$this->payment_tax_percent = $value;
+	}
+
+	/**
+	 * @param string
+	 */
+	public function setPaymentGroup($value) {
+		$this->payment_group = $value;
 	}
 	
 	/**
-	 * @see http://www.php.net/manual/de/function.date.php
-	 * @see http://en.wikipedia.org/wiki/ISO_8601
-	 * @param string $value
+	 * @param array $value An array of additional information about the payment depending on the payment type
 	 */
-	public function setShippingCompletedTime($value) {
-		$this->shipping_completed_time = $value;
-	}
-	
-	/**
-	 * @param bool $value
-	 */
-	public function setIsTest($value) {
-		$this->is_test = $value;
-	}
-	
-	/**
-	 * @param bool $value
-	 */
-	public function setIsStorno($value) {
-		$this->is_storno = $value;
+	public function setPaymentInfos($value) {
+		$this->payment_infos = $value;
 	}
 	
 	/**
@@ -698,8 +1059,15 @@ class ShopgateOrder extends ShopgateCartBase {
 	/**
 	 * @param bool $value
 	 */
-	public function setUpdatePayment($value) {
-		$this->update_payment = $value;
+	public function setIsStorno($value) {
+		$this->is_storno = $value;
+	}
+	
+	/**
+	 * @param bool $value
+	 */
+	public function setIsTest($value) {
+		$this->is_test = $value;
 	}
 	
 	/**
@@ -710,57 +1078,32 @@ class ShopgateOrder extends ShopgateCartBase {
 	}
 	
 	/**
-	 * @param ShopgateDeliveryNote[]|mixed[][] $value
+	 * @param bool $value
 	 */
-	public function setDeliveryNotes($value) {
-		if (empty($value)) {
-			$this->delivery_notes = null;
-			return;
-		}
-	
-		if (!is_array($value)) {
-			$this->delivery_notes = null;
-			return;
-		}
-	
-		foreach ($value as $index => &$element) {
-			if ((!is_object($element) || !($element instanceof ShopgateDeliveryNote)) && !is_array($element)) {
-				unset($value[$index]);
-				continue;
-			}
-	
-			if (is_array($element)) {
-				$element = new ShopgateDeliveryNote($element);
-			}
-		}
-	
-		$this->delivery_notes = $value;
+	public function setUpdatePayment($value) {
+		$this->update_payment = $value;
 	}
-	
-	
-	##########
-	# Getter #
-	##########
+
 	
 	/**
 	 * @return string
 	 */
-	public function getOrderNumber() {
-		return $this->order_number;
+	public function getCustomerNumber() {
+		return $this->customer_number;
 	}
 	
 	/**
 	 * @return string
 	 */
-	public function getExternalOrderNumber() {
-		return $this->external_order_number;
+	public function getExternalCustomerNumber() {
+		return $this->external_customer_number;
 	}
 	
 	/**
 	 * @return string
 	 */
-	public function getExternalOrderId() {
-		return $this->external_order_id;
+	public function getExternalCustomerId() {
+		return $this->external_customer_id;
 	}
 
 	/**
@@ -769,55 +1112,79 @@ class ShopgateOrder extends ShopgateCartBase {
 	public function getConfirmShippingUrl() {
 		return $this->confirm_shipping_url;
 	}
-	
+
 	/**
-	 * @see http://www.php.net/manual/de/function.date.php
-	 * @see http://en.wikipedia.org/wiki/ISO_8601
-	 * @param string $format
-	 * @return string
+	 * @return float
 	 */
-	public function getCreatedTime($format = "") {
-		$time = $this->created_time;
-		if(!empty($format)) {
-			$timestamp = strtotime($time);
-			$time = date($format, $timestamp);
-		}
-	
-		return $time;
+	public function getAmountShopgatePayment() {
+		return $this->amount_shopgate_payment;
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getAmountShopPayment() {
+		return $this->amount_shop_payment;
 	}
 	
+	/**
+	 * @return float
+	 */
+	public function getAmountItems() {
+		return $this->amount_items;
+	}
+		
+	/**
+	 * @return float
+	 */
+	public function getAmountShipping() {
+		return $this->amount_shipping;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getShippingGroup() {
+		return $this->shipping_group;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getShippingType() {
+		return $this->shipping_type;
+	}
+	
+	/**
+	 * @return ShopgateShippingInfo[]
+	 */
+	public function getShippingInfos() {
+		return $this->shipping_infos;
+	}
+
 	/**
 	 * @return bool
 	 */
-	public function getIsPaid() {
-		return (bool) $this->is_paid;
+	public function getIsShippingBlocked() {
+		return $this->is_shipping_blocked;
 	}
 
 	/**
-	 * @see http://www.php.net/manual/de/function.date.php
-	 * @see http://en.wikipedia.org/wiki/ISO_8601
-	 * @param string format
-	 * @return string
+	 * @return float
 	 */
-	public function getPaymentTime($format="") {
-		$time = $this->payment_time;
-		if(!empty($format)) {
-			$timestamp = strtotime($time);
-			$time = date($format, $timestamp);
-		}
+	public function getPaymantTaxPercent() {
+		return $this->payment_tax_percent;
+	}
 
-		return $time;
-	}
-	
 	/**
 	 * @return string
 	 */
-	public function getPaymentTransactionNumber() {
-		return $this->payment_transaction_number;
+	public function getPaymentGroup() {
+		return $this->payment_group;
 	}
 	
 	/**
-	 * @return mixed[]
+	 * @return array
 	 */
 	public function getPaymentInfos() {
 		return $this->payment_infos;
@@ -826,80 +1193,189 @@ class ShopgateOrder extends ShopgateCartBase {
 	/**
 	 * @return bool
 	 */
-	public function getIsShippingBlocked() {
-		return (bool) $this->is_shipping_blocked;
+	public function getIsCustomerInvoiceBlocked() {
+		return $this->is_customer_invoice_blocked;
 	}
-	
+
 	/**
 	 * @return bool
 	 */
-	public function getIsShippingCompleted() {
-		return (bool) $this->is_shipping_completed;
-	}
-	
-	/**
-	 * @see http://www.php.net/manual/de/function.date.php
-	 * @see http://en.wikipedia.org/wiki/ISO_8601
-	 * @param string format
-	 * @return string
-	 */
-	public function getShippingCompletedTime($format='') {
-		$time = $this->shipping_completed_time;
-		if(!empty($format)) {
-			$timestamp = strtotime($time);
-			$time = date($format, $timestamp);
-		}
-	
-		return $time;
+	public function getIsStorno() {
+		return $this->is_storno;
 	}
 	
 	/**
 	 * @return bool
 	 */
 	public function getIsTest() {
-		return (bool) $this->is_test;
-	}
-	
-	
-	/**
-	 * @return bool
-	 */
-	public function getIsStorno() {
-		return (bool) $this->is_storno;
-	}
-	
-	/**
-	 * @return bool
-	 */
-	public function getIsCustomerInvoiceBlocked() {
-		return (bool) $this->is_customer_invoice_blocked;
-	}
-	
-	/**
-	 * @return bool
-	 */
-	public function getUpdatePayment() {
-		return (bool) $this->update_payment;
+		return $this->is_test;
 	}
 	
 	/**
 	 * @return bool
 	 */
 	public function getUpdateShipping() {
-		return (bool) $this->update_shipping;
+		return $this->update_shipping;
 	}
 	
 	/**
-	 * @return ShopgateDeliveryNote[]
+	 * @return bool
 	 */
-	public function getDeliveryNotes() {
-		return $this->delivery_notes;
+	public function getUpdatePayment() {
+		return $this->update_payment;
 	}
+	
+	/**
+	 * @see ShopgateCartBase::getOrderItem()
+	 * @return ShopgateOrderItem
+	 */
+	protected function getOrderItem(array $options) {
+		return new ShopgateOrderItem($options); 
+	}
+
+	/**
+	 * @see ShopgateContainer::accept()
+	 */
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitOrder($this);
+	}
+
 }
 
-class ShopgateOrderItem extends ShopgateContainer {
-	protected $item_number;
-	protected $item_number_public;
+class ShopgateExternalOrder extends ShopgateOrderBase { // Plugin API
+
+	/**
+	 * @var ShopgateOrderTax[]
+	 */
+	protected $order_taxes;
+
+	/**
+	 * @var ShopgateOrderExtraCost[]
+	 */
+	protected $extra_costs;
+
+	/**
+	 * ShopgateOrderTax[] | array[]
+	 * @param array $value
+	 */
+	public function setOrderTaxes($value) {
+		// TODO: $this->order_taxes = $this->validateList($value, 'ShopgateOrderTax');
+
+		if (!is_array($value)) {
+			$this->order_taxes = null;
+			return;
+		}
+
+		foreach ($value as $index => &$element) {
+			if (is_array($element)) {
+				$element = new ShopgateOrderTax($element);
+			}
+			else if ( !is_object($element) || !($element instanceof ShopgateOrderTax) ) {
+				unset($value[$index]);
+			}
+		}
+
+		$this->order_taxes = $value;
+	}
+
+	/**
+	 * ShopgateOrderExtraCost[] | array[]
+	 * @param array $value
+	 */
+	public function setExtraCosts($value) {
+		// TODO: $this->extra_cost = $this->validateList($value, 'ShopgateOrderExtraCost');
+
+		if (!is_array($value)) {
+			$this->extra_costs = null;
+			return;
+		}
+
+		foreach ($value as $index => &$element) {
+			if (is_array($element)) {
+				$element = new ShopgateOrderExtraCost($element);
+			}
+			else if ( !is_object($element) || !($element instanceof ShopgateOrderExtraCost) ) {
+				unset($value[$index]);
+			}
+		}
+
+		$this->extra_costs = $value;
+	}
+
+	/**
+	 * @return ShopgateOrderTax[]
+	 */
+	public function getOrderTaxes() {
+		return $this->order_taxes;
+	}
+
+	/**
+	 * @return ShopgateOrderExtraCost[]
+	 */
+	public function getExtraCosts() {
+		return $this->extra_costs;
+	}
+
+	/**
+	 * @see ShopgateCartBase::getOrderItem()
+	 * @return ShopgateExternalOrderItem
+	 */
+	protected function getOrderItem(array $options) {
+		return new ShopgateExternalOrderItem($options);
+	}
+
+	/**
+	 * @see ShopgateContainer::accept()
+	 */
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitExternalOrder($this);
+	}
+
+}
+
+abstract class ShopgateOrderBaseItem extends ShopgateContainer {
+
+	/**
+	 * @var string
+	 */
+	protected $item_number = null;
+
+	/**
+	 * @var string
+	 */
+	protected $item_number_public = null;
+
+	/**
+	 * @param string $value
+	 */
+	public function setItemNumber($value) {
+		$this->item_number = $value;
+	}
+
+	/**
+	 * @param string $value
+	 */
+	public function setItemNumberPublic($value) {
+		$this->item_number_public = $value;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getItemNumber() {
+		return $this->item_number;
+	}
+
+	/**
+	 * return string
+	 */
+	public function getItemNumberPublic() {
+		return $this->item_number_public;
+	}
+
+}
+
+class ShopgateOrderItem extends ShopgateOrderBaseItem {
 
 	protected $quantity;
 
@@ -919,33 +1395,19 @@ class ShopgateOrderItem extends ShopgateContainer {
 	protected $options = array();
 
 	protected $inputs = array();
-	
+
 	protected $attributes = array();
 
 
 	##########
 	# Setter #
 	##########
-	
+
 	/**
 	 * @param string $value
-	 */
+	*/
 	public function setName($value) {
 		$this->name = $value;
-	}
-
-	/**
-	 * @param string $value
-	 */
-	public function setItemNumber($value) {
-		$this->item_number = $value;
-	}
-
-	/**
-	 * @param string $value
-	 */
-	public function setItemNumberPublic($value) {
-		$this->item_number_public = $value;
 	}
 
 	/**
@@ -975,7 +1437,7 @@ class ShopgateOrderItem extends ShopgateContainer {
 	public function setTaxPercent($value) {
 		$this->tax_percent = $value;
 	}
-	
+
 	/**
 	 * Sets the tax_class_key value
 	 *
@@ -984,7 +1446,7 @@ class ShopgateOrderItem extends ShopgateContainer {
 	public function setTaxClassKey($value) {
 		$this->tax_class_key = $value;
 	}
-	
+
 	/**
 	 * Sets the tax_class_id
 	 *
@@ -1033,50 +1495,50 @@ class ShopgateOrderItem extends ShopgateContainer {
 	}
 
 	/**
- 	 * @param ShopgateOrderItemInput[]|mixed[][] $value
+	 * @param ShopgateOrderItemInput[]|mixed[][] $value
 	 */
 	public function setInputs($value) {
 		if (empty($value) || !is_array($value)) {
 			$this->inputs = array();
 			return;
 		}
-		
+
 		// convert sub-arrays into ShopgateOrderItemInputs objects if necessary
 		foreach ($value as $index => &$element) {
 			if ((!is_object($element) || !($element instanceof ShopgateOrderItemInput)) && !is_array($element)) {
 				unset($value[$index]);
 				continue;
 			}
-			
+
 			if (is_array(($element))) {
 				$element = new ShopgateOrderItemInput($element);
 			}
 		}
-		
+
 		$this->inputs = $value;
 	}
 
 	/**
- 	 * @param ShopgateOrderItemAttribute[]|mixed[][] $value
+	 * @param ShopgateOrderItemAttribute[]|mixed[][] $value
 	 */
 	public function setAttributes($value) {
 		if (empty($value) || !is_array($value)) {
 			$this->attributes = array();
 			return;
 		}
-		
+
 		// convert sub-arrays into ShopgateOrderItemInputs objects if necessary
 		foreach ($value as $index => &$element) {
 			if ((!is_object($element) || !($element instanceof ShopgateOrderItemAttribute)) && !is_array($element)) {
 				unset($value[$index]);
 				continue;
 			}
-			
+
 			if (is_array(($element))) {
 				$element = new ShopgateOrderItemAttribute($element);
 			}
 		}
-		
+
 		$this->attributes = $value;
 	}
 
@@ -1084,26 +1546,12 @@ class ShopgateOrderItem extends ShopgateContainer {
 	##########
 	# Getter #
 	##########
-	
+
 	/**
 	 * @return string
 	 */
 	public function getName() {
 		return $this->name;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getItemNumber() {
-		return $this->item_number;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getItemNumberPublic() {
-		return $this->item_number_public;
 	}
 
 	/**
@@ -1133,14 +1581,14 @@ class ShopgateOrderItem extends ShopgateContainer {
 	public function getTaxPercent() {
 		return $this->tax_percent;
 	}
-	
+
 	/**
 	 * @return string
 	 */
 	public function getTaxClassKey() {
 		return $this->tax_class_key;
 	}
-	
+
 	/**
 	 * Returns the tax_class_id
 	 *
@@ -1185,11 +1633,87 @@ class ShopgateOrderItem extends ShopgateContainer {
 		return $this->attributes;
 	}
 
-
+	/**
+	 * @see ShopgateContainer::accept()
+	 */
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitOrderItem($this);
 	}
+
 }
+
+class ShopgateSyncOrderItem extends ShopgateOrderBaseItem {
+
+	const STATUS_NEW = 'new';
+	const STATUS_DELETED = 'deleted';
+	const STATUS_EXISTING = 'existing';
+
+	/**
+	 * @var string either one of new, deleted, existing
+	 */
+	protected $status = null;
+
+	/**
+	 * @param string $value
+	 */
+	public function setStatus($value) {
+		if (
+		self::STATUS_NEW != $value &&
+		self::STATUS_DELETED != $value &&
+		self::STATUS_EXISTING != $value
+		) {
+			$value = null;
+		}
+
+		$this->status = $value;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getStatus() {
+		return $this->status;
+	}
+
+	/**
+	 * @see ShopgateContainer::accept()
+	 */
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitSyncOrderItem($this);
+	}
+
+}
+
+class ShopgateExternalOrderItem extends ShopgateOrderItem {
+
+	/**
+	 * @var string
+	 */
+	protected $description = null;
+
+	/**
+	 * @param string $value
+	 */
+	public function setDescription($value) {
+		$this->description = $value;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDescription() {
+		return $this->description;
+	}
+
+	/**
+	 * @see ShopgateContainer::accept()
+	 */
+	public function visit(ShopgateContainerVisitor $v) {
+		$v->visitExternalOrderItem($this);
+	}
+
+}
+
 
 class ShopgateOrderItemOption extends ShopgateContainer {
 	protected $name;
@@ -1610,6 +2134,166 @@ class ShopgateDeliveryNote extends ShopgateContainer {
 		$v->visitOrderDeliveryNote($this);
 	}
 }
+
+class ShopgateOrderTax extends ShopgateContainer {
+
+	/**
+	 * @var string
+	 */
+	protected $label;
+
+	/**
+	 * @var float
+	 */
+	protected $tax_percent;
+
+	/**
+	 * @var float
+	 */
+	protected $amount;
+
+
+	/**
+	 *
+	 * @param string $value
+	 */
+	public function setLabel($value){
+		$this->label = $value;
+	}
+
+	/**
+	 *
+	 * @param float $value
+	 */
+	public function setTaxPercent($value){
+		$this->tax_percent = $value;
+	}
+
+	/**
+	 *
+	 * @param float $value
+	 */
+	public function setAmount($value){
+		$this->amount = $value;
+	}
+
+
+	/**
+	 *
+	 * @return string
+	 */
+	public function getLabel(){
+		return $this->label;
+	}
+
+	/**
+	 *
+	 * @return float
+	 */
+	public function getTaxPercent(){
+		return $this->tax_percent;
+	}
+
+	/**
+	 *
+	 * @return float
+	 */
+	public function getAmount(){
+		return $this->amount;
+	}
+
+	/**
+	 * @see ShopgateContainer::accept()
+	 */
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitOrderTax($this);
+	}
+
+}
+
+class ShopgateOrderExtraCost extends ShopgateContainer {
+
+	const TYPE_SHIPPING = 'shipping';
+	const TYPE_PAYMENT = 'payment';
+	const TYPE_MISC = 'misc';
+
+	/**
+	 * @var string
+	 */
+	protected $type;
+
+	/**
+	 * @var float
+	 */
+	protected $tax_percent;
+
+	/**
+	 * @var float
+	 */
+	protected $amount;
+
+
+	/**
+	 * @param string $value
+	 */
+	public function setType($value) {
+		if (
+		self::TYPE_SHIPPING != $value &&
+		self::TYPE_PAYMENT != $value &&
+		self::TYPE_MISC != $value
+		) {
+			$value = null;
+		}
+
+		$this->type = $value;
+	}
+
+	/**
+	 * @param float $value
+	 */
+	public function setTaxPercent($value) {
+		$this->tax_percent = $value;
+	}
+
+	/**
+	 * @param float $value
+	 */
+	public function setAmount($value) {
+		$this->amount = $value;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getType() {
+		return $this->type;
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getTaxPercent() {
+		return $this->tax_percent;
+	}
+
+	/**
+	 *
+	 * @return float
+	 */
+	public function getAmount() {
+		return $this->amount;
+	}
+
+	/**
+	 * @see ShopgateContainer::accept()
+	 */
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitExtraCost($this);
+	}
+
+}
+
 
 abstract class ShopgateCoupon extends ShopgateContainer {
 	
