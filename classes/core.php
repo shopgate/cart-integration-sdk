@@ -1807,7 +1807,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_settings#API_Response
 	 *
 	 * @return array(
-	 *          <ul>
+	 * 					<ul>
 	 *						<li>'tax' => Contains the tax settings as follows:
 	 *							<ul>
 	 *								<li>'tax_classes_products' => A list of product tax class identifiers.</li>
@@ -1816,7 +1816,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *								<li>'tax_rules' => A list of tax rule containers.</li>
 	 *							</ul>
 	 *						</li>
-	 *          </ul>)
+	 *					</ul>)
 	 * @throws ShopgateLibraryException on invalid log in data or hard errors like database failure.
 	 */
 	public abstract function getSettings();
@@ -1840,7 +1840,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * Loads the product categories of the shop system's database and passes them to the buffer.
 	 *
 	 * Use ShopgatePlugin::buildDefaultCategoryRow() to get the correct indices for the field names in a Shopgate categories csv and
-	 * use ShopgatePlugin::addCategoryRow() to add it to th//protected abstract function getPagesCsv();e output buffer.
+	 * use ShopgatePlugin::addCategoryRow() to add it to the output buffer.
 	 *
 	 * @see http://wiki.shopgate.com/CSV_File_Categories
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_categories_csv

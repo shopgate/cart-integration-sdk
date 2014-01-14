@@ -557,6 +557,16 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				isset($this->params['order_date_from']) ? $this->params['order_date_from'] : '',
 				isset($this->params['sort_order']) ? $this->params['sort_order'] : 'created_desc'
 		);
+		
+		if (!is_array($orders)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, 'Plugin Response: '.var_export($orders, true));
+		}
+		
+		foreach ($orders as $order) {
+			if (!($order instanceof ShopgateExternalOrder)) {
+				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, 'Plugin Response: '.var_export($orders, true));
+			}
+		}
 	
 		$this->responseData['orders'] = $orders;
 	}
@@ -580,12 +590,23 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			if (!isset($syncItem['status'])) {
 				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_ITEM_FORMAT, 'missing required param "status"');
 			}
-	
+		
 			$syncItems[] = new ShopgateSyncItem($syncItem);
 		}
-	
-		$newFavList = $this->plugin->syncFavouriteList($this->params['customer_token'], $syncItems);
-		$this->responseData['items'] = $newFavList;
+		
+		$updatedSyncItems = $this->plugin->syncFavouriteList($this->params['customer_token'], $syncItems);
+		
+		if (!is_array($updatedSyncItems)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, 'Plugin Response: '.var_export($updatedSyncItems, true));
+		}
+		
+		foreach ($updatedSyncItems as $updatedSyncItem) {
+			if (!($updatedSyncItem instanceof ShopgateSyncItem)) {
+				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, 'Plugin Response: '.var_export($updatedSyncItem, true));
+			}
+		}
+		
+		$this->responseData['items'] = $updatedSyncItems;
 	}
 
 
