@@ -1218,7 +1218,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	}
 	
 	public function setEnableSyncFavouriteList($value) {
-		$this->enable_sync_favourite_list;
+		$this->enable_sync_favourite_list = $value;
 	}
 	
 	public function setCountry($value) {
