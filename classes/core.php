@@ -192,7 +192,7 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_API_UNKNOWN_LOGTYPE => 'unknown logtype',
 		self::PLUGIN_API_CRON_NO_JOBS => 'parameter "jobs" missing',
 		self::PLUGIN_API_CRON_NO_JOB_NAME => 'field "job_name" in parameter "jobs" missing',
-		self::PLUGIN_API_NO_ITEMS => 'items are emtpy',
+		self::PLUGIN_API_NO_ITEMS => 'parameter "items" missing',
 		self::PLUGIN_API_WRONG_ITEM_FORMAT => 'wrong item format',
 		self::PLUGIN_API_NO_SHOPGATE_SETTINGS => 'parameter "shopgate_settings" missing',
 
@@ -1840,7 +1840,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * Loads the product categories of the shop system's database and passes them to the buffer.
 	 *
 	 * Use ShopgatePlugin::buildDefaultCategoryRow() to get the correct indices for the field names in a Shopgate categories csv and
-	 * use ShopgatePlugin::addCategoryRow() to add it to the output buffer.
+	 * use ShopgatePlugin::addCategoryRow() to add it to th//protected abstract function getPagesCsv();e output buffer.
 	 *
 	 * @see http://wiki.shopgate.com/CSV_File_Categories
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_categories_csv
@@ -1863,11 +1863,34 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	protected abstract function createReviewsCsv();
 
 	/**
-	 * Loads the product pages of the shop system's database and passes them to the buffer.
+	 * Exports orders from the shop system's database to Shopgate.
+	 *
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_orders
+	 *
+	 * @param string $customerToken
+	 * @param string $customerLanguage
+	 * @param int $limit
+	 * @param int $offset
+	 * @param string $orderDateFrom
+	 * @param string $sortOrder
+	 *
+	 * @return ShopgateExternalOrder[] A list of ShopgateExternalOrder objects
 	 *
 	 * @throws ShopgateLibraryException
 	 */
-	//protected abstract function getPagesCsv();
+	abstract protected function getOrders($customerToken, $customerLanguage, $limit = 10, $offset = 0, $orderDateFrom = '', $sortOrder = 'created_desc');
+	
+	/**
+	 * Updates and returns synchronization information for the favourite list of a customer.
+	 *
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_sync_favourite_list
+	 *
+	 * @param string $customerToken
+	 * @param ShopgateSyncItem[] $items A list of ShopgateSyncItem objects that need to be synchronized
+	 *
+	 * @return ShopgateSyncItem[] The updated list of ShopgateSyncItem objects
+	 */
+	abstract protected function syncFavouriteList($customerToken, $items);
 }
 
 interface ShopgateFileBufferInterface {
@@ -2289,7 +2312,7 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 	}
 
 	public function visitOrder(ShopgateOrder $o) {
-			// get properties
+		// get properties
 		$properties = $o->buildProperties();
 
 		// iterate the simple variables and arrays with simple variables recursively

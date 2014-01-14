@@ -555,7 +555,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				isset($this->params['limit']) ? $this->params['limit'] : 10,
 				isset($this->params['offset']) ? $this->params['offset'] : 0,
 				isset($this->params['order_date_from']) ? $this->params['order_date_from'] : '',
-				$this->params['sort_order']
+				isset($this->params['sort_order']) ? $this->params['sort_order'] : 'created_desc'
 		);
 	
 		$this->responseData['orders'] = $orders;
@@ -577,17 +577,14 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			if (!isset($syncItem['item_number'])) {
 				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_ITEM_FORMAT, 'missing required param "item_number"');
 			}
-			if (!isset($syncItem['item_number_public'])) {
-				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_ITEM_FORMAT, 'missing required param "item_number_public"');
-			}
 			if (!isset($syncItem['status'])) {
 				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_ITEM_FORMAT, 'missing required param "status"');
 			}
 	
-			$syncItems[] = new ShopgateOrderItemSync($syncItem);
+			$syncItems[] = new ShopgateSyncItem($syncItem);
 		}
 	
-		$newFavList = $this->plugin->syncFavouriteList($syncItems, $this->params['customer_token']);
+		$newFavList = $this->plugin->syncFavouriteList($this->params['customer_token'], $syncItems);
 		$this->responseData['items'] = $newFavList;
 	}
 
