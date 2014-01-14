@@ -3,7 +3,7 @@
 require_once 'ShopgateOrderBaseItem.php';
 // require_once '../core/ShopgateContainerVisitor.php';
 
-class ShopgateOrderItem extends ShopgateOrderBaseItem {
+class ShopgateOrderItem extends ShopgateBaseItem {
 
 	/**
 	 * @var string

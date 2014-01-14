@@ -3,7 +3,7 @@
 require_once 'ShopgateOrderBaseItem.php';
 //require_once '../core/ShopgateContainerVisitor.php';
 
-class ShopgateSyncOrderItem extends ShopgateOrderBaseItem {
+class ShopgateSyncItem extends ShopgateBaseItem {
 
 	const STATUS_NEW = 'new';
 	const STATUS_DELETED = 'deleted';
@@ -19,9 +19,9 @@ class ShopgateSyncOrderItem extends ShopgateOrderBaseItem {
 	 */
 	public function setStatus($value) {
 		if (
-		self::STATUS_NEW != $value &&
-		self::STATUS_DELETED != $value &&
-		self::STATUS_EXISTING != $value
+			self::STATUS_NEW != $value &&
+			self::STATUS_DELETED != $value &&
+			self::STATUS_EXISTING != $value
 		) {
 			$value = null;
 		}
@@ -40,7 +40,7 @@ class ShopgateSyncOrderItem extends ShopgateOrderBaseItem {
 	 * @see ShopgateContainer::accept()
 	 */
 	public function accept(ShopgateContainerVisitor $v) {
-		$v->visitSyncOrderItem($this);
+		$v->visitSyncItem($this);
 	}
 
 }

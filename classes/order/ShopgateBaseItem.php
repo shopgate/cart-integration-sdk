@@ -2,7 +2,7 @@
 
 //require_once '../core/ShopgateContainer.php';
 
-abstract class ShopgateOrderBaseItem extends ShopgateContainer {
+abstract class ShopgateBaseItem extends ShopgateContainer {
 
 	/**
 	 * @var string

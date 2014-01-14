@@ -204,14 +204,14 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 			if (is_array($element)) {
 				$element = $this->getOrderItem($element);
 			}
-				
+
 			/**
-			 * TODO instanceof garantiert NICHT die korrekte Ausprägung!
+			 * TODO instanceof OrderItem/ExternalOrderItem garantiert NICHT die korrekte Ausprägung!
 			 * deshalb:
 			 * - hier abstract
 			 * - evtl.: parent: $this->validateList($value, '{Ausprägung}'); vgl.: $this->setCustomFields(array)
 			 */
-			else if ( !is_object($element) || !($element instanceof ShopgateOrderBaseItem) ) {
+			else if ( !is_object($element) || !($element instanceof ShopgateOrderItem) ) {
 				unset($value[$index]);
 			}
 		}

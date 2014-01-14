@@ -2172,8 +2172,8 @@ interface ShopgateContainerVisitor {
 	public function visitOrder(ShopgateOrder $o);
 	public function visitExternalOrder(ShopgateExternalOrder $o);
 	public function visitOrderItem(ShopgateOrderItem $i);
-	public function visitSyncOrderItem(ShopgateSyncOrderItem $i);
 	public function visitExternalOrderItem(ShopgateExternalOrderItem $i);
+	public function visitSyncItem(ShopgateSyncItem $i);
 	public function visitOrderItemOption(ShopgateOrderItemOption $o);
 	public function visitOrderItemInput(ShopgateOrderItemInput $i);
 	public function visitOrderItemAttribute(ShopgateOrderItemAttribute $o);
@@ -2404,7 +2404,7 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 		}
 	}
 	
-	public function visitSyncOrderItem(ShopgateSyncOrderItem $i) {
+	public function visitSyncItem(ShopgateSyncItem $i) {
 		// get properties
 		$properties = $i->buildProperties();
 	
@@ -2413,7 +2413,7 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 	
 		// create new object with utf-8 en- / decoded data
 		try {
-			$this->object = new ShopgateSyncOrderItem($properties);
+			$this->object = new ShopgateSyncItem($properties);
 		} catch (ShopgateLibraryException $e) {
 			$this->object = null;
 		}
@@ -2853,7 +2853,7 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 		$this->array = $properties;
 	}
 	
-	public function visitSyncOrderItem(ShopgateSyncOrderItem $i) {
+	public function visitSyncItem(ShopgateSyncItem $i) {
 		// get properties and iterate (no options and inputs available in ShopgateSyncOrderItem objects)
 		$this->array = $this->iterateSimpleProperties($i->buildProperties());
 	}

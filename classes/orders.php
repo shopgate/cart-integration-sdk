@@ -25,19 +25,19 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 
 	const SHOPGATE = "SHOPGATE";
 	const PREPAY = "PREPAY";
-	
+
 	const DEBIT = "DEBIT";
 	const COD = "COD";
-	
+
 	const INVOICE = "INVOICE";
 	const KLARNA_INV = "KLARNA_INV";
 	const BILLSAFE = "BILLSAFE";
 	const MSTPAY_INV = "MSTPAY_INV";
-	
+
 	const PAYPAL = "PAYPAL";
 	const MASTPAY_PP = "MASTPAY_PP";
 	const SAGEPAY_PP = "SAGEPAY_PP";
-	
+
 	const CC = "CC";
 	const DT_CC = "DT_CC";
 	const AUTHN_CC = "AUTHN_CC";
@@ -51,10 +51,10 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	const EWAY_CC = "EWAY_CC";
 	const PAYJUNC_CC = "PAYJUNC_CC";
 	const PP_WSPP_CC = "PP_WSPP_CC";
-	
+
 	const PAYU = "PAYU";
-	
-	
+
+
 	/**
 	 * @var string
 	 */
@@ -105,26 +105,26 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	public function setCustomFields($value) {
 		// TODO: $this->custom_fields = $this->validateList($value, 'ShopgateOrderCustomField');
 		/**
-		 * e.g.:
-		 * public function validateList(array $rawList, $className) {
-		 *	foreach ($rawList as $index => &$element) {
-		 *		if (is_array($element)) {
-		 *			// implies that the class is known (included or required)!
-		 *			$element = new $className($element);
-		 *		}
-		 *		else if (!(is_object($element) && get_class($element) === $className)) {
-		 *			unset($rawList[$index]);
-		 *		}
-		 *	}
-		 *	return count($rawList) ? $rawList : null;
-		 * }
-		 */
-		
+		* e.g.:
+		* public function validateList(array $rawList, $className) {
+		*	foreach ($rawList as $index => &$element) {
+		*		if (is_array($element)) {
+		*			// implies that the class is known (included or required)!
+		*			$element = new $className($element);
+		*		}
+		*		else if (!(is_object($element) && get_class($element) === $className)) {
+		*			unset($rawList[$index]);
+		*		}
+		*	}
+		*	return count($rawList) ? $rawList : null;
+		* }
+		*/
+
 		if (!is_array($value)) {
 			$this->custom_fields = null;
 			return;
 		}
-	
+
 		foreach ($value as $index => &$element) {
 			if (is_array($element)) {
 				$element = new ShopgateOrderCustomField($element);
@@ -133,10 +133,10 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 				unset($value[$index]);
 			}
 		}
-	
+
 		$this->custom_fields = $value;
 	}
-	
+
 	/**
 	 * @param string $value
 	 */
@@ -150,12 +150,12 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	 */
 	public function setExternalCoupons($value) {
 		// TODO: $this->external_coupons = $this->validateList($value, 'ShopgateExternalCoupon'); // vgl. $this->setCustomFields(array)
-	
+
 		if (!is_array($value)) {
 			$this->external_coupons = null;
 			return;
 		}
-	
+
 		foreach ($value as $index => &$element) {
 			if (is_array($element)) {
 				$element = new ShopgateExternalCoupon($element);
@@ -164,10 +164,10 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 				unset($value[$index]);
 			}
 		}
-	
+
 		$this->external_coupons = $value;
 	}
-	
+
 	/**
 	 * ShopgateAddress | array
 	 * @param mixed $value
@@ -184,7 +184,7 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 
 		$this->invoice_address = $value;
 	}
-	
+
 	/**
 	 * ShopgateAddress | array
 	 * @param mixed $value
@@ -195,14 +195,14 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 			$value->setIsDeliveryAddress(true);
 			$value->setIsInvoiceAddress(false);
 		}
-		
+
 		if ( !is_object($value) || !($value instanceof ShopgateAddress) ) {
 			$value = null;
 		}
-	
+
 		$this->delivery_address = $value;
 	}
-	
+
 	/**
 	 * ShopgateOrderBaseItem[] | array[]
 	 * @param array $value
@@ -212,26 +212,26 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 			$this->items = null;
 			return;
 		}
-	
+
 		foreach ($value as $index => &$element) {
 			if (is_array($element)) {
 				$element = $this->getOrderItem($element);
 			}
-			
+				
 			/**
-			 * TODO instanceof garantiert NICHT die korrekte Ausprägung!
+			 * TODO instanceof OrderItem/ExternalOrderItem garantiert NICHT die korrekte Ausprägung!
 			 * deshalb:
 			 * - hier abstract
 			 * - evtl.: parent: $this->validateList($value, '{Ausprägung}'); vgl.: $this->setCustomFields(array)
 			 */
-			else if ( !is_object($element) || !($element instanceof ShopgateOrderBaseItem) ) {
+			else if ( !is_object($element) || !($element instanceof ShopgateOrderItem) ) {
 				unset($value[$index]);
 			}
 		}
-	
+
 		$this->items = $value;
 	}
-	
+
 	/**
 	 * @return string
 	 */
@@ -286,7 +286,7 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	 * @return ShopgateOrderBaseItem
 	 */
 	protected abstract function getOrderItem(array $options);
-	
+
 }
 
 class ShopgateCart extends ShopgateCartBase {
@@ -833,7 +833,7 @@ abstract class ShopgateOrderBase extends ShopgateCartBase {
 
 }
 
-class ShopgateOrder extends ShopgateOrderBase { // Merchant API
+class ShopgateOrder extends ShopgateOrderBase {
 
 	/**
 	 * @var string
@@ -1242,7 +1242,7 @@ class ShopgateOrder extends ShopgateOrderBase { // Merchant API
 
 }
 
-class ShopgateExternalOrder extends ShopgateOrderBase { // Plugin API
+class ShopgateExternalOrder extends ShopgateOrderBase {
 
 	/**
 	 * @var ShopgateOrderTax[]
@@ -1333,7 +1333,7 @@ class ShopgateExternalOrder extends ShopgateOrderBase { // Plugin API
 
 }
 
-abstract class ShopgateOrderBaseItem extends ShopgateContainer {
+abstract class ShopgateBaseItem extends ShopgateContainer {
 
 	/**
 	 * @var string
@@ -1356,7 +1356,7 @@ abstract class ShopgateOrderBaseItem extends ShopgateContainer {
 
 }
 
-class ShopgateOrderItem extends ShopgateOrderBaseItem {
+class ShopgateOrderItem extends ShopgateBaseItem {
 
 	/**
 	 * @var string
@@ -1642,7 +1642,7 @@ class ShopgateOrderItem extends ShopgateOrderBaseItem {
 
 }
 
-class ShopgateSyncOrderItem extends ShopgateOrderBaseItem {
+class ShopgateSyncItem extends ShopgateBaseItem {
 
 	const STATUS_NEW = 'new';
 	const STATUS_DELETED = 'deleted';
@@ -1658,9 +1658,9 @@ class ShopgateSyncOrderItem extends ShopgateOrderBaseItem {
 	 */
 	public function setStatus($value) {
 		if (
-		self::STATUS_NEW != $value &&
-		self::STATUS_DELETED != $value &&
-		self::STATUS_EXISTING != $value
+			self::STATUS_NEW != $value &&
+			self::STATUS_DELETED != $value &&
+			self::STATUS_EXISTING != $value
 		) {
 			$value = null;
 		}
@@ -1679,7 +1679,7 @@ class ShopgateSyncOrderItem extends ShopgateOrderBaseItem {
 	 * @see ShopgateContainer::accept()
 	 */
 	public function accept(ShopgateContainerVisitor $v) {
-		$v->visitSyncOrderItem($this);
+		$v->visitSyncItem($this);
 	}
 
 }
