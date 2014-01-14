@@ -7,12 +7,12 @@ abstract class ShopgateOrderBaseItem extends ShopgateContainer {
 	/**
 	 * @var string
 	 */
-	protected $item_number = null;
+	protected $item_number;
 
 	/**
 	 * @var string
 	 */
-	protected $item_number_public = null;
+	protected $item_number_public;
 
 	/**
 	 * @param string $value

@@ -8,7 +8,7 @@ class ShopgateExternalOrderItem extends ShopgateOrderItem {
 	/**
 	 * @var string
 	 */
-	protected $description = null;
+	protected $description;
 
 	/**
 	 * @param string $value
