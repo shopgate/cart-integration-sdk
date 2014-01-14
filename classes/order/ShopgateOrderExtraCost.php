@@ -80,7 +80,7 @@ class ShopgateOrderExtraCost extends ShopgateContainer {
 	 * @see ShopgateContainer::accept()
 	 */
 	public function accept(ShopgateContainerVisitor $v) {
-		$v->visitExtraCost($this);
+		$v->visitOrderExtraCost($this);
 	}
 
 }

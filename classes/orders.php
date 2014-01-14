@@ -1338,12 +1338,12 @@ abstract class ShopgateOrderBaseItem extends ShopgateContainer {
 	/**
 	 * @var string
 	 */
-	protected $item_number = null;
+	protected $item_number;
 
 	/**
 	 * @var string
 	 */
-	protected $item_number_public = null;
+	protected $item_number_public;
 
 	/**
 	 * @param string $value
@@ -1689,7 +1689,7 @@ class ShopgateExternalOrderItem extends ShopgateOrderItem {
 	/**
 	 * @var string
 	 */
-	protected $description = null;
+	protected $description;
 
 	/**
 	 * @param string $value
@@ -2289,7 +2289,7 @@ class ShopgateOrderExtraCost extends ShopgateContainer {
 	 * @see ShopgateContainer::accept()
 	 */
 	public function accept(ShopgateContainerVisitor $v) {
-		$v->visitExtraCost($this);
+		$v->visitOrderExtraCost($this);
 	}
 
 }
