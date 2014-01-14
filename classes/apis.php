@@ -569,7 +569,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			}
 			$resOrders[] = $order->toArray();
 		}
-	
+
 		$this->responseData['orders'] = $resOrders;
 	}
 	
@@ -607,7 +607,10 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			if (!($updatedSyncItem instanceof ShopgateSyncItem)) {
 				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, 'Plugin Response: '.var_export($updatedSyncItem, true));
 			}
-			$resItems[] = $updatedSyncItem->toArray();
+			$resItem = $updatedSyncItem->toArray();
+			unset($resItem['status']);
+
+			$resItems[] = $resItem;
 		}
 		
 		$this->responseData['items'] = $resItems;
