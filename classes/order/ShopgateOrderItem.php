@@ -5,6 +5,11 @@ require_once 'ShopgateOrderBaseItem.php';
 
 class ShopgateOrderItem extends ShopgateOrderBaseItem {
 
+	/**
+	 * @var string
+	 */
+	protected $item_number_public;
+	
 	protected $quantity;
 
 	protected $name;
@@ -31,6 +36,14 @@ class ShopgateOrderItem extends ShopgateOrderBaseItem {
 	# Setter #
 	##########
 
+	
+	/**
+	 * @param string $value
+	 */
+	public function setItemNumberPublic($value) {
+		$this->item_number_public = $value;
+	}
+	
 	/**
 	 * @param string $value
 	*/
@@ -175,6 +188,14 @@ class ShopgateOrderItem extends ShopgateOrderBaseItem {
 	# Getter #
 	##########
 
+	
+	/**
+	 * return string
+	 */
+	public function getItemNumberPublic() {
+		return $this->item_number_public;
+	}
+	
 	/**
 	 * @return string
 	 */
