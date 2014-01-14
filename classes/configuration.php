@@ -237,6 +237,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 */
 	protected $enable_set_settings;
 	
+	/**
+	 * @var bool
+	 */
+	protected $enable_sync_favourite_list;
+	
 	#######################################################
 	### Options regarding shop system specific settings ###
 	#######################################################
@@ -396,6 +401,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_get_settings = 0;
 		$this->enable_set_settings = 1;
 		$this->enable_register_customer = 0;
+		$this->enable_sync_favourite_list = 0;
 		
 		$this->country = 'DE';
 		$this->language = 'de';
@@ -940,6 +946,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->enable_set_settings;
 	}
 	
+	public function getEnableSyncFavouriteList() {
+		return $this->enable_sync_favourite_list;
+	}
+	
 	public function getCountry() {
 		return strtoupper($this->country);
 	}
@@ -1205,6 +1215,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	
 	public function setEnableSetSettings($value) {
 		$this->enable_set_settings = $value;
+	}
+	
+	public function setEnableSyncFavouriteList($value) {
+		$this->enable_sync_favourite_list;
 	}
 	
 	public function setCountry($value) {
