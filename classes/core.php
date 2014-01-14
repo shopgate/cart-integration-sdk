@@ -1878,7 +1878,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @throws ShopgateLibraryException
 	 */
-	abstract protected function getOrders($customerToken, $customerLanguage, $limit = 10, $offset = 0, $orderDateFrom = '', $sortOrder = 'created_desc');
+	abstract public function getOrders($customerToken, $customerLanguage, $limit = 10, $offset = 0, $orderDateFrom = '', $sortOrder = 'created_desc');
 	
 	/**
 	 * Updates and returns synchronization information for the favourite list of a customer.
@@ -1890,7 +1890,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @return ShopgateSyncItem[] The updated list of ShopgateSyncItem objects
 	 */
-	abstract protected function syncFavouriteList($customerToken, $items);
+	abstract public function syncFavouriteList($customerToken, $items);
 }
 
 interface ShopgateFileBufferInterface {
