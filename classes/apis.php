@@ -562,13 +562,15 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, 'Plugin Response: '.var_export($orders, true));
 		}
 		
+		$resOrders = array();
 		foreach ($orders as $order) {
 			if (!($order instanceof ShopgateExternalOrder)) {
 				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, 'Plugin Response: '.var_export($orders, true));
 			}
+			$resOrders[] = $order->toArray();
 		}
 	
-		$this->responseData['orders'] = $orders;
+		$this->responseData['orders'] = $resOrders;
 	}
 	
 	protected function syncFavouriteList(){
@@ -600,13 +602,15 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, 'Plugin Response: '.var_export($updatedSyncItems, true));
 		}
 		
+		$resItems = array();
 		foreach ($updatedSyncItems as $updatedSyncItem) {
 			if (!($updatedSyncItem instanceof ShopgateSyncItem)) {
 				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, 'Plugin Response: '.var_export($updatedSyncItem, true));
 			}
+			$resItems[] = $updatedSyncItem->toArray();
 		}
 		
-		$this->responseData['items'] = $updatedSyncItems;
+		$this->responseData['items'] = $resItems;
 	}
 
 
