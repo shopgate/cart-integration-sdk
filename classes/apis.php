@@ -126,6 +126,26 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				set_error_handler('ShopgateErrorHandler');
 			}
 			
+			// enable debugging if requested
+			if (!empty($this->params['debug_log'])) {
+				ShopgateLogger::getInstance()->enableDebug();
+				ShopgateLogger::getInstance()->keepDebugLog(!empty($this->params['keep_debug_log']));
+			}
+			
+			// enable error reporting if requested
+			if (!empty($this->params['error_reporting'])) {
+				error_reporting($this->params['error_reporting']);
+				ini_set('display_errors', (version_compare(PHP_VERSION, '5.2.4', '>=')) ? 'stdout' : true);
+			}
+			
+			// memory logging size unit setup
+			if (!empty($this->params['memory_logging_unit'])) {
+				ShopgateLogger::getInstance()->setMemoryAnalyserLoggingSizeUnit($this->params['memory_logging_unit']);
+			} else {
+				// MB by default if none is set
+				ShopgateLogger::getInstance()->setMemoryAnalyserLoggingSizeUnit('MB');
+			}
+			
 			// check if the request is for the correct shop number or an adapter-plugin
 			if (
 					!$this->config->getIsShopgateAdapter() &&
@@ -137,7 +157,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 
 			// check if an action to call has been passed, is known and enabled
 			if (empty($this->params['action'])) {
-				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ACTION, 'Passed parameters: '.var_export($data, true));
+				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ACTION, 'Passed parameters: '.var_export($this->params, true));
 			}
 
 			// check if the action is white-listed
@@ -151,23 +171,6 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_DISABLED_ACTION, "{$this->params['action']}");
 			}
 			
-			// enable debugging if requested
-			if (!empty($data['debug_log'])) {
-				ShopgateLogger::getInstance()->enableDebug();
-				ShopgateLogger::getInstance()->keepDebugLog(!empty($data['keep_debug_log']));
-			}
-			// enable error handler if requested
-			if (!empty($data['error_reporting'])) {
-				error_reporting($data['error_reporting']);
-			}
-			// memory logging size unit setup
-			if (!empty($data['memory_logging_unit'])) {
-				ShopgateLogger::getInstance()->setMemoryAnalyserLoggingSizeUnit($data['memory_logging_unit']);
-			} else {
-				// MB by default if none is set
-				ShopgateLogger::getInstance()->setMemoryAnalyserLoggingSizeUnit('MB');
-			}
-
 			// call the action
 			$action = $this->camelize($this->params['action']);
 			$this->{$action}();
