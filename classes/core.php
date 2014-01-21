@@ -866,12 +866,14 @@ abstract class ShopgateObject {
 				$str[0] = strtoupper($str[0]);
 			}
 
-			$this->camelizeCache[$hash] = preg_replace_callback('/_([a-z0-9])/', function ($c) {
-				return strtoupper($c[1]);
-			}, $str);
+			$this->camelizeCache[$hash] = preg_replace_callback('/_([a-z0-9])/', array($this, 'camelizeHelper'), $str);
 		}
 
 		return $this->camelizeCache[$hash];
+	}
+	
+	private function camelizeHelper($matches) {
+		return strtoupper($matches[1]);
 	}
 
 	/**

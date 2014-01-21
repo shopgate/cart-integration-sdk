@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.4.3'''
+* Kompatibilität mit PHP-Versionen unter 5.3 wiederhergestellt
+
 '''Version 2.4.2'''
 * zusätzliche Benutzerangaben für Bestellungen und Adressen eingefügt (ShopgateCartBase::$custom_fields, ShopgateAddress::$custom_fields)
 * Optimierung des Speicherverbrauchs und der CPU-Nutzung durch die Behebung eines Fehlers
@@ -172,6 +175,9 @@
 
 
 '''English'''
+
+'''Version 2.4.3'''
+* restored compatibility with PHP versions below 5.3
 
 '''Version 2.4.2'''
 * added custom input fields for user details to orders and addresses (ShopgateOrder::$custom_fields, ShopgateAddress::$custom_fields)
