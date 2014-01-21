@@ -54,6 +54,7 @@ class ShopgateCustomer extends ShopgateContainer {
 		$v->visitCustomer($this);
 	}
 	
+
 	
 	##########
 	# Setter #
@@ -374,6 +375,19 @@ class ShopgateAddress extends ShopgateContainer {
 	
 	protected $custom_fields;
 
+	/**
+	 * Checks if two ShopgateAddress objects are equal.
+	 *
+	 * Two addresses are equal when following fields contain the same value:
+	 * 'gender','first_name','last_name','street_1','street_2','zipcode','city','country'
+	 *
+	 * @param ShopgateAddress $address
+	 * @return bool
+	 */
+	public function equals(ShopgateAddress $address){
+		$whiteList = array('gender','first_name','last_name','street_1','street_2','zipcode','city','country');
+		return $this->compare($this, $address,$whiteList);
+	}
 
 	##########
 	# Setter #

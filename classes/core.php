@@ -2066,6 +2066,24 @@ abstract class ShopgateContainer extends ShopgateObject {
 	}
 
 	/**
+	 * Compares values of two containers.
+	 *
+	 * @param ShopgateContainer $obj
+	 * @param ShopgateContainer $obj2
+	 * @param string[] $whiteList list of fields to be compared
+	 * @return bool
+	 */
+	public function compare($obj,$obj2,$whitelist){
+		
+		foreach($whitelist as $acceptedField){
+			if($obj->{$this->camelize('get_'.$acceptedField)}() != $obj2->{$this->camelize('get_'.$acceptedField)}()){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
 	 * Converts the Container object recursively to an associative array.
 	 *
 	 * @return mixed[]
