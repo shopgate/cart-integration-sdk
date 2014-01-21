@@ -177,7 +177,7 @@
 '''English'''
 
 '''Version 2.4.3'''
-* restored compatibility with PHP versions below 5.3
+* restored compatibility for PHP versions below 5.3
 
 '''Version 2.4.2'''
 * added custom input fields for user details to orders and addresses (ShopgateOrder::$custom_fields, ShopgateAddress::$custom_fields)
