@@ -1,7 +1,7 @@
 '''Deutsch'''
 
 '''Version 2.4.4'''
-* Funktionität implementiert um den inhalt eines ShopgateContainers auf Gleicheit zu prüfen 
+* Funktionalität implementiert um den Inhalt eines ShopgateContainers auf Gleichheit zu prüfen
 
 '''Version 2.4.3'''
 * Kompatibilität mit PHP-Versionen unter 5.3 wiederhergestellt
@@ -180,7 +180,7 @@
 '''English'''
 
 '''Version 2.4.4'''
-* implemented function to check if the values of two ShopgateContainers objects are equal
+* implemented function to check if the values of two ShopgateContainer objects are equal
 
 '''Version 2.4.3'''
 * restored compatibility for PHP versions below 5.3
