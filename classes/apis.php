@@ -106,6 +106,8 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		);
 	}
 
+	
+	
 	public function handleRequest(array $data = array()) {
 		// log incoming request
 		$this->log(var_export($data,true), ShopgateLogger::LOGTYPE_ACCESS);
@@ -124,6 +126,10 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			// set error handler to Shopgate's handler if requested
 			if (!empty($this->params['use_errorhandler'])) {
 				set_error_handler('ShopgateErrorHandler');
+			}
+			
+			if(!empty($this->params['use_shutdown_handler'])){
+				register_shutdown_function('ShopgateShutdownHandler');
 			}
 			
 			// enable debugging if requested

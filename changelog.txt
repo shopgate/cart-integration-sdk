@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.4.5'''
+* Error logging erweitert sodass Fatal Errors gelogt werden können
+
 '''Version 2.4.4'''
 * Funktionalität implementiert um den Inhalt eines ShopgateContainers auf Gleichheit zu prüfen
 
@@ -178,6 +181,9 @@
 
 
 '''English'''
+
+'''Version 2.4.5'''
+* Error logging extended that fatal errors can be logged
 
 '''Version 2.4.4'''
 * implemented function to check if the values of two ShopgateContainer objects are equal
