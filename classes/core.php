@@ -74,8 +74,8 @@ function ShopgateShutdownHandler(){
 	if(function_exists("error_get_last")){
 		if(!is_null($e = error_get_last()))
 		{
-			$type = self::getErrorType($e['type']);
-			ShopgateLogger::getInstance()->log("{$e['message']} \n {$e['file']} : [{$e['line']}] , Type: {$type}");
+			$type = getErrorType($e['type']);
+			ShopgateLogger::getInstance()->log("{$e['message']} \n {$e['file']} : [{$e['line']}] , Type: {$type}", ShopgateLogger::LOGTYPE_ERROR);
 		}
 	}
 }
