@@ -2,7 +2,7 @@
 $buildConfig = array (
 	'major' => 2,
 	'minor' => 4,
-	'build' => 4,
+	'build' => 5,
 	'shopgate_library_path' => "",
 	'plugin_name' => "library",
 	'display_name' => "Shopgate Library 2.4.x",
