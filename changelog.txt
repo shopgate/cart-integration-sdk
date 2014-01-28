@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.4.6'''
+* Konstanten für Weitere Zahlungsarten in Klasse ShopgateCartBase hinzugefügt
+
 '''Version 2.4.5'''
 * Error logging erweitert sodass Fatal Errors gelogt werden können
 
@@ -181,6 +184,9 @@
 
 
 '''English'''
+
+'''Version 2.4.6'''
+* added constants for more payment types in class ShopgateCartBase
 
 '''Version 2.4.5'''
 * Error logging extended that fatal errors can be logged
