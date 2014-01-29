@@ -1,10 +1,10 @@
 '''Deutsch'''
 
 '''Version 2.4.6'''
-* Konstanten für Weitere Zahlungsarten in Klasse ShopgateCartBase hinzugefügt
+* Konstanten für weitere Zahlungsarten in Klasse ShopgateCartBase hinzugefügt
 
 '''Version 2.4.5'''
-* Error logging erweitert sodass Fatal Errors gelogt werden können
+* Verbessertes Logging zur Analyse von schweren Fehlern
 
 '''Version 2.4.4'''
 * Funktionalität implementiert um den Inhalt eines ShopgateContainers auf Gleichheit zu prüfen
@@ -189,7 +189,7 @@
 * added constants for more payment types in class ShopgateCartBase
 
 '''Version 2.4.5'''
-* Error logging extended that fatal errors can be logged
+* improved logging for analyzing of fatal errors
 
 '''Version 2.4.4'''
 * implemented function to check if the values of two ShopgateContainer objects are equal
