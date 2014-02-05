@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.4.7'''
+* Error code für register_customer implementiert
+
 '''Version 2.4.6'''
 * Konstanten für weitere Zahlungsarten in Klasse ShopgateCartBase hinzugefügt
 
@@ -184,6 +187,9 @@
 
 
 '''English'''
+
+'''Version 2.4.7'''
+* error code for function register_customer implemented
 
 '''Version 2.4.6'''
 * added constants for more payment types in class ShopgateCartBase
