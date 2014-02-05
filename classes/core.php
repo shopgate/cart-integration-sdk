@@ -250,6 +250,7 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_ORDER_ITEM_NOT_FOUND => 'order item not found',
 		self::PLUGIN_ORDER_STATUS_IS_SENT => 'order status is "sent"',
 		self::PLUGIN_ORDER_ALREADY_UP_TO_DATE => 'order is already up to date',
+		self::PLUGIN_REGISTER_CUSTOMER_ERROR => 'error while registering new customer',
 		
 		self::PLUGIN_NO_ADDRESSES_FOUND => 'no addresses found for customer',
 		self::PLUGIN_WRONG_USERNAME_OR_PASSWORD => 'wrong username or password',
