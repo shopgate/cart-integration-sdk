@@ -1277,6 +1277,17 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	}
 
 	/**
+	 * Takes care of buffer and file handlers and calls ShopgatePlugin::createItemsCsv().
+	 *
+	 * @throws ShopgateLibraryException
+	 */
+	public final function startGetMediaCsv() {
+		$this->buffer->setFile($this->config->getMediaCsvPath());
+		$this->createMediaCsv();
+		$this->buffer->finish();
+	}
+	
+	/**
 	 * Takes care of buffer and file handlers and calls ShopgatePlugin::createCategoriesCsv().
 	 *
 	 * @throws ShopgateLibraryException
@@ -1336,6 +1347,14 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 */
 	protected final function addItemRow($item) {
 		$item = array_merge( $this->buildDefaultItemRow(), $item );
+		
+		$this->addRow( $item );
+	}
+	/**
+	 * @param mixed[] $itemArr
+	 */
+	protected final function addMediaRow($item) {
+		$item = array_merge( $this->buildDefaultMediaRow(), $item );
 		
 		$this->addRow( $item );
 	}
@@ -1522,6 +1541,17 @@ abstract class ShopgatePlugin extends ShopgateObject {
 
 	/**
 	 * @return string[] An array with the csv file field names as indices and empty strings as values.
+	 * @see http://wiki.shopgate.com/CSV_File_Media
+	 */
+	protected function buildDefaultMediaRow() {
+		return array(
+			'item_number' => '',
+			'type'		=>'',
+			'parameter' => array(),
+		);
+	}
+	/**
+	 * @return string[] An array with the csv file field names as indices and empty strings as values.
 	 * @see http://wiki.shopgate.com/CSV_File_Reviews/
 	 */
 	protected function buildDefaultReviewRow() {
@@ -1674,6 +1704,17 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 */
 	protected function getCreateItemsCsvLoaders() {
 		return $this->getCreateCsvLoaders("item");
+	}
+	
+	/**
+	 * Returns an array with the method names of all item-loaders
+	 *
+	 * Example: exportItemNumber, exportType
+	 *
+	 * @return array
+	 */
+	protected function getCreateMediaCsvLoaders() {
+		return $this->getCreateCsvLoaders("media");
 	}
 	
 	/**
@@ -1883,7 +1924,20 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @throws ShopgateLibraryException
 	 */
 	protected abstract function createItemsCsv();
-
+	
+	/**
+	 * Loads the Media file information to the products of the shop system's database and passes them to the buffer.
+	 *
+	 * Use ShopgatePlugin::buildDefaultMediaRow() to get the correct indices for the field names in a Shopgate items csv and
+	 * use ShopgatePlugin::addMediaRow() to add it to the output buffer.
+	 *
+	 * @see http://wiki.shopgate.com/CSV_File_Media#Sample_Media_CSV_file
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_items_csv
+	 *
+	 * @throws ShopgateLibraryException
+	 */
+	protected abstract function createMediaCsv();
+	
 	/**
 	 * Loads the product categories of the shop system's database and passes them to the buffer.
 	 *

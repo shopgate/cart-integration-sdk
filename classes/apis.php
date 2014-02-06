@@ -618,6 +618,19 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$this->responseData["addresses"] = $addressList;
 	}
 	
+	protected function getMediaCsv(){
+		if (isset($this->params['limit']) && isset($this->params['offset'])) {
+			$this->plugin->setExportLimit((int) $this->params['limit']);
+			$this->plugin->setExportOffset((int) $this->params['offset']);
+			$this->plugin->setSplittedExport(true);
+		}
+		
+		// generate / update items csv file if requested
+		$this->plugin->startGetMediaCsv();
+		
+		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseTextCsv($this->trace_id);
+		$this->responseData = $this->config->getMediaCsvPath();
+	}
 	/**
 	 * Represents the "get_items_csv" action.
 	 *
