@@ -94,6 +94,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				'get_categories_csv',
 				'get_reviews_csv',
 				'get_pages_csv',
+				'get_media_csv',
 				'get_log_file',
 				'clear_log_file',
 				'clear_cache',

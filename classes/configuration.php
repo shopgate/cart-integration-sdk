@@ -205,6 +205,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	/**
 	 * @var bool
 	 */
+	protected $enable_get_media_csv;
+	
+	/**
+	 * @var bool
+	 */
 	protected $enable_get_log_file;
 	
 	/**
@@ -912,6 +917,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->enable_get_pages_csv;
 	}
 	
+	public function getEnableGetMediaCsv(){
+		return $this->enable_get_media_csv;
+	}
+	
 	public function getEnableGetLogFile() {
 		return $this->enable_get_log_file;
 	}
@@ -1177,6 +1186,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	
 	public function setEnableGetPagesCsv($value) {
 		$this->enable_get_pages_csv = $value;
+	}
+	
+	public function setEnableGetMediaCsv($value){
+		$this->enable_get_media_csv = $value;
 	}
 	
 	public function setEnableGetLogFile($value) {
