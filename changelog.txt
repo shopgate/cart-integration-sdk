@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.4.8'''
+* Error codes für get_customer hinzugefügt
+
 '''Version 2.4.7'''
 * Error code für register_customer implementiert
 
@@ -187,6 +190,9 @@
 
 
 '''English'''
+
+'''Version 2.4.8'''
+* added new error codes for get_customer method
 
 '''Version 2.4.7'''
 * error code for function register_customer implemented
