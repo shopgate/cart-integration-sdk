@@ -2241,6 +2241,9 @@ interface ShopgateContainerVisitor {
 	public function visitItemOptionValue(ShopgateItemOptionValue $i);
 	public function visitItemInput(ShopgateItemInput $i);
 	public function visitConfig(ShopgateConfig $c);
+    public function visitShippingMethod(ShopgateShippingMethod $c);
+    public function visitPaymentMethod(ShopgatePaymentMethod $c);
+    public function visitCartItem(ShopgateCartItem $c);
 }
 
 /**
@@ -2611,6 +2614,60 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 			$this->object = null;
 		}
 	}
+
+    /**
+     * @param ShopgateShippingMethod $c
+     */
+    public function visitShippingMethod(ShopgateShippingMethod $c)
+    {
+        $properties = $c->buildProperties();
+
+        // iterate the simple variables
+        $this->iterateSimpleProperties($properties);
+
+        // create new object with utf-8 en- / decoded data
+        try {
+            $this->object = new ShopgateShippingMethod($properties);
+        } catch (ShopgateLibraryException $e) {
+            $this->object = null;
+        }
+    }
+
+    /**
+     * @param ShopgateCartItem $c
+     */
+    public function visitCartItem(ShopgateCartItem $c)
+    {
+        $properties = $c->buildProperties();
+
+        // iterate the simple variables
+        $this->iterateSimpleProperties($properties);
+
+        // create new object with utf-8 en- / decoded data
+        try {
+            $this->object = new ShopgateCartItem($properties);
+        } catch (ShopgateLibraryException $e) {
+            $this->object = null;
+        }
+    }
+
+    /**
+     * @param ShopgatePaymentMethod $c
+     */
+    public function visitPaymentMethod(ShopgatePaymentMethod $c)
+    {
+        $properties = $c->buildProperties();
+
+        // iterate the simple variables
+        $this->iterateSimpleProperties($properties);
+
+        // create new object with utf-8 en- / decoded data
+        try {
+            $this->object = new ShopgatePaymentMethod($properties);
+        } catch (ShopgateLibraryException $e) {
+            $this->object = null;
+        }
+    }
 
 	protected function iterateSimpleProperties(array &$properties) {
 		foreach ($properties as $key => &$value) {

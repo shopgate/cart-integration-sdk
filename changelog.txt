@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.4.10'''
+* Füge Visitor Methoden für Shipping, Payment und CartItem Klassen ein 
+
 '''Version 2.4.9'''
 * Die Methode check_cart gibt nun neben den Coupons auch Warenkorbprodukte mit Lagerinformationen sowie Versand- und Zahlmethoden zurück, welche für gegebene Adresse verfügbar sind
 
@@ -193,6 +196,9 @@
 
 
 '''English'''
+
+'''Version 2.4.10'''
+* insert Visitor methods for Shipping, Payment and CartItem classes
 
 '''Version 2.4.9'''
 * method check_cart now also returns cart item stock information and shipping and payment methods which are available for cart address
