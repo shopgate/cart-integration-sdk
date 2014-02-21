@@ -110,7 +110,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	
 	public function handleRequest(array $data = array()) {
 		// log incoming request
-		$this->log(var_export($data,true), ShopgateLogger::LOGTYPE_ACCESS);
+		$this->log(ShopgateLogger::getInstance()->cleanParamsForLog($data), ShopgateLogger::LOGTYPE_ACCESS);
 
 		// save the params
 		$this->params = $data;

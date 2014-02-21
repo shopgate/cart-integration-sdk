@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.4.11'''
+* Fehler im Logging behoben
+
 '''Version 2.4.10'''
 * Füge Visitor Methoden für Shipping, Payment und CartItem Klassen ein 
 
@@ -196,6 +199,9 @@
 
 
 '''English'''
+
+'''Version 2.4.11'''
+* fixed an error in the logging routine
 
 '''Version 2.4.10'''
 * insert Visitor methods for Shipping, Payment and CartItem classes
