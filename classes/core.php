@@ -2545,9 +2545,10 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 		$this->iterateSimpleProperties($properties);
 
 		// iterate the item options and inputs
-		$properties['options'] = $this->iterateObjectList($properties['options']);
-		$properties['inputs'] = $this->iterateObjectList($properties['inputs']);
-
+		$properties['options']    = $this->iterateObjectList($properties['options']);
+		$properties['inputs']     = $this->iterateObjectList($properties['inputs']);
+        $properties['attributes'] = $this->iterateObjectList($properties['attributes']);
+        
 		// create new object with utf-8 en- / decoded data
 		try {
 			$this->object = new ShopgateItem($properties);
@@ -2642,6 +2643,11 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 
         // iterate the simple variables
         $this->iterateSimpleProperties($properties);
+
+        // iterate the item options and inputs
+        $properties['options']    = $this->iterateObjectList($properties['options']);
+        $properties['inputs']     = $this->iterateObjectList($properties['inputs']);
+        $properties['attributes'] = $this->iterateObjectList($properties['attributes']);
 
         // create new object with utf-8 en- / decoded data
         try {
@@ -2831,12 +2837,60 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 		$properties = $this->iterateSimpleProperties($properties);
 
 		// iterate ShopgateAddress objects
-		$properties['options'] = $this->iterateObjectList($properties['options']);
-		$properties['inputs'] = $this->iterateObjectList($properties['inputs']);
+		$properties['options']    = $this->iterateObjectList($properties['options']);
+		$properties['inputs']     = $this->iterateObjectList($properties['inputs']);
+        $properties['attributes'] = $this->iterateObjectList($properties['attributes']);
 
 		// set last value to converted array
 		$this->array = $properties;
 	}
+
+    /**
+     * @param ShopgateShippingMethod $c
+     */
+    public function visitShippingMethod(ShopgateShippingMethod $c)
+    {
+        $properties = $c->buildProperties();
+
+        // iterate the simple variables
+        $properties = $this->iterateSimpleProperties($properties);
+
+        // set last value to converted array
+        $this->array = $properties;
+    }
+
+    /**
+     * @param ShopgateCartItem $c
+     */
+    public function visitCartItem(ShopgateCartItem $c)
+    {
+        $properties = $c->buildProperties();
+
+        // iterate the simple variables
+        $properties = $this->iterateSimpleProperties($properties);
+
+        // iterate ShopgateAddress objects
+        $properties['options']    = $this->iterateObjectList($properties['options']);
+        $properties['inputs']     = $this->iterateObjectList($properties['inputs']);
+        $properties['attributes'] = $this->iterateObjectList($properties['attributes']);
+
+        // set last value to converted array
+        $this->array = $properties;
+    }
+
+    /**
+     * @param ShopgatePaymentMethod $c
+     */
+    public function visitPaymentMethod(ShopgatePaymentMethod $c)
+    {
+        $properties = $c->buildProperties();
+
+        // iterate the simple variables
+        $properties = $this->iterateSimpleProperties($properties);
+
+        // set last value to converted array
+        $this->array = $properties;
+    }
 
 	public function visitOrderItemOption(ShopgateOrderItemOption $o) {
 		// get properties and iterate (no complex types in ShopgateOrderItemOption objects)

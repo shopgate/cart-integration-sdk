@@ -2396,7 +2396,7 @@ class ShopgateCartItem extends ShopgateContainer
 	 * @param string $value
 	 */
 	public function setErrorText($value) {
-		$this->error = $value;
+		$this->error_text = $value;
 	}
 
 	/**
