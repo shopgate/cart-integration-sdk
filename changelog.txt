@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.4.13'''
+* Die Währung wird bei check_cart nun global für den kompletten Warenkorb gültig übergeben
+
 '''Version 2.4.12'''
 * Füge Visitor Methoden für Shipping, Payment und CartItem Klassen ein (array visitor)
 
@@ -202,6 +205,9 @@
 
 
 '''English'''
+
+'''Version 2.4.13'''
+* the currency in check_cart response now is transferred in whole cart scope
 
 '''Version 2.4.12'''
 * insert Visitor methods for Shipping, Payment and CartItem classes (array visitor)

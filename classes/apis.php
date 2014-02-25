@@ -464,6 +464,10 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
             );
         }
 
+		if (!empty($cartData['currency'])) {
+			$responseData["currency"] = $cartData['currency'];
+		}
+		
         $shippingMethods = array();
         if (!empty($cartData['shipping_methods'])) {
             foreach ($cartData["shipping_methods"] as $shippingMethod) {
