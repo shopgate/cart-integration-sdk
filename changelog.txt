@@ -1,5 +1,9 @@
 '''Deutsch'''
 
+'''Version 2.4.14'''
+* Korrektur für custom_fields
+* Eine neue Hilfsmethode wurde hinzugefügt, mit welcher ein Kreuzprodukt über mehrere Arrays durchgeführt wird, die in einem übergeordneten Array angeordnet sind.
+
 '''Version 2.4.13'''
 * Die Währung wird bei check_cart nun global für den kompletten Warenkorb gültig übergeben
 
@@ -205,6 +209,10 @@
 
 
 '''English'''
+
+'''Version 2.4.14'''
+* bugfix for custom_fields
+* added a helper method "arrayCross" to create a cross product over multiple arrays, organized inside of a containing array
 
 '''Version 2.4.13'''
 * the currency in check_cart response now is transferred in whole cart scope

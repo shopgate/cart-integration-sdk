@@ -232,7 +232,7 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	 */
 	public function setCustomFields($value) {
 		if (!is_array($value)) {
-			$this->custom_fields = null;
+			$this->custom_fields = array();
 		}
 		
 		foreach ($value as $index => &$element) {
@@ -504,6 +504,9 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	 * @return ShopgateOrderCustomField[]
 	 */
 	public function getCustomFields() {
+		if(!is_array($this->custom_fields)) {
+			$this->custom_fields = array();
+		}
 		return $this->custom_fields;
 	}
 

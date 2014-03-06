@@ -172,7 +172,7 @@ class ShopgateCustomer extends ShopgateContainer {
 	 */
 	public function setCustomFields($value) {
 		if (!is_array($value)) {
-			$this->custom_fields = null;
+			$this->custom_fields = array();
 		}
 		
 		foreach ($value as $index => &$element) {
@@ -314,6 +314,9 @@ class ShopgateCustomer extends ShopgateContainer {
 	 * @return ShopgateOrderCustomField[]
 	 */
 	public function getCustomFields() {
+		if(!is_array($this->custom_fields)) {
+			$this->custom_fields = array();
+		}
 		return $this->custom_fields;
 	}
 
@@ -543,7 +546,7 @@ class ShopgateAddress extends ShopgateContainer {
 	 */
 	public function setCustomFields($value) {
 		if (!is_array($value)) {
-			$this->custom_fields = null;
+			$this->custom_fields = array();
 		}
 		
 		foreach ($value as $index => &$element) {
@@ -710,6 +713,9 @@ class ShopgateAddress extends ShopgateContainer {
 	 * @return ShopgateOrderCustomField[]
 	 */
 	public function getCustomFields() {
+		if(!is_array($this->custom_fields)) {
+			$this->custom_fields = array();
+		}
 		return $this->custom_fields;
 	}
 
