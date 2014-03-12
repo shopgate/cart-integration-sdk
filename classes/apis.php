@@ -297,7 +297,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 
 				// check error count
 				if ($jobErrorcount > 0) {
-					$message .= 'Errors happend in job: "'.$job['job_name'].'" ('.$jobErrorcount.' errors)';
+					$message .= 'Errors happend in job: "'.$job['job_name'].'" ('.$jobErrorcount.' errors)\n';
 					$errorcount += $jobErrorcount;
 				}
 			} catch (Exception $e) {
