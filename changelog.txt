@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.4.15'''
+* Schalter für Steuerklassen implementiert
+
 '''Version 2.4.14'''
 * Korrektur für custom_fields
 * Eine neue Hilfsmethode wurde hinzugefügt, mit welcher ein Kreuzprodukt über mehrere Arrays durchgeführt wird, die in einem übergeordneten Array angeordnet sind.
@@ -209,6 +212,9 @@
 
 
 '''English'''
+
+'''Version 2.4.15'''
+* implemented switch for the use of tax classes
 
 '''Version 2.4.14'''
 * bugfix for custom_fields

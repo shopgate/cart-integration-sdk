@@ -1195,6 +1195,13 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	protected $defaultItemRowInputCount = 10;
 	
 	/**
+	 *
+	 * @var boolean true use tax classes for export
+	 */
+	protected $useTaxClasses = false;
+	
+	
+	/**
 	 * @param ShopgateBuilder $builder If empty, the default ShopgateBuilder will be instantiated.
 	 */
 	public final function __construct(ShopgateBuilder $builder = null) {
@@ -1443,6 +1450,15 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	}
 	
 	/**
+	 *
+	 * @param boolean tax classes will be used
+	 * @see http://wiki.shopgate.com/CSV_File_Items/
+	 */
+	protected function useTaxClasses(){
+		$this->useTaxClasses = true;
+	}
+	
+	/**
 	 * @return string[] An array with the csv file field names as indices and empty strings as values.
 	 * @see http://wiki.shopgate.com/CSV_File_Items/
 	 */
@@ -1474,16 +1490,31 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			$inputs['input_field_' . $inp . '_required'] = '';
 			$inputs['input_field_' . $inp . '_add_amount'] = '';
 		}
+
 		
-		$row = array(
+		
+		$rowHead = array(
 			/* responsible fields */
 			'item_number' 				=> "",
 			'item_name' 				=> "",
-			'unit_amount'	 			=> "",
-			//			'unit_amount_net' 			=> "",
-			'currency' 					=> "EUR",
-			'tax_percent'				=> "",
-			//			'tax_class'					=> "",
+		);
+		
+		if($this->useTaxClasses){
+			$tax = array(
+				'unit_amount_net' 			=> "",
+				'tax_class'					=> "",
+				'old_unit_amount_net'		=> "",
+			);
+		}else{
+			$tax = array(
+				'unit_amount'	 			=> "",
+				'tax_percent'				=> "",
+				'old_unit_amount'			=> "",
+				
+			);
+		}
+		
+		$rowBody = array('currency'	=> "EUR",
 			'description' 				=> "",
 			'urls_images' 				=> "",
 			'categories' 				=> "",
@@ -1495,8 +1526,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			'url_deeplink' 				=> "",
 			/* additional fields */
 			'item_number_public'		=> "",
-			'old_unit_amount'			=> "",
-			//			'old_unit_amount_net'		=> "",
 			'properties'				=> "",
 			'msrp' 						=> "",
 			'shipping_costs_per_order' 	=> "0",
@@ -1523,12 +1552,19 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			'related_shop_item_numbers' => "",
 			'age_rating' 				=> "",
 			'weight' 					=> "",
-			'block_pricing' 			=> ""
+			'block_pricing' 			=> "",
+			'weight_unit'				=> "",
+			'is_hidden'					=> "",
 			/* parent/child relationship */
-		) +
-		$attributes +
-		$options +
-		$inputs;
+		) ;
+		
+		$row =
+			$rowHead +
+			$tax +
+			$rowBody+
+			$attributes +
+			$options +
+			$inputs;
 		
 		return $row;
 	}
