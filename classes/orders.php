@@ -43,7 +43,7 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	const SAGEPAY_PP = "SAGEPAY_PP";
 	const SG_PAYPAL = "SG_PAYPAL";
 	
-	const CC = "CC";	
+	const CC = "CC";
 	const AUTHN_CC = "AUTHN_CC";
 	const BCLEPDQ_CC = "BCLEPDQ_CC";
 	const BNSTRM_CC = "BNSTRM_CC";
@@ -637,6 +637,22 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 }
 
 class ShopgateCart extends ShopgateCartBase {
+	protected $internal_cart_info;
+	
+	/**
+	 * @return string
+	 */
+	public function getInternalCartInfo() {
+		return $this->internal_cart_info;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setInternalCartInfo($value) {
+		$this->internal_cart_info = $value;
+	}
+	
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitCart($this);
 	}
@@ -1524,6 +1540,7 @@ class ShopgateShippingInfo extends ShopgateContainer {
 	protected $amount;
 	protected $weight;
 	protected $api_response;
+	protected $internal_shipping_info;
 	
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitShippingInfo($this);
@@ -1601,11 +1618,21 @@ class ShopgateShippingInfo extends ShopgateContainer {
 	 * @param string|mixed[] $value
 	 */
 	public function setApiResponse($value) {
-		if(is_string($value)) {
-			$value = $this->jsonDecode($value, true);
-		}
-		
 		$this->api_response = $value;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getInternalShippingInfo() {
+		return $this->internal_shipping_info;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setInternalShippingInfo($value) {
+		$this->internal_shipping_info = $value;
 	}
 }
 
@@ -2041,7 +2068,7 @@ class ShopgateShippingMethod extends ShopgateContainer
 	protected $amount_with_tax;
 	protected $tax_class;
 	protected $tax_percent;
-	protected $internal_shipping_infos;
+	protected $internal_shipping_info;
 
 	##########
 	# Setter #
@@ -2085,7 +2112,7 @@ class ShopgateShippingMethod extends ShopgateContainer
 	public function setSortOrder($value)
 	{
 		$this->sort_order = $value;
-	}	
+	}
 	
 	/**
 	 * @param float $value
@@ -2101,7 +2128,7 @@ class ShopgateShippingMethod extends ShopgateContainer
 	public function setAmountWithTax($value)
 	{
 		$this->amount_with_tax = $value;
-	}	
+	}
 	
 	/**
 	 * @param string $value
@@ -2109,7 +2136,7 @@ class ShopgateShippingMethod extends ShopgateContainer
 	public function setTaxClass($value)
 	{
 		$this->tax_class = $value;
-	}	
+	}
 	
 	/**
 	 * @param string $value
@@ -2117,14 +2144,14 @@ class ShopgateShippingMethod extends ShopgateContainer
 	public function setTaxPercent($value)
 	{
 		$this->tax_percent = $value;
-	}	
+	}
 	
 	/**
 	 * @param string $value
 	 */
-	public function setInternalShippingInfos($value)
+	public function setInternalShippingInfo($value)
 	{
-		$this->internal_shipping_infos = $value;
+		$this->internal_shipping_info = $value;
 	}
 
 	##########
@@ -2161,7 +2188,7 @@ class ShopgateShippingMethod extends ShopgateContainer
 	public function getDescription()
 	{
 		return $this->description;
-	}	
+	}
 	
 	/**
 	 * @return int
@@ -2177,7 +2204,7 @@ class ShopgateShippingMethod extends ShopgateContainer
 	public function getAmount()
 	{
 		return $this->amount;
-	}	
+	}
 	
 	/**
 	 * @return float
@@ -2185,7 +2212,7 @@ class ShopgateShippingMethod extends ShopgateContainer
 	public function getAmountWithTax()
 	{
 		return $this->amount_with_tax;
-	}	
+	}
 	
 	/**
 	 * @return string
@@ -2193,7 +2220,7 @@ class ShopgateShippingMethod extends ShopgateContainer
 	public function getTaxClass()
 	{
 		return $this->tax_class;
-	}	
+	}
 	
 	/**
 	 * @return string
@@ -2201,14 +2228,14 @@ class ShopgateShippingMethod extends ShopgateContainer
 	public function getTaxPercent()
 	{
 		return $this->tax_percent;
-	}	
+	}
 	
 	/**
 	 * @return string
 	 */
-	public function getInternalShippingInfos()
+	public function getInternalShippingInfo()
 	{
-		return $this->internal_shipping_infos;
+		return $this->internal_shipping_info;
 	}
 	
 	/**
