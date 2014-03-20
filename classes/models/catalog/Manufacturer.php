@@ -31,6 +31,7 @@
  *
  *  @method         setTitle(string $value)
  *  @method string  getTitle()
+ *
  */
 class Shopgate_Model_Catalog_Manufacturer
     extends Shopgate_Model_Abstract

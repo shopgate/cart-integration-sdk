@@ -31,6 +31,7 @@
  *
  *  @method         setPath(string $value)
  *  @method string  getPath()
+ *
  */
 class Shopgate_Model_Catalog_Category
     extends Shopgate_Model_Abstract

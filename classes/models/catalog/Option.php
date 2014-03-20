@@ -31,6 +31,7 @@
  *
  *  @method         setValue(string $value)
  *  @method string  getValue()
+ *
  */
 class Shopgate_Model_Catalog_Option
     extends Shopgate_Model_Abstract

@@ -31,6 +31,7 @@
  *
  * @method          setLabel(string $value)
  * @method string   getLabel()
+ *
  */
 class Shopgate_Model_Catalog_Relation
     extends Shopgate_Model_Abstract

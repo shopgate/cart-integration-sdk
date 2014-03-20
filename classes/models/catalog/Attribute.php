@@ -28,6 +28,7 @@
  *
  * @method          setLabel(string $value)
  * @method string   getLabel()
+ *
  */
 class Shopgate_Model_Catalog_Attribute
     extends Shopgate_Model_Abstract

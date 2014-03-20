@@ -46,6 +46,7 @@
  *
  * @method                                      setInfoText(string $value)
  * @method string                               getInfoText(string)
+ *
  */
 class Shopgate_Model_Catalog_Input
     extends Shopgate_Model_Abstract
