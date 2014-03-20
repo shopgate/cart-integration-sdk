@@ -102,7 +102,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				'get_customer',
 				'register_customer',
 				'get_settings',
-				'set_settings',
+                'get_items'
 		);
 	}
 
@@ -694,6 +694,46 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$this->responseData = $this->config->getItemsCsvPath();
 	}
 
+    /**
+     * returns the items by request type
+     */
+    protected function getItems()
+    {
+        if (isset($this->params['limit']) && isset($this->params['offset'])) {
+            $this->plugin->setExportLimit((int) $this->params['limit']);
+            $this->plugin->setExportOffset((int) $this->params['offset']);
+            $this->plugin->setSplittedExport(true);
+        }
+
+        $this->plugin->startGetItems();
+        $result_type = isset($this->params['result_type']) ? $this->params['result_type'] : false;
+
+        /**
+         * set result type
+         */
+        switch ($result_type) {
+
+            case 'json':
+                $responseType = new ShopgatePluginApiResponseTextJson($this->trace_id);
+                $responseData = $this->config->getItemsJsonPath();
+                break;
+
+            /**
+             * response type XML
+             */
+            default :
+                $responseType = new ShopgatePluginApiResponseTextXml($this->trace_id);
+                $responseData = $this->config->getItemsXmlPath();
+                break;
+        }
+
+        if (empty($this->response)) {
+            $this->response = $responseType;
+        }
+
+        $this->responseData = $responseData;
+    }
+
 	/**
 	 * Represents the "get_categories_csv" action.
 	 *
@@ -740,7 +780,17 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseTextCsv($this->trace_id);
 		$this->responseData = $this->config->getPagesCsvPath();
 	}
-	
+
+    /**
+     * returns the params
+     *
+     * @return mixed[]
+     */
+    public function getParams()
+    {
+        return $this->params;
+    }
+
 	/**
 	 * Represents the "get_log_file" action.
 	 *
@@ -1495,6 +1545,70 @@ class ShopgatePluginApiResponseTextCsv extends ShopgatePluginApiResponse {
 		fclose($fp);
 		exit;
 	}
+}
+
+/**
+ * Class ShopgatePluginApiResponseTextXml
+ */
+class ShopgatePluginApiResponseTextXml extends ShopgatePluginApiResponse {
+    public function setData($data) {
+        if (!file_exists($data)) {
+            throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$data, true);
+        }
+
+        $this->data = $data;
+    }
+
+    public function send() {
+        $fp = @fopen($this->data, 'r');
+        if (!$fp) {
+            throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$this->data, true);
+        }
+
+        // output headers ...
+        header('HTTP/1.0 200 OK');
+        header('Content-Type: text/xml');
+        header('Content-Disposition: attachment; filename="'.basename($this->data).'"');
+
+        // ... and xml file
+        while ($line = fgets($fp)) echo $line;
+
+        // clean up and leave
+        fclose($fp);
+        exit;
+    }
+}
+
+/**
+* Class ShopgatePluginApiResponseTextJson
+ */
+class ShopgatePluginApiResponseTextJson extends ShopgatePluginApiResponse {
+    public function setData($data) {
+        if (!file_exists($data)) {
+            throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$data, true);
+        }
+
+        $this->data = $data;
+    }
+
+    public function send() {
+        $fp = @fopen($this->data, 'r');
+        if (!$fp) {
+            throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$this->data, true);
+        }
+
+        // output headers ...
+        header('HTTP/1.0 200 OK');
+        header('Content-Type: application/json');
+        header('Content-Disposition: attachment; filename="'.basename($this->data).'"');
+
+        // ... and json file
+        while ($line = fgets($fp)) echo $line;
+
+        // clean up and leave
+        fclose($fp);
+        exit;
+    }
 }
 
 /**

@@ -1289,6 +1289,31 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		$this->buffer->finish();
 	}
 
+    /**
+     * Takes care of buffer and file handlers and calls ShopgatePlugin::createItems().
+     *
+     * @throws ShopgateLibraryException
+     */
+    public final function startGetItems()
+    {
+        $params = $this->pluginApi->getParams();
+
+        /**
+         * switch result type
+         */
+        switch ($params['result_type']) {
+            case 'json' :
+                $this->buffer->setFile($this->config->getItemsJsonPath());
+                break;
+            default :
+                $this->buffer->setFile($this->config->getItemsXmlPath());
+                break;
+        }
+
+        $this->createItems();
+        $this->buffer->finish();
+    }
+
 	/**
 	 * Takes care of buffer and file handlers and calls ShopgatePlugin::createCategoriesCsv().
 	 *
@@ -1343,7 +1368,17 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	protected final function addItem($item) {
 		$this->addRow($item);
 	}
-	
+
+    /**
+     *  Calls the addRow() method on the currently associated ShopgateFileBuffer
+     *
+     * @param $item
+     */
+    protected final function addItemObject($item)
+    {
+        $this->addRow($item);
+    }
+
 	/**
 	 * @param mixed[] $itemArr
 	 */
@@ -2036,36 +2071,66 @@ class ShopgateFileBuffer extends ShopgateObject implements ShopgateFileBufferInt
 			$this->flush();
 		}
 	}
-	
-	/**
-	 * Flushes buffer to the currently opened file handle in $this->fileHandle.
-	 *
-	 * The data is converted to utf-8 if mb_convert_encoding() exists.
-	 *
-	 * @throws ShopgateLibraryException if the buffer and file are empty.
-	 */
-	protected function flush() {
-		if (empty($this->buffer) && ftell($this->fileHandle) == 0) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_EMPTY_BUFFER);
-		}
-		
-		// write headline if it's the beginning of the file
-		if (ftell($this->fileHandle) == 0) {
-			fputcsv($this->fileHandle, array_keys($this->buffer[0]), ';', '"');
-		}
 
-		foreach ($this->buffer as $item) {
-			if (!empty($this->convertEncoding)) {
-				foreach ($item as &$field) {
-					$field = $this->stringToUtf8($field, $this->allowedEncodings);
-				}
-			}
+    /**
+     * Flushes buffer to the currently opened file handle in $this->fileHandle.
+     *
+     * The data is converted to utf-8 if mb_convert_encoding() exists.
+     *
+     * @throws ShopgateLibraryException if the buffer and file are empty.
+     */
+    protected function flush() {
+        if (empty($this->buffer) && ftell($this->fileHandle) == 0) {
+            throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_EMPTY_BUFFER);
+        }
 
-			fputcsv($this->fileHandle, $item, ";", "\"");
-		}
+        // write headline if it's the beginning of the file
+        if (ftell($this->fileHandle) == 0) {
+            fputcsv($this->fileHandle, array_keys($this->buffer[0]), ';', '"');
+        }
 
-		$this->buffer = array();
-	}
+        if($_POST['action'] == 'get_items') {
+            switch ($_POST['result_type']) {
+
+                case 'json':
+                    $result = array();
+                    foreach ($this->buffer as $item) {
+                        /** @var PluginModelItemObject $item */
+                        array_push($result, $item->asJson());
+                    }
+                    fputs($this->fileHandle, json_encode($result));
+                    break;
+
+                /**
+                 * handle xml
+                 */
+                default :
+                    $itemsNode = new Shopgate_Model_XmlResultObject('<items></items>');
+                    foreach ($this->buffer as $item) {
+                        /** @var PluginModelItemObject $item */
+                        $item->asXml($itemsNode);
+                    }
+
+                    fputs($this->fileHandle, $itemsNode->asXML());
+                    break;
+            }
+        } else {
+            /**
+             * default get_items_csv
+             */
+            foreach ($this->buffer as $item) {
+                if (!empty($this->convertEncoding)) {
+                    foreach ($item as &$field) {
+                        $field = $this->stringToUtf8($field, $this->allowedEncodings);
+                    }
+                }
+
+                fputcsv($this->fileHandle, $item, ";", "\"");
+            }
+        }
+
+        $this->buffer = array();
+    }
 
 	public function finish() {
 		$this->flush();
