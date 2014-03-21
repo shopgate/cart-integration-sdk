@@ -24,7 +24,7 @@
 ###################################################################################
 # define constants
 ###################################################################################
-define('SHOPGATE_LIBRARY_VERSION', '2.4.7');
+define('SHOPGATE_LIBRARY_VERSION', '2.4.9');
 define('SHOPGATE_LIBRARY_ENCODING' , 'UTF-8');
 define('SHOPGATE_BASE_DIR', realpath(dirname(__FILE__).'/../'));
 
@@ -174,6 +174,8 @@ class ShopgateLibraryException extends Exception {
 	
 	const PLUGIN_NO_ADDRESSES_FOUND = 70;
 	const PLUGIN_WRONG_USERNAME_OR_PASSWORD = 71;
+	const PLUGIN_CUSTOMER_ACCOUNT_NOT_CONFIRMED =72;
+	const PLUGIN_CUSTOMER_UNKNOWN_ERROR =73;
 	
 	const PLUGIN_FILE_DELETE_ERROR = 79;
 	const PLUGIN_FILE_NOT_FOUND = 80;
@@ -208,6 +210,11 @@ class ShopgateLibraryException extends Exception {
 	
 	const REGISTER_FAILED_TO_ADD_USER = 220;
 	const REGISTER_USER_ALREADY_EXISTS = 221;
+	
+	// Cart Item Errors
+	const CART_ITEM_OUT_OF_STOCK = 300;
+	const CART_ITEM_PRODUCT_NOT_FOUND = 301;
+	const CART_ITEM_REQUESTED_QUANTITY_NOT_AVAILABLE = 302;
 	
 	// extended error code format that contains information on multiple errors
 	const MULTIPLE_ERRORS = 998;
@@ -254,7 +261,8 @@ class ShopgateLibraryException extends Exception {
 		
 		self::PLUGIN_NO_ADDRESSES_FOUND => 'no addresses found for customer',
 		self::PLUGIN_WRONG_USERNAME_OR_PASSWORD => 'wrong username or password',
-		
+		self::PLUGIN_CUSTOMER_ACCOUNT_NOT_CONFIRMED => 'customer account not confirmed',
+		self::PLUGIN_CUSTOMER_UNKNOWN_ERROR => 'unknown error while customer login',
 		
 		self::PLUGIN_FILE_DELETE_ERROR => 'cannot delete file(s)',
 		self::PLUGIN_FILE_NOT_FOUND => 'file not found',
@@ -286,6 +294,11 @@ class ShopgateLibraryException extends Exception {
 		
 		self::REGISTER_FAILED_TO_ADD_USER => 'failed to add user',
 		self::REGISTER_USER_ALREADY_EXISTS => 'the given username already exists',
+
+		// Cart Item Errors
+		self::CART_ITEM_OUT_OF_STOCK => 'product is not in stock',
+		self::CART_ITEM_PRODUCT_NOT_FOUND => 'product not found',
+		self::CART_ITEM_REQUESTED_QUANTITY_NOT_AVAILABLE => 'less stock available than requested',
 		
 		// Authentification errors
 		self::AUTHENTICATION_FAILED => 'authentication failed',

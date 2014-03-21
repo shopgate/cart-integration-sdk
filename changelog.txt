@@ -1,5 +1,11 @@
 '''Deutsch'''
 
+'''Version 2.4.9'''
+* Die Methode check_cart gibt nun neben den Coupons auch Warenkorbprodukte mit Lagerinformationen sowie Versand- und Zahlmethoden zurück, welche für gegebene Adresse verfügbar sind
+
+'''Version 2.4.8'''
+* Error codes für get_customer hinzugefügt
+
 '''Version 2.4.7'''
 * Error code für register_customer implementiert
 
@@ -187,6 +193,12 @@
 
 
 '''English'''
+
+'''Version 2.4.9'''
+* method check_cart now also returns cart item stock information and shipping and payment methods which are available for cart address
+
+'''Version 2.4.8'''
+* added new error codes for get_customer method
 
 '''Version 2.4.7'''
 * error code for function register_customer implemented
