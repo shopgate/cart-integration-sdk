@@ -635,7 +635,10 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 
 	/**
 	 *
+	 * Represents the "register_customer" action.
+	 *
 	 * @throws ShopgateLibraryException
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_register_customer
 	 */
 	protected function registerCustomer() {
 		if (!isset($this->params['user'])) {
@@ -682,8 +685,10 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	}
 	
 	/**
-	 * Represents the "get_items_csv" action.
+	 * Represents the "get_media_csv" action.
 	 *
+	 * @throws ShopgateLibraryException
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_media_csv
 	 */
 	protected function getMediaCsv(){
 		if (isset($this->params['limit']) && isset($this->params['offset'])) {
