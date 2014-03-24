@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.4.17'''
+* Medienexport zu Produkten implementiert
+
 '''Version 2.4.16'''
 * ShopgateCart::$internal_cart_info inkl. Getter und Setter eingefügt
 * in der Rückgabe von ShopgatePlugin::checkCart() wird jetzt der Index "internal_cart_info" zurückgegeben
@@ -218,6 +221,9 @@
 
 
 '''English'''
+
+'''Version 2.4.17'''
+* implemented media export for products
 
 '''Version 2.4.16'''
 * added ShopgateCart::$internal_cart_info including getter and setter methods

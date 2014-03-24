@@ -205,6 +205,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	/**
 	 * @var bool
 	 */
+	protected $enable_get_media_csv;
+	
+	/**
+	 * @var bool
+	 */
 	protected $enable_get_log_file;
 	
 	/**
@@ -294,6 +299,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @var string The name of the items CSV file.
 	 */
 	protected $items_csv_filename;
+
+	/**
+	 * @var string The name of the items CSV file.
+	 */
+	protected $media_csv_filename;
 	
 	/**
 	 * @var string The name of the categories CSV file.
@@ -385,6 +395,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_get_customer = 0;
 		$this->enable_get_debug_info = 0;
 		$this->enable_get_items_csv = 0;
+		$this->enable_get_media_csv = 0;
 		$this->enable_get_categories_csv = 0;
 		$this->enable_get_reviews_csv = 0;
 		$this->enable_get_pages_csv = 0;
@@ -414,6 +425,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->cache_folder_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'cache';
 		
 		$this->items_csv_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'items.csv';
+		$this->media_csv_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'media.csv';
 		$this->categories_csv_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'categories.csv';
 		$this->reviews_csv_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'reviews.csv';
 		$this->pages_csv_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'pages.csv';
@@ -912,6 +924,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->enable_get_pages_csv;
 	}
 	
+	public function getEnableGetMediaCsv(){
+		return $this->enable_get_media_csv;
+	}
+	
 	public function getEnableGetLogFile() {
 		return $this->enable_get_log_file;
 	}
@@ -983,6 +999,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	public function getItemsCsvFilename() {
 		return $this->items_csv_filename;
 	}
+
+	public function getMediaCsvFilename() {
+		return $this->media_csv_filename;
+	}
 	
 	public function getCategoriesCsvFilename() {
 		return $this->categories_csv_filename;
@@ -1022,6 +1042,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	
 	public function getItemsCsvPath() {
 		return rtrim($this->export_folder_path.DS.$this->items_csv_filename, DS);
+	}
+
+	public function getMediaCsvPath() {
+		return rtrim($this->export_folder_path.DS.$this->media_csv_filename, DS);
 	}
 	
 	public function getCategoriesCsvPath() {
@@ -1179,6 +1203,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_get_pages_csv = $value;
 	}
 	
+	public function setEnableGetMediaCsv($value){
+		$this->enable_get_media_csv = $value;
+	}
+	
 	public function setEnableGetLogFile($value) {
 		$this->enable_get_log_file = $value;
 	}
@@ -1250,6 +1278,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	public function setItemsCsvFilename($value) {
 		$this->items_csv_filename = $value;
 	}
+
+	public function setMediaCsvFilename($value) {
+		$this->media_csv_filename = $value;
+	}
 	
 	public function setCategoriesCsvFilename($value) {
 		$this->categories_csv_filename = $value;
@@ -1294,6 +1326,16 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		if (!empty($dir) && !empty($file)) {
 			$this->export_folder_path = $dir;
 			$this->items_csv_filename = $file;
+		}
+	}
+
+	public function setMediaCsvPath($value) {
+		$dir = dirname($value);
+		$file = basename($value);
+		
+		if (!empty($dir) && !empty($file)) {
+			$this->export_folder_path = $dir;
+			$this->media_csv_filename = $file;
 		}
 	}
 	
@@ -1415,6 +1457,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		
 		// append the file paths
 		$properties['items_csv_path'] = $this->getItemsCsvPath();
+		$properties['media_csv_path'] = $this->getMediaCsvPath();
 		$properties['categories_csv_path'] = $this->getCategoriesCsvPath();
 		$properties['reviews_csv_path'] = $this->getReviewsCsvPath();
 		$properties['pages_csv_path'] = $this->getPagesCsvPath();
@@ -2222,6 +2265,11 @@ interface ShopgateConfigInterface {
 	 * @return string The name of the items CSV file.
 	 */
 	public function getItemsCsvFilename();
+
+	/**
+	 * @return string The name of the items CSV file.
+	 */
+	public function getMediaCsvFilename();
 	
 	/**
 	 * @return string The name of the categories CSV file.
@@ -2548,6 +2596,11 @@ interface ShopgateConfigInterface {
 	 * @param string $value The name of the items CSV file.
 	 */
 	public function setItemsCsvFilename($value);
+
+	/**
+	 * @param string $value The name of the items CSV file.
+	 */
+	public function setMediaCsvFilename($value);
 	
 	/**
 	 * @param string $value The name of the categories CSV file.

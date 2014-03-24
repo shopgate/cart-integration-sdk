@@ -94,6 +94,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				'get_categories_csv',
 				'get_reviews_csv',
 				'get_pages_csv',
+				'get_media_csv',
 				'get_log_file',
 				'clear_log_file',
 				'clear_cache',
@@ -632,6 +633,10 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$this->responseData["addresses"] = $addressList;
 	}
 
+	/**
+	 *
+	 * @throws ShopgateLibraryException
+	 */
 	protected function registerCustomer() {
 		if (!isset($this->params['user'])) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_USER);
@@ -676,6 +681,23 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$this->responseData["addresses"] = $addressList;
 	}
 	
+	/**
+	 * Represents the "get_items_csv" action.
+	 *
+	 */
+	protected function getMediaCsv(){
+		if (isset($this->params['limit']) && isset($this->params['offset'])) {
+			$this->plugin->setExportLimit((int) $this->params['limit']);
+			$this->plugin->setExportOffset((int) $this->params['offset']);
+			$this->plugin->setSplittedExport(true);
+		}
+		
+		// generate / update items csv file if requested
+		$this->plugin->startGetMediaCsv();
+		
+		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseTextCsv($this->trace_id);
+		$this->responseData = $this->config->getMediaCsvPath();
+	}
 	/**
 	 * Represents the "get_items_csv" action.
 	 *
