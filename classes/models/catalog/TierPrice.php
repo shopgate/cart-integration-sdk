@@ -33,6 +33,7 @@
  * @method float    getReduction()
  *
  */
+
 class Shopgate_Model_Catalog_TierPrice
     extends Shopgate_Model_Abstract
 {

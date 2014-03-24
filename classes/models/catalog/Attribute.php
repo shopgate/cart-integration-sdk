@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Shopgate GmbH
  *
@@ -13,23 +12,27 @@
  * obtain it through the world-wide-web, please send an email
  * to interfaces@shopgate.com so we can send you a copy immediately.
  *
- * @author     Shopgate GmbH, Schlo√üstra√üe 10, 35510 Butzbach <interfaces@shopgate.com>
+ * @author     Shopgate GmbH, Schloﬂstraﬂe 10, 35510 Butzbach <interfaces@shopgate.com>
  * @copyright  Shopgate GmbH
  * @license    http://opensource.org/licenses/AFL-3.0 Academic Free License ("AFL"), in the version 3.0
  *
  * User: awesselburg
  * Date: 14.03.14
- * Time: 22:49
+ * Time: 22:08
  *
- * File: Tag.php
+ * File: Attribute.php
  *
- * @method          setNumber(int $value)
- * @method int      getNumber()
+ * @method              setNumber(int $value)
+ * @method int          getNumber()
  *
- * @method          setLabel(string $value)
- * @method string   getLabel()
+ * @method              setGroupNumber(int $value)
+ * @method int          getGroupNumber()
+ *
+ * @method              setLabel(string $value)
+ * @method string       getLabel()
  *
  */
+
 class Shopgate_Model_Catalog_Attribute
     extends Shopgate_Model_Abstract
 {
@@ -45,6 +48,7 @@ class Shopgate_Model_Catalog_Attribute
          */
         $attributeNode = $itemNode->addChildWithCDATA('attribute', $this->getLabel());
         $attributeNode->addAttribute('number', $this->getNumber());
+        $attributeNode->addAttribute('group_number', $this->getGroupNumber());
 
         return $itemNode;
     }

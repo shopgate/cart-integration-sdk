@@ -23,6 +23,7 @@
  *
  * File: Abstract.php
  */
+
 class Shopgate_Model_Abstract
 {
 

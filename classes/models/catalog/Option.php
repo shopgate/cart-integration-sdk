@@ -32,7 +32,11 @@
  *  @method         setValue(string $value)
  *  @method string  getValue()
  *
+ *  @method        setAdditionalPrice(float $value)
+ *  @method float  getAdditionalPrice()
+ *
  */
+
 class Shopgate_Model_Catalog_Option
     extends Shopgate_Model_Abstract
 {
@@ -47,6 +51,7 @@ class Shopgate_Model_Catalog_Option
          * @var Shopgate_Model_XmlResultObject $optionNode
          */
         $optionNode = $itemNode->addChild('option');
+        $optionNode->addAttribute('additional_price', $this->getAdditionalPrice());
         $optionNode->addAttribute('number', $this->getNumber());
         $optionNode->addChildWithCDATA('label', $this->getLabel());
         $optionNode->addChildWithCDATA('value', $this->getValue());

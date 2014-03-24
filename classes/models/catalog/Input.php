@@ -41,13 +41,11 @@
  * @method                                      setLabel(string $value)
  * @method string                               getLabel()
  *
- * @method                                      setAdditionalPrice(float $value)
- * @method float                                getAdditionalPrice()
- *
  * @method                                      setInfoText(string $value)
  * @method string                               getInfoText(string)
  *
  */
+
 class Shopgate_Model_Catalog_Input
     extends Shopgate_Model_Abstract
 {
@@ -85,7 +83,6 @@ class Shopgate_Model_Catalog_Input
         $inputNode->addAttribute('number', $this->getNumber());
         $inputNode->addAttribute('type', $this->getType());
         $inputNode->addAttribute('required', $this->getRequired());
-        $inputNode->addAttribute('additional_price', $this->getAdditionalPrice());
         $inputNode->addChildWithCDATA('label', $this->getLabel());
         $inputNode->addChildWithCDATA('info_text', $this->getInfoText());
         $optionsNode = $inputNode->addChild('options');

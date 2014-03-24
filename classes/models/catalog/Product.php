@@ -95,11 +95,11 @@
  * @method                                      setRelations(array $value)
  * @method array                                getRelations()
  *
+ * @method                                      setAttributeGroups(array $value)
+ * @method array                                getAttributeGroups()
+ *
  * @method                                      setAttributes(array $value)
  * @method array                                getAttributes()
- *
- * @method                                      setAttributeOptions(array $value)
- * @method array                                getAttributeOptions()
  *
  * @method                                      setInputs(array $value)
  * @method array                                getInputs()
@@ -114,6 +114,7 @@
  * @method array                                getChildren()
  *
  */
+
 class Shopgate_Model_Catalog_Product
     extends Shopgate_Model_Abstract
 {
@@ -136,6 +137,11 @@ class Shopgate_Model_Catalog_Product
     const DEFAULT_WEIGHT_UNIT_GRAMM   = 'g';
     const DEFAULT_WEIGHT_UNIT_POUND   = 'lb';
     const DEFAULT_WEIGHT_UNIT_DEFAULT = self::DEFAULT_WEIGHT_UNIT_GRAMM;
+
+    /**
+     * tax
+     */
+    const DEFAULT_NO_TAXABLE_CLASS_NAME = 'no tax class';
 
     /** @var stdClass $_item */
     protected $_item;
@@ -176,7 +182,7 @@ class Shopgate_Model_Catalog_Product
             'setIdentifiers',
             'setTags',
             'setRelations',
-            'setAttributes',
+            'setAttributeGroups',
             'setInputs',
             'setAttachments',
             'setChildren',
@@ -195,7 +201,7 @@ class Shopgate_Model_Catalog_Product
 
         $this->setInputs(array());
         $this->setChildren(array());
-        $this->setAttributes(array());
+        $this->setAttributeGroups(array());
         $this->setRelations(array());
         $this->setTags(array());
         $this->setIdentifiers(array());
@@ -203,7 +209,7 @@ class Shopgate_Model_Catalog_Product
         $this->setCategories(array());
         $this->setImages(array());
         $this->setAttachments(array());
-        $this->setAttributeOptions(array());
+        $this->setAttributes(array());
     }
 
     /**
@@ -268,7 +274,7 @@ class Shopgate_Model_Catalog_Product
         /**
          * is default child
          */
-        if(!$this->_getIsChild()) {
+        if($this->_getIsChild()) {
             $itemNode->addAttribute('default_child', $this->getIsDefaultChild());
         }
 
@@ -366,21 +372,20 @@ class Shopgate_Model_Catalog_Product
         /**
          * attribute / options
          *
+         * @var Shopgate_Model_XmlResultObject         $attributeGroupsNode
          * @var Shopgate_Model_XmlResultObject         $attributesNode
-         * @var Shopgate_Model_XmlResultObject         $attributeNode
-         * @var Shopgate_Model_Catalog_AttributeOption $attributeOptionItem
+         * @var Shopgate_Model_Catalog_Attribute       $attributeItem
+         * @var Shopgate_Model_Catalog_AttributeGroup  $attributeGroupItem
          */
         if($this->_getIsChild()) {
             $attributesNode = $itemNode->addChild('attributes');
-            foreach ($this->getAttributeOptions() as $attributeOptionItem) {
-                $attributeNode = $attributesNode->addChild('attribute');
-                $attributeNode->addAttribute('number', $attributeOptionItem->getAttributeNumber());
-                $attributeOptionItem->asXml($attributeNode);
-            }
-        } else {
-            $attributesNode = $itemNode->addChild('attributes');
             foreach ($this->getAttributes() as $attributeItem) {
                 $attributeItem->asXml($attributesNode);
+            }
+        } else {
+            $attributeGroupsNode = $itemNode->addChild('attribute_groups');
+            foreach ($this->getAttributeGroups() as $attributeGroupItem) {
+                $attributeGroupItem->asXml($attributeGroupsNode);
             }
         }
 
@@ -457,15 +462,15 @@ class Shopgate_Model_Catalog_Product
     }
 
     /**
-     * add attribute
+     * add attribute group
      *
-     * @param Shopgate_Model_Catalog_Attribute $attribute
+     * @param Shopgate_Model_Catalog_AttributeGroup $attributeGroup
      */
-    public function addAttriubute($attribute)
+    public function addAttributeGroup($attributeGroup)
     {
-        $attributes = $this->getAttributes();
-        array_push($attributes, $attribute);
-        $this->setAttributes($attributes);
+        $attributesGroups = $this->getAttributeGroups();
+        array_push($attributesGroups, $attributeGroup);
+        $this->setAttributeGroups($attributesGroups);
     }
 
     /**
@@ -543,13 +548,13 @@ class Shopgate_Model_Catalog_Product
     /**
      * add attribute option
      *
-     * @param Shopgate_Model_Catalog_AttributeOption $attributeOption
+     * @param Shopgate_Model_Catalog_Attribute $attribute
      */
-    public function addAttributeOption($attributeOption)
+    public function addAttribute($attribute)
     {
-        $attributeOptions = $this->getAttributeOptions();
-        array_push($attributeOptions, $attributeOption);
-        $this->setAttributeOptions($attributeOptions);
+        $attributes = $this->getAttributes();
+        array_push($attributes, $attribute);
+        $this->setAttributes($attributes);
     }
 
     /**
