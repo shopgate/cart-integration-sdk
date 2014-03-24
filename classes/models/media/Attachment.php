@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Shopgate GmbH
  *
@@ -13,7 +12,7 @@
  * obtain it through the world-wide-web, please send an email
  * to interfaces@shopgate.com so we can send you a copy immediately.
  *
- * @author     Shopgate GmbH, Schlo√üstra√üe 10, 35510 Butzbach <interfaces@shopgate.com>
+ * @author     Shopgate GmbH, Schloﬂstraﬂe 10, 35510 Butzbach <interfaces@shopgate.com>
  * @copyright  Shopgate GmbH
  * @license    http://opensource.org/licenses/AFL-3.0 Academic Free License ("AFL"), in the version 3.0
  *
@@ -21,10 +20,10 @@
  * Date: 14.03.14
  * Time: 20:37
  *
- * File: Images.php
+ * File: Attachment.php
  *
- *  @method         setSortOrder(int $value)
- *  @method int     getSortOrder()
+ *  @method         setNumber(int $value)
+ *  @method int     getNumber()
  *
  *  @method         setUrl(string $value)
  *  @method string  getUrl()
@@ -32,12 +31,18 @@
  *  @method         setTitle(string $value)
  *  @method string  getTitle()
  *
- *  @method         setAlt(string $value)
- *  @method string  getAlt()
+ *  @method         setDescription(string $value)
+ *  @method string  getDescription()
+ *
+ *  @method         setMimeType(string $value)
+ *  @method string  getMimeType()
+ *
+ *  @method         setFileName(string $value)
+ *  @method string  getFileName()
  *
  */
 
-class Shopgate_Model_Media_Image
+class Shopgate_Model_Media_Attachment
     extends Shopgate_Model_Abstract
 {
     /**
@@ -48,13 +53,15 @@ class Shopgate_Model_Media_Image
     public function asXml(Shopgate_Model_XmlResultObject $itemNode)
     {
         /**
-         * @var Shopgate_Model_XmlResultObject $imageNode
+         * @var Shopgate_Model_XmlResultObject $attachmentNode
          */
-        $imageNode = $itemNode->addChild('image');
-        $imageNode->addAttribute('sort_order', $this->getSortOrder());
-        $imageNode->addChildWithCDATA('url', $this->getUrl());
-        $imageNode->addChildWithCDATA('title', $this->getTitle());
-        $imageNode->addChildWithCDATA('alt', $this->getAlt());
+        $attachmentNode = $itemNode->addChild('attachment');
+        $attachmentNode->addAttribute('number', $this->getNumber());
+        $attachmentNode->addChildWithCDATA('url', $this->getUrl());
+        $attachmentNode->addChild('mime_type', $this->getMimeType());
+        $attachmentNode->addChild('file_name', $this->getFileName());
+        $attachmentNode->addChildWithCDATA('title', $this->getTitle());
+        $attachmentNode->addChildWithCDATA('description', $this->getDescription());
 
         return $itemNode;
     }

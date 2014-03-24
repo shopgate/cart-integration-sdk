@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Shopgate GmbH
  *
@@ -13,31 +12,28 @@
  * obtain it through the world-wide-web, please send an email
  * to interfaces@shopgate.com so we can send you a copy immediately.
  *
- * @author     Shopgate GmbH, Schlo√üstra√üe 10, 35510 Butzbach <interfaces@shopgate.com>
+ * @author     Shopgate GmbH, Schloﬂstraﬂe 10, 35510 Butzbach <interfaces@shopgate.com>
  * @copyright  Shopgate GmbH
  * @license    http://opensource.org/licenses/AFL-3.0 Academic Free License ("AFL"), in the version 3.0
  *
  * User: awesselburg
  * Date: 14.03.14
- * Time: 20:37
+ * Time: 22:08
  *
- * File: Images.php
+ * File: AttributeOption.php
  *
- *  @method         setSortOrder(int $value)
- *  @method int     getSortOrder()
+ * @method              setAttributeNumber(int $value)
+ * @method int          getAttributeNumber()
  *
- *  @method         setUrl(string $value)
- *  @method string  getUrl()
+ * @method              setOptionId(int $value)
+ * @method int          getOptionId()
  *
- *  @method         setTitle(string $value)
- *  @method string  getTitle()
- *
- *  @method         setAlt(string $value)
- *  @method string  getAlt()
+ * @method              setLabel(string $value)
+ * @method string       getLabel()
  *
  */
 
-class Shopgate_Model_Media_Image
+class Shopgate_Model_Catalog_AttributeOption
     extends Shopgate_Model_Abstract
 {
     /**
@@ -48,13 +44,11 @@ class Shopgate_Model_Media_Image
     public function asXml(Shopgate_Model_XmlResultObject $itemNode)
     {
         /**
-         * @var Shopgate_Model_XmlResultObject $imageNode
+         * @var Shopgate_Model_XmlResultObject $attributeOptionNode
          */
-        $imageNode = $itemNode->addChild('image');
-        $imageNode->addAttribute('sort_order', $this->getSortOrder());
-        $imageNode->addChildWithCDATA('url', $this->getUrl());
-        $imageNode->addChildWithCDATA('title', $this->getTitle());
-        $imageNode->addChildWithCDATA('alt', $this->getAlt());
+        $attributeOptionNode = $itemNode->addChild('option');
+        $attributeOptionNode->addAttribute('number', $this->getOptionId());
+        $attributeOptionNode->addChildWithCDATA('label', $this->getLabel());
 
         return $itemNode;
     }

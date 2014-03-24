@@ -28,7 +28,7 @@
  *
  * @method          setValue(string $value)
  * @method string   getValue()
- * 
+ *
  */
 class Shopgate_Model_Catalog_Tag
     extends Shopgate_Model_Abstract

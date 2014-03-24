@@ -28,7 +28,7 @@
  *
  * @method          setLevel(string $value)
  * @method string   getLevel()
- * 
+ *
  */
 class Shopgate_Model_Catalog_Visibility
     extends Shopgate_Model_Abstract

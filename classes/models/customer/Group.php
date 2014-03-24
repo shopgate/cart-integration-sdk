@@ -28,6 +28,7 @@
  *
  * @method          setTrierPrices(array $value);
  * @method array    getTrierPrices();
+ *
  */
 class Shopgate_Model_Customer_Group
     extends Shopgate_Model_Abstract

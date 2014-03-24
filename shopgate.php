@@ -61,11 +61,13 @@ require_once(dirname(__FILE__).DS.'classes'.DS.'models/catalog/Attribute.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/catalog/Input.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/catalog/Validation.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/catalog/Option.php');
+require_once(dirname(__FILE__).DS.'classes'.DS.'models/catalog/AttributeOption.php');
 
 /**
  * media
  */
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/media/Image.php');
+require_once(dirname(__FILE__).DS.'classes'.DS.'models/media/Attachment.php');
 
 /**
  * customer

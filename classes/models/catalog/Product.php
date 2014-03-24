@@ -98,8 +98,17 @@
  * @method                                      setAttributes(array $value)
  * @method array                                getAttributes()
  *
+ * @method                                      setAttributeOptions(array $value)
+ * @method array                                getAttributeOptions()
+ *
  * @method                                      setInputs(array $value)
  * @method array                                getInputs()
+ *
+ * @method                                      setAttachments(array $value)
+ * @method array                                getAttachments()
+ *
+ * @method                                      setIsDefaultChild(bool $value)
+ * @method bool                                 getIsDefaultChild()
  *
  * @method                                      setChildren(array $value)
  * @method array                                getChildren()
@@ -128,11 +137,11 @@ class Shopgate_Model_Catalog_Product
     const DEFAULT_WEIGHT_UNIT_POUND   = 'lb';
     const DEFAULT_WEIGHT_UNIT_DEFAULT = self::DEFAULT_WEIGHT_UNIT_GRAMM;
 
-    /** @var  Shopgate_Model_Catalog_Product */
+    /** @var stdClass $_item */
     protected $_item;
 
     /** @var bool */
-    protected $_create_children = true;
+    protected $_isChild = false;
 
     /** @var array */
     protected $_children = array();
@@ -169,6 +178,7 @@ class Shopgate_Model_Catalog_Product
             'setRelations',
             'setAttributes',
             'setInputs',
+            'setAttachments',
             'setChildren',
         );
 
@@ -192,23 +202,24 @@ class Shopgate_Model_Catalog_Product
         $this->setProperties(array());
         $this->setCategories(array());
         $this->setImages(array());
-
+        $this->setAttachments(array());
+        $this->setAttributeOptions(array());
     }
 
     /**
-     * @param bool $create_children
+     * @param bool $isChild
      */
-    public function setCreateChildren($create_children = true)
+    public function setIsChild($isChild = true)
     {
-        $this->_create_children = $create_children;
+        $this->_isChild = $isChild;
     }
 
     /**
      * @return bool
      */
-    protected function _getCreateChildren()
+    protected function _getIsChild()
     {
-        return $this->_create_children;
+        return $this->_isChild;
     }
 
     /**
@@ -253,6 +264,13 @@ class Shopgate_Model_Catalog_Product
         $itemNode->addChildWithCDATA('internal_order_info', $this->getInternalOrderInfo());
         $itemNode->addChild('age_rating', $this->getAgeRating());
         $itemNode->addChild('weight', $this->getWeight())->addAttribute('unit', $this->getWeightUnit());
+
+        /**
+         * is default child
+         */
+        if(!$this->_getIsChild()) {
+            $itemNode->addAttribute('default_child', $this->getIsDefaultChild());
+        }
 
         /**
          * prices / trier prices
@@ -346,14 +364,24 @@ class Shopgate_Model_Catalog_Product
         }
 
         /**
-         * attributes
+         * attribute / options
          *
-         * @var Shopgate_Model_XmlResultObject   $attributesNode
-         * @var Shopgate_Model_Catalog_Attribute $attributeItem
+         * @var Shopgate_Model_XmlResultObject         $attributesNode
+         * @var Shopgate_Model_XmlResultObject         $attributeNode
+         * @var Shopgate_Model_Catalog_AttributeOption $attributeOptionItem
          */
-        $attributesNode = $itemNode->addChild('attributes');
-        foreach ($this->getAttributes() as $attributeItem) {
-            $attributeItem->asXml($attributesNode);
+        if($this->_getIsChild()) {
+            $attributesNode = $itemNode->addChild('attributes');
+            foreach ($this->getAttributeOptions() as $attributeOptionItem) {
+                $attributeNode = $attributesNode->addChild('attribute');
+                $attributeNode->addAttribute('number', $attributeOptionItem->getAttributeNumber());
+                $attributeOptionItem->asXml($attributeNode);
+            }
+        } else {
+            $attributesNode = $itemNode->addChild('attributes');
+            foreach ($this->getAttributes() as $attributeItem) {
+                $attributeItem->asXml($attributesNode);
+            }
         }
 
         /**
@@ -368,6 +396,17 @@ class Shopgate_Model_Catalog_Product
         }
 
         /**
+         * attachments
+         *
+         * @var Shopgate_Model_XmlResultObject    $attachmentsNode
+         * @var Shopgate_Model_Media_Attachment   $attachmentItem
+         */
+        $attachmentsNode = $itemNode->addChild('attachments');
+        foreach ($this->getAttachments() as $attachmentItem) {
+            $attachmentItem->asXml($attachmentsNode);
+        }
+
+        /**
          * children
          *
          * @var Shopgate_Model_XmlResultObject $childrenNode
@@ -375,7 +414,7 @@ class Shopgate_Model_Catalog_Product
          * @var Shopgate_Model_Catalog_Product $child
          * @var Shopgate_Model_XmlResultObject $childXml
          */
-        if ($this->_getCreateChildren()) {
+        if (!$this->_getIsChild()) {
             $childrenNode = $itemNode->addChild('children');
             foreach ($this->getChildren() as $child) {
                 $child->asXml($childrenNode);
@@ -418,6 +457,18 @@ class Shopgate_Model_Catalog_Product
     }
 
     /**
+     * add attribute
+     *
+     * @param Shopgate_Model_Catalog_Attribute $attribute
+     */
+    public function addAttriubute($attribute)
+    {
+        $attributes = $this->getAttributes();
+        array_push($attributes, $attribute);
+        $this->setAttributes($attributes);
+    }
+
+    /**
      * add property
      *
      * @param Shopgate_Model_Catalog_Property $property
@@ -427,6 +478,18 @@ class Shopgate_Model_Catalog_Product
         $properties = $this->getProperties();
         array_push($properties, $property);
         $this->setProperties($properties);
+    }
+
+    /**
+     * add attachment
+     *
+     * @param Shopgate_Model_Media_Attachment $attachment
+     */
+    public function addAttachment($attachment)
+    {
+        $attachments = $this->getAttachments();
+        array_push($attachments, $attachment);
+        $this->setAttachments($attachments);
     }
 
     /**
@@ -475,6 +538,18 @@ class Shopgate_Model_Catalog_Product
         $inputs = $this->getInputs();
         array_push($inputs, $input);
         $this->setInputs($inputs);
+    }
+
+    /**
+     * add attribute option
+     *
+     * @param Shopgate_Model_Catalog_AttributeOption $attributeOption
+     */
+    public function addAttributeOption($attributeOption)
+    {
+        $attributeOptions = $this->getAttributeOptions();
+        array_push($attributeOptions, $attributeOption);
+        $this->setAttributeOptions($attributeOptions);
     }
 
     /**
