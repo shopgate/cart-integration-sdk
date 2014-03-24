@@ -160,6 +160,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	/**
 	 * @var bool
 	 */
+	protected $enable_check_stock;
+	
+	/**
+	 * @var bool
+	 */
 	protected $enable_redeem_coupons;
 	
 	/**
@@ -390,6 +395,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_add_order = 0;
 		$this->enable_update_order = 0;
 		$this->enable_check_cart = 0;
+		$this->enable_check_stock = 0;
 		$this->enable_redeem_coupons = 0;
 		$this->enable_get_orders = 0;
 		$this->enable_get_customer = 0;
@@ -892,6 +898,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->enable_check_cart;
 	}
 	
+	public function getEnableCheckStock() {
+		return $this->enable_check_stock;
+	}
+	
 	public function getEnableRedeemCoupons() {
 		return $this->enable_redeem_coupons;
 	}
@@ -1169,6 +1179,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 
 	public function setEnableCheckCart($value) {
 		$this->enable_check_cart = $value;
+	}
+	
+	public function setEnableCheckStock($value) {
+		$this->enable_check_stock = $value;
 	}
 	
 	public function setEnableRedeemCoupons($value) {
@@ -2138,6 +2152,11 @@ interface ShopgateConfigInterface {
 	/**
 	 * @return bool
 	 */
+	public function getEnableCheckStock();
+
+	/**
+	 * @return bool
+	 */
 	public function getEnableRedeemCoupons();
 	
 	/**
@@ -2468,6 +2487,11 @@ interface ShopgateConfigInterface {
 
 	/**
 	 * @param bool $value
+	 */
+	public function setEnableCheckStock($value);
+
+	/**
+	 * @param bool $value	 
 	 */
 	public function setEnableRedeemCoupons($value);
 	

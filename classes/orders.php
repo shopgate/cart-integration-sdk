@@ -2363,6 +2363,7 @@ class ShopgateCartItem extends ShopgateContainer
 	protected $item_number;
 	protected $is_buyable;
 	protected $qty_buyable;
+	protected $stock_quantity;
 	protected $unit_amount;
 	protected $unit_amount_with_tax;
 	protected $error;
@@ -2397,6 +2398,14 @@ class ShopgateCartItem extends ShopgateContainer
 	public function setQtyBuyable($value)
 	{
 		$this->qty_buyable = $value;
+	}
+	
+	/**
+	 * @param int $value
+	 */
+	public function setStockQuantity($value)
+	{
+		$this->stock_quantity = $value;
 	}
 	
 	/**
@@ -2530,6 +2539,14 @@ class ShopgateCartItem extends ShopgateContainer
 	}
 	
 	/**
+	 * @return int
+	 */
+	public function getStockQuantity()
+	{
+		return $this->stock_quantity;
+	}
+	
+	/**	 
 	 * @return float
 	 */
 	public function getUnitAmount()

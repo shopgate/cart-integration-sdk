@@ -155,6 +155,7 @@ class ShopgateLibraryException extends Exception {
 	
 	const PLUGIN_API_NO_ORDER_NUMBER = 30;
 	const PLUGIN_API_NO_CART = 31;
+	const PLUGIN_API_NO_ITEMS = 32;
 	const PLUGIN_API_NO_USER = 35;
 	const PLUGIN_API_NO_PASS = 36;
 	const PLUGIN_API_NO_USER_DATA = 37;
@@ -215,6 +216,7 @@ class ShopgateLibraryException extends Exception {
 	const CART_ITEM_OUT_OF_STOCK = 300;
 	const CART_ITEM_PRODUCT_NOT_FOUND = 301;
 	const CART_ITEM_REQUESTED_QUANTITY_NOT_AVAILABLE = 302;
+	const CART_ITEM_INPUT_VALIDATION_FAILED = 303;
 	
 	// extended error code format that contains information on multiple errors
 	const MULTIPLE_ERRORS = 998;
@@ -242,6 +244,7 @@ class ShopgateLibraryException extends Exception {
 		
 		self::PLUGIN_API_NO_ORDER_NUMBER => 'parameter "order_number" missing',
 		self::PLUGIN_API_NO_CART => 'parameter "cart" missing',
+		self::PLUGIN_API_NO_ITEMS => 'parameter "items" missing',
 		self::PLUGIN_API_NO_USER => 'parameter "user" missing',
 		self::PLUGIN_API_NO_PASS => 'parameter "pass" missing',
 		self::PLUGIN_API_NO_USER_DATA => 'parameter "user_data" missing',
@@ -299,6 +302,7 @@ class ShopgateLibraryException extends Exception {
 		self::CART_ITEM_OUT_OF_STOCK => 'product is not in stock',
 		self::CART_ITEM_PRODUCT_NOT_FOUND => 'product not found',
 		self::CART_ITEM_REQUESTED_QUANTITY_NOT_AVAILABLE => 'less stock available than requested',
+		self::CART_ITEM_INPUT_VALIDATION_FAILED => 'cart item input validation failed',
 		
 		// Authentification errors
 		self::AUTHENTICATION_FAILED => 'authentication failed',
@@ -1924,7 +1928,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	/**
 	 * Checks the content of a cart to be valid and returns necessary changes if applicable.
 	 *
-	 * This currently only supports the validation of coupons.
 	 *
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_check_cart#API_Response
 	 *
@@ -1932,16 +1935,30 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @return array(
 	 *          <ul>
 	 *          	<li>'external_coupons' => ShopgateExternalCoupon[], # list of all coupons</li>
-	 *          	<li>'items' => array(...), # list of item changes (not supported yet)</li>
-	 *          	<li>'shippings' => array(...), # list of available shipping services for this cart (not supported yet)</li>
+	 *          	<li>'items' => array(...), # list of item changes</li>
+	 *          	<li>'shippings' => array(...), # list of available shipping services for this cart</li>
 	 *          </ul>)
 	 * @throws ShopgateLibraryException if an error occurs.
 	 */
 	public abstract function checkCart(ShopgateCart $cart);
 	
 	/**
-	 * Returns an array of certain settings of the shop. (Currently mainly tax settings.)
+	 * Checks the items array and returns stock quantity for each item.
 	 *
+	 *
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_check_cart#API_Response
+	 *
+	 * @param ShopgateCart $cart The ShopgateCart object to be checked and validated.
+	 * 
+	 * @return array(
+	 *          'items' => array(...), # list of item changes
+	 * )
+	 * @throws ShopgateLibraryException if an error occurs.
+	 */
+	public abstract function checkStock(ShopgateCart $cart);
+	
+	/**
+	 * Returns an array of certain settings of the shop. (Currently mainly tax settings.)	 *
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_settings#API_Response
 	 *
 	 * @return array(

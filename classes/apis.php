@@ -99,6 +99,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				'clear_log_file',
 				'clear_cache',
 				'check_cart',
+				'check_stock',
 				'redeem_coupons',
 				'get_customer',
 				'register_customer',
@@ -541,6 +542,61 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	}
 	
 	/**
+	 * Represents the "check_stock" action.
+	 *
+	 * @throws ShopgateLibraryException
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_check_stock
+	 */
+	protected function checkStock()
+	{
+		if (!isset($this->params['items'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ITEMS);
+		}
+
+		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
+
+		$cart = new ShopgateCart();
+		$cart->setItems($this->params['items']);
+		$items = $this->plugin->checkStock($cart);
+		$responseData = array();
+
+		if (!is_array($items)) {
+			throw new ShopgateLibraryException(
+				ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT,
+				'$cartData Is type of : ' . is_object($items)
+					? get_class($items)
+					: gettype($items)
+			);
+		}
+
+		$cartItems = array();
+		if (!empty($items)) {
+			foreach ($items as $cartItem) {
+				/** @var ShopgateCartItem $cartItem */
+				if (!is_object($cartItem) || !($cartItem instanceof ShopgateCartItem)) {
+					throw new ShopgateLibraryException(
+						ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT,
+						'$cartItem Is type of : ' . is_object($cartItem) ? get_class($cartItem) : gettype($cartItem)
+					);
+				}
+				$item = $cartItem->toArray();
+				$notNeededArrayKeys = array('qty_buyable', 'unit_amount', 'unit_amount_with_tax');
+				foreach ($notNeededArrayKeys as $key) {
+					if (array_key_exists($key, $item)) {
+						unset($item[$key]);
+					}
+				}
+
+				$cartItems[] = $item;
+			}
+		}
+
+		$responseData["items"] = $cartItems;
+
+		$this->responseData = $responseData;
+	}
+	
+	/**	 
 	 * Represents the "get_settings" action.
 	 *
 	 * @throws ShopgateLibraryException
