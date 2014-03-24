@@ -1,5 +1,30 @@
 '''Deutsch'''
 
+'''Version 2.4.16'''
+* ShopgateCart::$internal_cart_info inkl. Getter und Setter eingefügt
+* in der Rückgabe von ShopgatePlugin::checkCart() wird jetzt der Index "internal_cart_info" zurückgegeben
+* ShopgateShippingInfo::$internal_shipping_info inkl. Getter und Setter eingefügt
+* "s" am Ende von ShopgateShippingMethod::$internal_shipping_infos und den Gettern und Settern entfernt
+
+'''Version 2.4.15'''
+* Schalter für Steuerklassen implementiert
+
+'''Version 2.4.14'''
+* Korrektur für custom_fields
+* Eine neue Hilfsmethode wurde hinzugefügt, mit welcher ein Kreuzprodukt über mehrere Arrays durchgeführt wird, die in einem übergeordneten Array angeordnet sind.
+
+'''Version 2.4.13'''
+* Die Währung wird bei check_cart nun global für den kompletten Warenkorb gültig übergeben
+
+'''Version 2.4.12'''
+* Füge Visitor Methoden für Shipping, Payment und CartItem Klassen ein (array visitor)
+
+'''Version 2.4.11'''
+* Fehler im Logging behoben
+
+'''Version 2.4.10'''
+* Füge Visitor Methoden für Shipping, Payment und CartItem Klassen ein (utf8 visitor)
+
 '''Version 2.4.9'''
 * Die Methode check_cart gibt nun neben den Coupons auch Warenkorbprodukte mit Lagerinformationen sowie Versand- und Zahlmethoden zurück, welche für gegebene Adresse verfügbar sind
 
@@ -193,6 +218,31 @@
 
 
 '''English'''
+
+'''Version 2.4.16'''
+* added ShopgateCart::$internal_cart_info including getter and setter methods
+* the field "internal_cart_info" is now processed when returned by ShopgatePlugin::checkCart()
+* added ShopgateShippingInfo::$internal_cart_info including getter and setter methods
+* removed the trailing "s" in ShopgateShippingMethod::$internal_cart_infos and its getter and setter methods
+
+'''Version 2.4.15'''
+* implemented switch for the use of tax classes
+
+'''Version 2.4.14'''
+* bugfix for custom_fields
+* added a helper method "arrayCross" to create a cross product over multiple arrays, organized inside of a containing array
+
+'''Version 2.4.13'''
+* the currency in check_cart response now is transferred in whole cart scope
+
+'''Version 2.4.12'''
+* insert Visitor methods for Shipping, Payment and CartItem classes (array visitor)
+
+'''Version 2.4.11'''
+* fixed an error in the logging routine
+
+'''Version 2.4.10'''
+* insert Visitor methods for Shipping, Payment and CartItem classes (utf8 visitor)
 
 '''Version 2.4.9'''
 * method check_cart now also returns cart item stock information and shipping and payment methods which are available for cart address

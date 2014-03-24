@@ -24,7 +24,7 @@
 ###################################################################################
 # define constants
 ###################################################################################
-define('SHOPGATE_LIBRARY_VERSION', '2.4.9');
+define('SHOPGATE_LIBRARY_VERSION', '2.4.16');
 define('SHOPGATE_LIBRARY_ENCODING' , 'UTF-8');
 define('SHOPGATE_BASE_DIR', realpath(dirname(__FILE__).'/../'));
 
@@ -1195,6 +1195,13 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	protected $defaultItemRowInputCount = 10;
 	
 	/**
+	 *
+	 * @var boolean true use tax classes for export
+	 */
+	protected $useTaxClasses = false;
+	
+	
+	/**
 	 * @param ShopgateBuilder $builder If empty, the default ShopgateBuilder will be instantiated.
 	 */
 	public final function __construct(ShopgateBuilder $builder = null) {
@@ -1462,6 +1469,15 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	}
 	
 	/**
+	 *
+	 * @param boolean tax classes will be used
+	 * @see http://wiki.shopgate.com/CSV_File_Items/
+	 */
+	protected function useTaxClasses(){
+		$this->useTaxClasses = true;
+	}
+	
+	/**
 	 * @return string[] An array with the csv file field names as indices and empty strings as values.
 	 * @see http://wiki.shopgate.com/CSV_File_Items/
 	 */
@@ -1493,16 +1509,31 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			$inputs['input_field_' . $inp . '_required'] = '';
 			$inputs['input_field_' . $inp . '_add_amount'] = '';
 		}
+
 		
-		$row = array(
+		
+		$rowHead = array(
 			/* responsible fields */
 			'item_number' 				=> "",
 			'item_name' 				=> "",
-			'unit_amount'	 			=> "",
-			//			'unit_amount_net' 			=> "",
-			'currency' 					=> "EUR",
-			'tax_percent'				=> "",
-			//			'tax_class'					=> "",
+		);
+		
+		if($this->useTaxClasses){
+			$tax = array(
+				'unit_amount_net' 			=> "",
+				'tax_class'					=> "",
+				'old_unit_amount_net'		=> "",
+			);
+		}else{
+			$tax = array(
+				'unit_amount'	 			=> "",
+				'tax_percent'				=> "",
+				'old_unit_amount'			=> "",
+				
+			);
+		}
+		
+		$rowBody = array('currency'	=> "EUR",
 			'description' 				=> "",
 			'urls_images' 				=> "",
 			'categories' 				=> "",
@@ -1514,8 +1545,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			'url_deeplink' 				=> "",
 			/* additional fields */
 			'item_number_public'		=> "",
-			'old_unit_amount'			=> "",
-			//			'old_unit_amount_net'		=> "",
 			'properties'				=> "",
 			'msrp' 						=> "",
 			'shipping_costs_per_order' 	=> "0",
@@ -1542,12 +1571,19 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			'related_shop_item_numbers' => "",
 			'age_rating' 				=> "",
 			'weight' 					=> "",
-			'block_pricing' 			=> ""
+			'block_pricing' 			=> "",
+			'weight_unit'				=> "",
+			'is_hidden'					=> "",
 			/* parent/child relationship */
-		) +
-		$attributes +
-		$options +
-		$inputs;
+		) ;
+		
+		$row =
+			$rowHead +
+			$tax +
+			$rowBody+
+			$attributes +
+			$options +
+			$inputs;
 		
 		return $row;
 	}
@@ -1983,6 +2019,72 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @throws ShopgateLibraryException
 	 */
 	//protected abstract function getPagesCsv();
+
+	/**
+	 * Takes an array of arrays that contain all elements which are taken to create a cross-product of all elements. The resulting array is an array-list with
+	 * each possible combination as array. An Element itself can be anything (including a whole array that is not torn apart, but instead treated as a whole)
+	 * By setting the second parameter to true, the keys of the source array is added as an array at the front of the resulting array
+	 *
+	 * Sample input: array(
+	 * 		'group-1-key' => array('a', 'b'),
+	 * 		'group-2-key' => array('x'),
+	 * 		7 => array('l', 'm', 'n'),
+	 * );
+	 * Output of sample: Array (
+	 * 		[0] => Array (
+	 * 			[group-1-key] => a
+	 * 			[group-2-key] => x
+	 * 			[7] => l
+	 * 		)
+	 * 		[1] => Array (
+	 * 			[group-1-key] => b
+	 * 			[group-2-key] => x
+	 * 			[7] => l
+	 * 		)
+	 * 		[2] => Array (
+	 * 			[group-1-key] => a
+	 * 			[group-2-key] => x
+	 * 			[7] => m
+	 * 		)
+	 * 		[...] and so on ... (total of count(src[0])*count(src[1])*...*count(src[N]) elements) [=> 2*1*3 elements in this case]
+	 * 	)
+	 *
+	 * @param array $src: The (at least) double dimensioned array input
+	 * @param string $enableFirstRow: Disabled by default
+	 * @return array[][]:
+	 */
+	protected function arrayCross(array $src, $enableFirstRow = false) {
+		$result = array();
+		$firstRow = array();
+		
+		if($enableFirstRow) {
+			$firstRow[0] = array_keys($src);
+		}
+		
+		foreach($src as $key => $valArr) {
+			// elements are copied for appending data, so the actual count is needed as the base-element-count
+			$copyCount = count($result);
+			
+			// start by using the first array as a resultset (in case of only one array the result of the cross-product is the first input-array)
+			if(empty($result)) {
+				foreach($valArr as $optionSelection) {
+					$result[] = array($key => $optionSelection);
+				}
+			} else {
+				$i = 0;
+				foreach($valArr as $optionSelection) {
+					for($j = 0; $j < $copyCount; $j++) {
+						// in case of $i==0 it copies itself, so it's correct in all cases if $i
+						$result[$i*$copyCount+$j] = $result[$j];
+						$result[$i*$copyCount+$j][$key] = $optionSelection;
+					}
+					$i++;
+				}
+			}
+		}
+		
+		return array_merge($firstRow, $result);
+	}
 }
 
 interface ShopgateFileBufferInterface {
@@ -2295,6 +2397,9 @@ interface ShopgateContainerVisitor {
 	public function visitItemOptionValue(ShopgateItemOptionValue $i);
 	public function visitItemInput(ShopgateItemInput $i);
 	public function visitConfig(ShopgateConfig $c);
+    public function visitShippingMethod(ShopgateShippingMethod $c);
+    public function visitPaymentMethod(ShopgatePaymentMethod $c);
+    public function visitCartItem(ShopgateCartItem $c);
 }
 
 /**
@@ -2596,9 +2701,10 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 		$this->iterateSimpleProperties($properties);
 
 		// iterate the item options and inputs
-		$properties['options'] = $this->iterateObjectList($properties['options']);
-		$properties['inputs'] = $this->iterateObjectList($properties['inputs']);
-
+		$properties['options']    = $this->iterateObjectList($properties['options']);
+		$properties['inputs']     = $this->iterateObjectList($properties['inputs']);
+        $properties['attributes'] = $this->iterateObjectList($properties['attributes']);
+        
 		// create new object with utf-8 en- / decoded data
 		try {
 			$this->object = new ShopgateItem($properties);
@@ -2665,6 +2771,65 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 			$this->object = null;
 		}
 	}
+
+    /**
+     * @param ShopgateShippingMethod $c
+     */
+    public function visitShippingMethod(ShopgateShippingMethod $c)
+    {
+        $properties = $c->buildProperties();
+
+        // iterate the simple variables
+        $this->iterateSimpleProperties($properties);
+
+        // create new object with utf-8 en- / decoded data
+        try {
+            $this->object = new ShopgateShippingMethod($properties);
+        } catch (ShopgateLibraryException $e) {
+            $this->object = null;
+        }
+    }
+
+    /**
+     * @param ShopgateCartItem $c
+     */
+    public function visitCartItem(ShopgateCartItem $c)
+    {
+        $properties = $c->buildProperties();
+
+        // iterate the simple variables
+        $this->iterateSimpleProperties($properties);
+
+        // iterate the item options and inputs
+        $properties['options']    = $this->iterateObjectList($properties['options']);
+        $properties['inputs']     = $this->iterateObjectList($properties['inputs']);
+        $properties['attributes'] = $this->iterateObjectList($properties['attributes']);
+
+        // create new object with utf-8 en- / decoded data
+        try {
+            $this->object = new ShopgateCartItem($properties);
+        } catch (ShopgateLibraryException $e) {
+            $this->object = null;
+        }
+    }
+
+    /**
+     * @param ShopgatePaymentMethod $c
+     */
+    public function visitPaymentMethod(ShopgatePaymentMethod $c)
+    {
+        $properties = $c->buildProperties();
+
+        // iterate the simple variables
+        $this->iterateSimpleProperties($properties);
+
+        // create new object with utf-8 en- / decoded data
+        try {
+            $this->object = new ShopgatePaymentMethod($properties);
+        } catch (ShopgateLibraryException $e) {
+            $this->object = null;
+        }
+    }
 
 	protected function iterateSimpleProperties(array &$properties) {
 		foreach ($properties as $key => &$value) {
@@ -2828,12 +2993,60 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 		$properties = $this->iterateSimpleProperties($properties);
 
 		// iterate ShopgateAddress objects
-		$properties['options'] = $this->iterateObjectList($properties['options']);
-		$properties['inputs'] = $this->iterateObjectList($properties['inputs']);
+		$properties['options']    = $this->iterateObjectList($properties['options']);
+		$properties['inputs']     = $this->iterateObjectList($properties['inputs']);
+        $properties['attributes'] = $this->iterateObjectList($properties['attributes']);
 
 		// set last value to converted array
 		$this->array = $properties;
 	}
+
+    /**
+     * @param ShopgateShippingMethod $c
+     */
+    public function visitShippingMethod(ShopgateShippingMethod $c)
+    {
+        $properties = $c->buildProperties();
+
+        // iterate the simple variables
+        $properties = $this->iterateSimpleProperties($properties);
+
+        // set last value to converted array
+        $this->array = $properties;
+    }
+
+    /**
+     * @param ShopgateCartItem $c
+     */
+    public function visitCartItem(ShopgateCartItem $c)
+    {
+        $properties = $c->buildProperties();
+
+        // iterate the simple variables
+        $properties = $this->iterateSimpleProperties($properties);
+
+        // iterate ShopgateAddress objects
+        $properties['options']    = $this->iterateObjectList($properties['options']);
+        $properties['inputs']     = $this->iterateObjectList($properties['inputs']);
+        $properties['attributes'] = $this->iterateObjectList($properties['attributes']);
+
+        // set last value to converted array
+        $this->array = $properties;
+    }
+
+    /**
+     * @param ShopgatePaymentMethod $c
+     */
+    public function visitPaymentMethod(ShopgatePaymentMethod $c)
+    {
+        $properties = $c->buildProperties();
+
+        // iterate the simple variables
+        $properties = $this->iterateSimpleProperties($properties);
+
+        // set last value to converted array
+        $this->array = $properties;
+    }
 
 	public function visitOrderItemOption(ShopgateOrderItemOption $o) {
 		// get properties and iterate (no complex types in ShopgateOrderItemOption objects)
