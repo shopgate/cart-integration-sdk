@@ -46,6 +46,9 @@ class Shopgate_Model_Abstract
      */
     protected static $_underscoreCache = array();
 
+    /**
+     * @return array
+     */
     public function clean()
     {
         $result = array();
