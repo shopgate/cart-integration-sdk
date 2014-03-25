@@ -1129,10 +1129,16 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	const PRODUCT_STATUS_STOCK = 'stock';
 	const PRODUCT_STATUS_ACTIVE = 'active';
 	const PRODUCT_STATUS_INACTIVE = 'inactive';
+    protected $_result_item_model = false;
 	
 	/** convert weight units **/
 	const CONVERT_POUNDS_TO_GRAM_FACTOR = 453.59237;
 	const CONVERT_OUNCES_TO_GRAM_FACTOR = 28.3495231;
+
+    /**
+     * default dtd location url
+     */
+    const DEFAULT_DTD_URL_LOCATION = 'http://development.local';
 	
 	/**
 	 * @var ShopgateBuilder
@@ -1217,6 +1223,22 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		// store the builder
 		$this->builder = $builder;
 	}
+
+    /**
+     * @param Shopgate_Model_Abstract $itemModel
+     */
+    public function setResultItemModel($itemModel)
+    {
+        $this->_result_item_model = $itemModel;
+    }
+
+    /**
+     * @return Shopgate_Model_Abstract
+     */
+    public function getResultItemModel()
+    {
+        return $this->_result_item_model;
+    }
 	
 	/**
 	 * @param bool $splitted True to activate partial export via limit and offset.
@@ -2084,12 +2106,9 @@ class ShopgateFileBuffer extends ShopgateObject implements ShopgateFileBufferInt
             throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_EMPTY_BUFFER);
         }
 
-        // write headline if it's the beginning of the file
-        if (ftell($this->fileHandle) == 0) {
-            fputcsv($this->fileHandle, array_keys($this->buffer[0]), ';', '"');
-        }
-
         if($_POST['action'] == 'get_items') {
+            /** @var ShopgatePlugin  $plugin */
+            $plugin = $GLOBALS['plugin'];
             switch ($_POST['result_type']) {
 
                 case 'json':
@@ -2105,19 +2124,28 @@ class ShopgateFileBuffer extends ShopgateObject implements ShopgateFileBufferInt
                  * handle xml
                  */
                 default :
-                    $itemsNode = new Shopgate_Model_XmlResultObject('<items></items>');
+                    $itemsNode = new Shopgate_Model_XmlResultObject(
+                        sprintf(
+                            '<!DOCTYPE items SYSTEM "%s">%s',
+                            $plugin->getResultItemModel()->getDtdFileLocation(),
+                            Shopgate_Model_XmlResultObject::DEFAULT_MAIN_NODE
+                        )
+                    );
                     foreach ($this->buffer as $item) {
                         /** @var PluginModelItemObject $item */
                         $item->asXml($itemsNode);
                     }
-
                     fputs($this->fileHandle, $itemsNode->asXML());
                     break;
             }
         } else {
             /**
              * default get_items_csv
+             * write headline if it's the beginning of the file
              */
+            if (ftell($this->fileHandle) == 0) {
+                fputcsv($this->fileHandle, array_keys($this->buffer[0]), ';', '"');
+            }
             foreach ($this->buffer as $item) {
                 if (!empty($this->convertEncoding)) {
                     foreach ($item as &$field) {

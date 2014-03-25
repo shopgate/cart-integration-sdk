@@ -35,6 +35,11 @@ class Shopgate_Model_Abstract
     protected $_data = array();
 
     /**
+     * @var string
+     */
+    protected $_dtdFileLocation = false;
+
+    /**
      * Setter/Getter underscore transformation cache
      *
      * @var array
@@ -50,6 +55,16 @@ class Shopgate_Model_Abstract
             }
         }
         return $result;
+    }
+
+    /**
+     * returns the dtd file location
+     *
+     * @return string
+     */
+    public function getDtdFileLocation()
+    {
+        return ShopgatePlugin::DEFAULT_DTD_URL_LOCATION . '/' . $this->_dtdFileLocation;
     }
 
     /**

@@ -143,6 +143,13 @@ class Shopgate_Model_Catalog_Product
      */
     const DEFAULT_NO_TAXABLE_CLASS_NAME = 'no tax class';
 
+    /**
+     * define dtd file location
+     *
+     * @var string
+     */
+    protected $_dtdFileLocation = 'catalog/product.dtd';
+
     /** @var stdClass $_item */
     protected $_item;
 
@@ -450,6 +457,18 @@ class Shopgate_Model_Catalog_Product
     }
 
     /**
+     * add child
+     *
+     * @param Shopgate_Model_Catalog_Product $child
+     */
+    public function addChild($child)
+    {
+        $children = $this->getChildren();
+        array_push($children, $child);
+        $this->setChildren($children);
+    }
+
+    /**
      * add category
      *
      * @param Shopgate_Model_Catalog_Category $category
@@ -555,18 +574,6 @@ class Shopgate_Model_Catalog_Product
         $attributes = $this->getAttributes();
         array_push($attributes, $attribute);
         $this->setAttributes($attributes);
-    }
-
-    /**
-     * add child
-     *
-     * @param Shopgate_Model_Catalog_Product $child
-     */
-    public function addChild($child)
-    {
-        $children = $this->getChildren();
-        array_push($children, $child);
-        $this->setChildren($children);
     }
 
     /**
