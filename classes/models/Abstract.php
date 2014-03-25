@@ -67,7 +67,11 @@ class Shopgate_Model_Abstract
      */
     public function getDtdFileLocation()
     {
-        return ShopgatePlugin::DEFAULT_DTD_URL_LOCATION . '/' . $this->_dtdFileLocation;
+        return sprintf(
+            '%s/%s',
+            ShopgateConfig::getCurrentDtdLocation(),
+            $this->_dtdFileLocation
+        );
     }
 
     /**

@@ -31,7 +31,13 @@
  * @author Shopgate GmbH, 35510 Butzbach, DE
  */
 class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterface {
-	/**
+
+    /**
+     * default dtd location url
+     */
+    const DEFAULT_DTD_URL_LOCATION = 'http://development.local';
+
+    /**
 	 * @var string The path to the folder where the config file(s) are saved.
 	 */
 	protected $config_folder_path;
@@ -464,6 +470,16 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	public function load(array $settings = null) {
 		$this->loadArray($settings);
 	}
+
+    /**
+     * returns the current dtd location
+     *
+     * @return string
+     */
+    public static function getCurrentDtdLocation()
+    {
+        return ShopgateConfig::DEFAULT_DTD_URL_LOCATION;
+    }
 	
 	/**
 	 * Tries to assign the values of an array to the configuration fields or load it from a file.

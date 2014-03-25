@@ -1129,16 +1129,15 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	const PRODUCT_STATUS_STOCK = 'stock';
 	const PRODUCT_STATUS_ACTIVE = 'active';
 	const PRODUCT_STATUS_INACTIVE = 'inactive';
+
+    /**
+     * @var Shopgate_Model_Abstract
+     */
     protected $_result_item_model = false;
 	
 	/** convert weight units **/
 	const CONVERT_POUNDS_TO_GRAM_FACTOR = 453.59237;
 	const CONVERT_OUNCES_TO_GRAM_FACTOR = 28.3495231;
-
-    /**
-     * default dtd location url
-     */
-    const DEFAULT_DTD_URL_LOCATION = 'http://development.local';
 	
 	/**
 	 * @var ShopgateBuilder
