@@ -2134,7 +2134,7 @@ class ShopgateFileBuffer extends ShopgateObject implements ShopgateFileBufferInt
                         /** @var PluginModelItemObject $item */
                         $item->asXml($itemsNode);
                     }
-                    fputs($this->fileHandle, $itemsNode->asXML());
+                    fputs($this->fileHandle, utf8_encode($itemsNode->asXML()));
                     break;
             }
         } else {
