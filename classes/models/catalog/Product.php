@@ -464,13 +464,13 @@ class Shopgate_Model_Catalog_Product
     /**
      * add category
      *
-     * @param Shopgate_Model_Catalog_Category $category
+     * @param Shopgate_Model_Catalog_CategoryPath $categoryPath
      */
-    public function addCategory(Shopgate_Model_Catalog_Category $category)
+    public function addCategoryPath(Shopgate_Model_Catalog_CategoryPath $categoryPath)
     {
-        $categories = $this->getCategories();
-        array_push($categories, $category);
-        $this->setCategories($categories);
+        $categoryPaths = $this->getCategoryPaths();
+        array_push($categoryPaths, $categoryPath);
+        $this->setCategoryPaths($categoryPaths);
     }
 
     /**
