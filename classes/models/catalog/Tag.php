@@ -23,8 +23,8 @@
  *
  * File: Tag.php
  *
- * @method          setNumber(int $value)
- * @method int      getNumber()
+ * @method          setUid(int $value)
+ * @method int      getUid()
  *
  * @method          setValue(string $value)
  * @method string   getValue()
@@ -45,7 +45,7 @@ class Shopgate_Model_Catalog_Tag
          * @var Shopgate_Model_XmlResultObject $tagNode
          */
         $tagNode = $itemNode->addChildWithCDATA('tag', $this->getValue());
-        $tagNode->addAttribute('number', $this->getNumber());
+        $tagNode->addAttribute('uid', $this->getUid());
 
         return $itemNode;
     }

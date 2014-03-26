@@ -68,8 +68,8 @@
  * @method                                      setImages(array $value)
  * @method array                                getImages()
  *
- * @method                                      setCategories(array $value)
- * @method array                                getCategories()
+ * @method                                      setCategoryPaths(array $value)
+ * @method array                                getCategoryPaths()
  *
  * @method                                      setShipping(Shopgate_Model_Catalog_Shipping $value)
  * @method Shopgate_Model_Catalog_Shipping      getShipping()
@@ -144,14 +144,21 @@ class Shopgate_Model_Catalog_Product
     const DEFAULT_NO_TAXABLE_CLASS_NAME = 'no tax class';
 
     /**
+     * @var string
+     */
+    protected $_itemNodeIdentifier = '<items></items>';
+
+    /**
+     * @var string
+     */
+    protected $_identifier = 'items';
+
+    /**
      * define dtd file location
      *
      * @var string
      */
     protected $_dtdFileLocation = 'catalog/product.dtd';
-
-    /** @var stdClass $_item */
-    protected $_item;
 
     /** @var bool */
     protected $_isChild = false;
@@ -184,7 +191,7 @@ class Shopgate_Model_Catalog_Product
             'setVisibility',
             'setStock',
             'setImages',
-            'setCategories',
+            'setCategoryPaths',
             'setProperties',
             'setIdentifiers',
             'setTags',
@@ -213,7 +220,7 @@ class Shopgate_Model_Catalog_Product
         $this->setTags(array());
         $this->setIdentifiers(array());
         $this->setProperties(array());
-        $this->setCategories(array());
+        $this->setCategoryPaths(array());
         $this->setImages(array());
         $this->setAttachments(array());
         $this->setAttributes(array());
@@ -233,20 +240,6 @@ class Shopgate_Model_Catalog_Product
     protected function _getIsChild()
     {
         return $this->_isChild;
-    }
-
-    /**
-     * generate data dom object
-     *
-     * @return $this
-     */
-    public function generateData()
-    {
-        foreach ($this->_fireMethods as $method) {
-            $this->{$method}();
-        }
-
-        return $this;
     }
 
     /**
@@ -304,12 +297,12 @@ class Shopgate_Model_Catalog_Product
         /**
          * categories
          *
-         * @var Shopgate_Model_XmlResultObject  $categoriesNode
-         * @var Shopgate_Model_Catalog_Category $categoryItem
+         * @var Shopgate_Model_XmlResultObject      $categoryPathNode
+         * @var Shopgate_Model_Catalog_CategoryPath $categoryPathItem
          */
-        $categoriesNode = $itemNode->addChild('categories');
-        foreach ($this->getCategories() as $categoryItem) {
-            $categoryItem->asXml($categoriesNode);
+        $categoryPathNode = $itemNode->addChild('categories');
+        foreach ($this->getCategoryPaths() as $categoryPathItem) {
+            $categoryPathItem->asXml($categoryPathNode);
         }
 
         /**
@@ -624,17 +617,5 @@ class Shopgate_Model_Catalog_Product
     public function asCsv()
     {
 
-    }
-
-    /**
-     * @param $item
-     *
-     * @return $this
-     */
-    public function setItem($item)
-    {
-        $this->_item = $item;
-
-        return $this;
     }
 }

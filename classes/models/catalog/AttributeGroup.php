@@ -19,25 +19,19 @@
  *
  * User: awesselburg
  * Date: 14.03.14
- * Time: 22:08
+ * Time: 22:49
  *
- * File: Option.php
+ * File: AttributeGroup.php
  *
- *  @method         setUid(int $value)
- *  @method int     getUid()
+ * @method          setUid(int $value)
+ * @method int      getUid()
  *
- *  @method         setLabel(string $value)
- *  @method string  getLabel()
- *
- *  @method         setValue(string $value)
- *  @method string  getValue()
- *
- *  @method        setAdditionalPrice(float $value)
- *  @method float  getAdditionalPrice()
+ * @method          setLabel(string $value)
+ * @method string   getLabel()
  *
  */
 
-class Shopgate_Model_Catalog_Option
+class Shopgate_Model_Catalog_AttributeGroup
     extends Shopgate_Model_Abstract
 {
     /**
@@ -48,13 +42,10 @@ class Shopgate_Model_Catalog_Option
     public function asXml(Shopgate_Model_XmlResultObject $itemNode)
     {
         /**
-         * @var Shopgate_Model_XmlResultObject $optionNode
+         * @var Shopgate_Model_XmlResultObject $attributeNode
          */
-        $optionNode = $itemNode->addChild('option');
-        $optionNode->addAttribute('additional_price', $this->getAdditionalPrice());
-        $optionNode->addAttribute('uid', $this->getUid());
-        $optionNode->addChildWithCDATA('label', $this->getLabel());
-        $optionNode->addChildWithCDATA('value', $this->getValue());
+        $attributeNode = $itemNode->addChildWithCDATA('attribute_group', $this->getLabel());
+        $attributeNode->addAttribute('uid', $this->getUid());
 
         return $itemNode;
     }

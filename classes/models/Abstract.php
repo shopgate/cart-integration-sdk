@@ -34,10 +34,28 @@ class Shopgate_Model_Abstract
      */
     protected $_data = array();
 
+    /** @var stdClass $_item */
+    protected $_item;
+
     /**
      * @var string
      */
     protected $_dtdFileLocation = false;
+
+    /**
+     * @var string
+     */
+    protected $_itemNodeIdentifier = '<items></items>';
+
+    /**
+     * @var string
+     */
+    protected $_identifier = 'items';
+
+    /**
+     * @var array
+     */
+    protected $_fireMethods = array();
 
     /**
      * Setter/Getter underscore transformation cache
@@ -72,6 +90,40 @@ class Shopgate_Model_Abstract
             ShopgateConfig::getCurrentDtdLocation(),
             $this->_dtdFileLocation
         );
+    }
+
+    /**
+     * returns the item node identifier
+     *
+     * @return string
+     */
+    public function getItemNodeIdentifier()
+    {
+        return $this->_itemNodeIdentifier;
+    }
+
+    /**
+     * returns the identifier
+     *
+     * @return string
+     */
+    public function getIdentifier()
+    {
+        return $this->_identifier;
+    }
+
+    /**
+     * generate data dom object
+     *
+     * @return $this
+     */
+    public function generateData()
+    {
+        foreach ($this->_fireMethods as $method) {
+            $this->{$method}();
+        }
+
+        return $this;
     }
 
     /**
@@ -184,5 +236,17 @@ class Shopgate_Model_Abstract
     public function __set($columnName, $value)
     {
         $this->_data[$columnName] = $value;
+    }
+
+    /**
+     * @param $item
+     *
+     * @return $this
+     */
+    public function setItem($item)
+    {
+        $this->_item = $item;
+
+        return $this;
     }
 } 

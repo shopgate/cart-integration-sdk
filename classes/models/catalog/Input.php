@@ -23,8 +23,8 @@
  *
  * File: Input.php
  *
- * @method                                      setNumber(int $value)
- * @method int                                  getNumber()
+ * @method                                      setUid(int $value)
+ * @method int                                  getUid()
  *
  * @method                                      setType(string $value)
  * @method string                               getType()
@@ -80,7 +80,7 @@ class Shopgate_Model_Catalog_Input
          * @var Shopgate_Model_Catalog_Option     $optionItem
          */
         $inputNode = $itemNode->addChild('input');
-        $inputNode->addAttribute('number', $this->getNumber());
+        $inputNode->addAttribute('uid', $this->getUid());
         $inputNode->addAttribute('type', $this->getType());
         $inputNode->addAttribute('required', $this->getRequired());
         $inputNode->addChildWithCDATA('label', $this->getLabel());

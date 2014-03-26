@@ -49,6 +49,7 @@ require_once(dirname(__FILE__).DS.'classes'.DS.'models/catalog/Price.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/catalog/TierPrice.php');
 
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/catalog/Category.php');
+require_once(dirname(__FILE__).DS.'classes'.DS.'models/catalog/CategoryPath.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/catalog/Shipping.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/catalog/Manufacturer.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/catalog/Visibility.php');

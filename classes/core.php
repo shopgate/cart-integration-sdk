@@ -1335,6 +1335,31 @@ abstract class ShopgatePlugin extends ShopgateObject {
         $this->buffer->finish();
     }
 
+    /**
+     * Takes care of buffer and file handlers and calls ShopgatePlugin::createCategories().
+     *
+     * @throws ShopgateLibraryException
+     */
+    public final function startGetCategories()
+    {
+        $params = $this->pluginApi->getParams();
+
+        /**
+         * switch result type
+         */
+        switch ($params['result_type']) {
+            case 'json' :
+                $this->buffer->setFile($this->config->getCategoriesJsonPath());
+                break;
+            default :
+                $this->buffer->setFile($this->config->getCategoriesXmlPath());
+                break;
+        }
+
+        $this->createCategories();
+        $this->buffer->finish();
+    }
+
 	/**
 	 * Takes care of buffer and file handlers and calls ShopgatePlugin::createCategoriesCsv().
 	 *
@@ -2105,7 +2130,10 @@ class ShopgateFileBuffer extends ShopgateObject implements ShopgateFileBufferInt
             throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_EMPTY_BUFFER);
         }
 
-        if($_POST['action'] == 'get_items') {
+        /**
+         * @todo
+         */
+        if($_POST['action'] == 'get_items' || $_POST['action'] == 'get_categories') {
             /** @var ShopgatePlugin  $plugin */
             $plugin = $GLOBALS['plugin'];
             switch ($_POST['result_type']) {
@@ -2125,16 +2153,18 @@ class ShopgateFileBuffer extends ShopgateObject implements ShopgateFileBufferInt
                 default :
                     $itemsNode = new Shopgate_Model_XmlResultObject(
                         sprintf(
-                            '<!DOCTYPE items SYSTEM "%s">%s',
+                            '<!DOCTYPE %s SYSTEM "%s">%s',
+                            $plugin->getResultItemModel()->getIdentifier(),
                             $plugin->getResultItemModel()->getDtdFileLocation(),
-                            Shopgate_Model_XmlResultObject::DEFAULT_MAIN_NODE
+                            $plugin->getResultItemModel()->getItemNodeIdentifier()
                         )
                     );
                     foreach ($this->buffer as $item) {
                         /** @var PluginModelItemObject $item */
                         $item->asXml($itemsNode);
                     }
-                    fputs($this->fileHandle, utf8_encode($itemsNode->asXML()));
+
+                    fputs($this->fileHandle, $itemsNode->asXML());
                     break;
             }
         } else {

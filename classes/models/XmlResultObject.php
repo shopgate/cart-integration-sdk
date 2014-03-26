@@ -28,11 +28,6 @@ class Shopgate_Model_XmlResultObject
 {
 
     /**
-     * define default main node
-     */
-    const DEFAULT_MAIN_NODE = '<items></items>';
-
-    /**
      * Adds a child with $value inside CDATA
      *
      * @param      $name

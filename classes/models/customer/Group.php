@@ -23,8 +23,8 @@
  *
  * File: GroupItemObject.php
  *
- * @method          setCustomerGroupId(int $value)
- * @method int      getCustomerGroupId()
+ * @method          setUid(int $value)
+ * @method int      getUid()
  *
  * @method          setTrierPrices(array $value);
  * @method array    getTrierPrices();
@@ -55,7 +55,7 @@ class Shopgate_Model_Customer_Group
          * @var Shopgate_Model_Catalog_TierPrice $tierPriceItem
          */
         $customerGroupNode = $itemNode->addChild('customer_group');
-        $customerGroupNode->addAttribute('number', $this->getCustomerGroupId());
+        $customerGroupNode->addAttribute('uid', $this->getUid());
 
         foreach ($this->getTrierPrices() as $tierPriceItem) {
             $tierPriceItem->asXml($customerGroupNode);

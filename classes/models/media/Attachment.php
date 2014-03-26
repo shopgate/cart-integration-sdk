@@ -22,8 +22,8 @@
  *
  * File: Attachment.php
  *
- *  @method         setNumber(int $value)
- *  @method int     getNumber()
+ *  @method         setUid(int $value)
+ *  @method int     getUid()
  *
  *  @method         setUrl(string $value)
  *  @method string  getUrl()
@@ -56,7 +56,7 @@ class Shopgate_Model_Media_Attachment
          * @var Shopgate_Model_XmlResultObject $attachmentNode
          */
         $attachmentNode = $itemNode->addChild('attachment');
-        $attachmentNode->addAttribute('number', $this->getNumber());
+        $attachmentNode->addAttribute('uid', $this->getUid());
         $attachmentNode->addChildWithCDATA('url', $this->getUrl());
         $attachmentNode->addChild('mime_type', $this->getMimeType());
         $attachmentNode->addChild('file_name', $this->getFileName());

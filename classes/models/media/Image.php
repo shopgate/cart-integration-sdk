@@ -23,6 +23,9 @@
  *
  * File: Images.php
  *
+ *  @method         setUid(int $value)
+ *  @method int     getUid()
+ *
  *  @method         setSortOrder(int $value)
  *  @method int     getSortOrder()
  *
@@ -51,6 +54,7 @@ class Shopgate_Model_Media_Image
          * @var Shopgate_Model_XmlResultObject $imageNode
          */
         $imageNode = $itemNode->addChild('image');
+        $imageNode->addAttribute('uid', $this->getUid());
         $imageNode->addAttribute('sort_order', $this->getSortOrder());
         $imageNode->addChildWithCDATA('url', $this->getUrl());
         $imageNode->addChildWithCDATA('title', $this->getTitle());

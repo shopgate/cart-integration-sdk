@@ -21,7 +21,7 @@
  * Date: 14.03.14
  * Time: 21:01
  *
- * File: Category.php
+ * File: CategoryPath.php
  *
  *  @method                             setUid(int $value)
  *  @method int                         getUid()
@@ -29,8 +29,8 @@
  *  @method                             setSortOrder(int $value)
  *  @method int                         getSortOrder()
  *
- *  @method                             setName(string $value)
- *  @method string                      getName()
+ *  @method                             setItems(array $value)
+ *  @method array                       getItems()
  *
  *  @method                             setParentUid(int $value)
  *  @method int                         getParentUid()
@@ -46,47 +46,16 @@
  *
  */
 
-class Shopgate_Model_Catalog_Category
+class Shopgate_Model_Catalog_CategoryPath
     extends Shopgate_Model_Abstract
 {
-    /**
-     * @var string
-     */
-    protected $_itemNodeIdentifier = '<categories></categories>';
-
-    /**
-     * @var string
-     */
-    protected $_identifier = 'categories';
-
-    /**
-     * define dtd file location
-     *
-     * @var string
-     */
-    protected $_dtdFileLocation = 'catalog/category.dtd';
-
-    /**
-     * @var array
-     */
-    protected $_fireMethods
-        = array(
-            'setUid',
-            'setIsActive',
-            'setName',
-            'setPath',
-            'setParentUid',
-            'setSortOrder',
-            'setDeeplink',
-            'setImage'
-        );
 
     /**
      * init default object
      */
     public function __construct()
     {
-        $this->setImage(new Shopgate_Model_Media_Image());
+        $this->setItems(array());
     }
 
     /**
@@ -97,21 +66,33 @@ class Shopgate_Model_Catalog_Category
     public function asXml(Shopgate_Model_XmlResultObject $itemNode)
     {
         /**
-         * @var Shopgate_Model_XmlResultObject $categoryNode
+         * @var Shopgate_Model_XmlResultObject $categoryPathNode
+         * @var Shopgate_Model_XmlResultObject $itemsNode
+         * @var Shopgate_Model_Abstract $item
          */
-        $categoryNode = $itemNode->addChild('category');
-        $categoryNode->addAttribute('uid', $this->getUid());
-        $categoryNode->addAttribute('sort_order', $this->getSortOrder());
-        $categoryNode->addAttribute('parent_uid', $this->getParentUid() ? $this->getParentUid() : null);
-        $categoryNode->addAttribute('is_active', $this->getIsActive());
-        $categoryNode->addChildWithCDATA('name', $this->getName());
-        $categoryNode->addChild('deeplink', $this->getDeeplink());
-
-        /**
-         * image
-         */
-        $this->getImage()->asXml($categoryNode);
-
+        $categoryPathNode = $itemNode->addChild('category');
+        $categoryPathNode->addAttribute('uid', $this->getUid());
+        $categoryPathNode->addAttribute('sort_order', $this->getSortOrder());
+        $itemsNode = $categoryPathNode->addChild('items');
+        foreach ($this->getItems() as $item) {
+            $itemsNode->addChildWithCDATA('item', $item->getPath())->addAttribute('level', $item->getLevel());
+        }
         return $itemNode;
+    }
+
+    /**
+     * add category path
+     *
+     * @param int $level
+     * @param string $path
+     */
+    public function addItem($level, $path)
+    {
+        $items = $this->getItems();
+        $item = new Shopgate_Model_Abstract();
+        $item->setLevel($level);
+        $item->setPath($path);
+        array_push($items, $item);
+        $this->setItems($items);
     }
 } 

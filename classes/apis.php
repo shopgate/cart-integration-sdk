@@ -102,7 +102,8 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				'get_customer',
 				'register_customer',
 				'get_settings',
-                'get_items'
+                'get_items',
+                'get_categories'
 		);
 	}
 
@@ -724,6 +725,37 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
             default :
                 $responseType = new ShopgatePluginApiResponseTextXml($this->trace_id);
                 $responseData = $this->config->getItemsXmlPath();
+                break;
+        }
+
+        if (empty($this->response)) {
+            $this->response = $responseType;
+        }
+
+        $this->responseData = $responseData;
+    }
+
+    protected function getCategories()
+    {
+        $this->plugin->startGetCategories();
+        $result_type = isset($this->params['result_type']) ? $this->params['result_type'] : false;
+
+        /**
+         * set result type
+         */
+        switch ($result_type) {
+
+            case 'json':
+                $responseType = new ShopgatePluginApiResponseTextJson($this->trace_id);
+                $responseData = $this->config->getCategoriesJsonPath();
+                break;
+
+            /**
+             * response type XML
+             */
+            default :
+                $responseType = new ShopgatePluginApiResponseTextXml($this->trace_id);
+                $responseData = $this->config->getCategoriesXmlPath();
                 break;
         }
 

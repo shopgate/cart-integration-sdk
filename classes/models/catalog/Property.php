@@ -23,8 +23,8 @@
  *
  * File: Property.php
  *
- *  @method         setNumber(int $value)
- *  @method int     getNumber()
+ *  @method         setUid(int $value)
+ *  @method int     getUid()
  *
  *  @method         setLabel(string $value)
  *  @method string  getLabel()
@@ -48,7 +48,7 @@ class Shopgate_Model_Catalog_Property
          * @var Shopgate_Model_XmlResultObject $propertyNode
          */
         $propertyNode = $itemNode->addChild('property');
-        $propertyNode->addAttribute('number', $this->getNumber());
+        $propertyNode->addAttribute('uid', $this->getUid());
         $propertyNode->addChildWithCDATA('label', $this->getLabel());
         $propertyNode->addChildWithCDATA('value', $this->getValue());
 

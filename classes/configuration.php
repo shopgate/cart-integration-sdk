@@ -197,6 +197,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @var bool
 	 */
 	protected $enable_get_categories_csv;
+
+    /**
+     * @var bool
+     */
+    protected $enable_get_categories;
 	
 	/**
 	 * @var bool
@@ -402,6 +407,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_get_debug_info = 0;
 		$this->enable_get_items_csv = 0;
         $this->enable_get_items = 1;
+        $this->enable_get_categories = 1;
 		$this->enable_get_categories_csv = 0;
 		$this->enable_get_reviews_csv = 0;
 		$this->enable_get_pages_csv = 0;
@@ -435,6 +441,9 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
         $this->items_json_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'items.json';
 
 		$this->categories_csv_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'categories.csv';
+        $this->categories_xml_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'categories.xml';
+        $this->categories_json_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'categories.json';
+
 		$this->reviews_csv_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'reviews.csv';
 		$this->pages_csv_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'pages.csv';
 		
@@ -938,6 +947,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	public function getEnableGetCategoriesCsv() {
 		return $this->enable_get_categories_csv;
 	}
+
+    public function getEnableGetCategories()
+    {
+        return $this->enable_get_categories;
+    }
 	
 	public function getEnableGetReviewsCsv() {
 		return $this->enable_get_reviews_csv;
@@ -1067,6 +1081,16 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
     public function getItemsJsonPath()
     {
         return rtrim($this->export_folder_path.DS.$this->items_json_filename, DS);
+    }
+
+    public function getCategoriesXmlPath()
+    {
+        return rtrim($this->export_folder_path.DS.$this->categories_xml_filename, DS);
+    }
+
+    public function getCategoriesJsonPath()
+    {
+        return rtrim($this->export_folder_path.DS.$this->categories_json_filename, DS);
     }
 
 	public function getCategoriesCsvPath() {
@@ -1220,6 +1244,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	public function setEnableGetCategoriesCsv($value) {
 		$this->enable_get_categories_csv = $value;
 	}
+
+    public function setEnableGetCategories($value)
+    {
+        $this->enable_get_categories = $value;
+    }
 	
 	public function setEnableGetReviewsCsv($value) {
 		$this->enable_get_reviews_csv = $value;

@@ -22,11 +22,11 @@
  *
  * File: Attribute.php
  *
- * @method              setNumber(int $value)
- * @method int          getNumber()
+ * @method              setUid(int $value)
+ * @method int          getUid()
  *
- * @method              setGroupNumber(int $value)
- * @method int          getGroupNumber()
+ * @method              setGroupUid(int $value)
+ * @method int          getGroupUid()
  *
  * @method              setLabel(string $value)
  * @method string       getLabel()
@@ -47,8 +47,8 @@ class Shopgate_Model_Catalog_Attribute
          * @var Shopgate_Model_XmlResultObject $attributeNode
          */
         $attributeNode = $itemNode->addChildWithCDATA('attribute', $this->getLabel());
-        $attributeNode->addAttribute('number', $this->getNumber());
-        $attributeNode->addAttribute('group_number', $this->getGroupNumber());
+        $attributeNode->addAttribute('uid', $this->getUid());
+        $attributeNode->addAttribute('group_uid', $this->getGroupUid());
 
         return $itemNode;
     }
