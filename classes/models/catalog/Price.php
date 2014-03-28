@@ -38,8 +38,8 @@
  *  @method         setMsrp(float $value)
  *  @method float   getMsrp()
  *
- *  @method         setTrierPricesGroup(array $value)
- *  @method array   getTrierPricesGroup()
+ *  @method         setTierPricesGroup(array $value)
+ *  @method array   getTierPricesGroup()
  *
  *  @method         setMinimumOrderAmount(int $value)
  *  @method int     getMinimumOrderAmount()
@@ -64,7 +64,7 @@ class Shopgate_Model_Catalog_Price
 			'Cost',
 			'SalePrice',
 			'Msrp',
-			'TrierPricesGroup',
+			'TierPricesGroup',
 			'MinimumOrderAmount'
 		);
 
@@ -72,7 +72,7 @@ class Shopgate_Model_Catalog_Price
 	 * init default object
 	 */
 	public function __construct () {
-		$this->setTrierPricesGroup(array());
+		$this->setTierPricesGroup(array());
 	}
 
 	/**
@@ -94,7 +94,7 @@ class Shopgate_Model_Catalog_Price
 		$pricesNode->addChild('minimum_order_amount', $this->getMinimumOrderAmount());
 
 		$tierPricesNode = $pricesNode->addChild('tier_prices');
-		foreach ($this->getTrierPricesGroup() as $customerGroupItem) {
+		foreach ($this->getTierPricesGroup() as $customerGroupItem) {
 			$customerGroupItem->asXml($tierPricesNode);
 		}
 
@@ -107,8 +107,8 @@ class Shopgate_Model_Catalog_Price
 	 * @param Shopgate_Model_Customer_Group $tierPrice
 	 */
 	public function addTierPriceGroup (Shopgate_Model_Customer_Group $tierPrice) {
-		$tierPrices = $this->getTrierPricesGroup();
+		$tierPrices = $this->getTierPricesGroup();
 		array_push($tierPrices, $tierPrice);
-		$this->setTrierPricesGroup($tierPrices);
+		$this->setTierPricesGroup($tierPrices);
 	}
 } 

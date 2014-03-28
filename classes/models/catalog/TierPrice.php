@@ -21,7 +21,7 @@
  * Date: 14.03.14
  * Time: 17:20
  *
- * File: TrierPriceItemObject.php
+ * File: TierPrice.php
  *
  * @method          setFromQuantity(int $value)
  * @method int      getFromQuantity()
@@ -36,9 +36,9 @@
 class Shopgate_Model_Catalog_TierPrice
 	extends Shopgate_Model_Abstract {
 
-	const DEFAULT_TRIER_PRICE_TYPE_PERCENT = 'percent';
-	const DEFAULT_TRIER_PRICE_TYPE_FIXED = 'fixed';
-	const DEFAULT_TRIER_PRICE_TYPE_DIFFERENCE = 'difference';
+	const DEFAULT_TIER_PRICE_TYPE_PERCENT = 'percent';
+	const DEFAULT_TIER_PRICE_TYPE_FIXED = 'fixed';
+	const DEFAULT_TIER_PRICE_TYPE_DIFFERENCE = 'difference';
 
 	/**
 	 * define allowed methods

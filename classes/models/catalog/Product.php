@@ -327,7 +327,7 @@ class Shopgate_Model_Catalog_Product
 		}
 
 		/**
-		 * prices / trier prices
+		 * prices / tier prices
 		 */
 		$this->getPrice()->asXml($itemNode);
 

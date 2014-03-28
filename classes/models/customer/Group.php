@@ -26,8 +26,8 @@
  * @method          setUid(int $value)
  * @method int      getUid()
  *
- * @method          setTrierPrices(array $value);
- * @method array    getTrierPrices();
+ * @method          setTierPrices(array $value);
+ * @method array    getTierPrices();
  *
  */
 class Shopgate_Model_Customer_Group
@@ -41,14 +41,14 @@ class Shopgate_Model_Customer_Group
 	protected $_allowedMethods
 		= array(
 			'Uid',
-			'TrierPrices'
+			'TierPrices'
 		);
 
 	/**
 	 * init default objects
 	 */
 	public function __construct () {
-		$this->setTrierPrices(array());
+		$this->setTierPrices(array());
 	}
 
 	/**
@@ -64,7 +64,7 @@ class Shopgate_Model_Customer_Group
 		$customerGroupNode = $itemNode->addChild('customer_group');
 		$customerGroupNode->addAttribute('uid', $this->getUid());
 
-		foreach ($this->getTrierPrices() as $tierPriceItem) {
+		foreach ($this->getTierPrices() as $tierPriceItem) {
 			$tierPriceItem->asXml($customerGroupNode);
 		}
 
@@ -78,8 +78,8 @@ class Shopgate_Model_Customer_Group
 	 * @param Shopgate_Model_Catalog_TierPrice $tierPrice
 	 */
 	public function addTierPrice (Shopgate_Model_Catalog_TierPrice $tierPrice) {
-		$tierPrices = $this->getTrierPrices();
+		$tierPrices = $this->getTierPrices();
 		array_push($tierPrices, $tierPrice);
-		$this->setTrierPrices($tierPrices);
+		$this->setTierPrices($tierPrices);
 	}
 } 
