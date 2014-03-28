@@ -39,27 +39,55 @@
  *  @method string  getAlt()
  *
  */
-
 class Shopgate_Model_Media_Image
-    extends Shopgate_Model_Abstract
-{
-    /**
-     * @param Shopgate_Model_XmlResultObject $itemNode
-     *
-     * @return Shopgate_Model_XmlResultObject
-     */
-    public function asXml(Shopgate_Model_XmlResultObject $itemNode)
-    {
-        /**
-         * @var Shopgate_Model_XmlResultObject $imageNode
-         */
-        $imageNode = $itemNode->addChild('image');
-        $imageNode->addAttribute('uid', $this->getUid());
-        $imageNode->addAttribute('sort_order', $this->getSortOrder());
-        $imageNode->addChildWithCDATA('url', $this->getUrl());
-        $imageNode->addChildWithCDATA('title', $this->getTitle());
-        $imageNode->addChildWithCDATA('alt', $this->getAlt());
+	extends Shopgate_Model_Abstract {
 
-        return $itemNode;
-    }
+	/**
+	 * define allowed methods
+	 *
+	 * @var array
+	 */
+	protected $_allowedMethods
+		= array(
+			'Uid',
+			'SortOrder',
+			'Url',
+			'Title',
+			'Alt'
+		);
+
+	/**
+	 * @param Shopgate_Model_XmlResultObject $itemNode
+	 *
+	 * @return Shopgate_Model_XmlResultObject
+	 */
+	public function asXml (Shopgate_Model_XmlResultObject $itemNode) {
+		/**
+		 * @var Shopgate_Model_XmlResultObject $imageNode
+		 */
+		$imageNode = $itemNode->addChild('image');
+		$imageNode->addAttribute('uid', $this->getUid());
+		$imageNode->addAttribute('sort_order', $this->getSortOrder());
+		$imageNode->addChildWithCDATA('url', $this->getUrl());
+		$imageNode->addChildWithCDATA('title', $this->getTitle());
+		$imageNode->addChildWithCDATA('alt', $this->getAlt());
+
+		return $itemNode;
+	}
+
+	/**
+	 * @return array|null
+	 */
+	public function asArray () {
+		$imageResult = new Shopgate_Model_Media_Image();
+
+		$imageResult->setUid($this->getUid());
+		$imageResult->setSortOrder($this->getSortOrder());
+		$imageResult->setUrl($this->getUrl());
+		$imageResult->setTitle($this->getTitle());
+		$imageResult->setAlt($this->getAlt());
+
+		return $imageResult->getData();
+
+	}
 } 

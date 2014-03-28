@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Shopgate GmbH
  *
@@ -41,28 +42,41 @@
  *  @method string  getFileName()
  *
  */
-
 class Shopgate_Model_Media_Attachment
-    extends Shopgate_Model_Abstract
-{
-    /**
-     * @param Shopgate_Model_XmlResultObject $itemNode
-     *
-     * @return Shopgate_Model_XmlResultObject
-     */
-    public function asXml(Shopgate_Model_XmlResultObject $itemNode)
-    {
-        /**
-         * @var Shopgate_Model_XmlResultObject $attachmentNode
-         */
-        $attachmentNode = $itemNode->addChild('attachment');
-        $attachmentNode->addAttribute('uid', $this->getUid());
-        $attachmentNode->addChildWithCDATA('url', $this->getUrl());
-        $attachmentNode->addChild('mime_type', $this->getMimeType());
-        $attachmentNode->addChild('file_name', $this->getFileName());
-        $attachmentNode->addChildWithCDATA('title', $this->getTitle());
-        $attachmentNode->addChildWithCDATA('description', $this->getDescription());
+	extends Shopgate_Model_Abstract {
 
-        return $itemNode;
-    }
+	/**
+	 * define allowed methods
+	 *
+	 * @var array
+	 */
+	protected $_allowedMethods
+		= array(
+			'Uid',
+			'Url',
+			'Title',
+			'Description',
+			'MimeType',
+			'FileName'
+		);
+
+	/**
+	 * @param Shopgate_Model_XmlResultObject $itemNode
+	 *
+	 * @return Shopgate_Model_XmlResultObject
+	 */
+	public function asXml (Shopgate_Model_XmlResultObject $itemNode) {
+		/**
+		 * @var Shopgate_Model_XmlResultObject $attachmentNode
+		 */
+		$attachmentNode = $itemNode->addChild('attachment');
+		$attachmentNode->addAttribute('uid', $this->getUid());
+		$attachmentNode->addChildWithCDATA('url', $this->getUrl());
+		$attachmentNode->addChild('mime_type', $this->getMimeType());
+		$attachmentNode->addChild('file_name', $this->getFileName());
+		$attachmentNode->addChildWithCDATA('title', $this->getTitle());
+		$attachmentNode->addChildWithCDATA('description', $this->getDescription());
+
+		return $itemNode;
+	}
 } 

@@ -44,74 +44,110 @@
  *  @method                             setDeeplink(string $value)
  *  @method string                      getDeeplink()
  *
+ *  @method                             setIsAnchor(bool $value)
+ *  @method bool                        getIsAnchor()
+ *
  */
-
 class Shopgate_Model_Catalog_Category
-    extends Shopgate_Model_Abstract
-{
-    /**
-     * @var string
-     */
-    protected $_itemNodeIdentifier = '<categories></categories>';
+	extends Shopgate_Model_Abstract {
+	/**
+	 * @var string
+	 */
+	protected $_itemNodeIdentifier = '<categories></categories>';
 
-    /**
-     * @var string
-     */
-    protected $_identifier = 'categories';
+	/**
+	 * @var string
+	 */
+	protected $_identifier = 'categories';
 
-    /**
-     * define dtd file location
-     *
-     * @var string
-     */
-    protected $_dtdFileLocation = 'catalog/category.dtd';
+	/**
+	 * define dtd file location
+	 *
+	 * @var string
+	 */
+	protected $_dtdFileLocation = 'catalog/category.dtd';
 
-    /**
-     * @var array
-     */
-    protected $_fireMethods
-        = array(
-            'setUid',
-            'setIsActive',
-            'setName',
-            'setPath',
-            'setParentUid',
-            'setSortOrder',
-            'setDeeplink',
-            'setImage'
-        );
+	/**
+	 * @var array
+	 */
+	protected $_fireMethods
+		= array(
+			'setUid',
+			'setSortOrder',
+			'setName',
+			'setParentUid',
+			'setSortOrder',
+			'setDeeplink',
+			'setIsAnchor',
+			'setImage'
+		);
 
-    /**
-     * init default object
-     */
-    public function __construct()
-    {
-        $this->setImage(new Shopgate_Model_Media_Image());
-    }
+	/**
+	 * define allowed methods
+	 *
+	 * @var array
+	 */
+	protected $_allowedMethods
+		= array(
+			'Uid',
+			'SortOrder',
+			'Name',
+			'ParentUid',
+			'Image',
+			'IsActive',
+			'Deeplink',
+			'IsAnchor'
+		);
 
-    /**
-     * @param Shopgate_Model_XmlResultObject $itemNode
-     *
-     * @return Shopgate_Model_XmlResultObject
-     */
-    public function asXml(Shopgate_Model_XmlResultObject $itemNode)
-    {
-        /**
-         * @var Shopgate_Model_XmlResultObject $categoryNode
-         */
-        $categoryNode = $itemNode->addChild('category');
-        $categoryNode->addAttribute('uid', $this->getUid());
-        $categoryNode->addAttribute('sort_order', $this->getSortOrder());
-        $categoryNode->addAttribute('parent_uid', $this->getParentUid() ? $this->getParentUid() : null);
-        $categoryNode->addAttribute('is_active', $this->getIsActive());
-        $categoryNode->addChildWithCDATA('name', $this->getName());
-        $categoryNode->addChild('deeplink', $this->getDeeplink());
+	/**
+	 * init default object
+	 */
+	public function __construct () {
+		$this->setImage(new Shopgate_Model_Media_Image());
+	}
 
-        /**
-         * image
-         */
-        $this->getImage()->asXml($categoryNode);
+	/**
+	 * @param Shopgate_Model_XmlResultObject $itemNode
+	 *
+	 * @return Shopgate_Model_XmlResultObject
+	 */
+	public function asXml (Shopgate_Model_XmlResultObject $itemNode) {
+		/**
+		 * @var Shopgate_Model_XmlResultObject $categoryNode
+		 */
+		$categoryNode = $itemNode->addChild('category');
+		$categoryNode->addAttribute('uid', $this->getUid());
+		$categoryNode->addAttribute('sort_order', $this->getSortOrder());
+		$categoryNode->addAttribute('parent_uid', $this->getParentUid() ? $this->getParentUid() : null);
+		$categoryNode->addAttribute('is_active', $this->getIsActive());
+		$categoryNode->addAttribute('is_anchor', $this->getIsAnchor());
+		$categoryNode->addChildWithCDATA('name', $this->getName());
+		$categoryNode->addChild('deeplink', $this->getDeeplink());
 
-        return $itemNode;
-    }
+		/**
+		 * image
+		 */
+		$this->getImage()->asXml($categoryNode);
+
+		return $itemNode;
+	}
+
+	/**
+	 * @return array|null
+	 */
+	public function asArray () {
+		$categoryResult = new Shopgate_Model_Abstract();
+
+		$categoryResult->setData('uid', $this->getUid());
+		$categoryResult->setData('sort_order', $this->getSortOrder());
+		$categoryResult->setData('parent_uid', $this->getParentUid());
+		$categoryResult->setData('is_active', $this->getIsActive());
+		$categoryResult->setData('is_anchor', $this->getIsAnchor());
+		$categoryResult->setData('name', $this->getName());
+		$categoryResult->setData('deeplink', $this->getDeeplink());
+
+		$categoryResult->setData('image', $this->getImage()->asArray());
+
+		return $categoryResult->getData();
+	}
 } 

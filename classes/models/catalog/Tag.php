@@ -30,23 +30,44 @@
  * @method string   getValue()
  *
  */
-
 class Shopgate_Model_Catalog_Tag
-    extends Shopgate_Model_Abstract
-{
-    /**
-     * @param Shopgate_Model_XmlResultObject $itemNode
-     *
-     * @return Shopgate_Model_XmlResultObject
-     */
-    public function asXml(Shopgate_Model_XmlResultObject $itemNode)
-    {
-        /**
-         * @var Shopgate_Model_XmlResultObject $tagNode
-         */
-        $tagNode = $itemNode->addChildWithCDATA('tag', $this->getValue());
-        $tagNode->addAttribute('uid', $this->getUid());
+	extends Shopgate_Model_Abstract {
 
-        return $itemNode;
-    }
+	/**
+	 * define allowed methods
+	 *
+	 * @var array
+	 */
+	protected $_allowedMethods
+		= array(
+			'Uid',
+			'Value'
+		);
+
+	/**
+	 * @param Shopgate_Model_XmlResultObject $itemNode
+	 *
+	 * @return Shopgate_Model_XmlResultObject
+	 */
+	public function asXml (Shopgate_Model_XmlResultObject $itemNode) {
+		/**
+		 * @var Shopgate_Model_XmlResultObject $tagNode
+		 */
+		$tagNode = $itemNode->addChildWithCDATA('tag', $this->getValue());
+		$tagNode->addAttribute('uid', $this->getUid());
+
+		return $itemNode;
+	}
+
+	/**
+	 * @return array|null
+	 */
+	public function asArray () {
+		$tagsResult = new Shopgate_Model_Abstract();
+
+		$tagsResult->setData('uid', $this->getUid());
+		$tagsResult->setData('tag', $this->getValue());
+
+		return $tagsResult->getData();
+	}
 } 

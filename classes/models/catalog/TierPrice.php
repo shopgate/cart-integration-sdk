@@ -33,28 +33,38 @@
  * @method float    getReduction()
  *
  */
-
 class Shopgate_Model_Catalog_TierPrice
-    extends Shopgate_Model_Abstract
-{
-    const DEFAULT_TRIER_PRICE_TYPE_PERCENT    = 'percent';
-    const DEFAULT_TRIER_PRICE_TYPE_FIXED      = 'fixed';
-    const DEFAULT_TRIER_PRICE_TYPE_DIFFERENCE = 'difference';
+	extends Shopgate_Model_Abstract {
 
-    /**
-     * @param Shopgate_Model_XmlResultObject $itemNode
-     *
-     * @return Shopgate_Model_XmlResultObject
-     */
-    public function asXml(Shopgate_Model_XmlResultObject $itemNode)
-    {
-        /**
-         * @var Shopgate_Model_XmlResultObject $tierPriceNode
-         */
-        $tierPriceNode = $itemNode->addChild('tier_price', $this->getReduction());
-        $tierPriceNode->addAttribute('treshold', $this->getFromQuantity());
-        $tierPriceNode->addAttribute('type', $this->getReductionType());
+	const DEFAULT_TRIER_PRICE_TYPE_PERCENT = 'percent';
+	const DEFAULT_TRIER_PRICE_TYPE_FIXED = 'fixed';
+	const DEFAULT_TRIER_PRICE_TYPE_DIFFERENCE = 'difference';
 
-        return $itemNode;
-    }
+	/**
+	 * define allowed methods
+	 *
+	 * @var array
+	 */
+	protected $_allowedMethods
+		= array(
+			'FromQuantity',
+			'ReductionType',
+			'Reduction'
+		);
+
+	/**
+	 * @param Shopgate_Model_XmlResultObject $itemNode
+	 *
+	 * @return Shopgate_Model_XmlResultObject
+	 */
+	public function asXml (Shopgate_Model_XmlResultObject $itemNode) {
+		/**
+		 * @var Shopgate_Model_XmlResultObject $tierPriceNode
+		 */
+		$tierPriceNode = $itemNode->addChild('tier_price', $this->getReduction());
+		$tierPriceNode->addAttribute('treshold', $this->getFromQuantity());
+		$tierPriceNode->addAttribute('type', $this->getReductionType());
+
+		return $itemNode;
+	}
 }

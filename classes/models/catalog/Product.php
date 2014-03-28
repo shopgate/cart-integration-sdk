@@ -111,511 +111,691 @@
  * @method bool                                 getIsDefaultChild()
  *
  * @method                                      setChildren(array $value)
- * @method array                                getChildren()
  *
  */
-
 class Shopgate_Model_Catalog_Product
-    extends Shopgate_Model_Abstract
-{
+	extends Shopgate_Model_Abstract {
 
-    /**
-     * define remove empty children nodes
-     */
-    const DEFAULT_CLEAN_CHILDREN_NODES = true;
+	/**
+	 * define identifier uid
+	 */
+	const DEFAULT_IDENTIFIER_UID = 'uid';
 
-    /**
-     * define default item identifier
-     */
-    const DEFAULT_ITEM_IDENTIFIER = 'item';
+	/**
+	 * define remove empty children nodes
+	 */
+	const DEFAULT_CLEAN_CHILDREN_NODES = true;
 
-    /**
-     * weigh units
-     */
-    const DEFAULT_WEIGHT_UNIT_KG      = 'kg';
-    const DEFAULT_WEIGHT_UNIT_OUNCE   = 'oz';
-    const DEFAULT_WEIGHT_UNIT_GRAMM   = 'g';
-    const DEFAULT_WEIGHT_UNIT_POUND   = 'lb';
-    const DEFAULT_WEIGHT_UNIT_DEFAULT = self::DEFAULT_WEIGHT_UNIT_GRAMM;
+	/**
+	 * define default item identifier
+	 */
+	const DEFAULT_ITEM_IDENTIFIER = 'item';
 
-    /**
-     * tax
-     */
-    const DEFAULT_NO_TAXABLE_CLASS_NAME = 'no tax class';
+	/**
+	 * define clean children
+	 */
+	const DEFAULT_CLEAN_CHILDREN = true;
 
-    /**
-     * @var string
-     */
-    protected $_itemNodeIdentifier = '<items></items>';
+	/**
+	 * weigh units
+	 */
+	const DEFAULT_WEIGHT_UNIT_KG = 'kg';
+	const DEFAULT_WEIGHT_UNIT_OUNCE = 'oz';
+	const DEFAULT_WEIGHT_UNIT_GRAMM = 'g';
+	const DEFAULT_WEIGHT_UNIT_POUND = 'lb';
+	const DEFAULT_WEIGHT_UNIT_DEFAULT = self::DEFAULT_WEIGHT_UNIT_GRAMM;
 
-    /**
-     * @var string
-     */
-    protected $_identifier = 'items';
+	/**
+	 * tax
+	 */
+	const DEFAULT_NO_TAXABLE_CLASS_NAME = 'no tax class';
 
-    /**
-     * define dtd file location
-     *
-     * @var string
-     */
-    protected $_dtdFileLocation = 'catalog/product.dtd';
+	/**
+	 * @var string
+	 */
+	protected $_itemNodeIdentifier = '<items></items>';
 
-    /** @var bool */
-    protected $_isChild = false;
+	/**
+	 * @var string
+	 */
+	protected $_identifier = 'items';
 
-    /** @var array */
-    protected $_children = array();
+	/**
+	 * define dtd file location
+	 *
+	 * @var string
+	 */
+	protected $_dtdFileLocation = 'catalog/product.dtd';
 
-    /**
-     * @var array
-     */
-    protected $_fireMethods
-        = array(
-            'setLastUpdate',
-            'setUid',
-            'setName',
-            'setTaxPercent',
-            'setTaxClass',
-            'setCurrency',
-            'setDescription',
-            'setDeeplink',
-            'setPromotionSortOrder',
-            'setInternalOrderInfo',
-            'setAgeRating',
-            'setWeight',
-            'setWeightUnit',
+	/** @var array */
+	protected $_children = array();
 
-            'setPrice',
-            'setShipping',
-            'setManufacturer',
-            'setVisibility',
-            'setStock',
-            'setImages',
-            'setCategoryPaths',
-            'setProperties',
-            'setIdentifiers',
-            'setTags',
-            'setRelations',
-            'setAttributeGroups',
-            'setInputs',
-            'setAttachments',
-            'setChildren',
-        );
+	/**
+	 * @var bool
+	 */
+	protected $_isChild = false;
 
-    /**
-     * init default object
-     */
-    public function __construct()
-    {
-        $this->setPrice(new Shopgate_Model_Catalog_Price());
-        $this->setShipping(new Shopgate_Model_Catalog_Shipping());
-        $this->setManufacturer(new Shopgate_Model_Catalog_Manufacturer());
-        $this->setVisibility(new Shopgate_Model_Catalog_Visibility());
-        $this->setStock(new Shopgate_Model_Catalog_Stock());
+	/**
+	 * define allowed methods
+	 *
+	 * @var array
+	 */
+	protected $_allowedMethods
+		= array(
+			'Uid',
+			'LastUpdate',
+			'Name',
+			'TaxPercent',
+			'TaxClass',
+			'Currency',
+			'Description',
+			'Deeplink',
+			'PromotionSortOrder',
+			'InternalOrderInfo',
+			'Price',
+			'Weight',
+			'WeightUnit',
+			'Images',
+			'CategoryPaths',
+			'Shipping',
+			'Manufacturer',
+			'Visibility',
+			'Properties',
+			'Stock',
+			'Identifiers',
+			'Tags',
+			'Relations',
+			'AttributeGroups',
+			'Attributes',
+			'Inputs',
+			'Attachments',
+			'IsDefaultChild',
+			'Children',
+			'AgeRating'
+		);
 
-        $this->setInputs(array());
-        $this->setChildren(array());
-        $this->setAttributeGroups(array());
-        $this->setRelations(array());
-        $this->setTags(array());
-        $this->setIdentifiers(array());
-        $this->setProperties(array());
-        $this->setCategoryPaths(array());
-        $this->setImages(array());
-        $this->setAttachments(array());
-        $this->setAttributes(array());
-    }
+	/**
+	 * @var array
+	 */
+	protected $_fireMethods
+		= array(
+			'setLastUpdate',
+			'setUid',
+			'setName',
+			'setTaxPercent',
+			'setTaxClass',
+			'setCurrency',
+			'setDescription',
+			'setDeeplink',
+			'setPromotionSortOrder',
+			'setInternalOrderInfo',
+			'setAgeRating',
+			'setWeight',
+			'setWeightUnit',
 
-    /**
-     * @param bool $isChild
-     */
-    public function setIsChild($isChild = true)
-    {
-        $this->_isChild = $isChild;
-    }
+			'setPrice',
+			'setShipping',
+			'setManufacturer',
+			'setVisibility',
+			'setStock',
+			'setImages',
+			'setCategoryPaths',
+			'setProperties',
+			'setIdentifiers',
+			'setTags',
+			'setRelations',
+			'setAttributeGroups',
+			'setInputs',
+			'setAttachments',
+			'setChildren',
+		);
 
-    /**
-     * @return bool
-     */
-    protected function _getIsChild()
-    {
-        return $this->_isChild;
-    }
+	/**
+	 * init default object
+	 */
+	public function __construct () {
+		$this->setPrice(new Shopgate_Model_Catalog_Price());
+		$this->setShipping(new Shopgate_Model_Catalog_Shipping());
+		$this->setManufacturer(new Shopgate_Model_Catalog_Manufacturer());
+		$this->setVisibility(new Shopgate_Model_Catalog_Visibility());
+		$this->setStock(new Shopgate_Model_Catalog_Stock());
 
-    /**
-     * generate xml result object
-     *
-     * @param Shopgate_Model_XmlResultObject $itemsNode
-     *
-     * @return Shopgate_Model_XmlResultObject
-     */
-    public function asXml(Shopgate_Model_XmlResultObject $itemsNode)
-    {
-        /**
-         * global info
-         *
-         * @var $itemNode Shopgate_Model_XmlResultObject
-         */
-        $itemNode = $itemsNode->addChild(self::DEFAULT_ITEM_IDENTIFIER);
+		$this->setInputs(array());
+		$this->setChildren(array());
+		$this->setAttributeGroups(array());
+		$this->setRelations(array());
+		$this->setTags(array());
+		$this->setIdentifiers(array());
+		$this->setProperties(array());
+		$this->setCategoryPaths(array());
+		$this->setImages(array());
+		$this->setAttachments(array());
+		$this->setAttributes(array());
+	}
 
-        $itemNode->addAttribute('uid', $this->getUid());
-        $itemNode->addAttribute('last_update', $this->getLastUpdate());
-        $itemNode->addChildWithCDATA('name', $this->getName());
-        $itemNode->addChild('tax_percent', $this->getTaxPercent());
-        $itemNode->addChild('tax_class', $this->getTaxClass());
-        $itemNode->addChild('currency', $this->getCurrency());
-        $itemNode->addChildWithCDATA('description', $this->getDescription());
-        $itemNode->addChild('deeplink', $this->getDeeplink());
-        $itemNode->addChild('promotion')->addAttribute('sort_order', $this->getPromotionSortOrder());
-        $itemNode->addChildWithCDATA('internal_order_info', $this->getInternalOrderInfo());
-        $itemNode->addChild('age_rating', $this->getAgeRating());
-        $itemNode->addChild('weight', $this->getWeight())->addAttribute('unit', $this->getWeightUnit());
+	/**
+	 * get is child
+	 *
+	 * @return bool
+	 */
+	public function getIsChild () {
+		return $this->_isChild;
+	}
 
-        /**
-         * is default child
-         */
-        if($this->_getIsChild()) {
-            $itemNode->addAttribute('default_child', $this->getIsDefaultChild());
-        }
+	/**
+	 * set is child
+	 *
+	 * @param $value
+	 */
+	public function setIsChild ($value) {
+		$this->_isChild = $value;
+	}
 
-        /**
-         * prices / trier prices
-         */
-        $this->getPrice()->asXml($itemNode);
+	/**
+	 * generate xml result object
+	 *
+	 * @param Shopgate_Model_XmlResultObject $itemsNode
+	 *
+	 * @return Shopgate_Model_XmlResultObject
+	 */
+	public function asXml (Shopgate_Model_XmlResultObject $itemsNode) {
+		/**
+		 * global info
+		 *
+		 * @var $itemNode Shopgate_Model_XmlResultObject
+		 */
+		$itemNode = $itemsNode->addChild(self::DEFAULT_ITEM_IDENTIFIER);
 
-        /**
-         * images
-         *
-         * @var Shopgate_Model_XmlResultObject $imagesNode
-         * @var Shopgate_Model_Media_Image     $imageItem
-         */
-        $imagesNode = $itemNode->addChild('images');
-        foreach ($this->getImages() as $imageItem) {
-            $imageItem->asXml($imagesNode);
-        }
+		$itemNode->addAttribute('uid', $this->getUid());
+		$itemNode->addAttribute('last_update', $this->getLastUpdate());
+		$itemNode->addChildWithCDATA('name', $this->getName());
+		$itemNode->addChild('tax_percent', $this->getTaxPercent());
+		$itemNode->addChild('tax_class', $this->getTaxClass());
+		$itemNode->addChild('currency', $this->getCurrency());
+		$itemNode->addChildWithCDATA('description', $this->getDescription());
+		$itemNode->addChild('deeplink', $this->getDeeplink());
+		$itemNode->addChild('promotion')->addAttribute('sort_order', $this->getPromotionSortOrder());
+		$itemNode->addChildWithCDATA('internal_order_info', $this->getInternalOrderInfo());
+		$itemNode->addChild('age_rating', $this->getAgeRating());
+		$itemNode->addChild('weight', $this->getWeight())->addAttribute('unit', $this->getWeightUnit());
 
-        /**
-         * categories
-         *
-         * @var Shopgate_Model_XmlResultObject      $categoryPathNode
-         * @var Shopgate_Model_Catalog_CategoryPath $categoryPathItem
-         */
-        $categoryPathNode = $itemNode->addChild('categories');
-        foreach ($this->getCategoryPaths() as $categoryPathItem) {
-            $categoryPathItem->asXml($categoryPathNode);
-        }
+		/**
+		 * is default child
+		 */
+		if ($this->getIsChild()) {
+			$itemNode->addAttribute('default_child', $this->getIsDefaultChild());
+		}
 
-        /**
-         * shipping
-         */
-        $this->getShipping()->asXml($itemNode);
+		/**
+		 * prices / trier prices
+		 */
+		$this->getPrice()->asXml($itemNode);
 
-        /**
-         * manufacture
-         */
-        $this->getManufacturer()->asXml($itemNode);
+		/**
+		 * images
+		 *
+		 * @var Shopgate_Model_XmlResultObject $imagesNode
+		 * @var Shopgate_Model_Media_Image     $imageItem
+		 */
+		$imagesNode = $itemNode->addChild('images');
+		foreach ($this->getImages() as $imageItem) {
+			$imageItem->asXml($imagesNode);
+		}
 
-        /**
-         * visibility
-         */
-        $this->getVisibility()->asXml($itemNode);
+		/**
+		 * categories
+		 *
+		 * @var Shopgate_Model_XmlResultObject      $categoryPathNode
+		 * @var Shopgate_Model_Catalog_CategoryPath $categoryPathItem
+		 */
+		$categoryPathNode = $itemNode->addChild('categories');
+		foreach ($this->getCategoryPaths() as $categoryPathItem) {
+			$categoryPathItem->asXml($categoryPathNode);
+		}
 
-        /**
-         * properties
-         *
-         * @var Shopgate_Model_XmlResultObject  $propertiesNode
-         * @var Shopgate_Model_Catalog_Property $propertyItem
-         */
-        $propertiesNode = $itemNode->addChild('properties');
-        foreach ($this->getProperties() as $propertyItem) {
-            $propertyItem->asXml($propertiesNode);
-        }
+		/**
+		 * shipping
+		 */
+		$this->getShipping()->asXml($itemNode);
 
-        /**
-         * stock
-         */
-        $this->getStock()->asXml($itemNode);
+		/**
+		 * manufacture
+		 */
+		$this->getManufacturer()->asXml($itemNode);
 
-        /**
-         * identifiers
-         *
-         * @var Shopgate_Model_XmlResultObject    $identifiersNode
-         * @var Shopgate_Model_Catalog_Identifier $identifierItem
-         */
-        $identifiersNode = $itemNode->addChild('identifiers');
-        foreach ($this->getIdentifiers() as $identifierItem) {
-            $identifierItem->asXml($identifiersNode);
-        }
+		/**
+		 * visibility
+		 */
+		$this->getVisibility()->asXml($itemNode);
 
-        /**
-         * tags
-         *
-         * @var Shopgate_Model_XmlResultObject $tagsNode
-         * @var Shopgate_Model_Catalog_Tag     $tagItem
-         */
-        $tagsNode = $itemNode->addChild('tags');
-        foreach ($this->getTags() as $tagItem) {
-            $tagItem->asXml($tagsNode);
-        }
+		/**
+		 * properties
+		 *
+		 * @var Shopgate_Model_XmlResultObject  $propertiesNode
+		 * @var Shopgate_Model_Catalog_Property $propertyItem
+		 */
+		$propertiesNode = $itemNode->addChild('properties');
+		foreach ($this->getProperties() as $propertyItem) {
+			$propertyItem->asXml($propertiesNode);
+		}
 
-        /**
-         * relations
-         *
-         * @var Shopgate_Model_XmlResultObject  $relationsNode
-         * @var Shopgate_Model_Catalog_Relation $relationItem
-         */
-        $relationsNode = $itemNode->addChild('relations');
-        foreach ($this->getRelations() as $relationItem) {
-            $relationItem->asXml($relationsNode);
-        }
+		/**
+		 * stock
+		 */
+		$this->getStock()->asXml($itemNode);
 
-        /**
-         * attribute / options
-         *
-         * @var Shopgate_Model_XmlResultObject         $attributeGroupsNode
-         * @var Shopgate_Model_XmlResultObject         $attributesNode
-         * @var Shopgate_Model_Catalog_Attribute       $attributeItem
-         * @var Shopgate_Model_Catalog_AttributeGroup  $attributeGroupItem
-         */
-        if($this->_getIsChild()) {
-            $attributesNode = $itemNode->addChild('attributes');
-            foreach ($this->getAttributes() as $attributeItem) {
-                $attributeItem->asXml($attributesNode);
-            }
-        } else {
-            $attributeGroupsNode = $itemNode->addChild('attribute_groups');
-            foreach ($this->getAttributeGroups() as $attributeGroupItem) {
-                $attributeGroupItem->asXml($attributeGroupsNode);
-            }
-        }
+		/**
+		 * identifiers
+		 *
+		 * @var Shopgate_Model_XmlResultObject    $identifiersNode
+		 * @var Shopgate_Model_Catalog_Identifier $identifierItem
+		 */
+		$identifiersNode = $itemNode->addChild('identifiers');
+		foreach ($this->getIdentifiers() as $identifierItem) {
+			$identifierItem->asXml($identifiersNode);
+		}
 
-        /**
-         * inputs
-         *
-         * @var Shopgate_Model_XmlResultObject $inputsNode
-         * @var Shopgate_Model_Catalog_Input   $inputItem
-         */
-        $inputsNode = $itemNode->addChild('inputs');
-        foreach ($this->getInputs() as $inputItem) {
-            $inputItem->asXml($inputsNode);
-        }
+		/**
+		 * tags
+		 *
+		 * @var Shopgate_Model_XmlResultObject $tagsNode
+		 * @var Shopgate_Model_Catalog_Tag     $tagItem
+		 */
+		$tagsNode = $itemNode->addChild('tags');
+		foreach ($this->getTags() as $tagItem) {
+			$tagItem->asXml($tagsNode);
+		}
 
-        /**
-         * attachments
-         *
-         * @var Shopgate_Model_XmlResultObject    $attachmentsNode
-         * @var Shopgate_Model_Media_Attachment   $attachmentItem
-         */
-        $attachmentsNode = $itemNode->addChild('attachments');
-        foreach ($this->getAttachments() as $attachmentItem) {
-            $attachmentItem->asXml($attachmentsNode);
-        }
+		/**
+		 * relations
+		 *
+		 * @var Shopgate_Model_XmlResultObject  $relationsNode
+		 * @var Shopgate_Model_Catalog_Relation $relationItem
+		 */
+		$relationsNode = $itemNode->addChild('relations');
+		foreach ($this->getRelations() as $relationItem) {
+			$relationItem->asXml($relationsNode);
+		}
 
-        /**
-         * children
-         *
-         * @var Shopgate_Model_XmlResultObject $childrenNode
-         * @var object                         $itemNode ->children
-         * @var Shopgate_Model_Catalog_Product $child
-         * @var Shopgate_Model_XmlResultObject $childXml
-         */
-        if (!$this->_getIsChild()) {
-            $childrenNode = $itemNode->addChild('children');
-            foreach ($this->getChildren() as $child) {
-                $child->asXml($childrenNode);
-            }
-            /**
-             * remove empty nodes
-             */
-            if (self::DEFAULT_CLEAN_CHILDREN_NODES && count($this->getChildren()) > 0) {
-                foreach ($itemNode->children as $childXml) {
-                    $itemNode->replaceChild($this->_removeEmptyNodes($childXml), $itemNode->children);
-                }
-            }
-        }
+		/**
+		 * attribute / options
+		 *
+		 * @var Shopgate_Model_XmlResultObject        $attributeGroupsNode
+		 * @var Shopgate_Model_XmlResultObject        $attributesNode
+		 * @var Shopgate_Model_Catalog_Attribute      $attributeItem
+		 * @var Shopgate_Model_Catalog_AttributeGroup $attributeGroupItem
+		 */
+		if ($this->getIsChild()) {
+			$attributesNode = $itemNode->addChild('attributes');
+			foreach ($this->getAttributes() as $attributeItem) {
+				$attributeItem->asXml($attributesNode);
+			}
+		} else {
+			$attributeGroupsNode = $itemNode->addChild('attribute_groups');
+			foreach ($this->getAttributeGroups() as $attributeGroupItem) {
+				$attributeGroupItem->asXml($attributeGroupsNode);
+			}
+		}
 
-        return $itemsNode;
-    }
+		/**
+		 * inputs
+		 *
+		 * @var Shopgate_Model_XmlResultObject $inputsNode
+		 * @var Shopgate_Model_Catalog_Input   $inputItem
+		 */
+		$inputsNode = $itemNode->addChild('inputs');
+		foreach ($this->getInputs() as $inputItem) {
+			$inputItem->asXml($inputsNode);
+		}
 
-    /**
-     * add image
-     *
-     * @param Shopgate_Model_Media_Image $image
-     */
-    public function addImage(Shopgate_Model_Media_Image $image)
-    {
-        $images = $this->getImages();
-        array_push($images, $image);
-        $this->setImages($images);
-    }
+		/**
+		 * attachments
+		 *
+		 * @var Shopgate_Model_XmlResultObject  $attachmentsNode
+		 * @var Shopgate_Model_Media_Attachment $attachmentItem
+		 */
+		$attachmentsNode = $itemNode->addChild('attachments');
+		foreach ($this->getAttachments() as $attachmentItem) {
+			$attachmentItem->asXml($attachmentsNode);
+		}
 
-    /**
-     * add child
-     *
-     * @param Shopgate_Model_Catalog_Product $child
-     */
-    public function addChild($child)
-    {
-        $children = $this->getChildren();
-        array_push($children, $child);
-        $this->setChildren($children);
-    }
+		/**
+		 * children
+		 *
+		 * @var Shopgate_Model_XmlResultObject $childrenNode
+		 * @var object                         $itemNode ->children
+		 * @var Shopgate_Model_Catalog_Product $child
+		 * @var Shopgate_Model_XmlResultObject $childXml
+		 */
+		if (!$this->getIsChild()) {
+			$childrenNode = $itemNode->addChild('children');
+			foreach ($this->getChildren() as $child) {
+				$child->asXml($childrenNode);
+			}
+			/**
+			 * remove empty nodes
+			 */
+			if (self::DEFAULT_CLEAN_CHILDREN_NODES && count($this->getChildren()) > 0) {
+				foreach ($itemNode->children as $childXml) {
+					$itemNode->replaceChild($this->_removeEmptyNodes($childXml), $itemNode->children);
+				}
+			}
+		}
 
-    /**
-     * add category
-     *
-     * @param Shopgate_Model_Catalog_CategoryPath $categoryPath
-     */
-    public function addCategoryPath(Shopgate_Model_Catalog_CategoryPath $categoryPath)
-    {
-        $categoryPaths = $this->getCategoryPaths();
-        array_push($categoryPaths, $categoryPath);
-        $this->setCategoryPaths($categoryPaths);
-    }
+		return $itemsNode;
+	}
 
-    /**
-     * add attribute group
-     *
-     * @param Shopgate_Model_Catalog_AttributeGroup $attributeGroup
-     */
-    public function addAttributeGroup($attributeGroup)
-    {
-        $attributesGroups = $this->getAttributeGroups();
-        array_push($attributesGroups, $attributeGroup);
-        $this->setAttributeGroups($attributesGroups);
-    }
+	/**
+	 * add image
+	 *
+	 * @param Shopgate_Model_Media_Image $image
+	 */
+	public function addImage (Shopgate_Model_Media_Image $image) {
+		$images = $this->getImages();
+		array_push($images, $image);
+		$this->setImages($images);
+	}
 
-    /**
-     * add property
-     *
-     * @param Shopgate_Model_Catalog_Property $property
-     */
-    public function addProperty($property)
-    {
-        $properties = $this->getProperties();
-        array_push($properties, $property);
-        $this->setProperties($properties);
-    }
+	/**
+	 * add child
+	 *
+	 * @param Shopgate_Model_Catalog_Product $child
+	 */
+	public function addChild ($child) {
+		$children = $this->getChildren();
+		array_push($children, $child);
+		$this->setChildren($children);
+	}
 
-    /**
-     * add attachment
-     *
-     * @param Shopgate_Model_Media_Attachment $attachment
-     */
-    public function addAttachment($attachment)
-    {
-        $attachments = $this->getAttachments();
-        array_push($attachments, $attachment);
-        $this->setAttachments($attachments);
-    }
+	/**
+	 * @return array
+	 */
+	public function getChildren () {
+		if (self::DEFAULT_CLEAN_CHILDREN) {
+			foreach (parent::getData('children') as $child) {
+				$this->_cleanChildData($this, $child);
+			}
+		}
 
-    /**
-     * add identifier
-     *
-     * @param Shopgate_Model_Catalog_Identifier $identifier
-     */
-    public function addIdentifier($identifier)
-    {
-        $identifiers = $this->getIdentifiers();
-        array_push($identifiers, $identifier);
-        $this->setIdentifiers($identifiers);
-    }
+		return parent::getData('children');
+	}
 
-    /**
-     * add tag
-     *
-     * @param Shopgate_Model_Catalog_Tag $tag
-     */
-    public function addTag($tag)
-    {
-        $tags = $this->getTags();
-        array_push($tags, $tag);
-        $this->setTags($tags);
-    }
+	/**
+	 * add category
+	 *
+	 * @param Shopgate_Model_Catalog_CategoryPath $categoryPath
+	 */
+	public function addCategoryPath (Shopgate_Model_Catalog_CategoryPath $categoryPath) {
+		$categoryPaths = $this->getCategoryPaths();
+		array_push($categoryPaths, $categoryPath);
+		$this->setCategoryPaths($categoryPaths);
+	}
 
-    /**
-     * add relation
-     *
-     * @param Shopgate_Model_Catalog_Relation $relation
-     */
-    public function addRelation($relation)
-    {
-        $relations = $this->getRelations();
-        array_push($relations, $relation);
-        $this->setRelations($relations);
-    }
+	/**
+	 * add attribute group
+	 *
+	 * @param Shopgate_Model_Catalog_AttributeGroup $attributeGroup
+	 */
+	public function addAttributeGroup ($attributeGroup) {
+		$attributesGroups = $this->getAttributeGroups();
+		array_push($attributesGroups, $attributeGroup);
+		$this->setAttributeGroups($attributesGroups);
+	}
 
-    /**
-     * add input
-     *
-     * @param Shopgate_Model_Catalog_Input $input
-     */
-    public function addInput($input)
-    {
-        $inputs = $this->getInputs();
-        array_push($inputs, $input);
-        $this->setInputs($inputs);
-    }
+	/**
+	 * add property
+	 *
+	 * @param Shopgate_Model_Catalog_Property $property
+	 */
+	public function addProperty ($property) {
+		$properties = $this->getProperties();
+		array_push($properties, $property);
+		$this->setProperties($properties);
+	}
 
-    /**
-     * add attribute option
-     *
-     * @param Shopgate_Model_Catalog_Attribute $attribute
-     */
-    public function addAttribute($attribute)
-    {
-        $attributes = $this->getAttributes();
-        array_push($attributes, $attribute);
-        $this->setAttributes($attributes);
-    }
+	/**
+	 * add attachment
+	 *
+	 * @param Shopgate_Model_Media_Attachment $attachment
+	 */
+	public function addAttachment ($attachment) {
+		$attachments = $this->getAttachments();
+		array_push($attachments, $attachment);
+		$this->setAttachments($attachments);
+	}
 
-    /**
-     * @param Shopgate_Model_XmlResultObject $childItem
-     *
-     * @return SimpleXMLElement
-     */
-    public function _removeEmptyNodes($childItem)
-    {
-        $output    = $childItem->asXML();
-        $outputRef = $output;
-        $output    = preg_replace('~<[^\\s>]+\\s*/>~si', null, $output);
-        if ($output === $outputRef) {
-            return new SimpleXMLElement($output);
-        }
+	/**
+	 * add identifier
+	 *
+	 * @param Shopgate_Model_Catalog_Identifier $identifier
+	 */
+	public function addIdentifier ($identifier) {
+		$identifiers = $this->getIdentifiers();
+		array_push($identifiers, $identifier);
+		$this->setIdentifiers($identifiers);
+	}
 
-        return $this->_removeEmptyNodes(new Shopgate_Model_XmlResultObject($output));
+	/**
+	 * add tag
+	 *
+	 * @param Shopgate_Model_Catalog_Tag $tag
+	 */
+	public function addTag ($tag) {
+		$tags = $this->getTags();
+		array_push($tags, $tag);
+		$this->setTags($tags);
+	}
 
-    }
+	/**
+	 * add relation
+	 *
+	 * @param Shopgate_Model_Catalog_Relation $relation
+	 */
+	public function addRelation ($relation) {
+		$relations = $this->getRelations();
+		array_push($relations, $relation);
+		$this->setRelations($relations);
+	}
 
-    /**
-     * generate json result object
-     *
-     * @return array
-     */
-    public function asJson()
-    {
-        $result = array();
+	/**
+	 * add input
+	 *
+	 * @param Shopgate_Model_Catalog_Input $input
+	 */
+	public function addInput ($input) {
+		$inputs = $this->getInputs();
+		array_push($inputs, $input);
+		$this->setInputs($inputs);
+	}
 
-        /**
-         * global
-         */
-        $result['uid']         = $this->getUid();
-        $result['last_update'] = $this->getLastUpdate();
-        $result['name']        = $this->getName();
-        $result['tax_percent'] = $this->getTaxPercent();
-        $result['tax_class']   = $this->getTaxClass();
-        $result['currency']    = $this->getCurrency();
-        $result['description'] = $this->getDescription();
-        $result['deeplink']    = $this->getDeeplink();
+	/**
+	 * add attribute option
+	 *
+	 * @param Shopgate_Model_Catalog_Attribute $attribute
+	 */
+	public function addAttribute ($attribute) {
+		$attributes = $this->getAttributes();
+		array_push($attributes, $attribute);
+		$this->setAttributes($attributes);
+	}
 
-        return $result;
-    }
+	/**
+	 * @param Shopgate_Model_XmlResultObject $childItem
+	 *
+	 * @return SimpleXMLElement
+	 */
+	public function _removeEmptyNodes ($childItem) {
+		$output = $childItem->asXML();
+		$outputRef = $output;
+		$output = preg_replace('~<[^\\s>]+\\s*/>~si', null, $output);
+		if ($output === $outputRef) {
+			return new SimpleXMLElement($output);
+		}
 
-    /**
-     * generate csv result object
-     */
-    public function asCsv()
-    {
+		return $this->_removeEmptyNodes(new Shopgate_Model_XmlResultObject($output));
 
-    }
+	}
+
+	/**
+	 * generate json result object
+	 *
+	 * @return array
+	 */
+	public function asArray () {
+		$productResult = new Shopgate_Model_Abstract();
+
+		$productResult->setData('uid', $this->getUid());
+		$productResult->setData('last_update', $this->getLastUpdate());
+		$productResult->setData('name', $this->getName());
+		$productResult->setData('tax_percent', $this->getTaxPercent());
+		$productResult->setData('tax_class', $this->getTaxClass());
+		$productResult->setData('currency', $this->getCurrency());
+		$productResult->setData('description', $this->getDescription());
+		$productResult->setData('deeplink', $this->getDeeplink());
+		$productResult->setData('promotion_sort_order', $this->getPromotionSortOrder());
+		$productResult->setData('internal_order_info', $this->getInternalOrderInfo());
+		$productResult->setData('age_rating', $this->getAgeRating());
+		$productResult->setData('weight', $this->getWeight());
+		$productResult->setData('weight_unit', $this->getWeightUnit());
+
+		//prices
+
+		/**
+		 * images
+		 *
+		 * @var Shopgate_Model_Media_Image $image
+		 */
+		$imagesData = array();
+		foreach ($this->getImages() as $image) {
+			array_push($imagesData, $image->asArray());
+		}
+		$productResult->setData('images', $imagesData);
+
+		/**
+		 * category paths
+		 *
+		 * @var Shopgate_Model_Catalog_CategoryPath $categoryPath
+		 */
+		$categoryPathsData = array();
+		foreach ($this->getCategoryPaths() as $categoryPath) {
+			array_push($categoryPathsData, $categoryPath->asArray());
+		}
+		$productResult->setData('categories', $categoryPathsData);
+
+		/**
+		 * shipping
+		 */
+		$productResult->setData('shipping', $this->getShipping()->asArray());
+
+		/**
+		 * manufacturer
+		 */
+		$productResult->setData('manufacturer', $this->getManufacturer()->asArray());
+
+		/**
+		 * visibility
+		 */
+		$productResult->setData('visibility', $this->getVisibility()->asArray());
+
+		/**
+		 * properties
+		 *
+		 * @var Shopgate_Model_Catalog_Property $property
+		 */
+		$propertiesData = array();
+		foreach ($this->getProperties() as $property) {
+			array_push($propertiesData, $property->asArray());
+		}
+		$productResult->setData('properties', $propertiesData);
+
+		/**
+		 * stock
+		 */
+		$productResult->setData('stock', $this->getStock()->asArray());
+
+		/**
+		 * identifiers
+		 *
+		 * @var Shopgate_Model_Catalog_Identifier $identifier
+		 */
+		$identifiersData = array();
+		foreach ($this->getIdentifiers() as $identifier) {
+			array_push($identifiersData, $identifier->asArray());
+		}
+		$productResult->setData('identifiers', $identifiersData);
+
+		/**
+		 * tags
+		 *
+		 * @var Shopgate_Model_Catalog_Tag $tag
+		 */
+		$tagsData = array();
+		foreach ($this->getTags() as $tag) {
+			array_push($tagsData, $tag->asArray());
+		}
+		$productResult->setData('tags', $tagsData);
+
+		return $productResult->getData();
+	}
+
+	/**
+	 * generate csv result object
+	 */
+	public function asCsv () {
+
+	}
+
+	/**
+	 * @param Shopgate_Model_Abstract $parentItem
+	 * @param Shopgate_Model_Abstract $childItem
+	 */
+	protected function _cleanChildData ($parentItem, $childItem) {
+		foreach ($childItem->getData() as $key => $value) {
+			if ($parentValue = $parentItem->getData($key)) {
+				if (is_array($parentValue) && count($value) > 0) {
+					foreach ($parentValue as $parentItem) {
+						/**
+						 * @var Shopgate_Model_Abstract $childItem
+						 * @var Shopgate_Model_Abstract $parentItem
+						 * @var array                   $value
+						 * @var int                     $parentUid
+						 */
+						$parentUid = $parentItem->getData('uid');
+						if ($parentUid && $childItem = $this->_getItemByUid($value, $parentUid)) {
+							$this->_cleanChildData($parentItem, $childItem);
+						}
+					}
+				}
+				if ($value instanceof Shopgate_Model_Abstract) {
+					/**
+					 * @var  Shopgate_Model_Abstract $value
+					 * @var  Shopgate_Model_Abstract $parentValue
+					 */
+					$this->_cleanChildData($parentValue, $value);
+				}
+				if (!is_array($parentValue) && !$value instanceof Shopgate_Model_Abstract) {
+					if ($value === $parentValue && $key != self::DEFAULT_IDENTIFIER_UID) {
+						$childItem->setData($key, null);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * @param array $data
+	 * @param int   $uid
+	 *
+	 * @return mixed
+	 */
+	protected function _getItemByUid ($data, $uid) {
+		/* @var Shopgate_Model_Abstract $item */
+		foreach ($data as $item) {
+			if ($item->getData(self::DEFAULT_IDENTIFIER_UID) == $uid) {
+				return $item;
+			}
+		}
+
+		return false;
+	}
 }

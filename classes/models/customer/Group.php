@@ -21,7 +21,7 @@
  * Date: 14.03.14
  * Time: 19:31
  *
- * File: GroupItemObject.php
+ * File: Group.php
  *
  * @method          setUid(int $value)
  * @method int      getUid()
@@ -30,50 +30,56 @@
  * @method array    getTrierPrices();
  *
  */
-
 class Shopgate_Model_Customer_Group
-    extends Shopgate_Model_Abstract
-{
+	extends Shopgate_Model_Abstract {
 
-    /**
-     * init default objects
-     */
-    public function __construct()
-    {
-        $this->setTrierPrices(array());
-    }
+	/**
+	 * define allowed methods
+	 *
+	 * @var array
+	 */
+	protected $_allowedMethods
+		= array(
+			'Uid',
+			'TrierPrices'
+		);
 
-    /**
-     * @param Shopgate_Model_XmlResultObject $itemNode
-     *
-     * @return Shopgate_Model_XmlResultObject
-     */
-    public function asXml(Shopgate_Model_XmlResultObject $itemNode)
-    {
-        /**
-         * @var Shopgate_Model_XmlResultObject   $customerGroupNode
-         * @var Shopgate_Model_Catalog_TierPrice $tierPriceItem
-         */
-        $customerGroupNode = $itemNode->addChild('customer_group');
-        $customerGroupNode->addAttribute('uid', $this->getUid());
+	/**
+	 * init default objects
+	 */
+	public function __construct () {
+		$this->setTrierPrices(array());
+	}
 
-        foreach ($this->getTrierPrices() as $tierPriceItem) {
-            $tierPriceItem->asXml($customerGroupNode);
-        }
+	/**
+	 * @param Shopgate_Model_XmlResultObject $itemNode
+	 *
+	 * @return Shopgate_Model_XmlResultObject
+	 */
+	public function asXml (Shopgate_Model_XmlResultObject $itemNode) {
+		/**
+		 * @var Shopgate_Model_XmlResultObject   $customerGroupNode
+		 * @var Shopgate_Model_Catalog_TierPrice $tierPriceItem
+		 */
+		$customerGroupNode = $itemNode->addChild('customer_group');
+		$customerGroupNode->addAttribute('uid', $this->getUid());
 
-        return $itemNode;
-    }
+		foreach ($this->getTrierPrices() as $tierPriceItem) {
+			$tierPriceItem->asXml($customerGroupNode);
+		}
+
+		return $itemNode;
+	}
 
 
-    /**
-     * add tier price
-     *
-     * @param Shopgate_Model_Catalog_TierPrice $tierPrice
-     */
-    public function addTierPrice(Shopgate_Model_Catalog_TierPrice $tierPrice)
-    {
-        $tierPrices = $this->getTrierPrices();
-        array_push($tierPrices, $tierPrice);
-        $this->setTrierPrices($tierPrices);
-    }
+	/**
+	 * add tier price
+	 *
+	 * @param Shopgate_Model_Catalog_TierPrice $tierPrice
+	 */
+	public function addTierPrice (Shopgate_Model_Catalog_TierPrice $tierPrice) {
+		$tierPrices = $this->getTrierPrices();
+		array_push($tierPrices, $tierPrice);
+		$this->setTrierPrices($tierPrices);
+	}
 } 

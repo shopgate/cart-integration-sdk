@@ -45,59 +45,70 @@
  *  @method int     getMinimumOrderAmount()
  *
  */
-
 class Shopgate_Model_Catalog_Price
-    extends Shopgate_Model_Abstract
-{
-    /**
-     * default price types
-     */
-    const DEFAULT_PRICE_TYPE_NOT_GROSS = 'net/gross';
+	extends Shopgate_Model_Abstract {
+	/**
+	 * default price types
+	 */
+	const DEFAULT_PRICE_TYPE_NOT_GROSS = 'net/gross';
 
-    /**
-     * init default object
-     */
-    public function __construct()
-    {
-        $this->setTrierPricesGroup(array());
-    }
+	/**
+	 * define allowed methods
+	 *
+	 * @var array
+	 */
+	protected $_allowedMethods
+		= array(
+			'Type',
+			'Price',
+			'Cost',
+			'SalePrice',
+			'Msrp',
+			'TrierPricesGroup',
+			'MinimumOrderAmount'
+		);
 
-    /**
-     * @param Shopgate_Model_XmlResultObject $itemNode
-     *
-     * @return Shopgate_Model_XmlResultObject
-     */
-    public function asXml(Shopgate_Model_XmlResultObject $itemNode)
-    {
-        /**
-         * @var Shopgate_Model_XmlResultObject $tierPricesNode
-         * @var Shopgate_Model_Customer_Group  $customerGroupItem
-         */
-        $pricesNode = $itemNode->addChild('prices');
-        $pricesNode->addAttribute('type', $this->getType());
-        $pricesNode->addChild('price', $this->getPrice());
-        $pricesNode->addChild('cost', $this->getCost());
-        $pricesNode->addChild('sale_price', $this->getSalePrice());
-        $pricesNode->addChild('msrp', $this->getMsrp());
-        $pricesNode->addChild('minimum_order_amount', $this->getMinimumOrderAmount());
+	/**
+	 * init default object
+	 */
+	public function __construct () {
+		$this->setTrierPricesGroup(array());
+	}
 
-        $tierPricesNode = $pricesNode->addChild('tier_prices');
-        foreach ($this->getTrierPricesGroup() as $customerGroupItem) {
-            $customerGroupItem->asXml($tierPricesNode);
-        }
+	/**
+	 * @param Shopgate_Model_XmlResultObject $itemNode
+	 *
+	 * @return Shopgate_Model_XmlResultObject
+	 */
+	public function asXml (Shopgate_Model_XmlResultObject $itemNode) {
+		/**
+		 * @var Shopgate_Model_XmlResultObject $tierPricesNode
+		 * @var Shopgate_Model_Customer_Group  $customerGroupItem
+		 */
+		$pricesNode = $itemNode->addChild('prices');
+		$pricesNode->addAttribute('type', $this->getType());
+		$pricesNode->addChild('price', $this->getPrice());
+		$pricesNode->addChild('cost', $this->getCost());
+		$pricesNode->addChild('sale_price', $this->getSalePrice());
+		$pricesNode->addChild('msrp', $this->getMsrp());
+		$pricesNode->addChild('minimum_order_amount', $this->getMinimumOrderAmount());
 
-        return $itemNode;
-    }
+		$tierPricesNode = $pricesNode->addChild('tier_prices');
+		foreach ($this->getTrierPricesGroup() as $customerGroupItem) {
+			$customerGroupItem->asXml($tierPricesNode);
+		}
 
-    /**
-     * add tier price
-     *
-     * @param Shopgate_Model_Customer_Group $tierPrice
-     */
-    public function addTierPriceGroup(Shopgate_Model_Customer_Group $tierPrice)
-    {
-        $tierPrices = $this->getTrierPricesGroup();
-        array_push($tierPrices, $tierPrice);
-        $this->setTrierPricesGroup($tierPrices);
-    }
+		return $itemNode;
+	}
+
+	/**
+	 * add tier price
+	 *
+	 * @param Shopgate_Model_Customer_Group $tierPrice
+	 */
+	public function addTierPriceGroup (Shopgate_Model_Customer_Group $tierPrice) {
+		$tierPrices = $this->getTrierPricesGroup();
+		array_push($tierPrices, $tierPrice);
+		$this->setTrierPricesGroup($tierPrices);
+	}
 } 

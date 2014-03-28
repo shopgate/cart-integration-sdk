@@ -33,25 +33,48 @@
  *  @method string  getTitle()
  *
  */
-
 class Shopgate_Model_Catalog_Manufacturer
-    extends Shopgate_Model_Abstract
-{
-    /**
-     * @param Shopgate_Model_XmlResultObject $itemNode
-     *
-     * @return Shopgate_Model_XmlResultObject
-     */
-    public function asXml(Shopgate_Model_XmlResultObject $itemNode)
-    {
-        /**
-         * @var Shopgate_Model_XmlResultObject $manufacturerNode
-         */
-        $manufacturerNode = $itemNode->addChild('manufacturer');
-        $manufacturerNode->addAttribute('uid', $this->getUid());
-        $manufacturerNode->addChildWithCDATA('title', $this->getTitle());
-        $manufacturerNode->addChild('item_number', $this->getItemNumber());
+	extends Shopgate_Model_Abstract {
 
-        return $itemNode;
-    }
+	/**
+	 * define allowed methods
+	 *
+	 * @var array
+	 */
+	protected $_allowedMethods
+		= array(
+			'Uid',
+			'ItemNumber',
+			'Title'
+		);
+
+	/**
+	 * @param Shopgate_Model_XmlResultObject $itemNode
+	 *
+	 * @return Shopgate_Model_XmlResultObject
+	 */
+	public function asXml (Shopgate_Model_XmlResultObject $itemNode) {
+		/**
+		 * @var Shopgate_Model_XmlResultObject $manufacturerNode
+		 */
+		$manufacturerNode = $itemNode->addChild('manufacturer');
+		$manufacturerNode->addAttribute('uid', $this->getUid());
+		$manufacturerNode->addChildWithCDATA('title', $this->getTitle());
+		$manufacturerNode->addChild('item_number', $this->getItemNumber());
+
+		return $itemNode;
+	}
+
+	/**
+	 * @return array|null
+	 */
+	public function asArray () {
+		$manufacturerResult = new Shopgate_Model_Abstract();
+
+		$manufacturerResult->setData('uid', $this->getUid());
+		$manufacturerResult->setData('title', $this->getTitle());
+		$manufacturerResult->setData('item_number', $this->getItemNumber());
+
+		return $manufacturerResult->getData();
+	}
 } 

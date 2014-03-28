@@ -13,240 +13,253 @@
  * obtain it through the world-wide-web, please send an email
  * to interfaces@shopgate.com so we can send you a copy immediately.
  *
- * @author Shopgate GmbH, Schloßstraße 10, 35510 Butzbach <interfaces@shopgate.com>
+ * @author     Shopgate GmbH, Schloßstraße 10, 35510 Butzbach <interfaces@shopgate.com>
  * @copyright  Shopgate GmbH
- * @license   http://opensource.org/licenses/AFL-3.0 Academic Free License ("AFL"), in the version 3.0
+ * @license    http://opensource.org/licenses/AFL-3.0 Academic Free License ("AFL"), in the version 3.0
  *
  * User: awesselburg
  * Date: 06.03.14
  * Time: 09:44
  *
  * File: Abstract.php
+ *
+ *
  */
+class Shopgate_Model_Abstract {
 
-class Shopgate_Model_Abstract
-{
+	/**
+	 * Object attributes
+	 *
+	 * @var array
+	 */
+	protected $_data = array();
 
-    /**
-     * Object attributes
-     *
-     * @var array
-     */
-    protected $_data = array();
+	/** @var stdClass $_item */
+	protected $_item;
 
-    /** @var stdClass $_item */
-    protected $_item;
+	/**
+	 * @var string
+	 */
+	protected $_dtdFileLocation = false;
 
-    /**
-     * @var string
-     */
-    protected $_dtdFileLocation = false;
+	/**
+	 * @var string
+	 */
+	protected $_itemNodeIdentifier = '<items></items>';
 
-    /**
-     * @var string
-     */
-    protected $_itemNodeIdentifier = '<items></items>';
+	/**
+	 * @var string
+	 */
+	protected $_identifier = 'items';
 
-    /**
-     * @var string
-     */
-    protected $_identifier = 'items';
+	/**
+	 * @var array
+	 */
+	protected $_fireMethods = array();
 
-    /**
-     * @var array
-     */
-    protected $_fireMethods = array();
+	/**
+	 * define allowed methods
+	 *
+	 * @var array
+	 */
+	protected $_allowedMethods = array();
 
-    /**
-     * Setter/Getter underscore transformation cache
-     *
-     * @var array
-     */
-    protected static $_underscoreCache = array();
+	/**
+	 * Setter/Getter underscore transformation cache
+	 *
+	 * @var array
+	 */
+	protected static $_underscoreCache = array();
 
-    /**
-     * @return array
-     */
-    public function clean()
-    {
-        $result = array();
-        foreach ($this as $k => $v) {
-            if (!is_object($v) && !is_array($v)) {
-                $result[$k] = $v;
-            }
-        }
-        return $result;
-    }
+	/**
+	 * @return array
+	 */
+	public function clean () {
+		$result = array();
+		foreach ($this as $k => $v) {
+			if (!is_object($v) && !is_array($v)) {
+				$result[$k] = $v;
+			}
+		}
 
-    /**
-     * returns the dtd file location
-     *
-     * @return string
-     */
-    public function getDtdFileLocation()
-    {
-        return sprintf(
-            '%s/%s',
-            ShopgateConfig::getCurrentDtdLocation(),
-            $this->_dtdFileLocation
-        );
-    }
+		return $result;
+	}
 
-    /**
-     * returns the item node identifier
-     *
-     * @return string
-     */
-    public function getItemNodeIdentifier()
-    {
-        return $this->_itemNodeIdentifier;
-    }
+	/**
+	 * returns the dtd file location
+	 *
+	 * @return string
+	 */
+	public function getDtdFileLocation () {
+		return sprintf(
+			'%s/%s',
+			ShopgateConfig::getCurrentDtdLocation(),
+			$this->_dtdFileLocation
+		);
+	}
 
-    /**
-     * returns the identifier
-     *
-     * @return string
-     */
-    public function getIdentifier()
-    {
-        return $this->_identifier;
-    }
+	/**
+	 * returns the item node identifier
+	 *
+	 * @return string
+	 */
+	public function getItemNodeIdentifier () {
+		return $this->_itemNodeIdentifier;
+	}
 
-    /**
-     * generate data dom object
-     *
-     * @return $this
-     */
-    public function generateData()
-    {
-        foreach ($this->_fireMethods as $method) {
-            $this->{$method}();
-        }
+	/**
+	 * returns the identifier
+	 *
+	 * @return string
+	 */
+	public function getIdentifier () {
+		return $this->_identifier;
+	}
 
-        return $this;
-    }
+	/**
+	 * generate data dom object
+	 *
+	 * @return $this
+	 */
+	public function generateData () {
+		foreach ($this->_fireMethods as $method) {
+			$this->{$method}();
+		}
 
-    /**
-     * magic get / set
-     *
-     * @param string $method
-     * @param array $args
-     *
-     * @return array|Shopgate_Model_Abstract|null
-     */
-    public function __call($method, $args)
-    {
-        switch (substr($method, 0, 3)) {
-            case 'get' :
-                $key = $this->_underscore(substr($method, 3));
-                $data = $this->getData($key, isset($args[0]) ? $args[0] : null);
-                return $data;
-            case 'set' :
-                $key = $this->_underscore(substr($method, 3));
-                $result = $this->setData($key, isset($args[0]) ? $args[0] : null);
-                return $result;
+		return $this;
+	}
 
-        }
+	/**
+	 * magic get / set
+	 *
+	 * @param string $method
+	 * @param array  $args
+	 *
+	 * @return array|null|Shopgate_Model_Abstract
+	 * @throws Exception
+	 */
+	public function __call ($method, $args) {
 
-        return null;
-    }
+		if (!in_array(substr($method, 3), $this->_allowedMethods)) {
+			throw new ShopgateLibraryException('invalid Method ' . $method);
+		}
 
-    /** set the data by key or array
-     * @param      $key
-     * @param null $value
-     *
-     * @return Shopgate_Model_Abstract
-     */
-    public function setData($key, $value = null)
-    {
-        if (is_array($key)) {
-            foreach ($key as $key => $value) {
-                $this->$key = $value;
-            }
-        } else {
-            $this->$key = $value;
-        }
-        return $this;
-    }
+		switch (substr($method, 0, 3)) {
+			case 'get' :
+				$key = $this->_underscore(substr($method, 3));
+				$data = $this->getData($key, isset($args[0]) ? $args[0] : null);
 
-    /**
-     * returns data from key or all
-     * @param string $key
-     * @param null $index
-     *
-     * @return array|null
-     */
-    public function getData($key = '', $index = null)
-    {
-        if ('' === $key) {
-            return $this->_data;
-        }
+				return $data;
+			case 'set' :
+				$key = $this->_underscore(substr($method, 3));
+				$result = $this->setData($key, isset($args[0]) ? $args[0] : null);
 
-        $default = null;
+				return $result;
 
-        if (isset($this->_data[$key])) {
-            if (is_null($index)) {
-                return $this->_data[$key];
-            }
-            $value = $this->_data[$key];
-            if (is_array($value)) {
-                if (isset($value[$index])) {
-                    return $value[$index];
-                }
-                return null;
-            }
-            return $default;
-        }
-        return $default;
-    }
+		}
 
-    /**
-     * @param string $var
-     *
-     * @return array|null|string
-     */
-    public function __get($var)
-    {
-        $var = $this->_underscore($var);
-        return $this->getData($var);
-    }
+		return null;
+	}
 
-    /**
-     * @param $name
-     *
-     * @return string
-     */
-    protected function _underscore($name)
-    {
-        if (isset(self::$_underscoreCache[$name])) {
-            return self::$_underscoreCache[$name];
-        }
-        $result = strtolower(preg_replace('/(.)([A-Z])/', "$1_$2", $name));
-        self::$_underscoreCache[$name] = $result;
-        return $result;
-    }
+	/** set the data by key or array
+	 *
+	 * @param      $key
+	 * @param null $value
+	 *
+	 * @return Shopgate_Model_Abstract
+	 */
+	public function setData ($key, $value = null) {
+		if (is_array($key)) {
+			foreach ($key as $key => $value) {
+				$this->$key = $value;
+			}
+		} else {
+			$this->$key = $value;
+		}
 
-    /**
-     * Set row field value
-     *
-     * @param  string $columnName The column key.
-     * @param  mixed $value The value for the property.
-     * @return void
-     */
-    public function __set($columnName, $value)
-    {
-        $this->_data[$columnName] = $value;
-    }
+		return $this;
+	}
 
-    /**
-     * @param $item
-     *
-     * @return $this
-     */
-    public function setItem($item)
-    {
-        $this->_item = $item;
+	/**
+	 * returns data from key or all
+	 *
+	 * @param string $key
+	 * @param null   $index
+	 *
+	 * @return array|null
+	 */
+	public function getData ($key = '', $index = null) {
+		if ('' === $key) {
+			return $this->_data;
+		}
 
-        return $this;
-    }
+		$default = null;
+
+		if (isset($this->_data[$key])) {
+			if (is_null($index)) {
+				return $this->_data[$key];
+			}
+			$value = $this->_data[$key];
+			if (is_array($value)) {
+				if (isset($value[$index])) {
+					return $value[$index];
+				}
+
+				return null;
+			}
+
+			return $default;
+		}
+
+		return $default;
+	}
+
+	/**
+	 * @param string $var
+	 *
+	 * @return array|null|string
+	 */
+	public function __get ($var) {
+		$var = $this->_underscore($var);
+
+		return $this->getData($var);
+	}
+
+	/**
+	 * @param $name
+	 *
+	 * @return string
+	 */
+	protected function _underscore ($name) {
+		if (isset(self::$_underscoreCache[$name])) {
+			return self::$_underscoreCache[$name];
+		}
+		$result = strtolower(preg_replace('/(.)([A-Z])/', "$1_$2", $name));
+		self::$_underscoreCache[$name] = $result;
+
+		return $result;
+	}
+
+	/**
+	 * Set row field value
+	 *
+	 * @param  string $columnName The column key.
+	 * @param  mixed  $value      The value for the property.
+	 *
+	 * @return void
+	 */
+	public function __set ($columnName, $value) {
+		$this->_data[$columnName] = $value;
+	}
+
+	/**
+	 * @param $item
+	 *
+	 * @return $this
+	 */
+	public function setItem ($item) {
+		$this->_item = $item;
+
+		return $this;
+	}
 } 

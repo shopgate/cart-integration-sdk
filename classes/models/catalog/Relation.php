@@ -33,54 +33,49 @@
  * @method string   getLabel()
  *
  */
-
 class Shopgate_Model_Catalog_Relation
-    extends Shopgate_Model_Abstract
-{
-    const DEFAULT_RELATION_TYPE_CROSSSELL = 'crosssell';
-    const DEFAULT_RELATION_TYPE_RELATION  = 'relation';
-    const DEFAULT_RELATION_TYPE_CUSTOM    = 'custom';
-    const DEFAULT_RELATION_TYPE_UPSELL    = 'upsell';
+	extends Shopgate_Model_Abstract {
+	const DEFAULT_RELATION_TYPE_CROSSSELL = 'crosssell';
+	const DEFAULT_RELATION_TYPE_RELATION = 'relation';
+	const DEFAULT_RELATION_TYPE_CUSTOM = 'custom';
+	const DEFAULT_RELATION_TYPE_UPSELL = 'upsell';
 
-    /**
-     * init default data
-     */
-    public function __construct()
-    {
-        $this->setValues(array());
-    }
+	/**
+	 * init default data
+	 */
+	public function __construct () {
+		$this->setValues(array());
+	}
 
-    /**
-     * @param Shopgate_Model_XmlResultObject $itemNode
-     *
-     * @return Shopgate_Model_XmlResultObject
-     */
-    public function asXml(Shopgate_Model_XmlResultObject $itemNode)
-    {
-        /**
-         * @var Shopgate_Model_XmlResultObject $relationNode
-         */
-        $relationNode = $itemNode->addChild('relation');
-        $relationNode->addAttribute('type', $this->getType());
-        if ($this->getType() == self::DEFAULT_RELATION_TYPE_CUSTOM) {
-            $relationNode->addChildWithCDATA('label', $this->getLabel());
-        }
-        foreach ($this->getValues() as $value) {
-            $relationNode->addChild('uid', $value);
-        }
+	/**
+	 * @param Shopgate_Model_XmlResultObject $itemNode
+	 *
+	 * @return Shopgate_Model_XmlResultObject
+	 */
+	public function asXml (Shopgate_Model_XmlResultObject $itemNode) {
+		/**
+		 * @var Shopgate_Model_XmlResultObject $relationNode
+		 */
+		$relationNode = $itemNode->addChild('relation');
+		$relationNode->addAttribute('type', $this->getType());
+		if ($this->getType() == self::DEFAULT_RELATION_TYPE_CUSTOM) {
+			$relationNode->addChildWithCDATA('label', $this->getLabel());
+		}
+		foreach ($this->getValues() as $value) {
+			$relationNode->addChild('uid', $value);
+		}
 
-        return $itemNode;
-    }
+		return $itemNode;
+	}
 
-    /**
-     * add new value
-     *
-     * @param int $value
-     */
-    public function addValue($value)
-    {
-        $values = $this->getValues();
-        array_push($values, $value);
-        $this->setValues($values);
-    }
+	/**
+	 * add new value
+	 *
+	 * @param int $value
+	 */
+	public function addValue ($value) {
+		$values = $this->getValues();
+		array_push($values, $value);
+		$this->setValues($values);
+	}
 } 
