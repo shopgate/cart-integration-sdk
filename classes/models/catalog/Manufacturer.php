@@ -41,7 +41,7 @@ class Shopgate_Model_Catalog_Manufacturer
 	 *
 	 * @var array
 	 */
-	protected $_allowedMethods
+	protected $allowedMethods
 		= array(
 			'Uid',
 			'ItemNumber',

@@ -153,34 +153,31 @@ class Shopgate_Model_Catalog_Product
 	/**
 	 * @var string
 	 */
-	protected $_itemNodeIdentifier = '<items></items>';
+	protected $itemNodeIdentifier = '<items></items>';
 
 	/**
 	 * @var string
 	 */
-	protected $_identifier = 'items';
+	protected $identifier = 'items';
 
 	/**
 	 * define dtd file location
 	 *
 	 * @var string
 	 */
-	protected $_dtdFileLocation = 'catalog/product.dtd';
-
-	/** @var array */
-	protected $_children = array();
+	protected $dtdFileLocation = 'catalog/product.dtd';
 
 	/**
 	 * @var bool
 	 */
-	protected $_isChild = false;
+	protected $isChild = false;
 
 	/**
 	 * define allowed methods
 	 *
 	 * @var array
 	 */
-	protected $_allowedMethods
+	protected $allowedMethods
 		= array(
 			'Uid',
 			'LastUpdate',
@@ -217,7 +214,7 @@ class Shopgate_Model_Catalog_Product
 	/**
 	 * @var array
 	 */
-	protected $_fireMethods
+	protected $fireMethods
 		= array(
 			'setLastUpdate',
 			'setUid',
@@ -279,7 +276,7 @@ class Shopgate_Model_Catalog_Product
 	 * @return bool
 	 */
 	public function getIsChild () {
-		return $this->_isChild;
+		return $this->isChild;
 	}
 
 	/**
@@ -288,7 +285,7 @@ class Shopgate_Model_Catalog_Product
 	 * @param $value
 	 */
 	public function setIsChild ($value) {
-		$this->_isChild = $value;
+		$this->isChild = $value;
 	}
 
 	/**
@@ -449,17 +446,6 @@ class Shopgate_Model_Catalog_Product
 		}
 
 		/**
-		 * attachments
-		 *
-		 * @var Shopgate_Model_XmlResultObject  $attachmentsNode
-		 * @var Shopgate_Model_Media_Attachment $attachmentItem
-		 */
-		$attachmentsNode = $itemNode->addChild('attachments');
-		foreach ($this->getAttachments() as $attachmentItem) {
-			$attachmentItem->asXml($attachmentsNode);
-		}
-
-		/**
 		 * children
 		 *
 		 * @var Shopgate_Model_XmlResultObject $childrenNode
@@ -477,7 +463,7 @@ class Shopgate_Model_Catalog_Product
 			 */
 			if (self::DEFAULT_CLEAN_CHILDREN_NODES && count($this->getChildren()) > 0) {
 				foreach ($itemNode->children as $childXml) {
-					$itemNode->replaceChild($this->_removeEmptyNodes($childXml), $itemNode->children);
+					$itemNode->replaceChild($this->removeEmptyNodes($childXml), $itemNode->children);
 				}
 			}
 		}
@@ -513,7 +499,7 @@ class Shopgate_Model_Catalog_Product
 	public function getChildren () {
 		if (self::DEFAULT_CLEAN_CHILDREN) {
 			foreach (parent::getData('children') as $child) {
-				$this->_cleanChildData($this, $child);
+				$this->cleanChildData($this, $child);
 			}
 		}
 
@@ -551,17 +537,6 @@ class Shopgate_Model_Catalog_Product
 		$properties = $this->getProperties();
 		array_push($properties, $property);
 		$this->setProperties($properties);
-	}
-
-	/**
-	 * add attachment
-	 *
-	 * @param Shopgate_Model_Media_Attachment $attachment
-	 */
-	public function addAttachment ($attachment) {
-		$attachments = $this->getAttachments();
-		array_push($attachments, $attachment);
-		$this->setAttachments($attachments);
 	}
 
 	/**
@@ -624,7 +599,7 @@ class Shopgate_Model_Catalog_Product
 	 *
 	 * @return SimpleXMLElement
 	 */
-	public function _removeEmptyNodes ($childItem) {
+	public function removeEmptyNodes ($childItem) {
 		$output = $childItem->asXML();
 		$outputRef = $output;
 		$output = preg_replace('~<[^\\s>]+\\s*/>~si', null, $output);
@@ -632,7 +607,7 @@ class Shopgate_Model_Catalog_Product
 			return new SimpleXMLElement($output);
 		}
 
-		return $this->_removeEmptyNodes(new Shopgate_Model_XmlResultObject($output));
+		return $this->removeEmptyNodes(new Shopgate_Model_XmlResultObject($output));
 
 	}
 
@@ -749,7 +724,7 @@ class Shopgate_Model_Catalog_Product
 	 * @param Shopgate_Model_Abstract $parentItem
 	 * @param Shopgate_Model_Abstract $childItem
 	 */
-	protected function _cleanChildData ($parentItem, $childItem) {
+	protected function cleanChildData ($parentItem, $childItem) {
 		foreach ($childItem->getData() as $key => $value) {
 			if ($parentValue = $parentItem->getData($key)) {
 				if (is_array($parentValue) && count($value) > 0) {
@@ -761,8 +736,8 @@ class Shopgate_Model_Catalog_Product
 						 * @var int                     $parentUid
 						 */
 						$parentUid = $parentItem->getData('uid');
-						if ($parentUid && $childItem = $this->_getItemByUid($value, $parentUid)) {
-							$this->_cleanChildData($parentItem, $childItem);
+						if ($parentUid && $childItem = $this->getItemByUid($value, $parentUid)) {
+							$this->cleanChildData($parentItem, $childItem);
 						}
 					}
 				}
@@ -771,7 +746,7 @@ class Shopgate_Model_Catalog_Product
 					 * @var  Shopgate_Model_Abstract $value
 					 * @var  Shopgate_Model_Abstract $parentValue
 					 */
-					$this->_cleanChildData($parentValue, $value);
+					$this->cleanChildData($parentValue, $value);
 				}
 				if (!is_array($parentValue) && !$value instanceof Shopgate_Model_Abstract) {
 					if ($value === $parentValue && $key != self::DEFAULT_IDENTIFIER_UID) {
@@ -788,7 +763,7 @@ class Shopgate_Model_Catalog_Product
 	 *
 	 * @return mixed
 	 */
-	protected function _getItemByUid ($data, $uid) {
+	protected function getItemByUid ($data, $uid) {
 		/* @var Shopgate_Model_Abstract $item */
 		foreach ($data as $item) {
 			if ($item->getData(self::DEFAULT_IDENTIFIER_UID) == $uid) {

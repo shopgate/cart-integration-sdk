@@ -53,7 +53,7 @@ class Shopgate_Model_Catalog_Stock
 	 *
 	 * @var array
 	 */
-	protected $_allowedMethods
+	protected $allowedMethods
 		= array(
 			'IsSaleable',
 			'Backorders',

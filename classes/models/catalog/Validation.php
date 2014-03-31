@@ -62,7 +62,7 @@ class Shopgate_Model_Catalog_Validation
 	 *
 	 * @var array
 	 */
-	protected $_allowedMethods
+	protected $allowedMethods
 		= array(
 			'ValidationType',
 			'Value'

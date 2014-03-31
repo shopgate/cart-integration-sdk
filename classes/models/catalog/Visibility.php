@@ -38,7 +38,7 @@ class Shopgate_Model_Catalog_Visibility
 	 *
 	 * @var array
 	 */
-	protected $_allowedMethods
+	protected $allowedMethods
 		= array(
 			'Marketplace',
 			'Level'

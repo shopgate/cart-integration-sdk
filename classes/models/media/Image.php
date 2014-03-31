@@ -47,7 +47,7 @@ class Shopgate_Model_Media_Image
 	 *
 	 * @var array
 	 */
-	protected $_allowedMethods
+	protected $allowedMethods
 		= array(
 			'Uid',
 			'SortOrder',

@@ -53,24 +53,24 @@ class Shopgate_Model_Catalog_Category
 	/**
 	 * @var string
 	 */
-	protected $_itemNodeIdentifier = '<categories></categories>';
+	protected $itemNodeIdentifier = '<categories></categories>';
 
 	/**
 	 * @var string
 	 */
-	protected $_identifier = 'categories';
+	protected $identifier = 'categories';
 
 	/**
 	 * define dtd file location
 	 *
 	 * @var string
 	 */
-	protected $_dtdFileLocation = 'catalog/category.dtd';
+	protected $dtdFileLocation = 'catalog/category.dtd';
 
 	/**
 	 * @var array
 	 */
-	protected $_fireMethods
+	protected $fireMethods
 		= array(
 			'setUid',
 			'setSortOrder',
@@ -87,7 +87,7 @@ class Shopgate_Model_Catalog_Category
 	 *
 	 * @var array
 	 */
-	protected $_allowedMethods
+	protected $allowedMethods
 		= array(
 			'Uid',
 			'SortOrder',

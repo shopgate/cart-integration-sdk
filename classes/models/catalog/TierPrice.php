@@ -45,7 +45,7 @@ class Shopgate_Model_Catalog_TierPrice
 	 *
 	 * @var array
 	 */
-	protected $_allowedMethods
+	protected $allowedMethods
 		= array(
 			'FromQuantity',
 			'ReductionType',

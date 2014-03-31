@@ -41,7 +41,7 @@ class Shopgate_Model_Catalog_Shipping
 	 *
 	 * @var array
 	 */
-	protected $_allowedMethods
+	protected $allowedMethods
 		= array(
 			'CostsPerOrder',
 			'AdditionalCostsPerUnit',

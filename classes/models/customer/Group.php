@@ -38,7 +38,7 @@ class Shopgate_Model_Customer_Group
 	 *
 	 * @var array
 	 */
-	protected $_allowedMethods
+	protected $allowedMethods
 		= array(
 			'Uid',
 			'TierPrices'

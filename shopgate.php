@@ -69,7 +69,6 @@ require_once(dirname(__FILE__).DS.'classes'.DS.'models/catalog/Attribute.php');
  * media
  */
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/media/Image.php');
-require_once(dirname(__FILE__).DS.'classes'.DS.'models/media/Attachment.php');
 
 /**
  * customer

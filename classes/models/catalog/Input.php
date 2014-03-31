@@ -63,7 +63,7 @@ class Shopgate_Model_Catalog_Input
 	 *
 	 * @var array
 	 */
-	protected $_allowedMethods
+	protected $allowedMethods
 		= array(
 			'Uid',
 			'Type',

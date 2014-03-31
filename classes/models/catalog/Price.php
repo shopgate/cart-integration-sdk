@@ -57,7 +57,7 @@ class Shopgate_Model_Catalog_Price
 	 *
 	 * @var array
 	 */
-	protected $_allowedMethods
+	protected $allowedMethods
 		= array(
 			'Type',
 			'Price',

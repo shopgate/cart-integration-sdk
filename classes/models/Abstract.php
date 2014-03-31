@@ -32,44 +32,44 @@ class Shopgate_Model_Abstract {
 	 *
 	 * @var array
 	 */
-	protected $_data = array();
+	protected $data = array();
 
-	/** @var stdClass $_item */
-	protected $_item;
-
-	/**
-	 * @var string
-	 */
-	protected $_dtdFileLocation = false;
+	/** @var stdClass $item */
+	protected $item;
 
 	/**
 	 * @var string
 	 */
-	protected $_itemNodeIdentifier = '<items></items>';
+	protected $dtdFileLocation = false;
 
 	/**
 	 * @var string
 	 */
-	protected $_identifier = 'items';
+	protected $itemNodeIdentifier = '<items></items>';
+
+	/**
+	 * @var string
+	 */
+	protected $identifier = 'items';
 
 	/**
 	 * @var array
 	 */
-	protected $_fireMethods = array();
+	protected $fireMethods = array();
 
 	/**
 	 * define allowed methods
 	 *
 	 * @var array
 	 */
-	protected $_allowedMethods = array();
+	protected $allowedMethods = array();
 
 	/**
 	 * Setter/Getter underscore transformation cache
 	 *
 	 * @var array
 	 */
-	protected static $_underscoreCache = array();
+	protected static $underscoreCache = array();
 
 	/**
 	 * @return array
@@ -94,7 +94,7 @@ class Shopgate_Model_Abstract {
 		return sprintf(
 			'%s/%s',
 			ShopgateConfig::getCurrentDtdLocation(),
-			$this->_dtdFileLocation
+			$this->dtdFileLocation
 		);
 	}
 
@@ -104,7 +104,7 @@ class Shopgate_Model_Abstract {
 	 * @return string
 	 */
 	public function getItemNodeIdentifier () {
-		return $this->_itemNodeIdentifier;
+		return $this->itemNodeIdentifier;
 	}
 
 	/**
@@ -113,7 +113,7 @@ class Shopgate_Model_Abstract {
 	 * @return string
 	 */
 	public function getIdentifier () {
-		return $this->_identifier;
+		return $this->identifier;
 	}
 
 	/**
@@ -122,7 +122,7 @@ class Shopgate_Model_Abstract {
 	 * @return $this
 	 */
 	public function generateData () {
-		foreach ($this->_fireMethods as $method) {
+		foreach ($this->fireMethods as $method) {
 			$this->{$method}();
 		}
 
@@ -140,18 +140,18 @@ class Shopgate_Model_Abstract {
 	 */
 	public function __call ($method, $args) {
 
-		if (!in_array(substr($method, 3), $this->_allowedMethods)) {
+		if (!in_array(substr($method, 3), $this->allowedMethods)) {
 			throw new ShopgateLibraryException('invalid Method ' . $method);
 		}
 
 		switch (substr($method, 0, 3)) {
 			case 'get' :
-				$key = $this->_underscore(substr($method, 3));
+				$key = $this->underscore(substr($method, 3));
 				$data = $this->getData($key, isset($args[0]) ? $args[0] : null);
 
 				return $data;
 			case 'set' :
-				$key = $this->_underscore(substr($method, 3));
+				$key = $this->underscore(substr($method, 3));
 				$result = $this->setData($key, isset($args[0]) ? $args[0] : null);
 
 				return $result;
@@ -190,16 +190,16 @@ class Shopgate_Model_Abstract {
 	 */
 	public function getData ($key = '', $index = null) {
 		if ('' === $key) {
-			return $this->_data;
+			return $this->data;
 		}
 
 		$default = null;
 
-		if (isset($this->_data[$key])) {
+		if (isset($this->data[$key])) {
 			if (is_null($index)) {
-				return $this->_data[$key];
+				return $this->data[$key];
 			}
-			$value = $this->_data[$key];
+			$value = $this->data[$key];
 			if (is_array($value)) {
 				if (isset($value[$index])) {
 					return $value[$index];
@@ -220,7 +220,7 @@ class Shopgate_Model_Abstract {
 	 * @return array|null|string
 	 */
 	public function __get ($var) {
-		$var = $this->_underscore($var);
+		$var = $this->underscore($var);
 
 		return $this->getData($var);
 	}
@@ -230,12 +230,12 @@ class Shopgate_Model_Abstract {
 	 *
 	 * @return string
 	 */
-	protected function _underscore ($name) {
-		if (isset(self::$_underscoreCache[$name])) {
-			return self::$_underscoreCache[$name];
+	protected function underscore ($name) {
+		if (isset(self::$underscoreCache[$name])) {
+			return self::$underscoreCache[$name];
 		}
 		$result = strtolower(preg_replace('/(.)([A-Z])/', "$1_$2", $name));
-		self::$_underscoreCache[$name] = $result;
+		self::$underscoreCache[$name] = $result;
 
 		return $result;
 	}
@@ -249,7 +249,7 @@ class Shopgate_Model_Abstract {
 	 * @return void
 	 */
 	public function __set ($columnName, $value) {
-		$this->_data[$columnName] = $value;
+		$this->data[$columnName] = $value;
 	}
 
 	/**
@@ -258,7 +258,7 @@ class Shopgate_Model_Abstract {
 	 * @return $this
 	 */
 	public function setItem ($item) {
-		$this->_item = $item;
+		$this->item = $item;
 
 		return $this;
 	}

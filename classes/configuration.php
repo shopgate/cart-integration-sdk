@@ -313,12 +313,12 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	/**
 	 * @var string The name of the items XML file.
 	 */
-	protected $_items_xml_filename;
+	protected $items_xml_filename;
 
 	/**
 	 * @var string The name of the items JSON file.
 	 */
-	protected $_items_json_filename;
+	protected $items_json_filename;
 
 	/**
 	 * @var string The name of the categories CSV file.

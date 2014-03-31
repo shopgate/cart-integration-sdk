@@ -41,7 +41,7 @@ class Shopgate_Model_Catalog_Identifier
 	 *
 	 * @var array
 	 */
-	protected $_allowedMethods
+	protected $allowedMethods
 		= array(
 			'Uid',
 			'Type',

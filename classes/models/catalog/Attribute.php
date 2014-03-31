@@ -41,7 +41,7 @@ class Shopgate_Model_Catalog_Attribute
 	 *
 	 * @var array
 	 */
-	protected $_allowedMethods
+	protected $allowedMethods
 		= array(
 			'Uid',
 			'GroupUid',

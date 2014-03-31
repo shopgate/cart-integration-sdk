@@ -1179,7 +1179,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	/**
 	 * @var Shopgate_Model_Abstract
 	 */
-	protected $_result_item_model = false;
+	protected $result_item_model = false;
 
 	/** convert weight units **/
 	const CONVERT_POUNDS_TO_GRAM_FACTOR = 453.59237;
@@ -1275,14 +1275,14 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @param Shopgate_Model_Abstract $itemModel
 	 */
 	public function setResultItemModel ($itemModel) {
-		$this->_result_item_model = $itemModel;
+		$this->result_item_model = $itemModel;
 	}
 
 	/**
 	 * @return Shopgate_Model_Abstract
 	 */
 	public function getResultItemModel () {
-		return $this->_result_item_model;
+		return $this->result_item_model;
 	}
 
 	/**
