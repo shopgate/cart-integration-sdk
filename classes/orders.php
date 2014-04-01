@@ -1112,19 +1112,20 @@ class ShopgateOrderItem extends ShopgateContainer {
 			return;
 		}
 
-		// convert sub-arrays into ShopgateOrderItemOption objects if necessary
-		foreach ($value as $index => &$element) {
-			if ((!is_object($element) || !($element instanceof ShopgateOrderItemOption)) && !is_array($element)) {
-				unset($value[$index]);
+		$options = array();
+		foreach ($value as $index => $element) {
+			if (!($element instanceof ShopgateOrderItemOption) && !is_array($element)) {
 				continue;
 			}
 
 			if (is_array($element)) {
-				$element = new ShopgateOrderItemOption($element);
+				$options[] = new ShopgateOrderItemOption($element);
+			} else {
+				$options[] = $element;
 			}
 		}
 
-		$this->options = $value;
+		$this->options = $options;
 	}
 
 	/**
@@ -1136,19 +1137,20 @@ class ShopgateOrderItem extends ShopgateContainer {
 			return;
 		}
 		
-		// convert sub-arrays into ShopgateOrderItemInputs objects if necessary
-		foreach ($value as $index => &$element) {
-			if ((!is_object($element) || !($element instanceof ShopgateOrderItemInput)) && !is_array($element)) {
-				unset($value[$index]);
+		$inputs = array();
+		foreach ($value as $index => $element) {
+			if (!($element instanceof ShopgateOrderItemInput) && !is_array($element)) {
 				continue;
 			}
 			
 			if (is_array(($element))) {
-				$element = new ShopgateOrderItemInput($element);
+				$inputs[] = new ShopgateOrderItemInput($element);
+			} else {
+				$inputs[] = $element;
 			}
 		}
 		
-		$this->inputs = $value;
+		$this->inputs = $inputs;
 	}
 
 	/**
@@ -2546,7 +2548,7 @@ class ShopgateCartItem extends ShopgateContainer
 		return $this->stock_quantity;
 	}
 	
-	/**	 
+	/**
 	 * @return float
 	 */
 	public function getUnitAmount()
