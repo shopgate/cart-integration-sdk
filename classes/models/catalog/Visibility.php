@@ -37,8 +37,9 @@ class Shopgate_Model_Catalog_Visibility extends Shopgate_Model_Abstract {
 	 *
 	 * @var array
 	 */
-	protected $allowedMethods = array('Marketplace',
-									  'Level');
+	protected $allowedMethods = array(
+		'Marketplace',
+		'Level');
 
 	const DEFAULT_VISIBILITY_CATALOG_AND_SEARCH = 'catalog_and_search';
 	const DEFAULT_VISIBILITY_CATALOG = 'catalog';

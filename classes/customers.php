@@ -397,14 +397,15 @@ class ShopgateAddress extends ShopgateContainer {
 	 * @return bool
 	 */
 	public function equals(ShopgateAddress $address) {
-		$whiteList = array('gender',
-						   'first_name',
-						   'last_name',
-						   'street_1',
-						   'street_2',
-						   'zipcode',
-						   'city',
-						   'country');
+		$whiteList = array(
+			'gender',
+			'first_name',
+			'last_name',
+			'street_1',
+			'street_2',
+			'zipcode',
+			'city',
+			'country');
 
 		return $this->compare($this, $address, $whiteList);
 	}

@@ -52,13 +52,14 @@ class Shopgate_Model_Catalog_CategoryPath extends Shopgate_Model_Abstract {
 	 *
 	 * @var array
 	 */
-	protected $allowedMethods = array('Uid',
-									  'SortOrder',
-									  'Items',
-									  'ParentUid',
-									  'Image',
-									  'IsActive',
-									  'Deeplink');
+	protected $allowedMethods = array(
+		'Uid',
+		'SortOrder',
+		'Items',
+		'ParentUid',
+		'Image',
+		'IsActive',
+		'Deeplink');
 
 	/**
 	 * init default object

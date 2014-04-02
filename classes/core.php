@@ -222,87 +222,87 @@ class ShopgateLibraryException extends Exception {
 	// Unknown error code (the value passed as code gets to be the message)
 	const UNKNOWN_ERROR_CODE = 999;
 
-	protected static $errorMessages = array(// Initizialization / instantiation of plugin failure
-											//self::INIT_EMPTY_CONFIG => 'empty configuration',
-											self::INIT_LOGFILE_OPEN_ERROR => 'cannot open/create logfile(s)',
+	protected static $errorMessages = array( // Initizialization / instantiation of plugin failure
+											 //self::INIT_EMPTY_CONFIG => 'empty configuration',
+											 self::INIT_LOGFILE_OPEN_ERROR => 'cannot open/create logfile(s)',
 
-											// Configuration failure
-											self::CONFIG_INVALID_VALUE => 'invalid value in configuration',
-											self::CONFIG_READ_WRITE_ERROR => 'error reading or writing configuration',
-											self::CONFIG_PLUGIN_NOT_ACTIVE => 'plugin not activated',
+											 // Configuration failure
+											 self::CONFIG_INVALID_VALUE => 'invalid value in configuration',
+											 self::CONFIG_READ_WRITE_ERROR => 'error reading or writing configuration',
+											 self::CONFIG_PLUGIN_NOT_ACTIVE => 'plugin not activated',
 
-											// Plugin API errors
-											self::PLUGIN_API_NO_ACTION => 'no action specified',
-											self::PLUGIN_API_UNKNOWN_ACTION => 'unknown action requested',
-											self::PLUGIN_API_DISABLED_ACTION => 'disabled action requested',
-											self::PLUGIN_API_WRONG_RESPONSE_FORMAT => 'wrong response format',
+											 // Plugin API errors
+											 self::PLUGIN_API_NO_ACTION => 'no action specified',
+											 self::PLUGIN_API_UNKNOWN_ACTION => 'unknown action requested',
+											 self::PLUGIN_API_DISABLED_ACTION => 'disabled action requested',
+											 self::PLUGIN_API_WRONG_RESPONSE_FORMAT => 'wrong response format',
 
-											self::PLUGIN_API_UNKNOWN_SHOP_NUMBER => 'unknown shop number received',
+											 self::PLUGIN_API_UNKNOWN_SHOP_NUMBER => 'unknown shop number received',
 
-											self::PLUGIN_API_NO_ORDER_NUMBER => 'parameter "order_number" missing',
-											self::PLUGIN_API_NO_CART => 'parameter "cart" missing',
-											self::PLUGIN_API_NO_USER => 'parameter "user" missing',
-											self::PLUGIN_API_NO_PASS => 'parameter "pass" missing',
-											self::PLUGIN_API_NO_USER_DATA => 'parameter "user_data" missing',
-											self::PLUGIN_API_UNKNOWN_LOGTYPE => 'unknown logtype',
-											self::PLUGIN_API_CRON_NO_JOBS => 'parameter "jobs" missing',
-											self::PLUGIN_API_CRON_NO_JOB_NAME => 'field "job_name" in parameter "jobs" missing',
-											self::PLUGIN_API_NO_SHOPGATE_SETTINGS => 'parameter "shopgate_settings" missing',
+											 self::PLUGIN_API_NO_ORDER_NUMBER => 'parameter "order_number" missing',
+											 self::PLUGIN_API_NO_CART => 'parameter "cart" missing',
+											 self::PLUGIN_API_NO_USER => 'parameter "user" missing',
+											 self::PLUGIN_API_NO_PASS => 'parameter "pass" missing',
+											 self::PLUGIN_API_NO_USER_DATA => 'parameter "user_data" missing',
+											 self::PLUGIN_API_UNKNOWN_LOGTYPE => 'unknown logtype',
+											 self::PLUGIN_API_CRON_NO_JOBS => 'parameter "jobs" missing',
+											 self::PLUGIN_API_CRON_NO_JOB_NAME => 'field "job_name" in parameter "jobs" missing',
+											 self::PLUGIN_API_NO_SHOPGATE_SETTINGS => 'parameter "shopgate_settings" missing',
 
-											// Plugin errors
-											self::PLUGIN_DUPLICATE_ORDER => 'duplicate order',
-											self::PLUGIN_ORDER_NOT_FOUND => 'order not found',
-											self::PLUGIN_NO_CUSTOMER_GROUP_FOUND => 'no customer group found for customer',
-											self::PLUGIN_ORDER_ITEM_NOT_FOUND => 'order item not found',
-											self::PLUGIN_ORDER_STATUS_IS_SENT => 'order status is "sent"',
-											self::PLUGIN_ORDER_ALREADY_UP_TO_DATE => 'order is already up to date',
-											self::PLUGIN_REGISTER_CUSTOMER_ERROR => 'error while registering new customer',
+											 // Plugin errors
+											 self::PLUGIN_DUPLICATE_ORDER => 'duplicate order',
+											 self::PLUGIN_ORDER_NOT_FOUND => 'order not found',
+											 self::PLUGIN_NO_CUSTOMER_GROUP_FOUND => 'no customer group found for customer',
+											 self::PLUGIN_ORDER_ITEM_NOT_FOUND => 'order item not found',
+											 self::PLUGIN_ORDER_STATUS_IS_SENT => 'order status is "sent"',
+											 self::PLUGIN_ORDER_ALREADY_UP_TO_DATE => 'order is already up to date',
+											 self::PLUGIN_REGISTER_CUSTOMER_ERROR => 'error while registering new customer',
 
-											self::PLUGIN_NO_ADDRESSES_FOUND => 'no addresses found for customer',
-											self::PLUGIN_WRONG_USERNAME_OR_PASSWORD => 'wrong username or password',
-											self::PLUGIN_CUSTOMER_ACCOUNT_NOT_CONFIRMED => 'customer account not confirmed',
-											self::PLUGIN_CUSTOMER_UNKNOWN_ERROR => 'unknown error while customer login',
+											 self::PLUGIN_NO_ADDRESSES_FOUND => 'no addresses found for customer',
+											 self::PLUGIN_WRONG_USERNAME_OR_PASSWORD => 'wrong username or password',
+											 self::PLUGIN_CUSTOMER_ACCOUNT_NOT_CONFIRMED => 'customer account not confirmed',
+											 self::PLUGIN_CUSTOMER_UNKNOWN_ERROR => 'unknown error while customer login',
 
-											self::PLUGIN_FILE_DELETE_ERROR => 'cannot delete file(s)',
-											self::PLUGIN_FILE_NOT_FOUND => 'file not found',
-											self::PLUGIN_FILE_OPEN_ERROR => 'cannot open file',
-											self::PLUGIN_FILE_EMPTY_BUFFER => 'buffer is empty',
-											self::PLUGIN_DATABASE_ERROR => 'database error',
-											self::PLUGIN_UNKNOWN_COUNTRY_CODE => 'unknown country code',
-											self::PLUGIN_UNKNOWN_STATE_CODE => 'unknown state code',
+											 self::PLUGIN_FILE_DELETE_ERROR => 'cannot delete file(s)',
+											 self::PLUGIN_FILE_NOT_FOUND => 'file not found',
+											 self::PLUGIN_FILE_OPEN_ERROR => 'cannot open file',
+											 self::PLUGIN_FILE_EMPTY_BUFFER => 'buffer is empty',
+											 self::PLUGIN_DATABASE_ERROR => 'database error',
+											 self::PLUGIN_UNKNOWN_COUNTRY_CODE => 'unknown country code',
+											 self::PLUGIN_UNKNOWN_STATE_CODE => 'unknown state code',
 
-											self::PLUGIN_EMAIL_SEND_ERROR => 'error sending email',
+											 self::PLUGIN_EMAIL_SEND_ERROR => 'error sending email',
 
-											self::PLUGIN_CRON_UNSUPPORTED_JOB => 'unsupported job',
+											 self::PLUGIN_CRON_UNSUPPORTED_JOB => 'unsupported job',
 
-											// Merchant API errors
-											self::MERCHANT_API_NO_CONNECTION => 'no connection to server',
-											self::MERCHANT_API_INVALID_RESPONSE => 'error parsing response',
-											self::MERCHANT_API_ERROR_RECEIVED => 'error code received',
+											 // Merchant API errors
+											 self::MERCHANT_API_NO_CONNECTION => 'no connection to server',
+											 self::MERCHANT_API_INVALID_RESPONSE => 'error parsing response',
+											 self::MERCHANT_API_ERROR_RECEIVED => 'error code received',
 
-											// File errors
-											self::FILE_READ_WRITE_ERROR => 'error reading or writing file',
+											 // File errors
+											 self::FILE_READ_WRITE_ERROR => 'error reading or writing file',
 
-											// Coupon Errors
-											self::COUPON_NOT_VALID => 'invalid coupon',
-											self::COUPON_CODE_NOT_VALID => 'invalid coupon code',
-											self::COUPON_INVALID_PRODUCT => 'invalid product for coupon',
-											self::COUPON_INVALID_ADDRESS => 'invalid address for coupon',
-											self::COUPON_INVALID_USER => 'invalid user for coupon',
-											self::COUPON_TOO_MANY_COUPONS => 'too many coupons in cart',
+											 // Coupon Errors
+											 self::COUPON_NOT_VALID => 'invalid coupon',
+											 self::COUPON_CODE_NOT_VALID => 'invalid coupon code',
+											 self::COUPON_INVALID_PRODUCT => 'invalid product for coupon',
+											 self::COUPON_INVALID_ADDRESS => 'invalid address for coupon',
+											 self::COUPON_INVALID_USER => 'invalid user for coupon',
+											 self::COUPON_TOO_MANY_COUPONS => 'too many coupons in cart',
 
-											self::REGISTER_FAILED_TO_ADD_USER => 'failed to add user',
-											self::REGISTER_USER_ALREADY_EXISTS => 'the given username already exists',
+											 self::REGISTER_FAILED_TO_ADD_USER => 'failed to add user',
+											 self::REGISTER_USER_ALREADY_EXISTS => 'the given username already exists',
 
-											// Cart Item Errors
-											self::CART_ITEM_OUT_OF_STOCK => 'product is not in stock',
-											self::CART_ITEM_PRODUCT_NOT_FOUND => 'product not found',
-											self::CART_ITEM_REQUESTED_QUANTITY_NOT_AVAILABLE => 'less stock available than requested',
+											 // Cart Item Errors
+											 self::CART_ITEM_OUT_OF_STOCK => 'product is not in stock',
+											 self::CART_ITEM_PRODUCT_NOT_FOUND => 'product not found',
+											 self::CART_ITEM_REQUESTED_QUANTITY_NOT_AVAILABLE => 'less stock available than requested',
 
-											// Authentification errors
-											self::AUTHENTICATION_FAILED => 'authentication failed',
+											 // Authentification errors
+											 self::AUTHENTICATION_FAILED => 'authentication failed',
 
-											self::MULTIPLE_ERRORS => '',);
+											 self::MULTIPLE_ERRORS => '',);
 
 
 	/**
@@ -502,18 +502,23 @@ class ShopgateLogger {
 	/**
 	 * @var mixed[]
 	 */
-	private $files = array(self::LOGTYPE_ACCESS => array('path' => '',
-														 'handle' => null,
-														 'mode' => 'a+'),
-						   self::LOGTYPE_REQUEST => array('path' => '',
-														  'handle' => null,
-														  'mode' => 'a+'),
-						   self::LOGTYPE_ERROR => array('path' => '',
-														'handle' => null,
-														'mode' => 'a+'),
-						   self::LOGTYPE_DEBUG => array('path' => '',
-														'handle' => null,
-														'mode' => 'w+'),);
+	private $files = array(
+		self::LOGTYPE_ACCESS => array(
+			'path' => '',
+			'handle' => null,
+			'mode' => 'a+'),
+		self::LOGTYPE_REQUEST => array(
+			'path' => '',
+			'handle' => null,
+			'mode' => 'a+'),
+		self::LOGTYPE_ERROR => array(
+			'path' => '',
+			'handle' => null,
+			'mode' => 'a+'),
+		self::LOGTYPE_DEBUG => array(
+			'path' => '',
+			'handle' => null,
+			'mode' => 'w+'),);
 
 	/**
 	 * @var ShopgateLogger
@@ -959,8 +964,9 @@ abstract class ShopgateObject {
 				$str[0] = strtoupper($str[0]);
 			}
 
-			$this->camelizeCache[$hash] = preg_replace_callback('/_([a-z0-9])/', array($this,
-																					   'camelizeHelper'), $str);
+			$this->camelizeCache[$hash] = preg_replace_callback('/_([a-z0-9])/', array(
+				$this,
+				'camelizeHelper'), $str);
 		}
 
 		return $this->camelizeCache[$hash];
@@ -1488,13 +1494,14 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @see http://wiki.shopgate.com/CSV_File_Categories/
 	 */
 	protected function buildDefaultCategoryRow() {
-		$row = array("category_number" => "",
-					 "parent_id" => "",
-					 "category_name" => "",
-					 "url_image" => "",
-					 "order_index" => "",
-					 "is_active" => 1,
-					 "url_deeplink" => "");
+		$row = array(
+			"category_number" => "",
+			"parent_id" => "",
+			"category_name" => "",
+			"url_image" => "",
+			"order_index" => "",
+			"is_active" => 1,
+			"url_deeplink" => "");
 
 		return $row;
 	}
@@ -1567,8 +1574,9 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	protected function buildDefaultItemRow() {
 
 		// prepare attributes
-		$attributes = array('has_children' => '0',
-							'parent_item_number' => '');
+		$attributes = array(
+			'has_children' => '0',
+			'parent_item_number' => '');
 		for ($attr = 1; $attr <= $this->defaultItemRowAttributeCount; $attr++) {
 			$attributes['attribute_'.$attr] = '';
 		}
@@ -1591,55 +1599,55 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			$inputs['input_field_'.$inp.'_add_amount'] = '';
 		}
 
-		$row = array(/* responsible fields */
-					 'item_number' => "",
-					 'item_name' => "",
-					 'unit_amount' => "",
-					 //			'unit_amount_net' 			=> "",
-					 'currency' => "EUR",
-					 'tax_percent' => "",
-					 //			'tax_class'					=> "",
-					 'description' => "",
-					 'urls_images' => "",
-					 'categories' => "",
-					 'category_numbers' => "",
-					 'is_available' => "1",
-					 'available_text' => "",
-					 'manufacturer' => "",
-					 'manufacturer_item_number' => "",
-					 'url_deeplink' => "",
-					 /* additional fields */
-					 'item_number_public' => "",
-					 'old_unit_amount' => "",
-					 //			'old_unit_amount_net'		=> "",
-					 'properties' => "",
-					 'msrp' => "",
-					 'shipping_costs_per_order' => "0",
-					 'additional_shipping_costs_per_unit' => "0",
-					 'is_free_shipping' => "0",
-					 'basic_price' => "",
-					 'use_stock' => "0",
-					 'stock_quantity' => "",
-					 'active_status' => self::PRODUCT_STATUS_STOCK,
-					 'minimum_order_quantity' => "0",
-					 'maximum_order_quantity' => "0",
-					 'minimum_order_amount' => "0.00",
-					 'ean' => "",
-					 'isbn' => "",
-					 'pzn' => "",
-					 'upc' => "",
-					 'last_update' => "",
-					 'tags' => "",
-					 'sort_order' => "",
-					 'is_highlight' => "0",
-					 'highlight_order_index' => "0",
-					 'marketplace' => "1",
-					 'internal_order_info' => "",
-					 'related_shop_item_numbers' => "",
-					 'age_rating' => "",
-					 'weight' => "",
-					 'block_pricing' => ""
-					 /* parent/child relationship */) + $attributes + $options + $inputs;
+		$row = array( /* responsible fields */
+					  'item_number' => "",
+					  'item_name' => "",
+					  'unit_amount' => "",
+					  //			'unit_amount_net' 			=> "",
+					  'currency' => "EUR",
+					  'tax_percent' => "",
+					  //			'tax_class'					=> "",
+					  'description' => "",
+					  'urls_images' => "",
+					  'categories' => "",
+					  'category_numbers' => "",
+					  'is_available' => "1",
+					  'available_text' => "",
+					  'manufacturer' => "",
+					  'manufacturer_item_number' => "",
+					  'url_deeplink' => "",
+					  /* additional fields */
+					  'item_number_public' => "",
+					  'old_unit_amount' => "",
+					  //			'old_unit_amount_net'		=> "",
+					  'properties' => "",
+					  'msrp' => "",
+					  'shipping_costs_per_order' => "0",
+					  'additional_shipping_costs_per_unit' => "0",
+					  'is_free_shipping' => "0",
+					  'basic_price' => "",
+					  'use_stock' => "0",
+					  'stock_quantity' => "",
+					  'active_status' => self::PRODUCT_STATUS_STOCK,
+					  'minimum_order_quantity' => "0",
+					  'maximum_order_quantity' => "0",
+					  'minimum_order_amount' => "0.00",
+					  'ean' => "",
+					  'isbn' => "",
+					  'pzn' => "",
+					  'upc' => "",
+					  'last_update' => "",
+					  'tags' => "",
+					  'sort_order' => "",
+					  'is_highlight' => "0",
+					  'highlight_order_index' => "0",
+					  'marketplace' => "1",
+					  'internal_order_info' => "",
+					  'related_shop_item_numbers' => "",
+					  'age_rating' => "",
+					  'weight' => "",
+					  'block_pricing' => ""
+					  /* parent/child relationship */) + $attributes + $options + $inputs;
 
 		return $row;
 	}
@@ -1649,13 +1657,14 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @see http://wiki.shopgate.com/CSV_File_Reviews/
 	 */
 	protected function buildDefaultReviewRow() {
-		$row = array("item_number" => '',
-					 "update_review_id" => '',
-					 "score" => '',
-					 "name" => '',
-					 "date" => '',
-					 "title" => '',
-					 "text" => '',);
+		$row = array(
+			"item_number" => '',
+			"update_review_id" => '',
+			"score" => '',
+			"name" => '',
+			"date" => '',
+			"title" => '',
+			"text" => '',);
 
 		return $row;
 	}
@@ -1704,71 +1713,72 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 */
 	protected function removeTagsFromString($string, $removeTags = array(), $additionalAllowedTags = array()) {
 		// all tags available
-		$allowedTags = array("ADDRESS",
-							 "AREA",
-							 "A",
-							 "BASE",
-							 "BASEFONT",
-							 "BIG",
-							 "BLOCKQUOTE",
-							 "BODY",
-							 "BR",
-							 "B",
-							 "CAPTION",
-							 "CENTER",
-							 "CITE",
-							 "CODE",
-							 "DD",
-							 "DFN",
-							 "DIR",
-							 "DIV",
-							 "DL",
-							 "DT",
-							 "EM",
-							 "FONT",
-							 "FORM",
-							 "H1",
-							 "H2",
-							 "H3",
-							 "H4",
-							 "H5",
-							 "H6",
-							 "HEAD",
-							 "HR",
-							 "HTML",
-							 "IMG",
-							 "INPUT",
-							 "ISINDEX",
-							 "I",
-							 "KBD",
-							 "LINK",
-							 "LI",
-							 "MAP",
-							 "MENU",
-							 "META",
-							 "OL",
-							 "OPTION",
-							 "PARAM",
-							 "PRE",
-							 "P",
-							 "SAMP",
-							 "SELECT",
-							 "SMALL",
-							 "STRIKE",
-							 "STRONG",
-							 "STYLE",
-							 "SUB",
-							 "SUP",
-							 "TABLE",
-							 "TD",
-							 "TEXTAREA",
-							 "TH",
-							 "TITLE",
-							 "TR",
-							 "TT",
-							 "UL",
-							 "U",
-							 "VAR");
+		$allowedTags = array(
+			"ADDRESS",
+			"AREA",
+			"A",
+			"BASE",
+			"BASEFONT",
+			"BIG",
+			"BLOCKQUOTE",
+			"BODY",
+			"BR",
+			"B",
+			"CAPTION",
+			"CENTER",
+			"CITE",
+			"CODE",
+			"DD",
+			"DFN",
+			"DIR",
+			"DIV",
+			"DL",
+			"DT",
+			"EM",
+			"FONT",
+			"FORM",
+			"H1",
+			"H2",
+			"H3",
+			"H4",
+			"H5",
+			"H6",
+			"HEAD",
+			"HR",
+			"HTML",
+			"IMG",
+			"INPUT",
+			"ISINDEX",
+			"I",
+			"KBD",
+			"LINK",
+			"LI",
+			"MAP",
+			"MENU",
+			"META",
+			"OL",
+			"OPTION",
+			"PARAM",
+			"PRE",
+			"P",
+			"SAMP",
+			"SELECT",
+			"SMALL",
+			"STRIKE",
+			"STRONG",
+			"STYLE",
+			"SUB",
+			"SUP",
+			"TABLE",
+			"TD",
+			"TEXTAREA",
+			"TH",
+			"TITLE",
+			"TR",
+			"TT",
+			"UL",
+			"U",
+			"VAR");
 
 		foreach ($allowedTags as &$t) {
 			$t = strtolower($t);
@@ -1818,8 +1828,9 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			if (method_exists($this, $method)) {
 				$this->log("Calling function \"{$method}\": Actual memory usage before method: ".$this->getMemoryUsageString(), ShopgateLogger::LOGTYPE_DEBUG);
 				try {
-					$result = call_user_func_array(array($this,
-														 $method), $arguments);
+					$result = call_user_func_array(array(
+						$this,
+						$method), $arguments);
 				} catch (Exception $e) {
 					throw new ShopgateLibraryException("An exception has been thrown in loader method \"{$method}\". Memory usage ".$this->getMemoryUsageString()." Exception '".get_class($e)."': [Code: {$e->getCode()}] {$e->getMessage()}");
 				}
@@ -2195,12 +2206,13 @@ class ShopgateFileBuffer extends ShopgateObject implements ShopgateFileBufferInt
 		$this->capacity = $capacity;
 		$this->convertEncoding = $convertEncoding;
 
-		$this->allowedEncodings = array(SHOPGATE_LIBRARY_ENCODING,
-										'ASCII',
-										'CP1252',
-										'ISO-8859-15',
-										'UTF-16LE',
-										'ISO-8859-1');
+		$this->allowedEncodings = array(
+			SHOPGATE_LIBRARY_ENCODING,
+			'ASCII',
+			'CP1252',
+			'ISO-8859-15',
+			'UTF-16LE',
+			'ISO-8859-1');
 
 		if (!empty($sourceEncoding)) {
 			array_splice($this->allowedEncodings, 1, 0, $sourceEncoding);

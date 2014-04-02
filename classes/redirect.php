@@ -564,8 +564,9 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	 * @throws ShopgateLibraryException in case the file cannot be opened.
 	 */
 	protected function loadKeywordsFromFile($file) {
-		$defaultReturn = array('timestamp' => 0,
-							   'keywords' => array());
+		$defaultReturn = array(
+			'timestamp' => 0,
+			'keywords' => array());
 
 		$cacheFile = @fopen($file, 'a+');
 		if (empty($cacheFile)) {
@@ -578,9 +579,10 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 
 		return (empty($keywordsFromFile))
 			? $defaultReturn
-			: array('timestamp' => (int)array_shift($keywordsFromFile),
-					// strip timestamp in first line
-					'keywords' => $keywordsFromFile,);
+			: array(
+				'timestamp' => (int)array_shift($keywordsFromFile),
+				// strip timestamp in first line
+				'keywords' => $keywordsFromFile,);
 	}
 
 	#############################

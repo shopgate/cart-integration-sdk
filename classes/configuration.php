@@ -45,20 +45,21 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	/**
 	 * @var array<string, string> List of field names (index) that must have a value according to their validation regex (value)
 	 */
-	protected $coreValidations = array('customer_number' => '/^[0-9]{5,}$/',
-									   // at least 5 digits
-									   'shop_number' => '/^[0-9]{5,}$/',
-									   // at least 5 digits
-									   'apikey' => '/^[0-9a-f]{20}$/',
-									   // exactly 20 hexadecimal digits
-									   'alias' => '/^[0-9a-zA-Z]+(([\.]?|[\-]+)[0-9a-zA-Z]+)*$/',
-									   // start and end with alpha-numerical characters, multiple dashes and single dots in between are ok
-									   'cname' => '/^(http:\/\/\S+)?$/i',
-									   // empty or a string beginning with "http://" followed by any number of non-whitespace characters
-									   'server' => '/^(live|pg|sl|custom)$/',
-									   // "live" or "pg" or "sl" or "custom"
-									   'api_url' => '/^(https?:\/\/\S+)?$/i',
-									   // empty or a string beginning with "http://" or "https://" followed by any number of non-whitespace characters (this is used for testing only, thus the lose validation)
+	protected $coreValidations = array(
+		'customer_number' => '/^[0-9]{5,}$/',
+		// at least 5 digits
+		'shop_number' => '/^[0-9]{5,}$/',
+		// at least 5 digits
+		'apikey' => '/^[0-9a-f]{20}$/',
+		// exactly 20 hexadecimal digits
+		'alias' => '/^[0-9a-zA-Z]+(([\.]?|[\-]+)[0-9a-zA-Z]+)*$/',
+		// start and end with alpha-numerical characters, multiple dashes and single dots in between are ok
+		'cname' => '/^(http:\/\/\S+)?$/i',
+		// empty or a string beginning with "http://" followed by any number of non-whitespace characters
+		'server' => '/^(live|pg|sl|custom)$/',
+		// "live" or "pg" or "sl" or "custom"
+		'api_url' => '/^(https?:\/\/\S+)?$/i',
+		// empty or a string beginning with "http://" or "https://" followed by any number of non-whitespace characters (this is used for testing only, thus the lose validation)
 	);
 
 	/**
@@ -1574,8 +1575,9 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld.
 	 */
 	public static function __callStatic($name, $arguments) {
-		return call_user_func_array(array('ShopgateConfigOld',
-										  $name), $arguments);
+		return call_user_func_array(array(
+			'ShopgateConfigOld',
+			$name), $arguments);
 	}
 
 	/**
@@ -1737,34 +1739,35 @@ class ShopgateConfigOld extends ShopgateObject {
 	 *
 	 * @var array
 	 */
-	private static $config = array('api_url' => 'https://api.shopgate.com/merchant/',
-								   'customer_number' => 'THE_CUSTOMER_NUMBER',
-								   'shop_number' => 'THE_SHOP_NUMBER',
-								   'apikey' => 'THE_API_KEY',
-								   'alias' => 'my-shop',
-								   'cname' => '',
-								   'server' => 'live',
-								   'plugin' => 'example',
-								   'plugin_language' => 'DE',
-								   'plugin_currency' => 'EUR',
-								   'plugin_root_dir' => "",
-								   'enable_ping' => true,
-								   'enable_cron' => true,
-								   'enable_add_order' => true,
-								   'enable_update_order' => true,
-								   'enable_get_customer' => true,
-								   'enable_get_categories_csv' => true,
-								   'enable_get_orders' => true,
-								   'enable_get_items_csv' => true,
-								   'enable_get_reviews_csv' => true,
-								   'enable_get_pages_csv' => true,
-								   'enable_get_log_file' => true,
-								   'enable_clear_log_file' => true,
-								   'enable_mobile_website' => true,
-								   'generate_items_csv_on_the_fly' => true,
-								   'max_attributes' => 50,
-								   'use_custom_error_handler' => false,
-								   'encoding' => 'UTF-8',);
+	private static $config = array(
+		'api_url' => 'https://api.shopgate.com/merchant/',
+		'customer_number' => 'THE_CUSTOMER_NUMBER',
+		'shop_number' => 'THE_SHOP_NUMBER',
+		'apikey' => 'THE_API_KEY',
+		'alias' => 'my-shop',
+		'cname' => '',
+		'server' => 'live',
+		'plugin' => 'example',
+		'plugin_language' => 'DE',
+		'plugin_currency' => 'EUR',
+		'plugin_root_dir' => "",
+		'enable_ping' => true,
+		'enable_cron' => true,
+		'enable_add_order' => true,
+		'enable_update_order' => true,
+		'enable_get_customer' => true,
+		'enable_get_categories_csv' => true,
+		'enable_get_orders' => true,
+		'enable_get_items_csv' => true,
+		'enable_get_reviews_csv' => true,
+		'enable_get_pages_csv' => true,
+		'enable_get_log_file' => true,
+		'enable_clear_log_file' => true,
+		'enable_mobile_website' => true,
+		'generate_items_csv_on_the_fly' => true,
+		'max_attributes' => 50,
+		'use_custom_error_handler' => false,
+		'encoding' => 'UTF-8',);
 
 	/**
 	 * Übergeben und überprüfen der Einstellungen.

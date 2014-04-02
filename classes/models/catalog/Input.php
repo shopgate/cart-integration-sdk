@@ -62,13 +62,14 @@ class Shopgate_Model_Catalog_Input extends Shopgate_Model_Abstract {
 	 *
 	 * @var array
 	 */
-	protected $allowedMethods = array('Uid',
-									  'Type',
-									  'Options',
-									  'Validation',
-									  'Required',
-									  'Label',
-									  'InfoText');
+	protected $allowedMethods = array(
+		'Uid',
+		'Type',
+		'Options',
+		'Validation',
+		'Required',
+		'Label',
+		'InfoText');
 
 	/**
 	 * init default objects

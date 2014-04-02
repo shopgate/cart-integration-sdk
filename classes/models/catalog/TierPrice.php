@@ -44,9 +44,10 @@ class Shopgate_Model_Catalog_TierPrice extends Shopgate_Model_Abstract {
 	 *
 	 * @var array
 	 */
-	protected $allowedMethods = array('FromQuantity',
-									  'ReductionType',
-									  'Reduction');
+	protected $allowedMethods = array(
+		'FromQuantity',
+		'ReductionType',
+		'Reduction');
 
 	/**
 	 * @param Shopgate_Model_XmlResultObject $itemNode

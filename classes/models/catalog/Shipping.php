@@ -40,9 +40,10 @@ class Shopgate_Model_Catalog_Shipping extends Shopgate_Model_Abstract {
 	 *
 	 * @var array
 	 */
-	protected $allowedMethods = array('CostsPerOrder',
-									  'AdditionalCostsPerUnit',
-									  'IsFree');
+	protected $allowedMethods = array(
+		'CostsPerOrder',
+		'AdditionalCostsPerUnit',
+		'IsFree');
 
 	/**
 	 * @param Shopgate_Model_XmlResultObject $itemNode

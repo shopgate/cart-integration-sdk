@@ -52,13 +52,14 @@ class Shopgate_Model_Catalog_Stock extends Shopgate_Model_Abstract {
 	 *
 	 * @var array
 	 */
-	protected $allowedMethods = array('IsSaleable',
-									  'Backorders',
-									  'UseStock',
-									  'StockQuantity',
-									  'MinimumOrderQuantity',
-									  'MaximumOrderQuantity',
-									  'AvailabilityText');
+	protected $allowedMethods = array(
+		'IsSaleable',
+		'Backorders',
+		'UseStock',
+		'StockQuantity',
+		'MinimumOrderQuantity',
+		'MaximumOrderQuantity',
+		'AvailabilityText');
 
 	/**
 	 * @param Shopgate_Model_XmlResultObject $itemNode

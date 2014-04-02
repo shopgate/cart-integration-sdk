@@ -40,9 +40,10 @@ class Shopgate_Model_Catalog_Attribute extends Shopgate_Model_Abstract {
 	 *
 	 * @var array
 	 */
-	protected $allowedMethods = array('Uid',
-									  'GroupUid',
-									  'Label');
+	protected $allowedMethods = array(
+		'Uid',
+		'GroupUid',
+		'Label');
 
 	/**
 	 * @param Shopgate_Model_XmlResultObject $itemNode

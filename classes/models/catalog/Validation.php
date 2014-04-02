@@ -61,8 +61,9 @@ class Shopgate_Model_Catalog_Validation extends Shopgate_Model_Abstract {
 	 *
 	 * @var array
 	 */
-	protected $allowedMethods = array('ValidationType',
-									  'Value');
+	protected $allowedMethods = array(
+		'ValidationType',
+		'Value');
 
 	/**
 	 * @param Shopgate_Model_XmlResultObject $itemNode

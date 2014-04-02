@@ -69,28 +69,30 @@ class Shopgate_Model_Catalog_Category extends Shopgate_Model_Abstract {
 	/**
 	 * @var array
 	 */
-	protected $fireMethods = array('setUid',
-								   'setSortOrder',
-								   'setName',
-								   'setParentUid',
-								   'setSortOrder',
-								   'setDeeplink',
-								   'setIsAnchor',
-								   'setImage');
+	protected $fireMethods = array(
+		'setUid',
+		'setSortOrder',
+		'setName',
+		'setParentUid',
+		'setSortOrder',
+		'setDeeplink',
+		'setIsAnchor',
+		'setImage');
 
 	/**
 	 * define allowed methods
 	 *
 	 * @var array
 	 */
-	protected $allowedMethods = array('Uid',
-									  'SortOrder',
-									  'Name',
-									  'ParentUid',
-									  'Image',
-									  'IsActive',
-									  'Deeplink',
-									  'IsAnchor');
+	protected $allowedMethods = array(
+		'Uid',
+		'SortOrder',
+		'Name',
+		'ParentUid',
+		'Image',
+		'IsActive',
+		'Deeplink',
+		'IsAnchor');
 
 	/**
 	 * init default object

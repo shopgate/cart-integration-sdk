@@ -37,8 +37,9 @@ class Shopgate_Model_Customer_Group extends Shopgate_Model_Abstract {
 	 *
 	 * @var array
 	 */
-	protected $allowedMethods = array('Uid',
-									  'TierPrices');
+	protected $allowedMethods = array(
+		'Uid',
+		'TierPrices');
 
 	/**
 	 * init default objects

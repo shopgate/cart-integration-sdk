@@ -56,13 +56,14 @@ class Shopgate_Model_Catalog_Price extends Shopgate_Model_Abstract {
 	 *
 	 * @var array
 	 */
-	protected $allowedMethods = array('Type',
-									  'Price',
-									  'Cost',
-									  'SalePrice',
-									  'Msrp',
-									  'TierPricesGroup',
-									  'MinimumOrderAmount');
+	protected $allowedMethods = array(
+		'Type',
+		'Price',
+		'Cost',
+		'SalePrice',
+		'Msrp',
+		'TierPricesGroup',
+		'MinimumOrderAmount');
 
 	/**
 	 * init default object

@@ -46,11 +46,12 @@ class Shopgate_Model_Media_Image extends Shopgate_Model_Abstract {
 	 *
 	 * @var array
 	 */
-	protected $allowedMethods = array('Uid',
-									  'SortOrder',
-									  'Url',
-									  'Title',
-									  'Alt');
+	protected $allowedMethods = array(
+		'Uid',
+		'SortOrder',
+		'Url',
+		'Title',
+		'Alt');
 
 	/**
 	 * @param Shopgate_Model_XmlResultObject $itemNode

@@ -79,25 +79,26 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$this->responseData = array();
 
 		// initialize action whitelist
-		$this->actionWhitelist = array('ping',
-									   'cron',
-									   'add_order',
-									   'update_order',
-									   'get_debug_info',
-									   'get_items_csv',
-									   'get_categories_csv',
-									   'get_reviews_csv',
-									   'get_pages_csv',
-									   'get_log_file',
-									   'clear_log_file',
-									   'clear_cache',
-									   'check_cart',
-									   'redeem_coupons',
-									   'get_customer',
-									   'register_customer',
-									   'get_settings',
-									   'get_items',
-									   'get_categories');
+		$this->actionWhitelist = array(
+			'ping',
+			'cron',
+			'add_order',
+			'update_order',
+			'get_debug_info',
+			'get_items_csv',
+			'get_categories_csv',
+			'get_reviews_csv',
+			'get_pages_csv',
+			'get_log_file',
+			'clear_log_file',
+			'clear_cache',
+			'check_cart',
+			'redeem_coupons',
+			'get_customer',
+			'register_customer',
+			'get_settings',
+			'get_items',
+			'get_categories');
 	}
 
 
@@ -330,8 +331,9 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ORDER_NUMBER);
 		}
 
-		$orders = $this->merchantApi->getOrders(array('order_numbers[0]' => $this->params['order_number'],
-													  'with_items' => 1))->getData();
+		$orders = $this->merchantApi->getOrders(array(
+			'order_numbers[0]' => $this->params['order_number'],
+			'with_items' => 1))->getData();
 		if (empty($orders)) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE, '"orders" not set. Response: '.var_export($orders, true));
 		}
@@ -363,8 +365,9 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ORDER_NUMBER);
 		}
 
-		$orders = $this->merchantApi->getOrders(array('order_numbers[0]' => $this->params['order_number'],
-													  'with_items' => 1))->getData();
+		$orders = $this->merchantApi->getOrders(array(
+			'order_numbers[0]' => $this->params['order_number'],
+			'with_items' => 1))->getData();
 
 		if (empty($orders)) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE, '"order" not set. Response: '.var_export($orders, true));
@@ -550,23 +553,24 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_SHOPGATE_SETTINGS, 'Request: '.var_export($this->params, true));
 		}
 		// settings that may never be changed:
-		$shopgateSettingsBlacklist = array('shop_number',
-										   'customer_number',
-										   'apikey',
-										   'plugin_name',
-										   'export_folder_path',
-										   'log_folder_path',
-										   'cache_folder_path',
-										   'items_csv_filename',
-										   'categories_csv_filename',
-										   'reviews_csv_filename',
-										   'pages_csv_filename',
-										   'access_log_filename',
-										   'error_log_filename',
-										   'request_log_filename',
-										   'debug_log_filename',
-										   'redirect_keyword_cache_filename',
-										   'redirect_skip_keyword_cache_filename',);
+		$shopgateSettingsBlacklist = array(
+			'shop_number',
+			'customer_number',
+			'apikey',
+			'plugin_name',
+			'export_folder_path',
+			'log_folder_path',
+			'cache_folder_path',
+			'items_csv_filename',
+			'categories_csv_filename',
+			'reviews_csv_filename',
+			'pages_csv_filename',
+			'access_log_filename',
+			'error_log_filename',
+			'request_log_filename',
+			'debug_log_filename',
+			'redirect_keyword_cache_filename',
+			'redirect_skip_keyword_cache_filename',);
 
 		// filter the new settings
 		$shopgateSettingsNew = array();
@@ -592,9 +596,10 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 
 		$shopgateSettingsDiff = array();
 		foreach ($shopgateSettingsNew as $setting => $value) {
-			$diff[] = array('name' => $setting,
-							'old' => $shopgateSettingsOld[$setting],
-							'new' => $value);
+			$diff[] = array(
+				'name' => $setting,
+				'old' => $shopgateSettingsOld[$setting],
+				'new' => $value);
 		}
 
 		// set data and return response
@@ -951,15 +956,16 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 
 		$allSettings = function_exists('ini_get_all') ? ini_get_all() : array();
 
-		$settings = array('max_execution_time',
-						  'memory_limit',
-						  'allow_call_time_pass_reference',
-						  'disable_functions',
-						  'display_errors',
-						  'file_uploads',
-						  'include_path',
-						  'register_globals',
-						  'safe_mode');
+		$settings = array(
+			'max_execution_time',
+			'memory_limit',
+			'allow_call_time_pass_reference',
+			'disable_functions',
+			'display_errors',
+			'file_uploads',
+			'include_path',
+			'register_globals',
+			'safe_mode');
 
 		foreach ($settings as $setting) {
 			$settingDetails[$setting] = (!empty($allSettings[$setting])) ? $allSettings[$setting] : 'undefined';
@@ -1083,10 +1089,11 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 		$opt[CURLOPT_USERAGENT] = 'ShopgatePlugin/'.(defined('SHOPGATE_PLUGIN_VERSION') ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin');
 		$opt[CURLOPT_SSL_VERIFYPEER] = false;
 		$opt[CURLOPT_RETURNTRANSFER] = true;
-		$opt[CURLOPT_HTTPHEADER] = array('X-Shopgate-Library-Version: '.SHOPGATE_LIBRARY_VERSION,
-										 'X-Shopgate-Plugin-Version: '.(defined('SHOPGATE_PLUGIN_VERSION') ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin'),
-										 $this->authService->buildAuthUserHeader(),
-										 $this->authService->buildMerchantApiAuthTokenHeader());
+		$opt[CURLOPT_HTTPHEADER] = array(
+			'X-Shopgate-Library-Version: '.SHOPGATE_LIBRARY_VERSION,
+			'X-Shopgate-Plugin-Version: '.(defined('SHOPGATE_PLUGIN_VERSION') ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin'),
+			$this->authService->buildAuthUserHeader(),
+			$this->authService->buildMerchantApiAuthTokenHeader());
 
 		$opt[CURLOPT_TIMEOUT] = 30; // Default timeout 30sec
 		$opt[CURLOPT_POST] = true;
@@ -1175,31 +1182,34 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 	}
 
 	public function addOrderDeliveryNote($orderNumber, $shippingServiceId, $trackingNumber, $markAsCompleted = false, $sendCustomerEmail = false) {
-		$request = array('action' => 'add_order_delivery_note',
-						 'order_number' => $orderNumber,
-						 'shipping_service_id' => $shippingServiceId,
-						 'tracking_number' => (string)$trackingNumber,
-						 'mark_as_completed' => $markAsCompleted,
-						 'send_customer_email' => $sendCustomerEmail,);
+		$request = array(
+			'action' => 'add_order_delivery_note',
+			'order_number' => $orderNumber,
+			'shipping_service_id' => $shippingServiceId,
+			'tracking_number' => (string)$trackingNumber,
+			'mark_as_completed' => $markAsCompleted,
+			'send_customer_email' => $sendCustomerEmail,);
 
 		return $this->sendRequest($request);
 	}
 
 	public function setOrderShippingCompleted($orderNumber, $sendCustomerEmail = false) {
-		$request = array('action' => 'set_order_shipping_completed',
-						 'order_number' => $orderNumber,
-						 'send_customer_email' => $sendCustomerEmail,);
+		$request = array(
+			'action' => 'set_order_shipping_completed',
+			'order_number' => $orderNumber,
+			'send_customer_email' => $sendCustomerEmail,);
 
 		return $this->sendRequest($request);
 	}
 
 	public function cancelOrder($orderNumber, $cancelCompleteOrder = false, $cancellationItems = array(), $cancelShipping = false, $cancellationNote = '') {
-		$request = array('action' => 'cancel_order',
-						 'order_number' => $orderNumber,
-						 'cancel_complete_order' => $cancelCompleteOrder,
-						 'cancellation_items' => $cancellationItems,
-						 'cancel_shipping' => $cancelShipping,
-						 'cancellation_note' => $cancellationNote,);
+		$request = array(
+			'action' => 'cancel_order',
+			'order_number' => $orderNumber,
+			'cancel_complete_order' => $cancelCompleteOrder,
+			'cancellation_items' => $cancellationItems,
+			'cancel_shipping' => $cancelShipping,
+			'cancellation_note' => $cancellationNote,);
 
 		return $this->sendRequest($request);
 	}
@@ -1274,15 +1284,17 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 	}
 
 	public function deleteItem($itemNumber) {
-		$request = array('action' => 'delete_item',
-						 'item_number' => $itemNumber,);
+		$request = array(
+			'action' => 'delete_item',
+			'item_number' => $itemNumber,);
 
 		return $this->sendRequest($request);
 	}
 
 	public function batchAddItems($items) {
-		$request = array('items' => array(),
-						 'action' => 'batch_add_items',);
+		$request = array(
+			'items' => array(),
+			'action' => 'batch_add_items',);
 
 		foreach ($items as $item) {
 			$request['items'][] = ($item instanceof ShopgateItem) ? $item->toArray() : $item;
@@ -1292,8 +1304,9 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 	}
 
 	public function batchUpdateItems($items) {
-		$request = array('items' => array(),
-						 'action' => 'batch_update_items',);
+		$request = array(
+			'items' => array(),
+			'action' => 'batch_update_items',);
 
 		foreach ($items as $item) {
 			$request['items'][] = ($item instanceof ShopgateItem) ? $item->toArray() : $item;
@@ -1344,18 +1357,20 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 	}
 
 	public function deleteCategory($categoryNumber, $deleteSubCategories = false, $deleteItems = false) {
-		$request = array('action' => 'delete_category',
-						 'category_number' => $categoryNumber,
-						 'delete_subcategories' => $deleteSubCategories ? 1 : 0,
-						 'delete_items' => $deleteItems ? 1 : 0,);
+		$request = array(
+			'action' => 'delete_category',
+			'category_number' => $categoryNumber,
+			'delete_subcategories' => $deleteSubCategories ? 1 : 0,
+			'delete_items' => $deleteItems ? 1 : 0,);
 
 		return $this->sendRequest($request);
 	}
 
 	public function addItemToCategory($itemNumber, $categoryNumber, $orderIndex = null) {
-		$request = array('action' => 'add_item_to_category',
-						 'category_number' => $categoryNumber,
-						 'item_number' => $itemNumber,);
+		$request = array(
+			'action' => 'add_item_to_category',
+			'category_number' => $categoryNumber,
+			'item_number' => $itemNumber,);
 
 		if (isset($orderIndex)) {
 			$request['order_index'] = $orderIndex;
@@ -1365,9 +1380,10 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 	}
 
 	public function deleteItemFromCategory($itemNumber, $categoryNumber) {
-		$request = array('action' => 'delete_item_from_category',
-						 'category_number' => $categoryNumber,
-						 'item_number' => $itemNumber,);
+		$request = array(
+			'action' => 'delete_item_from_category',
+			'category_number' => $categoryNumber,
+			'item_number' => $itemNumber,);
 
 		return $this->sendRequest($request);
 	}
