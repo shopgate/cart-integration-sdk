@@ -45,19 +45,21 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	/**
 	 * @var array<string, string> List of field names (index) that must have a value according to their validation regex (value)
 	 */
-	protected $coreValidations
-		= array(
-			'customer_number' => '/^[0-9]{5,}$/', // at least 5 digits
-			'shop_number' => '/^[0-9]{5,}$/', // at least 5 digits
-			'apikey' => '/^[0-9a-f]{20}$/', // exactly 20 hexadecimal digits
-			'alias' => '/^[0-9a-zA-Z]+(([\.]?|[\-]+)[0-9a-zA-Z]+)*$/',
-			// start and end with alpha-numerical characters, multiple dashes and single dots in between are ok
-			'cname' => '/^(http:\/\/\S+)?$/i',
-			// empty or a string beginning with "http://" followed by any number of non-whitespace characters
-			'server' => '/^(live|pg|sl|custom)$/', // "live" or "pg" or "sl" or "custom"
-			'api_url' => '/^(https?:\/\/\S+)?$/i',
-			// empty or a string beginning with "http://" or "https://" followed by any number of non-whitespace characters (this is used for testing only, thus the lose validation)
-		);
+	protected $coreValidations = array('customer_number' => '/^[0-9]{5,}$/',
+									   // at least 5 digits
+									   'shop_number' => '/^[0-9]{5,}$/',
+									   // at least 5 digits
+									   'apikey' => '/^[0-9a-f]{20}$/',
+									   // exactly 20 hexadecimal digits
+									   'alias' => '/^[0-9a-zA-Z]+(([\.]?|[\-]+)[0-9a-zA-Z]+)*$/',
+									   // start and end with alpha-numerical characters, multiple dashes and single dots in between are ok
+									   'cname' => '/^(http:\/\/\S+)?$/i',
+									   // empty or a string beginning with "http://" followed by any number of non-whitespace characters
+									   'server' => '/^(live|pg|sl|custom)$/',
+									   // "live" or "pg" or "sl" or "custom"
+									   'api_url' => '/^(https?:\/\/\S+)?$/i',
+									   // empty or a string beginning with "http://" or "https://" followed by any number of non-whitespace characters (this is used for testing only, thus the lose validation)
+	);
 
 	/**
 	 * @var array<string, string> List of field names (index) that must have a value according to their validation regex (value)
@@ -380,7 +382,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	### Initialization, loading, saving, validating ###
 	###################################################
 
-	public final function __construct (array $data = array()) {
+	public final function __construct(array $data = array()) {
 		// parent constructor not called on purpose, because we need special
 		// initialization behaviour here (e.g. loading via array or file)
 
@@ -434,30 +436,30 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->export_buffer_capacity = 100000;
 		$this->max_attributes = 50;
 
-		$this->config_folder_path = SHOPGATE_BASE_DIR . DS . 'config';
+		$this->config_folder_path = SHOPGATE_BASE_DIR.DS.'config';
 
-		$this->export_folder_path = SHOPGATE_BASE_DIR . DS . 'temp';
-		$this->log_folder_path = SHOPGATE_BASE_DIR . DS . 'temp' . DS . 'logs';
-		$this->cache_folder_path = SHOPGATE_BASE_DIR . DS . 'temp' . DS . 'cache';
+		$this->export_folder_path = SHOPGATE_BASE_DIR.DS.'temp';
+		$this->log_folder_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'logs';
+		$this->cache_folder_path = SHOPGATE_BASE_DIR.DS.'temp'.DS.'cache';
 
-		$this->items_csv_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX . 'items.csv';
-		$this->items_xml_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX . 'items.xml';
-		$this->items_json_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX . 'items.json';
+		$this->items_csv_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'items.csv';
+		$this->items_xml_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'items.xml';
+		$this->items_json_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'items.json';
 
-		$this->categories_csv_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX . 'categories.csv';
-		$this->categories_xml_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX . 'categories.xml';
-		$this->categories_json_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX . 'categories.json';
+		$this->categories_csv_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'categories.csv';
+		$this->categories_xml_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'categories.xml';
+		$this->categories_json_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'categories.json';
 
-		$this->reviews_csv_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX . 'reviews.csv';
-		$this->pages_csv_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX . 'pages.csv';
+		$this->reviews_csv_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'reviews.csv';
+		$this->pages_csv_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'pages.csv';
 
-		$this->access_log_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX . 'access.log';
-		$this->request_log_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX . 'request.log';
-		$this->error_log_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX . 'error.log';
-		$this->debug_log_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX . 'debug.log';
+		$this->access_log_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'access.log';
+		$this->request_log_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'request.log';
+		$this->error_log_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'error.log';
+		$this->debug_log_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'debug.log';
 
-		$this->redirect_keyword_cache_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX . 'redirect_keywords.txt';
-		$this->redirect_skip_keyword_cache_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX . 'skip_redirect_keywords.txt';
+		$this->redirect_keyword_cache_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'redirect_keywords.txt';
+		$this->redirect_skip_keyword_cache_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'skip_redirect_keywords.txt';
 
 		$this->is_shopgate_adapter = false;
 
@@ -475,12 +477,12 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 *
 	 * @return bool false if initialization should be done by ShopgateConfig, true if it has already been done.
 	 */
-	protected function startup () {
+	protected function startup() {
 		// nothing to do here
 		return false;
 	}
 
-	public function load (array $settings = null) {
+	public function load(array $settings = null) {
 		$this->loadArray($settings);
 	}
 
@@ -489,7 +491,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 *
 	 * @return string
 	 */
-	public static function getCurrentDtdLocation () {
+	public static function getCurrentDtdLocation() {
 		return ShopgateConfig::DEFAULT_DTD_URL_LOCATION;
 	}
 
@@ -504,7 +506,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 *
 	 * @param $data array<string, mixed> The data to be assigned to the configuration.
 	 */
-	public function loadArray (array $data = array()) {
+	public function loadArray(array $data = array()) {
 		// if no $data was passed try loading the default configuration file
 		if (empty($data)) {
 			$this->loadFile();
@@ -535,7 +537,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 *
 	 * @throws ShopgateLibraryException in case a configuration file could not be loaded or the $shopgate_config is not set.
 	 */
-	public function loadFile ($path = null) {
+	public function loadFile($path = null) {
 		$config = null;
 
 		// try loading files
@@ -544,12 +546,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 			$config = $this->includeFile($path);
 
 			if (!$config) {
-				throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR,
-					'The passed configuration file "' . $path . '" does not exist or does not define the $shopgate_config variable.');
+				throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR, 'The passed configuration file "'.$path.'" does not exist or does not define the $shopgate_config variable.');
 			}
 		} else {
 			// try myconfig.php
-			$config = $this->includeFile($this->config_folder_path . DS . 'myconfig.php');
+			$config = $this->includeFile($this->config_folder_path.DS.'myconfig.php');
 
 			// if unsuccessful, use default configuration values
 			if (!$config) {
@@ -569,7 +570,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 *
 	 * @throws ShopgateLibraryException in case the $shopNumber is empty or no configuration file can be found.
 	 */
-	public function loadByShopNumber ($shopNumber) {
+	public function loadByShopNumber($shopNumber) {
 		if (empty($shopNumber) || !preg_match($this->coreValidations['shop_number'], $shopNumber)) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR, 'configuration file cannot be found without shop number');
 		}
@@ -579,21 +580,20 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$files = scandir($this->config_folder_path);
 		ob_start();
 		foreach ($files as $file) {
-			if (!is_file($this->config_folder_path . DS . $file)) {
+			if (!is_file($this->config_folder_path.DS.$file)) {
 				continue;
 			}
 
 			$shopgate_config = null;
-			include($this->config_folder_path . DS . $file);
+			include($this->config_folder_path.DS.$file);
 			if (isset($shopgate_config) && isset($shopgate_config['shop_number']) && ($shopgate_config['shop_number'] == $shopNumber)) {
-				$configFile = $this->config_folder_path . DS . $file;
+				$configFile = $this->config_folder_path.DS.$file;
 				break;
 			}
 		}
 		ob_end_clean();
 		if (empty($configFile)) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR,
-				'no configuration file found for shop number "' . $shopNumber . '"', true, false);
+			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR, 'no configuration file found for shop number "'.$shopNumber.'"', true, false);
 		}
 
 		$this->loadFile($configFile);
@@ -605,35 +605,34 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 *
 	 * @param string|null $language the ISO-639 code of the language or null to load global configuration
 	 */
-	public function loadByLanguage ($language) {
+	public function loadByLanguage($language) {
 		if (!is_null($language) && !preg_match('/[a-z]{2}/', $language)) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR,
-				'invalid language code "' . $language . '"', true, false);
+			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR, 'invalid language code "'.$language.'"', true, false);
 		}
 
-		$this->loadFile($this->config_folder_path . DS . 'myconfig-' . $language . '.php');
+		$this->loadFile($this->config_folder_path.DS.'myconfig-'.$language.'.php');
 		$this->initFileNames();
 	}
 
 	/**
 	 * Sets the file names according to the language of the configuration.
 	 */
-	protected function initFileNames () {
-		$this->items_csv_filename = 'items-' . $this->language . '.csv';
-		$this->categories_csv_filename = 'categories-' . $this->language . '.csv';
-		$this->reviews_csv_filename = 'reviews-' . $this->language . '.csv';
-		$this->pages_csv_filename = 'pages-' . $this->language . '.csv';
+	protected function initFileNames() {
+		$this->items_csv_filename = 'items-'.$this->language.'.csv';
+		$this->categories_csv_filename = 'categories-'.$this->language.'.csv';
+		$this->reviews_csv_filename = 'reviews-'.$this->language.'.csv';
+		$this->pages_csv_filename = 'pages-'.$this->language.'.csv';
 
-		$this->access_log_filename = 'access-' . $this->language . '.log';
-		$this->request_log_filename = 'request-' . $this->language . '.log';
-		$this->error_log_filename = 'error-' . $this->language . '.log';
-		$this->debug_log_filename = 'debug-' . $this->language . '.log';
+		$this->access_log_filename = 'access-'.$this->language.'.log';
+		$this->request_log_filename = 'request-'.$this->language.'.log';
+		$this->error_log_filename = 'error-'.$this->language.'.log';
+		$this->debug_log_filename = 'debug-'.$this->language.'.log';
 
-		$this->redirect_keyword_cache_filename = 'redirect_keywords-' . $this->language . '.txt';
-		$this->redirect_skip_keyword_cache_filename = 'skip_redirect_keywords-' . $this->language . '.txt';
+		$this->redirect_keyword_cache_filename = 'redirect_keywords-'.$this->language.'.txt';
+		$this->redirect_skip_keyword_cache_filename = 'skip_redirect_keywords-'.$this->language.'.txt';
 	}
 
-	public function save (array $fieldList, $validate = true) {
+	public function save(array $fieldList, $validate = true) {
 		if ($this->checkUseGlobalFor($this->language)) {
 			$this->saveFile($fieldList, null, $validate);
 		} else {
@@ -659,7 +658,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 *
 	 * @throws ShopgateLibraryException in case the configuration can't be loaded or saved.
 	 */
-	public function saveFile (array $fieldList, $path = null, $validate = true) {
+	public function saveFile(array $fieldList, $path = null, $validate = true) {
 		// if desired, validate before doing anything else
 		if ($validate) {
 			$this->validate($fieldList);
@@ -676,9 +675,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		try {
 			$this->loadFile($path);
 		} catch (ShopgateLibraryException $e) {
-			ShopgateLogger::getInstance()->log(
-				'-- Don\'t worry about the "error reading or writing configuration", that was just a routine check during saving.'
-			);
+			ShopgateLogger::getInstance()->log('-- Don\'t worry about the "error reading or writing configuration", that was just a routine check during saving.');
 		}
 
 		// merge old config with new values
@@ -686,14 +683,13 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 
 		// if necessary point $path to  myconfig.php
 		if (empty($path)) {
-			$path = $this->config_folder_path . DS . 'myconfig.php';
+			$path = $this->config_folder_path.DS.'myconfig.php';
 		}
 
 		// create the array definition string and save it to the file
-		$shopgateConfigFile = "<?php\n\$shopgate_config = " . var_export($newConfig, true) . ';';
+		$shopgateConfigFile = "<?php\n\$shopgate_config = ".var_export($newConfig, true).';';
 		if (!@file_put_contents($path, $shopgateConfigFile)) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR,
-				'The configuration file "' . $path . '" could not be saved.');
+			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR, 'The configuration file "'.$path.'" could not be saved.');
 		}
 	}
 
@@ -706,12 +702,12 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 *
 	 * @throws ShopgateLibraryException in case the configuration can't be loaded or saved.
 	 */
-	public function saveFileForLanguage (array $fieldList, $language = null, $validate = true) {
+	public function saveFileForLanguage(array $fieldList, $language = null, $validate = true) {
 		$fileName = null;
 		if (!is_null($language)) {
 			$this->setLanguage($language);
 			$fieldList[] = 'language';
-			$fileName = $this->config_folder_path . DS . 'myconfig-' . $language . '.php';
+			$fileName = $this->config_folder_path.DS.'myconfig-'.$language.'.php';
 		}
 
 		$this->saveFile($fieldList, $fileName, $validate);
@@ -727,17 +723,17 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 *
 	 * @return bool true if there are duplicates, false otherwise.
 	 */
-	public function checkDuplicates () {
+	public function checkDuplicates() {
 		$shopNumbers = array();
 		$files = scandir($this->config_folder_path);
 
 		foreach ($files as $file) {
-			if (!is_file($this->config_folder_path . DS . $file)) {
+			if (!is_file($this->config_folder_path.DS.$file)) {
 				continue;
 			}
 
 			$shopgate_config = null;
-			include($this->config_folder_path . DS . $file);
+			include($this->config_folder_path.DS.$file);
 			if (isset($shopgate_config) && isset($shopgate_config['shop_number'])) {
 				if (in_array($shopgate_config['shop_number'], $shopNumbers)) {
 					return true;
@@ -755,12 +751,12 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 *
 	 * @return bool true if multiple configuration files are available, false otherwise.
 	 */
-	public function checkMultipleConfigs () {
+	public function checkMultipleConfigs() {
 		$files = scandir($this->config_folder_path);
 		$counter = 0;
 
 		foreach ($files as $file) {
-			if (!is_file($this->config_folder_path . DS . $file)) {
+			if (!is_file($this->config_folder_path.DS.$file)) {
 				continue;
 			}
 
@@ -769,7 +765,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 			}
 
 			ob_start();
-			include($this->config_folder_path . DS . $file);
+			include($this->config_folder_path.DS.$file);
 			ob_end_clean();
 			if (!isset($shopgate_config)) {
 				continue;
@@ -789,8 +785,8 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 *
 	 * @return bool true if global configuration should be used, false if the language has separate configuration
 	 */
-	public function checkUseGlobalFor ($language) {
-		return !file_exists($this->config_folder_path . DS . 'myconfig-' . $language . '.php');
+	public function checkUseGlobalFor($language) {
+		return !file_exists($this->config_folder_path.DS.'myconfig-'.$language.'.php');
 	}
 
 	/**
@@ -800,17 +796,16 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 *
 	 * @throws ShopgateLibraryException in case the file exists but cannot be deleted.
 	 */
-	public function useGlobalFor ($language) {
-		$fileName = $this->config_folder_path . DS . 'myconfig-' . $language . '.php';
+	public function useGlobalFor($language) {
+		$fileName = $this->config_folder_path.DS.'myconfig-'.$language.'.php';
 		if (file_exists($fileName)) {
 			if (!@unlink($fileName)) {
-				throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR,
-					'Error deleting configuration file "' . $fileName . "'.");
+				throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR, 'Error deleting configuration file "'.$fileName."'.");
 			}
 		}
 	}
 
-	public final function validate (array $fieldList = array()) {
+	public final function validate(array $fieldList = array()) {
 		$properties = $this->buildProperties();
 
 		if (empty($fieldList)) {
@@ -847,7 +842,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 *
 	 * @return string[] The list of fields that failed validation or an empty array if validation was successful.
 	 */
-	protected function validateCustom (array $fieldList = array()) {
+	protected function validateCustom(array $fieldList = array()) {
 		return array();
 	}
 
@@ -855,39 +850,39 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	###############
 	### Getters ###
 	###############
-	public function getPluginName () {
+	public function getPluginName() {
 		return $this->plugin_name;
 	}
 
-	public function getUseCustomErrorHandler () {
+	public function getUseCustomErrorHandler() {
 		return $this->use_custom_error_handler;
 	}
 
-	public function getCustomerNumber () {
+	public function getCustomerNumber() {
 		return $this->customer_number;
 	}
 
-	public function getShopNumber () {
+	public function getShopNumber() {
 		return $this->shop_number;
 	}
 
-	public function getApikey () {
+	public function getApikey() {
 		return $this->apikey;
 	}
 
-	public function getAlias () {
+	public function getAlias() {
 		return $this->alias;
 	}
 
-	public function getCname () {
+	public function getCname() {
 		return rtrim($this->cname, '/');
 	}
 
-	public function getServer () {
+	public function getServer() {
 		return $this->server;
 	}
 
-	public function getApiUrl () {
+	public function getApiUrl() {
 		switch ($this->getServer()) {
 			default: // fall through to 'live'
 			case 'live':
@@ -901,486 +896,486 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		}
 	}
 
-	public function getShopIsActive () {
+	public function getShopIsActive() {
 		return $this->shop_is_active;
 	}
 
-	public function getAlwaysUseSsl () {
+	public function getAlwaysUseSsl() {
 		return $this->always_use_ssl;
 	}
 
-	public function getEnableRedirectKeywordUpdate () {
+	public function getEnableRedirectKeywordUpdate() {
 		return $this->enable_redirect_keyword_update;
 	}
 
-	public function getEnableDefaultRedirect () {
+	public function getEnableDefaultRedirect() {
 		return $this->enable_default_redirect;
 	}
 
-	public function getEncoding () {
+	public function getEncoding() {
 		return $this->encoding;
 	}
 
-	public function getExportConvertEncoding () {
+	public function getExportConvertEncoding() {
 		return $this->export_convert_encoding;
 	}
 
-	public function getEnablePing () {
+	public function getEnablePing() {
 		return $this->enable_ping;
 	}
 
-	public function getEnableAddOrder () {
+	public function getEnableAddOrder() {
 		return $this->enable_add_order;
 	}
 
-	public function getEnableUpdateOrder () {
+	public function getEnableUpdateOrder() {
 		return $this->enable_update_order;
 	}
 
-	public function getEnableCheckCart () {
+	public function getEnableCheckCart() {
 		return $this->enable_check_cart;
 	}
 
-	public function getEnableRedeemCoupons () {
+	public function getEnableRedeemCoupons() {
 		return $this->enable_redeem_coupons;
 	}
 
-	public function getEnableGetOrders () {
+	public function getEnableGetOrders() {
 		return $this->enable_get_orders;
 	}
 
-	public function getEnableGetCustomer () {
+	public function getEnableGetCustomer() {
 		return $this->enable_get_customer;
 	}
 
-	public function getEnableGetDebugInfo () {
+	public function getEnableGetDebugInfo() {
 		return $this->enable_get_debug_info;
 	}
 
-	public function getEnableGetItemsCsv () {
+	public function getEnableGetItemsCsv() {
 		return $this->enable_get_items_csv;
 	}
 
-	public function getEnableGetItems () {
+	public function getEnableGetItems() {
 		return $this->enable_get_items;
 	}
 
-	public function getEnableGetCategoriesCsv () {
+	public function getEnableGetCategoriesCsv() {
 		return $this->enable_get_categories_csv;
 	}
 
-	public function getEnableGetCategories () {
+	public function getEnableGetCategories() {
 		return $this->enable_get_categories;
 	}
 
-	public function getEnableGetReviewsCsv () {
+	public function getEnableGetReviewsCsv() {
 		return $this->enable_get_reviews_csv;
 	}
 
-	public function getEnableGetPagesCsv () {
+	public function getEnableGetPagesCsv() {
 		return $this->enable_get_pages_csv;
 	}
 
-	public function getEnableGetLogFile () {
+	public function getEnableGetLogFile() {
 		return $this->enable_get_log_file;
 	}
 
-	public function getEnableMobileWebsite () {
+	public function getEnableMobileWebsite() {
 		return $this->enable_mobile_website;
 	}
 
-	public function getEnableCron () {
+	public function getEnableCron() {
 		return $this->enable_cron;
 	}
 
-	public function getEnableClearLogFile () {
+	public function getEnableClearLogFile() {
 		return $this->enable_clear_log_file;
 	}
 
-	public function getEnableClearCache () {
+	public function getEnableClearCache() {
 		return $this->enable_clear_cache;
 	}
 
-	public function getEnableGetSettings () {
+	public function getEnableGetSettings() {
 		return $this->enable_get_settings;
 	}
 
-	public function getEnableSetSettings () {
+	public function getEnableSetSettings() {
 		return $this->enable_set_settings;
 	}
 
-	public function getCountry () {
+	public function getCountry() {
 		return strtoupper($this->country);
 	}
 
-	public function getLanguage () {
+	public function getLanguage() {
 		return strtolower($this->language);
 	}
 
-	public function getCurrency () {
+	public function getCurrency() {
 		return $this->currency;
 	}
 
-	public function getMobileHeaderParent () {
+	public function getMobileHeaderParent() {
 		return $this->mobile_header_parent;
 	}
 
-	public function getMobileHeaderPrepend () {
+	public function getMobileHeaderPrepend() {
 		return $this->mobile_header_prepend;
 	}
 
-	public function getExportBufferCapacity () {
+	public function getExportBufferCapacity() {
 		return $this->export_buffer_capacity;
 	}
 
-	public function getMaxAttributes () {
+	public function getMaxAttributes() {
 		return $this->max_attributes;
 	}
 
-	public function getExportFolderPath () {
+	public function getExportFolderPath() {
 		return $this->export_folder_path;
 	}
 
-	public function getLogFolderPath () {
+	public function getLogFolderPath() {
 		return $this->log_folder_path;
 	}
 
-	public function getCacheFolderPath () {
+	public function getCacheFolderPath() {
 		return $this->cache_folder_path;
 	}
 
-	public function getItemsCsvFilename () {
+	public function getItemsCsvFilename() {
 		return $this->items_csv_filename;
 	}
 
-	public function getCategoriesCsvFilename () {
+	public function getCategoriesCsvFilename() {
 		return $this->categories_csv_filename;
 	}
 
-	public function getReviewsCsvFilename () {
+	public function getReviewsCsvFilename() {
 		return $this->reviews_csv_filename;
 	}
 
-	public function getPagesCsvFilename () {
+	public function getPagesCsvFilename() {
 		return $this->pages_csv_filename;
 	}
 
-	public function getAccessLogFilename () {
+	public function getAccessLogFilename() {
 		return $this->access_log_filename;
 	}
 
-	public function getRequestLogFilename () {
+	public function getRequestLogFilename() {
 		return $this->request_log_filename;
 	}
 
-	public function getErrorLogFilename () {
+	public function getErrorLogFilename() {
 		return $this->error_log_filename;
 	}
 
-	public function getDebugLogFilename () {
+	public function getDebugLogFilename() {
 		return $this->debug_log_filename;
 	}
 
-	public function getRedirectKeywordCacheFilename () {
+	public function getRedirectKeywordCacheFilename() {
 		return $this->redirect_keyword_cache_filename;
 	}
 
-	public function getRedirectSkipKeywordCacheFilename () {
+	public function getRedirectSkipKeywordCacheFilename() {
 		return $this->redirect_skip_keyword_cache_filename;
 	}
 
-	public function getItemsCsvPath () {
-		return rtrim($this->export_folder_path . DS . $this->items_csv_filename, DS);
+	public function getItemsCsvPath() {
+		return rtrim($this->export_folder_path.DS.$this->items_csv_filename, DS);
 	}
 
-	public function getItemsXmlPath () {
-		return rtrim($this->export_folder_path . DS . $this->items_xml_filename, DS);
+	public function getItemsXmlPath() {
+		return rtrim($this->export_folder_path.DS.$this->items_xml_filename, DS);
 	}
 
-	public function getItemsJsonPath () {
-		return rtrim($this->export_folder_path . DS . $this->items_json_filename, DS);
+	public function getItemsJsonPath() {
+		return rtrim($this->export_folder_path.DS.$this->items_json_filename, DS);
 	}
 
-	public function getCategoriesXmlPath () {
-		return rtrim($this->export_folder_path . DS . $this->categories_xml_filename, DS);
+	public function getCategoriesXmlPath() {
+		return rtrim($this->export_folder_path.DS.$this->categories_xml_filename, DS);
 	}
 
-	public function getCategoriesJsonPath () {
-		return rtrim($this->export_folder_path . DS . $this->categories_json_filename, DS);
+	public function getCategoriesJsonPath() {
+		return rtrim($this->export_folder_path.DS.$this->categories_json_filename, DS);
 	}
 
-	public function getCategoriesCsvPath () {
-		return rtrim($this->export_folder_path . DS . $this->categories_csv_filename, DS);
+	public function getCategoriesCsvPath() {
+		return rtrim($this->export_folder_path.DS.$this->categories_csv_filename, DS);
 	}
 
-	public function getReviewsCsvPath () {
-		return rtrim($this->export_folder_path . DS . $this->reviews_csv_filename, DS);
+	public function getReviewsCsvPath() {
+		return rtrim($this->export_folder_path.DS.$this->reviews_csv_filename, DS);
 	}
 
-	public function getPagesCsvPath () {
-		return rtrim($this->export_folder_path . DS . $this->pages_csv_filename, DS);
+	public function getPagesCsvPath() {
+		return rtrim($this->export_folder_path.DS.$this->pages_csv_filename, DS);
 	}
 
-	public function getAccessLogPath () {
-		return rtrim($this->log_folder_path . DS . $this->access_log_filename, DS);
+	public function getAccessLogPath() {
+		return rtrim($this->log_folder_path.DS.$this->access_log_filename, DS);
 	}
 
-	public function getRequestLogPath () {
-		return rtrim($this->log_folder_path . DS . $this->request_log_filename, DS);
+	public function getRequestLogPath() {
+		return rtrim($this->log_folder_path.DS.$this->request_log_filename, DS);
 	}
 
-	public function getErrorLogPath () {
-		return rtrim($this->log_folder_path . DS . $this->error_log_filename, DS);
+	public function getErrorLogPath() {
+		return rtrim($this->log_folder_path.DS.$this->error_log_filename, DS);
 	}
 
-	public function getDebugLogPath () {
-		return rtrim($this->log_folder_path . DS . $this->debug_log_filename, DS);
+	public function getDebugLogPath() {
+		return rtrim($this->log_folder_path.DS.$this->debug_log_filename, DS);
 	}
 
-	public function getRedirectKeywordCachePath () {
-		return rtrim($this->cache_folder_path . DS . $this->redirect_keyword_cache_filename, DS);
+	public function getRedirectKeywordCachePath() {
+		return rtrim($this->cache_folder_path.DS.$this->redirect_keyword_cache_filename, DS);
 	}
 
-	public function getRedirectSkipKeywordCachePath () {
-		return rtrim($this->cache_folder_path . DS . $this->redirect_skip_keyword_cache_filename, DS);
+	public function getRedirectSkipKeywordCachePath() {
+		return rtrim($this->cache_folder_path.DS.$this->redirect_skip_keyword_cache_filename, DS);
 	}
 
-	public function getIsShopgateAdapter () {
+	public function getIsShopgateAdapter() {
 		return $this->is_shopgate_adapter;
 	}
 
-	public function getEnableRegisterCustomer () {
+	public function getEnableRegisterCustomer() {
 		return $this->enable_register_customer;
 	}
 
 	###############
 	### Setters ###
 	###############
-	public function setPluginName ($value) {
+	public function setPluginName($value) {
 		$this->plugin_name = $value;
 	}
 
-	public function setUseCustomErrorHandler ($value) {
+	public function setUseCustomErrorHandler($value) {
 		$this->use_custom_error_handler = $value;
 	}
 
-	public function setCustomerNumber ($value) {
+	public function setCustomerNumber($value) {
 		$this->customer_number = $value;
 	}
 
-	public function setShopNumber ($value) {
+	public function setShopNumber($value) {
 		$this->shop_number = $value;
 	}
 
-	public function setApikey ($value) {
+	public function setApikey($value) {
 		$this->apikey = $value;
 	}
 
-	public function setAlias ($value) {
+	public function setAlias($value) {
 		$this->alias = $value;
 	}
 
-	public function setCname ($value) {
+	public function setCname($value) {
 		$this->cname = rtrim($value, '/');
 	}
 
-	public function setServer ($value) {
+	public function setServer($value) {
 		$this->server = $value;
 	}
 
-	public function setApiUrl ($value) {
+	public function setApiUrl($value) {
 		$this->api_url = $value;
 	}
 
-	public function setShopIsActive ($value) {
+	public function setShopIsActive($value) {
 		$this->shop_is_active = $value;
 	}
 
-	public function setAlwaysUseSsl ($value) {
+	public function setAlwaysUseSsl($value) {
 		$this->always_use_ssl = $value;
 	}
 
-	public function setEnableRedirectKeywordUpdate ($value) {
+	public function setEnableRedirectKeywordUpdate($value) {
 		$this->enable_redirect_keyword_update = $value;
 	}
 
-	public function setEnableDefaultRedirect ($value) {
+	public function setEnableDefaultRedirect($value) {
 		$this->enable_default_redirect = $value;
 	}
 
-	public function setEncoding ($value) {
+	public function setEncoding($value) {
 		$this->encoding = $value;
 	}
 
-	public function setExportConvertEncoding ($value) {
+	public function setExportConvertEncoding($value) {
 		$this->export_convert_encoding = $value;
 	}
 
-	public function setEnablePing ($value) {
+	public function setEnablePing($value) {
 		$this->enable_ping = $value;
 	}
 
-	public function setEnableAddOrder ($value) {
+	public function setEnableAddOrder($value) {
 		$this->enable_add_order = $value;
 	}
 
-	public function setEnableUpdateOrder ($value) {
+	public function setEnableUpdateOrder($value) {
 		$this->enable_update_order = $value;
 	}
 
-	public function setEnableCheckCart ($value) {
+	public function setEnableCheckCart($value) {
 		$this->enable_check_cart = $value;
 	}
 
-	public function setEnableRedeemCoupons ($value) {
+	public function setEnableRedeemCoupons($value) {
 		$this->enable_redeem_coupons = $value;
 	}
 
-	public function setEnableGetOrders ($value) {
+	public function setEnableGetOrders($value) {
 		$this->enable_get_orders = $value;
 	}
 
-	public function setEnableGetCustomer ($value) {
+	public function setEnableGetCustomer($value) {
 		$this->enable_get_customer = $value;
 	}
 
-	public function setEnableGetDebugInfo ($value) {
+	public function setEnableGetDebugInfo($value) {
 		$this->enable_get_debug_info = $value;
 	}
 
-	public function setEnableGetItemsCsv ($value) {
+	public function setEnableGetItemsCsv($value) {
 		$this->enable_get_items_csv = $value;
 	}
 
-	public function setEnableGetItems ($value) {
+	public function setEnableGetItems($value) {
 		$this->enable_get_items = $value;
 	}
 
-	public function setEnableGetCategoriesCsv ($value) {
+	public function setEnableGetCategoriesCsv($value) {
 		$this->enable_get_categories_csv = $value;
 	}
 
-	public function setEnableGetCategories ($value) {
+	public function setEnableGetCategories($value) {
 		$this->enable_get_categories = $value;
 	}
 
-	public function setEnableGetReviewsCsv ($value) {
+	public function setEnableGetReviewsCsv($value) {
 		$this->enable_get_reviews_csv = $value;
 	}
 
-	public function setEnableGetPagesCsv ($value) {
+	public function setEnableGetPagesCsv($value) {
 		$this->enable_get_pages_csv = $value;
 	}
 
-	public function setEnableGetLogFile ($value) {
+	public function setEnableGetLogFile($value) {
 		$this->enable_get_log_file = $value;
 	}
 
-	public function setEnableMobileWebsite ($value) {
+	public function setEnableMobileWebsite($value) {
 		$this->enable_mobile_website = $value;
 	}
 
-	public function setEnableCron ($value) {
+	public function setEnableCron($value) {
 		$this->enable_cron = $value;
 	}
 
-	public function setEnableClearLogFile ($value) {
+	public function setEnableClearLogFile($value) {
 		$this->enable_clear_log_file = $value;
 	}
 
-	public function setEnableClearCache ($value) {
+	public function setEnableClearCache($value) {
 		$this->enable_clear_cache = $value;
 	}
 
-	public function setEnableGetSettings ($value) {
+	public function setEnableGetSettings($value) {
 		$this->enable_get_settings = $value;
 	}
 
-	public function setEnableSetSettings ($value) {
+	public function setEnableSetSettings($value) {
 		$this->enable_set_settings = $value;
 	}
 
-	public function setCountry ($value) {
+	public function setCountry($value) {
 		$this->country = strtoupper($value);
 	}
 
-	public function setLanguage ($value) {
+	public function setLanguage($value) {
 		$this->language = strtolower($value);
 	}
 
-	public function setCurrency ($value) {
+	public function setCurrency($value) {
 		$this->currency = $value;
 	}
 
-	public function setMobileHeaderParent ($value) {
+	public function setMobileHeaderParent($value) {
 		$this->mobile_header_parent = $value;
 	}
 
-	public function setMobileHeaderPrepend ($value) {
+	public function setMobileHeaderPrepend($value) {
 		$this->mobile_header_prepend = $value;
 	}
 
-	public function setExportBufferCapacity ($value) {
+	public function setExportBufferCapacity($value) {
 		$this->export_buffer_capacity = $value;
 	}
 
-	public function setMaxAttributes ($value) {
+	public function setMaxAttributes($value) {
 		$this->max_attributes = $value;
 	}
 
-	public function setExportFolderPath ($value) {
+	public function setExportFolderPath($value) {
 		$this->export_folder_path = $value;
 	}
 
-	public function setLogFolderPath ($value) {
+	public function setLogFolderPath($value) {
 		$this->log_folder_path = $value;
 	}
 
-	public function setCacheFolderPath ($value) {
+	public function setCacheFolderPath($value) {
 		$this->cache_folder_path = $value;
 	}
 
-	public function setItemsCsvFilename ($value) {
+	public function setItemsCsvFilename($value) {
 		$this->items_csv_filename = $value;
 	}
 
-	public function setCategoriesCsvFilename ($value) {
+	public function setCategoriesCsvFilename($value) {
 		$this->categories_csv_filename = $value;
 	}
 
-	public function setReviewsCsvFilename ($value) {
+	public function setReviewsCsvFilename($value) {
 		$this->reviews_csv_filename = $value;
 	}
 
-	public function setPagesCsvFilename ($value) {
+	public function setPagesCsvFilename($value) {
 		$this->pages_csv_filename = $value;
 	}
 
-	public function setAccessLogFilename ($value) {
+	public function setAccessLogFilename($value) {
 		$this->access_log_filename = $value;
 	}
 
-	public function setRequestLogFilename ($value) {
+	public function setRequestLogFilename($value) {
 		$this->request_log_filename = $value;
 	}
 
-	public function setErrorLogFilename ($value) {
+	public function setErrorLogFilename($value) {
 		$this->error_log_filename = $value;
 	}
 
-	public function setDebugLogFilename ($value) {
+	public function setDebugLogFilename($value) {
 		$this->debug_log_filename = $value;
 	}
 
-	public function setRedirectKeywordCacheFilename ($value) {
+	public function setRedirectKeywordCacheFilename($value) {
 		$this->redirect_keyword_cache_filename = $value;
 	}
 
-	public function setRedirectSkipKeywordCacheFilename ($value) {
+	public function setRedirectSkipKeywordCacheFilename($value) {
 		$this->redirect_skip_keyword_cache_filename = $value;
 	}
 
-	public function setItemsCsvPath ($value) {
+	public function setItemsCsvPath($value) {
 		$dir = dirname($value);
 		$file = basename($value);
 
@@ -1390,7 +1385,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		}
 	}
 
-	public function setCategoriesCsvPath ($value) {
+	public function setCategoriesCsvPath($value) {
 		$dir = dirname($value);
 		$file = basename($value);
 
@@ -1400,7 +1395,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		}
 	}
 
-	public function setReviewsCsvPath ($value) {
+	public function setReviewsCsvPath($value) {
 		$dir = dirname($value);
 		$file = basename($value);
 
@@ -1410,7 +1405,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		}
 	}
 
-	public function setPagesCsvPath ($value) {
+	public function setPagesCsvPath($value) {
 		$dir = dirname($value);
 		$file = basename($value);
 
@@ -1420,7 +1415,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		}
 	}
 
-	public function setAccessLogPath ($value) {
+	public function setAccessLogPath($value) {
 		$dir = dirname($value);
 		$file = basename($value);
 
@@ -1430,7 +1425,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		}
 	}
 
-	public function setRequestLogPath ($value) {
+	public function setRequestLogPath($value) {
 		$dir = dirname($value);
 		$file = basename($value);
 
@@ -1440,7 +1435,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		}
 	}
 
-	public function setErrorLogPath ($value) {
+	public function setErrorLogPath($value) {
 		$dir = dirname($value);
 		$file = basename($value);
 
@@ -1450,7 +1445,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		}
 	}
 
-	public function setDebugLogPath ($value) {
+	public function setDebugLogPath($value) {
 		$dir = dirname($value);
 		$file = basename($value);
 
@@ -1460,7 +1455,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		}
 	}
 
-	public function setRedirectKeywordCachePath ($value) {
+	public function setRedirectKeywordCachePath($value) {
 		$dir = dirname($value);
 		$file = basename($value);
 
@@ -1470,7 +1465,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		}
 	}
 
-	public function setRedirectSkipKeywordCachePath ($value) {
+	public function setRedirectSkipKeywordCachePath($value) {
 		$dir = dirname($value);
 		$file = basename($value);
 
@@ -1480,30 +1475,30 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		}
 	}
 
-	public function setIsShopgateAdapter ($value) {
+	public function setIsShopgateAdapter($value) {
 		$this->is_shopgate_adapter = $value;
 	}
 
-	public function setEnableRegisterCustomer ($value) {
+	public function setEnableRegisterCustomer($value) {
 		$this->enable_register_customer = $value;
 	}
 
 	###############
 	### Helpers ###
 	###############
-	public function accept (ShopgateContainerVisitor $v) {
+	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitConfig($this);
 	}
 
-	public function returnAdditionalSetting ($setting) {
+	public function returnAdditionalSetting($setting) {
 		return (isset($this->additionalSettings[$setting])) ? $this->additionalSettings[$setting] : null;
 	}
 
-	public function returnAdditionalSettings () {
+	public function returnAdditionalSettings() {
 		return $this->additionalSettings;
 	}
 
-	public function buildProperties () {
+	public function buildProperties() {
 		$properties = parent::buildProperties();
 
 		// append the file paths
@@ -1530,7 +1525,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 *
 	 * @return mixed[]|bool The $shopgate_config array if the file was included and defined $shopgate_config, false otherwise.
 	 */
-	private function includeFile ($path) {
+	private function includeFile($path) {
 		$shopgate_config = null;
 
 		// try including the file
@@ -1555,7 +1550,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 *
 	 * @param array <string, mixed> $data The data to map.
 	 */
-	private function mapAdditionalSettings ($data = array()) {
+	private function mapAdditionalSettings($data = array()) {
 		foreach ($data as $key => $value) {
 			$this->additionalSettings[$key] = $value;
 		}
@@ -1578,8 +1573,9 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @return mixed The return value of the called method.
 	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld.
 	 */
-	public static function __callStatic ($name, $arguments) {
-		return call_user_func_array(array('ShopgateConfigOld', $name), $arguments);
+	public static function __callStatic($name, $arguments) {
+		return call_user_func_array(array('ShopgateConfigOld',
+										  $name), $arguments);
 	}
 
 	/**
@@ -1588,7 +1584,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @deprecated
 	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
 	 */
-	public static function setConfig (array $newConfig, $validate = true) {
+	public static function setConfig(array $newConfig, $validate = true) {
 		return ShopgateConfigOld::setConfig($newConfig, $validate);
 	}
 
@@ -1598,7 +1594,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @deprecated
 	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
 	 */
-	public static function validateAndReturnConfig () {
+	public static function validateAndReturnConfig() {
 		return ShopgateConfigOld::validateAndReturnConfig();
 	}
 
@@ -1608,7 +1604,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @deprecated
 	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
 	 */
-	public static function getConfig () {
+	public static function getConfig() {
 		return ShopgateConfigOld::getConfig();
 	}
 
@@ -1618,7 +1614,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @deprecated
 	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
 	 */
-	public static function getConfigField ($field) {
+	public static function getConfigField($field) {
 		return ShopgateConfigOld::getConfigField($field);
 	}
 
@@ -1628,7 +1624,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @deprecated
 	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
 	 */
-	public static function getLogFilePath ($type = ShopgateLogger::LOGTYPE_ERROR) {
+	public static function getLogFilePath($type = ShopgateLogger::LOGTYPE_ERROR) {
 		return ShopgateConfigOld::getLogFilePath($type = ShopgateLogger::LOGTYPE_ERROR);
 	}
 
@@ -1638,7 +1634,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @deprecated
 	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
 	 */
-	public static function getItemsCsvFilePath () {
+	public static function getItemsCsvFilePath() {
 		return ShopgateConfigOld::getItemsCsvFilePath();
 	}
 
@@ -1648,7 +1644,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @deprecated
 	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
 	 */
-	public static function getCategoriesCsvFilePath () {
+	public static function getCategoriesCsvFilePath() {
 		return ShopgateConfigOld::getCategoriesCsvFilePath();
 	}
 
@@ -1658,7 +1654,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @deprecated
 	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
 	 */
-	public static function getReviewsCsvFilePath () {
+	public static function getReviewsCsvFilePath() {
 		return ShopgateConfigOld::getReviewsCsvFilePath();
 	}
 
@@ -1668,7 +1664,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @deprecated
 	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
 	 */
-	public static function getPagesCsvFilePath () {
+	public static function getPagesCsvFilePath() {
 		return ShopgateConfigOld::getPagesCsvFilePath();
 	}
 
@@ -1678,7 +1674,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @deprecated
 	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
 	 */
-	public static function getRedirectKeywordsFilePath () {
+	public static function getRedirectKeywordsFilePath() {
 		return ShopgateConfigOld::getRedirectKeywordsFilePath();
 	}
 
@@ -1688,7 +1684,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @deprecated
 	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
 	 */
-	public static function getSkipRedirectKeywordsFilePath () {
+	public static function getSkipRedirectKeywordsFilePath() {
 		return ShopgateConfigOld::getSkipRedirectKeywordsFilePath();
 	}
 
@@ -1698,7 +1694,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @deprecated
 	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
 	 */
-	public static function saveConfig () {
+	public static function saveConfig() {
 		return ShopgateConfigOld::saveConfig();
 	}
 }
@@ -1741,37 +1737,34 @@ class ShopgateConfigOld extends ShopgateObject {
 	 *
 	 * @var array
 	 */
-	private static $config
-		= array(
-			'api_url' => 'https://api.shopgate.com/merchant/',
-			'customer_number' => 'THE_CUSTOMER_NUMBER',
-			'shop_number' => 'THE_SHOP_NUMBER',
-			'apikey' => 'THE_API_KEY',
-			'alias' => 'my-shop',
-			'cname' => '',
-			'server' => 'live',
-			'plugin' => 'example',
-			'plugin_language' => 'DE',
-			'plugin_currency' => 'EUR',
-			'plugin_root_dir' => "",
-			'enable_ping' => true,
-			'enable_cron' => true,
-			'enable_add_order' => true,
-			'enable_update_order' => true,
-			'enable_get_customer' => true,
-			'enable_get_categories_csv' => true,
-			'enable_get_orders' => true,
-			'enable_get_items_csv' => true,
-			'enable_get_reviews_csv' => true,
-			'enable_get_pages_csv' => true,
-			'enable_get_log_file' => true,
-			'enable_clear_log_file' => true,
-			'enable_mobile_website' => true,
-			'generate_items_csv_on_the_fly' => true,
-			'max_attributes' => 50,
-			'use_custom_error_handler' => false,
-			'encoding' => 'UTF-8',
-		);
+	private static $config = array('api_url' => 'https://api.shopgate.com/merchant/',
+								   'customer_number' => 'THE_CUSTOMER_NUMBER',
+								   'shop_number' => 'THE_SHOP_NUMBER',
+								   'apikey' => 'THE_API_KEY',
+								   'alias' => 'my-shop',
+								   'cname' => '',
+								   'server' => 'live',
+								   'plugin' => 'example',
+								   'plugin_language' => 'DE',
+								   'plugin_currency' => 'EUR',
+								   'plugin_root_dir' => "",
+								   'enable_ping' => true,
+								   'enable_cron' => true,
+								   'enable_add_order' => true,
+								   'enable_update_order' => true,
+								   'enable_get_customer' => true,
+								   'enable_get_categories_csv' => true,
+								   'enable_get_orders' => true,
+								   'enable_get_items_csv' => true,
+								   'enable_get_reviews_csv' => true,
+								   'enable_get_pages_csv' => true,
+								   'enable_get_log_file' => true,
+								   'enable_clear_log_file' => true,
+								   'enable_mobile_website' => true,
+								   'generate_items_csv_on_the_fly' => true,
+								   'max_attributes' => 50,
+								   'use_custom_error_handler' => false,
+								   'encoding' => 'UTF-8',);
 
 	/**
 	 * Übergeben und überprüfen der Einstellungen.
@@ -1780,7 +1773,7 @@ class ShopgateConfigOld extends ShopgateObject {
 	 *
 	 * @param array $newConfig
 	 */
-	public static final function setConfig (array $newConfig, $validate = true) {
+	public static final function setConfig(array $newConfig, $validate = true) {
 		self::deprecated(__METHOD__);
 
 		if ($validate) {
@@ -1794,7 +1787,7 @@ class ShopgateConfigOld extends ShopgateObject {
 	 *
 	 * @deprecated
 	 */
-	public static final function validateAndReturnConfig () {
+	public static final function validateAndReturnConfig() {
 		self::deprecated(__METHOD__);
 
 		try {
@@ -1813,13 +1806,13 @@ class ShopgateConfigOld extends ShopgateObject {
 	 * @deprecated
 	 * @return array
 	 */
-	public static function getConfig () {
+	public static function getConfig() {
 		self::deprecated(__METHOD__);
 
 		return self::$config;
 	}
 
-	public static function getConfigField ($field) {
+	public static function getConfigField($field) {
 		self::deprecated(__METHOD__);
 
 		if (isset(self::$config[$field])) {
@@ -1829,7 +1822,7 @@ class ShopgateConfigOld extends ShopgateObject {
 		}
 	}
 
-	public static final function getPluginName () {
+	public static final function getPluginName() {
 		self::deprecated(__METHOD__);
 
 		return self::$config["plugin"];
@@ -1841,7 +1834,7 @@ class ShopgateConfigOld extends ShopgateObject {
 	 *
 	 * @deprecated
 	 */
-	public static final function getLogFilePath ($type = ShopgateLogger::LOGTYPE_ERROR) {
+	public static final function getLogFilePath($type = ShopgateLogger::LOGTYPE_ERROR) {
 		self::deprecated(__METHOD__);
 
 		switch (strtolower($type)) {
@@ -1853,10 +1846,10 @@ class ShopgateConfigOld extends ShopgateObject {
 			case "debug":
 		}
 
-		if (isset(self::$config['path_to_' . strtolower($type) . '_log_file'])) {
-			return self::$config['path_to_' . strtolower($type) . '_log_file'];
+		if (isset(self::$config['path_to_'.strtolower($type).'_log_file'])) {
+			return self::$config['path_to_'.strtolower($type).'_log_file'];
 		} else {
-			return SHOPGATE_BASE_DIR . '/temp/logs/' . strtolower($type) . '.log';
+			return SHOPGATE_BASE_DIR.'/temp/logs/'.strtolower($type).'.log';
 		}
 	}
 
@@ -1866,26 +1859,26 @@ class ShopgateConfigOld extends ShopgateObject {
 	 *
 	 * @deprecated
 	 */
-	public static final function getItemsCsvFilePath () {
+	public static final function getItemsCsvFilePath() {
 		self::deprecated(__METHOD__);
 
 		if (isset(self::$config['path_to_items_csv_file'])) {
 			return self::$config['path_to_items_csv_file'];
 		} else {
-			return SHOPGATE_BASE_DIR . '/temp/items.csv';
+			return SHOPGATE_BASE_DIR.'/temp/items.csv';
 		}
 	}
 
 	/**
 	 * @deprecated
 	 */
-	public static final function getCategoriesCsvFilePath () {
+	public static final function getCategoriesCsvFilePath() {
 		self::deprecated(__METHOD__);
 
 		if (isset(self::$config['path_to_categories_csv_file'])) {
 			return self::$config['path_to_categories_csv_file'];
 		} else {
-			return SHOPGATE_BASE_DIR . '/temp/categories.csv';
+			return SHOPGATE_BASE_DIR.'/temp/categories.csv';
 		}
 	}
 
@@ -1895,13 +1888,13 @@ class ShopgateConfigOld extends ShopgateObject {
 	 *
 	 * @deprecated
 	 */
-	public static final function getReviewsCsvFilePath () {
+	public static final function getReviewsCsvFilePath() {
 		self::deprecated(__METHOD__);
 
 		if (isset(self::$config['path_to_reviews_csv_file'])) {
 			return self::$config['path_to_reviews_csv_file'];
 		} else {
-			return SHOPGATE_BASE_DIR . '/temp/reviews.csv';
+			return SHOPGATE_BASE_DIR.'/temp/reviews.csv';
 		}
 	}
 
@@ -1911,13 +1904,13 @@ class ShopgateConfigOld extends ShopgateObject {
 	 *
 	 * @deprecated
 	 */
-	public static final function getPagesCsvFilePath () {
+	public static final function getPagesCsvFilePath() {
 		self::deprecated(__METHOD__);
 
 		if (isset(self::$config['path_to_pages_csv_file'])) {
 			return self::$config['path_to_pages_csv_file'];
 		} else {
-			return SHOPGATE_BASE_DIR . '/temp/pages.csv';
+			return SHOPGATE_BASE_DIR.'/temp/pages.csv';
 		}
 	}
 
@@ -1925,13 +1918,13 @@ class ShopgateConfigOld extends ShopgateObject {
 	 * @return the absolute Path for the Redirect-Keywords-Caching-File
 	 * @deprecated
 	 */
-	public static final function getRedirectKeywordsFilePath () {
+	public static final function getRedirectKeywordsFilePath() {
 		self::deprecated(__METHOD__);
 
 		if (isset(self::$config['path_to_redirect_keywords_file'])) {
 			return self::$config['path_to_redirect_keywords_file'];
 		} else {
-			return SHOPGATE_BASE_DIR . '/temp/cache/redirect_keywords.txt';
+			return SHOPGATE_BASE_DIR.'/temp/cache/redirect_keywords.txt';
 		}
 	}
 
@@ -1939,13 +1932,13 @@ class ShopgateConfigOld extends ShopgateObject {
 	 * @return the absolute Path for the Skip-Redirect-Keywords-Caching-File
 	 * @deprecated
 	 */
-	public static final function getSkipRedirectKeywordsFilePath () {
+	public static final function getSkipRedirectKeywordsFilePath() {
 		self::deprecated(__METHOD__);
 
 		if (isset(self::$config['path_to_skip_redirect_keywords_file'])) {
 			return self::$config['path_to_skip_redirect_keywords_file'];
 		} else {
-			return SHOPGATE_BASE_DIR . '/temp/cache/skip_redirect_keywords.txt';
+			return SHOPGATE_BASE_DIR.'/temp/cache/skip_redirect_keywords.txt';
 		}
 	}
 
@@ -1958,27 +1951,18 @@ class ShopgateConfigOld extends ShopgateObject {
 	 *
 	 * @throws ShopgateLibraryException
 	 */
-	private static function validateConfig (array $newConfig) {
+	private static function validateConfig(array $newConfig) {
 		self::deprecated(__METHOD__);
 
 		//Pflichtfelder überprüfen
 		if (!preg_match("/^\S+/", $newConfig['apikey'])) {
-			throw new ShopgateLibraryException(
-				ShopgateLibraryException::CONFIG_INVALID_VALUE,
-				"Field 'apikey' contains invalid value '{$newConfig['apikey']}'."
-			);
+			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_INVALID_VALUE, "Field 'apikey' contains invalid value '{$newConfig['apikey']}'.");
 		}
 		if (!preg_match("/^\d{5,}$/", $newConfig['customer_number'])) {
-			throw new ShopgateLibraryException(
-				ShopgateLibraryException::CONFIG_INVALID_VALUE,
-				"Field 'customer_number' contains invalid value '{$newConfig['customer_number']}'."
-			);
+			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_INVALID_VALUE, "Field 'customer_number' contains invalid value '{$newConfig['customer_number']}'.");
 		}
 		if (!preg_match("/^\d{5,}$/", $newConfig['shop_number'])) {
-			throw new ShopgateLibraryException(
-				ShopgateLibraryException::CONFIG_INVALID_VALUE,
-				"Field 'shop_number' contains invalid value '{$newConfig['shop_number']}'."
-			);
+			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_INVALID_VALUE, "Field 'shop_number' contains invalid value '{$newConfig['shop_number']}'.");
 		}
 
 		////////////////////////////////////////////////////////////////////////
@@ -1988,8 +1972,7 @@ class ShopgateConfigOld extends ShopgateObject {
 			// Playground?
 			self::$config["api_url"] = "https://api.shopgatepg.com/merchant/";
 		} else {
-			if (!empty($newConfig["server"]) && $newConfig["server"] === "custom"
-				&& !empty($newConfig["server_custom_url"])
+			if (!empty($newConfig["server"]) && $newConfig["server"] === "custom" && !empty($newConfig["server_custom_url"])
 			) {
 				// Eigener Test-Server?
 				self::$config["api_url"] = $newConfig["server_custom_url"];
@@ -2004,12 +1987,12 @@ class ShopgateConfigOld extends ShopgateObject {
 	 * @deprecated
 	 * @throws ShopgateLibraryException
 	 */
-	public static function saveConfig () {
+	public static function saveConfig() {
 		self::deprecated(__METHOD__);
 
 		$config = self::getConfig();
 
-		$returnString = "<?php" . "\r\n";
+		$returnString = "<?php"."\r\n";
 
 		$returnString .= "\$shopgate_config = array();\r\n";
 
@@ -2023,19 +2006,19 @@ class ShopgateConfigOld extends ShopgateObject {
 						$field = false;
 					}
 
-					$returnString .= '$shopgate_config["' . $key . '"] = ' . ($field ? 'true' : 'false') . ';' . "\r\n";
+					$returnString .= '$shopgate_config["'.$key.'"] = '.($field ? 'true' : 'false').';'."\r\n";
 				} else {
 					if (is_numeric($field)) {
-						$returnString .= '$shopgate_config["' . $key . '"] = ' . $field . ';' . "\r\n";
+						$returnString .= '$shopgate_config["'.$key.'"] = '.$field.';'."\r\n";
 					} else {
-						$returnString .= '$shopgate_config["' . $key . '"] = "' . $field . '";' . "\r\n";
+						$returnString .= '$shopgate_config["'.$key.'"] = "'.$field.'";'."\r\n";
 					}
 				}
 			}
 		}
 
 		$message = "";
-		$handle = @fopen(dirname(__FILE__) . '/../config/myconfig.php', 'w+');
+		$handle = @fopen(dirname(__FILE__).'/../config/myconfig.php', 'w+');
 		if ($handle == false) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR);
 			fclose($handle);
@@ -2053,8 +2036,8 @@ class ShopgateConfigOld extends ShopgateObject {
 	 *
 	 * @param string $methodName The name of the called method.
 	 */
-	private static function deprecated ($methodName) {
-		$message = 'Use of ' . $methodName . ' and the whole ShopgateConfigOld class is deprecated.';
+	private static function deprecated($methodName) {
+		$message = 'Use of '.$methodName.' and the whole ShopgateConfigOld class is deprecated.';
 		trigger_error($message, E_USER_DEPRECATED);
 		ShopgateLogger::getInstance()->log($message);
 	}
@@ -2084,7 +2067,7 @@ interface ShopgateConfigInterface {
 	 * @post if $settings was passed: all applicable keys and values from $settings are loaded into the configuration and can be retrieved via getter methods
 	 *       if $settings was null: all applicable keys and values from a permanent storage are loaded into the configuration and can be retrieved via getter methods
 	 */
-	public function load (array $settings = null);
+	public function load(array $settings = null);
 
 	/**
 	 * Saves the desired fields to a permanent storage.
@@ -2096,7 +2079,7 @@ interface ShopgateConfigInterface {
 	 * @throws ShopgateLibraryException with code ShopgateLibraryException::CONFIG_INVALID_VALUE
 	 * @post the configuration is saved into a permanent storage
 	 */
-	public function save (array $fieldList, $validate = true);
+	public function save(array $fieldList, $validate = true);
 
 	/**
 	 * Validates the configuration values.
@@ -2109,47 +2092,47 @@ interface ShopgateConfigInterface {
 	 *
 	 * @param string[] $fieldList The list of fields to be validated or empty, to validate all fields.
 	 */
-	public function validate (array $fieldList = array());
+	public function validate(array $fieldList = array());
 
 	/**
 	 * @return string The name of the plugin / shop system the plugin is for.
 	 */
-	public function getPluginName ();
+	public function getPluginName();
 
 	/**
 	 * @return bool true to activate the Shopgate error handler.
 	 */
-	public function getUseCustomErrorHandler ();
+	public function getUseCustomErrorHandler();
 
 	/**
 	 * @return int Shopgate customer number (at least 5 digits)
 	 */
-	public function getCustomerNumber ();
+	public function getCustomerNumber();
 
 	/**
 	 * @return int Shopgate shop number (at least 5 digits)
 	 */
-	public function getShopNumber ();
+	public function getShopNumber();
 
 	/**
 	 * @return string API key (exactly 20 hexadecimal digits)
 	 */
-	public function getApikey ();
+	public function getApikey();
 
 	/**
 	 * @return string Alias of a shop for mobile redirect (start and end with alpha-numerical characters, dashes in between are ok)
 	 */
-	public function getAlias ();
+	public function getAlias();
 
 	/**
 	 * @return string Custom URL that to redirect to if a mobile device visits a shop (begin with "http://" or "https://" followed by any number of non-whitespace characters)
 	 */
-	public function getCname ();
+	public function getCname();
 
 	/**
 	 * @return string The server to use for Shopgate Merchant API communication ("live" or "pg" or "custom")
 	 */
-	public function getServer ();
+	public function getServer();
 
 	/**
 	 * @return string If getServer() returns "live", ShopgateConfigInterface::SHOPGATE_API_URL_LIVE is returned.<br />
@@ -2157,621 +2140,621 @@ interface ShopgateConfigInterface {
 	 *                 If getServer() returns "custom": A custom API url (empty or a string beginning with "http://" or "https://" followed by any number of non-whitespace characters) is returned.<br />
 	 *                 If getServer() returns a different value than the above, ShopgateConfigInterface::SHOPGATE_API_URL_LIVE is returned.
 	 */
-	public function getApiUrl ();
+	public function getApiUrl();
 
 	/**
 	 * @return bool true to indicate a shop has been activated by Shopgate
 	 */
-	public function getShopIsActive ();
+	public function getShopIsActive();
 
 	/**
 	 * @return bool true to always use SSL / HTTPS urls for download of external content (such as graphics for the mobile header button)
 	 */
-	public function getAlwaysUseSsl ();
+	public function getAlwaysUseSsl();
 
 	/**
 	 * @return bool true to enable updates of keywords that identify mobile devices
 	 */
-	public function getEnableRedirectKeywordUpdate ();
+	public function getEnableRedirectKeywordUpdate();
 
 	/**
 	 * @return bool true to enable default redirect for mobile devices from content sites to mobile website (welcome page)
 	 */
-	public function getEnableDefaultRedirect ();
+	public function getEnableDefaultRedirect();
 
 	/**
 	 * @return string The encoding the shop system is using internally.
 	 */
-	public function getEncoding ();
+	public function getEncoding();
 
 	/**
 	 * @return bool true to enable automatic encoding conversion to utf-8 during export
 	 */
-	public function getExportConvertEncoding ();
+	public function getExportConvertEncoding();
 
 	/**
 	 * @return bool
 	 */
-	public function getEnablePing ();
+	public function getEnablePing();
 
 	/**
 	 * @return bool
 	 */
-	public function getEnableAddOrder ();
+	public function getEnableAddOrder();
 
 	/**
 	 * @return bool
 	 */
-	public function getEnableUpdateOrder ();
+	public function getEnableUpdateOrder();
 
 	/**
 	 * @return bool
 	 */
-	public function getEnableCheckCart ();
+	public function getEnableCheckCart();
 
 	/**
 	 * @return bool
 	 */
-	public function getEnableRedeemCoupons ();
+	public function getEnableRedeemCoupons();
 
 	/**
 	 * @return bool
 	 */
-	public function getEnableGetOrders ();
+	public function getEnableGetOrders();
 
 	/**
 	 * @return bool
 	 */
-	public function getEnableGetCustomer ();
+	public function getEnableGetCustomer();
 
 
 	/**
 	 * @return bool
 	 */
-	public function getEnableGetDebugInfo ();
+	public function getEnableGetDebugInfo();
 
 	/**
 	 * @return bool
 	 */
-	public function getEnableGetItemsCsv ();
+	public function getEnableGetItemsCsv();
 
 	/**
 	 * @return bool
 	 */
-	public function getEnableGetCategoriesCsv ();
+	public function getEnableGetCategoriesCsv();
 
 	/**
 	 * @return bool
 	 */
-	public function getEnableGetReviewsCsv ();
+	public function getEnableGetReviewsCsv();
 
 	/**
 	 * @return bool
 	 */
-	public function getEnableGetPagesCsv ();
+	public function getEnableGetPagesCsv();
 
 	/**
 	 * @return bool
 	 */
-	public function getEnableGetLogFile ();
+	public function getEnableGetLogFile();
 
 	/**
 	 * @return bool
 	 */
-	public function getEnableMobileWebsite ();
+	public function getEnableMobileWebsite();
 
 	/**
 	 * @return bool
 	 */
-	public function getEnableCron ();
+	public function getEnableCron();
 
 	/**
 	 * @return bool
 	 */
-	public function getEnableClearLogFile ();
+	public function getEnableClearLogFile();
 
 	/**
 	 * @return bool
 	 */
-	public function getEnableClearCache ();
+	public function getEnableClearCache();
 
 	/**
 	 * @return bool
 	 */
-	public function getEnableGetSettings ();
+	public function getEnableGetSettings();
 
 	/**
 	 * @return bool
 	 */
-	public function getEnableSetSettings ();
+	public function getEnableSetSettings();
 
 	/**
 	 * @return string The ISO 3166 ALPHA-2 code of the country the plugin uses for export.
 	 */
-	public function getCountry ();
+	public function getCountry();
 
 	/**
 	 * @return string The ISO 3166 ALPHA-2 code of the language the plugin uses for export.
 	 */
-	public function getLanguage ();
+	public function getLanguage();
 
 	/**
 	 * @return string The ISO 4217 code of the currency the plugin uses for export.
 	 */
-	public function getCurrency ();
+	public function getCurrency();
 
 	/**
 	 * @return string CSS style identifier for the parent element the Mobile Header should be attached to.
 	 */
-	public function getMobileHeaderParent ();
+	public function getMobileHeaderParent();
 
 	/**
 	 * @return bool True to insert the Mobile Header as first child element, false to append it.
 	 */
-	public function getMobileHeaderPrepend ();
+	public function getMobileHeaderPrepend();
 
 	/**
 	 * @return int The capacity (number of lines) of the buffer used for the export actions.
 	 */
-	public function getExportBufferCapacity ();
+	public function getExportBufferCapacity();
 
 	/**
 	 * @return int The maximum number of attributes per product that are created. If the number is exceeded, attributes should be converted to options.
 	 */
-	public function getMaxAttributes ();
+	public function getMaxAttributes();
 
 	/**
 	 * @return string The path to the folder where the export CSV files are stored and retrieved from.
 	 */
-	public function getExportFolderPath ();
+	public function getExportFolderPath();
 
 	/**
 	 * @return string The path to the folder where the log files are stored and retrieved from.
 	 */
-	public function getLogFolderPath ();
+	public function getLogFolderPath();
 
 	/**
 	 * @return string The path to the folder where the cache files are stored and retrieved from.
 	 */
-	public function getCacheFolderPath ();
+	public function getCacheFolderPath();
 
 	/**
 	 * @return string The name of the items CSV file.
 	 */
-	public function getItemsCsvFilename ();
+	public function getItemsCsvFilename();
 
 	/**
 	 * @return string The name of the categories CSV file.
 	 */
-	public function getCategoriesCsvFilename ();
+	public function getCategoriesCsvFilename();
 
 	/**
 	 * @return string The name of the reviews CSV file.
 	 */
-	public function getReviewsCsvFilename ();
+	public function getReviewsCsvFilename();
 
 	/**
 	 * @return string The name of the pages CSV file.
 	 */
-	public function getPagesCsvFilename ();
+	public function getPagesCsvFilename();
 
 	/**
 	 * @return string The name of the access log file.
 	 */
-	public function getAccessLogFilename ();
+	public function getAccessLogFilename();
 
 	/**
 	 * @return string The name of the request log file.
 	 */
-	public function getRequestLogFilename ();
+	public function getRequestLogFilename();
 
 	/**
 	 * @return string The name of the error log file.
 	 */
-	public function getErrorLogFilename ();
+	public function getErrorLogFilename();
 
 	/**
 	 * @return string The name of the debug log file.
 	 */
-	public function getDebugLogFilename ();
+	public function getDebugLogFilename();
 
 	/**
 	 * @return string The name of the cache file for mobile device detection keywords.
 	 */
-	public function getRedirectKeywordCacheFilename ();
+	public function getRedirectKeywordCacheFilename();
 
 	/**
 	 * @return string The name of the cache file for mobile device skip detection keywords.
 	 */
-	public function getRedirectSkipKeywordCacheFilename ();
+	public function getRedirectSkipKeywordCacheFilename();
 
 	/**
 	 * @return string The path to where the items CSV file is stored and retrieved from.
 	 */
-	public function getItemsCsvPath ();
+	public function getItemsCsvPath();
 
 	/**
 	 * @return string The path to where the categories CSV file is stored and retrieved from.
 	 */
-	public function getCategoriesCsvPath ();
+	public function getCategoriesCsvPath();
 
 	/**
 	 * @return string The path to where the reviews CSV file is stored and retrieved from.
 	 */
-	public function getReviewsCsvPath ();
+	public function getReviewsCsvPath();
 
 	/**
 	 * @return string The path to where the pages CSV file is stored and retrieved from.
 	 */
-	public function getPagesCsvPath ();
+	public function getPagesCsvPath();
 
 	/**
 	 * @return string The path to the access log file.
 	 */
-	public function getAccessLogPath ();
+	public function getAccessLogPath();
 
 	/**
 	 * @return string The path to the request log file.
 	 */
-	public function getRequestLogPath ();
+	public function getRequestLogPath();
 
 	/**
 	 * @return string The path to the error log file.
 	 */
-	public function getErrorLogPath ();
+	public function getErrorLogPath();
 
 	/**
 	 * @return string The path to the debug log file.
 	 */
-	public function getDebugLogPath ();
+	public function getDebugLogPath();
 
 	/**
 	 * @return string The path to the cache file for mobile device detection keywords.
 	 */
-	public function getRedirectKeywordCachePath ();
+	public function getRedirectKeywordCachePath();
 
 	/**
 	 * @return string The path to the cache file for mobile device skip detection keywords.
 	 */
-	public function getRedirectSkipKeywordCachePath ();
+	public function getRedirectSkipKeywordCachePath();
 
 	/**
 	 * @return bool True if the plugin is an adapter between Shopgate's and a third-party-API and servers multiple shops on both ends.
 	 */
-	public function getIsShopgateAdapter ();
+	public function getIsShopgateAdapter();
 
 	/**
 	 * @param string $value The name of the plugin / shop system the plugin is for.
 	 */
-	public function setPluginName ($value);
+	public function setPluginName($value);
 
 	/**
 	 * @param bool $value true to activate the Shopgate error handler.
 	 */
-	public function setUseCustomErrorHandler ($value);
+	public function setUseCustomErrorHandler($value);
 
 	/**
 	 * @param int $value Shopgate customer number (at least 5 digits)
 	 */
-	public function setCustomerNumber ($value);
+	public function setCustomerNumber($value);
 
 	/**
 	 * @param int $value Shopgate shop number (at least 5 digits)
 	 */
-	public function setShopNumber ($value);
+	public function setShopNumber($value);
 
 	/**
 	 * @param string $value API key (exactly 20 hexadecimal digits)
 	 */
-	public function setApikey ($value);
+	public function setApikey($value);
 
 	/**
 	 * @param string $value Alias of a shop for mobile redirect (start and end with alpha-numerical characters, dashes in between are ok)
 	 */
-	public function setAlias ($value);
+	public function setAlias($value);
 
 	/**
 	 * @param string $value Custom URL that to redirect to if a mobile device visits a shop (begin with "http://" or "https://" followed by any number of non-whitespace characters)
 	 */
-	public function setCname ($value);
+	public function setCname($value);
 
 	/**
 	 * @param string $value The server to use for Shopgate Merchant API communication ("live" or "pg" or "custom")
 	 */
-	public function setServer ($value);
+	public function setServer($value);
 
 	/**
 	 * @param string $value If $server is set to custom, Shopgate Merchant API calls will be made to this URL (empty or a string beginning with "http://" or "https://" followed by any number of non-whitespace characters)
 	 */
-	public function setApiUrl ($value);
+	public function setApiUrl($value);
 
 	/**
 	 * @param bool $value true to indicate a shop has been activated by Shopgate
 	 */
-	public function setShopIsActive ($value);
+	public function setShopIsActive($value);
 
 	/**
 	 * @param bool $value true to always use SSL / HTTPS urls for download of external content (such as graphics for the mobile header button)
 	 */
-	public function setAlwaysUseSsl ($value);
+	public function setAlwaysUseSsl($value);
 
 	/**
 	 * @param bool $value true to enable updates of keywords that identify mobile devices
 	 */
-	public function setEnableRedirectKeywordUpdate ($value);
+	public function setEnableRedirectKeywordUpdate($value);
 
 	/**
 	 * @param bool true to enable default redirect for mobile devices from content sites to mobile website (welcome page)
 	 */
-	public function setEnableDefaultRedirect ($value);
+	public function setEnableDefaultRedirect($value);
 
 	/**
 	 * @param string $value The encoding the shop system is using internally.
 	 */
-	public function setEncoding ($value);
+	public function setEncoding($value);
 
 	/**
 	 * @param bool $value true to enable automatic encoding conversion to utf-8 during export
 	 */
-	public function setExportConvertEncoding ($value);
+	public function setExportConvertEncoding($value);
 
 	/**
 	 * @param bool $value
 	 */
-	public function setEnablePing ($value);
+	public function setEnablePing($value);
 
 	/**
 	 * @param bool $value
 	 */
-	public function setEnableAddOrder ($value);
+	public function setEnableAddOrder($value);
 
 	/**
 	 * @param bool $value
 	 */
-	public function setEnableUpdateOrder ($value);
+	public function setEnableUpdateOrder($value);
 
 	/**
 	 * @param bool $value
 	 */
-	public function setEnableCheckCart ($value);
+	public function setEnableCheckCart($value);
 
 	/**
 	 * @param bool $value
 	 */
-	public function setEnableRedeemCoupons ($value);
+	public function setEnableRedeemCoupons($value);
 
 	/**
 	 * @param bool $value
 	 */
-	public function setEnableGetOrders ($value);
+	public function setEnableGetOrders($value);
 
 	/**
 	 * @param bool $value
 	 */
-	public function setEnableGetCustomer ($value);
+	public function setEnableGetCustomer($value);
 
 	/**
 	 * @param bool $value
 	 */
-	public function setEnableGetDebugInfo ($value);
+	public function setEnableGetDebugInfo($value);
 
 
 	/**
 	 * @param bool $value
 	 */
-	public function setEnableGetItemsCsv ($value);
+	public function setEnableGetItemsCsv($value);
 
 	/**
 	 * @param bool $value
 	 */
-	public function setEnableGetCategoriesCsv ($value);
+	public function setEnableGetCategoriesCsv($value);
 
 	/**
 	 * @param bool $value
 	 */
-	public function setEnableGetReviewsCsv ($value);
+	public function setEnableGetReviewsCsv($value);
 
 	/**
 	 * @param bool $value
 	 */
-	public function setEnableGetPagesCsv ($value);
+	public function setEnableGetPagesCsv($value);
 
 	/**
 	 * @param bool $value
 	 */
-	public function setEnableGetLogFile ($value);
+	public function setEnableGetLogFile($value);
 
 	/**
 	 * @param bool $value
 	 */
-	public function setEnableMobileWebsite ($value);
+	public function setEnableMobileWebsite($value);
 
 	/**
 	 * @param bool $value
 	 */
-	public function setEnableCron ($value);
+	public function setEnableCron($value);
 
 	/**
 	 * @param bool $value
 	 */
-	public function setEnableClearLogFile ($value);
+	public function setEnableClearLogFile($value);
 
 	/**
 	 * @param bool $value
 	 */
-	public function setEnableClearCache ($value);
+	public function setEnableClearCache($value);
 
 	/**
 	 * @param bool $value
 	 */
-	public function setEnableGetSettings ($value);
+	public function setEnableGetSettings($value);
 
 	/**
 	 * @param bool $value
 	 */
-	public function setEnableSetSettings ($value);
+	public function setEnableSetSettings($value);
 
 	/**
 	 * @param string The ISO 3166 ALPHA-2 code of the country the plugin uses for export.
 	 */
-	public function setCountry ($value);
+	public function setCountry($value);
 
 	/**
 	 * @param string $value The ISO 3166 ALPHA-2 code of the language the plugin uses for export.
 	 */
-	public function setLanguage ($value);
+	public function setLanguage($value);
 
 	/**
 	 * @param string $value The ISO 4217 code of the currency the plugin uses for export.
 	 */
-	public function setCurrency ($value);
+	public function setCurrency($value);
 
 	/**
 	 * @param string $value CSS style identifier for the parent element the Mobile Header should be attached to.
 	 */
-	public function setMobileHeaderParent ($value);
+	public function setMobileHeaderParent($value);
 
 	/**
 	 * @return bool $value True to insert the Mobile Header as first child element, false to append it.
 	 */
-	public function setMobileHeaderPrepend ($value);
+	public function setMobileHeaderPrepend($value);
 
 	/**
 	 * @param int $value The capacity (number of lines) of the buffer used for the export actions.
 	 */
-	public function setExportBufferCapacity ($value);
+	public function setExportBufferCapacity($value);
 
 	/**
 	 * @param int $value The maximum number of attributes per product that are created. If the number is exceeded, attributes should be converted to options.
 	 */
-	public function setMaxAttributes ($value);
+	public function setMaxAttributes($value);
 
 	/**
 	 * @param string $value The path to the folder where the export CSV files are stored and retrieved from.
 	 */
-	public function setExportFolderPath ($value);
+	public function setExportFolderPath($value);
 
 	/**
 	 * @param string $value The path to the folder where the log files are stored and retrieved from.
 	 */
-	public function setLogFolderPath ($value);
+	public function setLogFolderPath($value);
 
 	/**
 	 * @param string $value The path to the folder where the cache files are stored and retrieved from.
 	 */
-	public function setCacheFolderPath ($value);
+	public function setCacheFolderPath($value);
 
 	/**
 	 * @param string $value The name of the items CSV file.
 	 */
-	public function setItemsCsvFilename ($value);
+	public function setItemsCsvFilename($value);
 
 	/**
 	 * @param string $value The name of the categories CSV file.
 	 */
-	public function setCategoriesCsvFilename ($value);
+	public function setCategoriesCsvFilename($value);
 
 	/**
 	 * @param string $value The name of the reviews CSV file.
 	 */
-	public function setReviewsCsvFilename ($value);
+	public function setReviewsCsvFilename($value);
 
 	/**
 	 * @param string $value The name of the pages CSV file.
 	 */
-	public function setPagesCsvFilename ($value);
+	public function setPagesCsvFilename($value);
 
 	/**
 	 * @param string $value The name of the access log file.
 	 */
-	public function setAccessLogFilename ($value);
+	public function setAccessLogFilename($value);
 
 	/**
 	 * @param string $value The name of the request log file.
 	 */
-	public function setRequestLogFilename ($value);
+	public function setRequestLogFilename($value);
 
 	/**
 	 * @param string $value The name of the error log file.
 	 */
-	public function setErrorLogFilename ($value);
+	public function setErrorLogFilename($value);
 
 	/**
 	 * @param string $value The name of the debug log file.
 	 */
-	public function setDebugLogFilename ($value);
+	public function setDebugLogFilename($value);
 
 	/**
 	 * @param string $value The name of the cache file for mobile device detection keywords.
 	 */
-	public function setRedirectKeywordCacheFilename ($value);
+	public function setRedirectKeywordCacheFilename($value);
 
 	/**
 	 * @param string $value The name of the cache file for mobile device skip detection keywords.
 	 */
-	public function setRedirectSkipKeywordCacheFilename ($value);
+	public function setRedirectSkipKeywordCacheFilename($value);
 
 	/**
 	 * @param string $value The path to where the items CSV file is stored and retrieved from.
 	 */
-	public function setItemsCsvPath ($value);
+	public function setItemsCsvPath($value);
 
 	/**
 	 * @param string $value The path to where the categories CSV file is stored and retrieved from.
 	 */
-	public function setCategoriesCsvPath ($value);
+	public function setCategoriesCsvPath($value);
 
 	/**
 	 * @param string $value The path to where the reviews CSV file is stored and retrieved from.
 	 */
-	public function setReviewsCsvPath ($value);
+	public function setReviewsCsvPath($value);
 
 	/**
 	 * @param string $value The path to where the pages CSV file is stored and retrieved from.
 	 */
-	public function setPagesCsvPath ($value);
+	public function setPagesCsvPath($value);
 
 	/**
 	 * @param string $value The path to the access log file.
 	 */
-	public function setAccessLogPath ($value);
+	public function setAccessLogPath($value);
 
 	/**
 	 * @param string $value The path to the request log file.
 	 */
-	public function setRequestLogPath ($value);
+	public function setRequestLogPath($value);
 
 	/**
 	 * @param string $value The path to the error log file.
 	 */
-	public function setErrorLogPath ($value);
+	public function setErrorLogPath($value);
 
 	/**
 	 * @param string $value The path to the debug log file.
 	 */
-	public function setDebugLogPath ($value);
+	public function setDebugLogPath($value);
 
 	/**
 	 * @param string $value The path to the cache file for mobile device detection keywords.
 	 */
-	public function setRedirectKeywordCachePath ($value);
+	public function setRedirectKeywordCachePath($value);
 
 	/**
 	 * @param string $value The path to the cache file for mobile device skip detection keywords.
 	 */
-	public function setRedirectSkipKeywordCachePath ($value);
+	public function setRedirectSkipKeywordCachePath($value);
 
 	/**
 	 * @param bool $value True if the plugin is an adapter between Shopgate's and a third-party-API and servers multiple shops on both ends.
 	 */
-	public function setIsShopgateAdapter ($value);
+	public function setIsShopgateAdapter($value);
 
 	/**
 	 * Returns an additional setting.
 	 *
 	 * @param string $setting The name of the setting.
 	 */
-	public function returnAdditionalSetting ($setting);
+	public function returnAdditionalSetting($setting);
 
 	/**
 	 * Returns the additional settings array.
@@ -2781,7 +2764,7 @@ interface ShopgateConfigInterface {
 	 *
 	 * @return array<string, mixed> The additional settings a plugin may have defined.
 	 */
-	public function returnAdditionalSettings ();
+	public function returnAdditionalSettings();
 
 	/**
 	 * Returns the configuration as an array.
@@ -2799,12 +2782,12 @@ interface ShopgateConfigInterface {
 	 *
 	 * @return array<string, mixed> The configuration as an array of key-value-pairs.
 	 */
-	public function toArray ();
+	public function toArray();
 
 	/**
 	 * Creates an array of all properties that have getters.
 	 *
 	 * @return mixed[]
 	 */
-	public function buildProperties ();
+	public function buildProperties();
 }

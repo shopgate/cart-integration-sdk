@@ -33,27 +33,23 @@
  * @method string       getLabel()
  *
  */
-class Shopgate_Model_Catalog_Attribute
-	extends Shopgate_Model_Abstract {
+class Shopgate_Model_Catalog_Attribute extends Shopgate_Model_Abstract {
 
 	/**
 	 * define allowed methods
 	 *
 	 * @var array
 	 */
-	protected $allowedMethods
-		= array(
-			'Uid',
-			'GroupUid',
-			'Label'
-		);
+	protected $allowedMethods = array('Uid',
+									  'GroupUid',
+									  'Label');
 
 	/**
 	 * @param Shopgate_Model_XmlResultObject $itemNode
 	 *
 	 * @return Shopgate_Model_XmlResultObject
 	 */
-	public function asXml (Shopgate_Model_XmlResultObject $itemNode) {
+	public function asXml(Shopgate_Model_XmlResultObject $itemNode) {
 		/**
 		 * @var Shopgate_Model_XmlResultObject $attributeNode
 		 */

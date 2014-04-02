@@ -36,14 +36,13 @@
  *  @method float  getAdditionalPrice()
  *
  */
-class Shopgate_Model_Catalog_Option
-	extends Shopgate_Model_Abstract {
+class Shopgate_Model_Catalog_Option extends Shopgate_Model_Abstract {
 	/**
 	 * @param Shopgate_Model_XmlResultObject $itemNode
 	 *
 	 * @return Shopgate_Model_XmlResultObject
 	 */
-	public function asXml (Shopgate_Model_XmlResultObject $itemNode) {
+	public function asXml(Shopgate_Model_XmlResultObject $itemNode) {
 		/**
 		 * @var Shopgate_Model_XmlResultObject $optionNode
 		 */

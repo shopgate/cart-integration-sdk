@@ -39,29 +39,25 @@
  *  @method string  getAlt()
  *
  */
-class Shopgate_Model_Media_Image
-	extends Shopgate_Model_Abstract {
+class Shopgate_Model_Media_Image extends Shopgate_Model_Abstract {
 
 	/**
 	 * define allowed methods
 	 *
 	 * @var array
 	 */
-	protected $allowedMethods
-		= array(
-			'Uid',
-			'SortOrder',
-			'Url',
-			'Title',
-			'Alt'
-		);
+	protected $allowedMethods = array('Uid',
+									  'SortOrder',
+									  'Url',
+									  'Title',
+									  'Alt');
 
 	/**
 	 * @param Shopgate_Model_XmlResultObject $itemNode
 	 *
 	 * @return Shopgate_Model_XmlResultObject
 	 */
-	public function asXml (Shopgate_Model_XmlResultObject $itemNode) {
+	public function asXml(Shopgate_Model_XmlResultObject $itemNode) {
 		/**
 		 * @var Shopgate_Model_XmlResultObject $imageNode
 		 */
@@ -78,7 +74,7 @@ class Shopgate_Model_Media_Image
 	/**
 	 * @return array|null
 	 */
-	public function asArray () {
+	public function asArray() {
 		$imageResult = new Shopgate_Model_Media_Image();
 
 		$imageResult->setUid($this->getUid());

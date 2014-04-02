@@ -30,24 +30,20 @@
  * @method array    getTierPrices();
  *
  */
-class Shopgate_Model_Customer_Group
-	extends Shopgate_Model_Abstract {
+class Shopgate_Model_Customer_Group extends Shopgate_Model_Abstract {
 
 	/**
 	 * define allowed methods
 	 *
 	 * @var array
 	 */
-	protected $allowedMethods
-		= array(
-			'Uid',
-			'TierPrices'
-		);
+	protected $allowedMethods = array('Uid',
+									  'TierPrices');
 
 	/**
 	 * init default objects
 	 */
-	public function __construct () {
+	public function __construct() {
 		$this->setTierPrices(array());
 	}
 
@@ -56,7 +52,7 @@ class Shopgate_Model_Customer_Group
 	 *
 	 * @return Shopgate_Model_XmlResultObject
 	 */
-	public function asXml (Shopgate_Model_XmlResultObject $itemNode) {
+	public function asXml(Shopgate_Model_XmlResultObject $itemNode) {
 		/**
 		 * @var Shopgate_Model_XmlResultObject   $customerGroupNode
 		 * @var Shopgate_Model_Catalog_TierPrice $tierPriceItem
@@ -77,7 +73,7 @@ class Shopgate_Model_Customer_Group
 	 *
 	 * @param Shopgate_Model_Catalog_TierPrice $tierPrice
 	 */
-	public function addTierPrice (Shopgate_Model_Catalog_TierPrice $tierPrice) {
+	public function addTierPrice(Shopgate_Model_Catalog_TierPrice $tierPrice) {
 		$tierPrices = $this->getTierPrices();
 		array_push($tierPrices, $tierPrice);
 		$this->setTierPrices($tierPrices);

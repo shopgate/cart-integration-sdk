@@ -33,8 +33,7 @@
  * @method string   getLabel()
  *
  */
-class Shopgate_Model_Catalog_Relation
-	extends Shopgate_Model_Abstract {
+class Shopgate_Model_Catalog_Relation extends Shopgate_Model_Abstract {
 	const DEFAULT_RELATION_TYPE_CROSSSELL = 'crosssell';
 	const DEFAULT_RELATION_TYPE_RELATION = 'relation';
 	const DEFAULT_RELATION_TYPE_CUSTOM = 'custom';
@@ -43,7 +42,7 @@ class Shopgate_Model_Catalog_Relation
 	/**
 	 * init default data
 	 */
-	public function __construct () {
+	public function __construct() {
 		$this->setValues(array());
 	}
 
@@ -52,7 +51,7 @@ class Shopgate_Model_Catalog_Relation
 	 *
 	 * @return Shopgate_Model_XmlResultObject
 	 */
-	public function asXml (Shopgate_Model_XmlResultObject $itemNode) {
+	public function asXml(Shopgate_Model_XmlResultObject $itemNode) {
 		/**
 		 * @var Shopgate_Model_XmlResultObject $relationNode
 		 */
@@ -73,7 +72,7 @@ class Shopgate_Model_Catalog_Relation
 	 *
 	 * @param int $value
 	 */
-	public function addValue ($value) {
+	public function addValue($value) {
 		$values = $this->getValues();
 		array_push($values, $value);
 		$this->setValues($values);

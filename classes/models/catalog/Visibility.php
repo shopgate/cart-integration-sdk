@@ -30,19 +30,15 @@
  * @method string   getLevel()
  *
  */
-class Shopgate_Model_Catalog_Visibility
-	extends Shopgate_Model_Abstract {
+class Shopgate_Model_Catalog_Visibility extends Shopgate_Model_Abstract {
 
 	/**
 	 * define allowed methods
 	 *
 	 * @var array
 	 */
-	protected $allowedMethods
-		= array(
-			'Marketplace',
-			'Level'
-		);
+	protected $allowedMethods = array('Marketplace',
+									  'Level');
 
 	const DEFAULT_VISIBILITY_CATALOG_AND_SEARCH = 'catalog_and_search';
 	const DEFAULT_VISIBILITY_CATALOG = 'catalog';
@@ -54,7 +50,7 @@ class Shopgate_Model_Catalog_Visibility
 	 *
 	 * @return Shopgate_Model_XmlResultObject
 	 */
-	public function asXml (Shopgate_Model_XmlResultObject $itemNode) {
+	public function asXml(Shopgate_Model_XmlResultObject $itemNode) {
 		/**
 		 * @var Shopgate_Model_XmlResultObject $visibilityNode
 		 */
@@ -68,7 +64,7 @@ class Shopgate_Model_Catalog_Visibility
 	/**
 	 * @return array|null
 	 */
-	public function asArray () {
+	public function asArray() {
 		$visibilityResult = new Shopgate_Model_Abstract();
 
 		$visibilityResult->setData('level', $this->getLevel());

@@ -30,8 +30,7 @@
  * @method string   getValue()
  *
  */
-class Shopgate_Model_Catalog_Validation
-	extends Shopgate_Model_Abstract {
+class Shopgate_Model_Catalog_Validation extends Shopgate_Model_Abstract {
 	/**
 	 * types
 	 */
@@ -62,18 +61,15 @@ class Shopgate_Model_Catalog_Validation
 	 *
 	 * @var array
 	 */
-	protected $allowedMethods
-		= array(
-			'ValidationType',
-			'Value'
-		);
+	protected $allowedMethods = array('ValidationType',
+									  'Value');
 
 	/**
 	 * @param Shopgate_Model_XmlResultObject $itemNode
 	 *
 	 * @return Shopgate_Model_XmlResultObject
 	 */
-	public function asXml (Shopgate_Model_XmlResultObject $itemNode) {
+	public function asXml(Shopgate_Model_XmlResultObject $itemNode) {
 		/**
 		 * @var Shopgate_Model_XmlResultObject $validationNode
 		 */

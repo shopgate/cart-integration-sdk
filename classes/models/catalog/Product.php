@@ -113,8 +113,7 @@
  * @method                                      setChildren(array $value)
  *
  */
-class Shopgate_Model_Catalog_Product
-	extends Shopgate_Model_Abstract {
+class Shopgate_Model_Catalog_Product extends Shopgate_Model_Abstract {
 
 	/**
 	 * define identifier uid
@@ -165,7 +164,7 @@ class Shopgate_Model_Catalog_Product
 	 *
 	 * @var string
 	 */
-	protected $dtdFileLocation = 'catalog/product.dtd';
+	protected $dtdFileLocation = 'catalog/products.dtd';
 
 	/**
 	 * @var bool
@@ -177,80 +176,74 @@ class Shopgate_Model_Catalog_Product
 	 *
 	 * @var array
 	 */
-	protected $allowedMethods
-		= array(
-			'Uid',
-			'LastUpdate',
-			'Name',
-			'TaxPercent',
-			'TaxClass',
-			'Currency',
-			'Description',
-			'Deeplink',
-			'PromotionSortOrder',
-			'InternalOrderInfo',
-			'Price',
-			'Weight',
-			'WeightUnit',
-			'Images',
-			'CategoryPaths',
-			'Shipping',
-			'Manufacturer',
-			'Visibility',
-			'Properties',
-			'Stock',
-			'Identifiers',
-			'Tags',
-			'Relations',
-			'AttributeGroups',
-			'Attributes',
-			'Inputs',
-			'Attachments',
-			'IsDefaultChild',
-			'Children',
-			'AgeRating'
-		);
+	protected $allowedMethods = array('Uid',
+									  'LastUpdate',
+									  'Name',
+									  'TaxPercent',
+									  'TaxClass',
+									  'Currency',
+									  'Description',
+									  'Deeplink',
+									  'PromotionSortOrder',
+									  'InternalOrderInfo',
+									  'Price',
+									  'Weight',
+									  'WeightUnit',
+									  'Images',
+									  'CategoryPaths',
+									  'Shipping',
+									  'Manufacturer',
+									  'Visibility',
+									  'Properties',
+									  'Stock',
+									  'Identifiers',
+									  'Tags',
+									  'Relations',
+									  'AttributeGroups',
+									  'Attributes',
+									  'Inputs',
+									  'Attachments',
+									  'IsDefaultChild',
+									  'Children',
+									  'AgeRating');
 
 	/**
 	 * @var array
 	 */
-	protected $fireMethods
-		= array(
-			'setLastUpdate',
-			'setUid',
-			'setName',
-			'setTaxPercent',
-			'setTaxClass',
-			'setCurrency',
-			'setDescription',
-			'setDeeplink',
-			'setPromotionSortOrder',
-			'setInternalOrderInfo',
-			'setAgeRating',
-			'setWeight',
-			'setWeightUnit',
+	protected $fireMethods = array('setLastUpdate',
+								   'setUid',
+								   'setName',
+								   'setTaxPercent',
+								   'setTaxClass',
+								   'setCurrency',
+								   'setDescription',
+								   'setDeeplink',
+								   'setPromotionSortOrder',
+								   'setInternalOrderInfo',
+								   'setAgeRating',
+								   'setWeight',
+								   'setWeightUnit',
 
-			'setPrice',
-			'setShipping',
-			'setManufacturer',
-			'setVisibility',
-			'setStock',
-			'setImages',
-			'setCategoryPaths',
-			'setProperties',
-			'setIdentifiers',
-			'setTags',
-			'setRelations',
-			'setAttributeGroups',
-			'setInputs',
-			'setAttachments',
-			'setChildren',
-		);
+								   'setPrice',
+								   'setShipping',
+								   'setManufacturer',
+								   'setVisibility',
+								   'setStock',
+								   'setImages',
+								   'setCategoryPaths',
+								   'setProperties',
+								   'setIdentifiers',
+								   'setTags',
+								   'setRelations',
+								   'setAttributeGroups',
+								   'setInputs',
+								   'setAttachments',
+								   'setChildren',);
 
 	/**
 	 * init default object
 	 */
-	public function __construct () {
+	public function __construct() {
 		$this->setPrice(new Shopgate_Model_Catalog_Price());
 		$this->setShipping(new Shopgate_Model_Catalog_Shipping());
 		$this->setManufacturer(new Shopgate_Model_Catalog_Manufacturer());
@@ -275,7 +268,7 @@ class Shopgate_Model_Catalog_Product
 	 *
 	 * @return bool
 	 */
-	public function getIsChild () {
+	public function getIsChild() {
 		return $this->isChild;
 	}
 
@@ -284,7 +277,7 @@ class Shopgate_Model_Catalog_Product
 	 *
 	 * @param $value
 	 */
-	public function setIsChild ($value) {
+	public function setIsChild($value) {
 		$this->isChild = $value;
 	}
 
@@ -295,7 +288,7 @@ class Shopgate_Model_Catalog_Product
 	 *
 	 * @return Shopgate_Model_XmlResultObject
 	 */
-	public function asXml (Shopgate_Model_XmlResultObject $itemsNode) {
+	public function asXml(Shopgate_Model_XmlResultObject $itemsNode) {
 		/**
 		 * global info
 		 *
@@ -476,7 +469,7 @@ class Shopgate_Model_Catalog_Product
 	 *
 	 * @param Shopgate_Model_Media_Image $image
 	 */
-	public function addImage (Shopgate_Model_Media_Image $image) {
+	public function addImage(Shopgate_Model_Media_Image $image) {
 		$images = $this->getImages();
 		array_push($images, $image);
 		$this->setImages($images);
@@ -487,7 +480,7 @@ class Shopgate_Model_Catalog_Product
 	 *
 	 * @param Shopgate_Model_Catalog_Product $child
 	 */
-	public function addChild ($child) {
+	public function addChild($child) {
 		$children = $this->getChildren();
 		array_push($children, $child);
 		$this->setChildren($children);
@@ -496,7 +489,7 @@ class Shopgate_Model_Catalog_Product
 	/**
 	 * @return array
 	 */
-	public function getChildren () {
+	public function getChildren() {
 		if (self::DEFAULT_CLEAN_CHILDREN) {
 			foreach (parent::getData('children') as $child) {
 				$this->cleanChildData($this, $child);
@@ -511,7 +504,7 @@ class Shopgate_Model_Catalog_Product
 	 *
 	 * @param Shopgate_Model_Catalog_CategoryPath $categoryPath
 	 */
-	public function addCategoryPath (Shopgate_Model_Catalog_CategoryPath $categoryPath) {
+	public function addCategoryPath(Shopgate_Model_Catalog_CategoryPath $categoryPath) {
 		$categoryPaths = $this->getCategoryPaths();
 		array_push($categoryPaths, $categoryPath);
 		$this->setCategoryPaths($categoryPaths);
@@ -522,7 +515,7 @@ class Shopgate_Model_Catalog_Product
 	 *
 	 * @param Shopgate_Model_Catalog_AttributeGroup $attributeGroup
 	 */
-	public function addAttributeGroup ($attributeGroup) {
+	public function addAttributeGroup($attributeGroup) {
 		$attributesGroups = $this->getAttributeGroups();
 		array_push($attributesGroups, $attributeGroup);
 		$this->setAttributeGroups($attributesGroups);
@@ -533,7 +526,7 @@ class Shopgate_Model_Catalog_Product
 	 *
 	 * @param Shopgate_Model_Catalog_Property $property
 	 */
-	public function addProperty ($property) {
+	public function addProperty($property) {
 		$properties = $this->getProperties();
 		array_push($properties, $property);
 		$this->setProperties($properties);
@@ -544,7 +537,7 @@ class Shopgate_Model_Catalog_Product
 	 *
 	 * @param Shopgate_Model_Catalog_Identifier $identifier
 	 */
-	public function addIdentifier ($identifier) {
+	public function addIdentifier($identifier) {
 		$identifiers = $this->getIdentifiers();
 		array_push($identifiers, $identifier);
 		$this->setIdentifiers($identifiers);
@@ -555,7 +548,7 @@ class Shopgate_Model_Catalog_Product
 	 *
 	 * @param Shopgate_Model_Catalog_Tag $tag
 	 */
-	public function addTag ($tag) {
+	public function addTag($tag) {
 		$tags = $this->getTags();
 		array_push($tags, $tag);
 		$this->setTags($tags);
@@ -566,7 +559,7 @@ class Shopgate_Model_Catalog_Product
 	 *
 	 * @param Shopgate_Model_Catalog_Relation $relation
 	 */
-	public function addRelation ($relation) {
+	public function addRelation($relation) {
 		$relations = $this->getRelations();
 		array_push($relations, $relation);
 		$this->setRelations($relations);
@@ -577,7 +570,7 @@ class Shopgate_Model_Catalog_Product
 	 *
 	 * @param Shopgate_Model_Catalog_Input $input
 	 */
-	public function addInput ($input) {
+	public function addInput($input) {
 		$inputs = $this->getInputs();
 		array_push($inputs, $input);
 		$this->setInputs($inputs);
@@ -588,7 +581,7 @@ class Shopgate_Model_Catalog_Product
 	 *
 	 * @param Shopgate_Model_Catalog_Attribute $attribute
 	 */
-	public function addAttribute ($attribute) {
+	public function addAttribute($attribute) {
 		$attributes = $this->getAttributes();
 		array_push($attributes, $attribute);
 		$this->setAttributes($attributes);
@@ -599,7 +592,7 @@ class Shopgate_Model_Catalog_Product
 	 *
 	 * @return SimpleXMLElement
 	 */
-	public function removeEmptyNodes ($childItem) {
+	public function removeEmptyNodes($childItem) {
 		$output = $childItem->asXML();
 		$outputRef = $output;
 		$output = preg_replace('~<[^\\s>]+\\s*/>~si', null, $output);
@@ -616,7 +609,7 @@ class Shopgate_Model_Catalog_Product
 	 *
 	 * @return array
 	 */
-	public function asArray () {
+	public function asArray() {
 		$productResult = new Shopgate_Model_Abstract();
 
 		$productResult->setData('uid', $this->getUid());
@@ -716,7 +709,7 @@ class Shopgate_Model_Catalog_Product
 	/**
 	 * generate csv result object
 	 */
-	public function asCsv () {
+	public function asCsv() {
 
 	}
 
@@ -724,7 +717,7 @@ class Shopgate_Model_Catalog_Product
 	 * @param Shopgate_Model_Abstract $parentItem
 	 * @param Shopgate_Model_Abstract $childItem
 	 */
-	protected function cleanChildData ($parentItem, $childItem) {
+	protected function cleanChildData($parentItem, $childItem) {
 		foreach ($childItem->getData() as $key => $value) {
 			if ($parentValue = $parentItem->getData($key)) {
 				if (is_array($parentValue) && count($value) > 0) {
@@ -763,7 +756,7 @@ class Shopgate_Model_Catalog_Product
 	 *
 	 * @return mixed
 	 */
-	protected function getItemByUid ($data, $uid) {
+	protected function getItemByUid($data, $uid) {
 		/* @var Shopgate_Model_Abstract $item */
 		foreach ($data as $item) {
 			if ($item->getData(self::DEFAULT_IDENTIFIER_UID) == $uid) {

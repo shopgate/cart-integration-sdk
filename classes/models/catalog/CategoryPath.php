@@ -45,29 +45,25 @@
  *  @method string                      getDeeplink()
  *
  */
-class Shopgate_Model_Catalog_CategoryPath
-	extends Shopgate_Model_Abstract {
+class Shopgate_Model_Catalog_CategoryPath extends Shopgate_Model_Abstract {
 
 	/**
 	 * define allowed methods
 	 *
 	 * @var array
 	 */
-	protected $allowedMethods
-		= array(
-			'Uid',
-			'SortOrder',
-			'Items',
-			'ParentUid',
-			'Image',
-			'IsActive',
-			'Deeplink'
-		);
+	protected $allowedMethods = array('Uid',
+									  'SortOrder',
+									  'Items',
+									  'ParentUid',
+									  'Image',
+									  'IsActive',
+									  'Deeplink');
 
 	/**
 	 * init default object
 	 */
-	public function __construct () {
+	public function __construct() {
 		$this->setItems(array());
 	}
 
@@ -76,7 +72,7 @@ class Shopgate_Model_Catalog_CategoryPath
 	 *
 	 * @return Shopgate_Model_XmlResultObject
 	 */
-	public function asXml (Shopgate_Model_XmlResultObject $itemNode) {
+	public function asXml(Shopgate_Model_XmlResultObject $itemNode) {
 		/**
 		 * @var Shopgate_Model_XmlResultObject $categoryPathNode
 		 * @var Shopgate_Model_XmlResultObject $itemsNode
@@ -96,7 +92,7 @@ class Shopgate_Model_Catalog_CategoryPath
 	/**
 	 * @return array|null
 	 */
-	public function asArray () {
+	public function asArray() {
 		$categoryPathResult = new Shopgate_Model_Abstract();
 
 		$categoryPathResult->setData('uid', $this->getUid());
@@ -124,7 +120,7 @@ class Shopgate_Model_Catalog_CategoryPath
 	 * @param int    $level
 	 * @param string $path
 	 */
-	public function addItem ($level, $path) {
+	public function addItem($level, $path) {
 		$items = $this->getItems();
 		$item = new Shopgate_Model_Abstract();
 		$item->setData('level', $level);

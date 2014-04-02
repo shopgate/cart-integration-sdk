@@ -23,18 +23,22 @@
  *
  * File: XmlResultObject.php
  */
-class Shopgate_Model_XmlResultObject
-	extends SimpleXMLElement {
+class Shopgate_Model_XmlResultObject extends SimpleXMLElement {
+
+	/**
+	 * define default main node
+	 */
+	const DEFAULT_MAIN_NODE = '<items></items>';
 
 	/**
 	 * Adds a child with $value inside CDATA
 	 *
-	 * @param       $name
-	 * @param null  $value
+	 * @param      $name
+	 * @param null $value
 	 *
 	 * @return SimpleXMLElement
 	 */
-	public function addChildWithCDATA ($name, $value = null) {
+	public function addChildWithCDATA($name, $value = null) {
 		$new_child = $this->addChild($name);
 
 		if ($new_child !== null) {
@@ -54,7 +58,7 @@ class Shopgate_Model_XmlResultObject
 	 *
 	 * @return SimpleXMLElement
 	 */
-	public function replaceChild (SimpleXMLElement $new, SimpleXMLElement $old) {
+	public function replaceChild(SimpleXMLElement $new, SimpleXMLElement $old) {
 		$tmp = dom_import_simplexml($this);
 		$new = $tmp->ownerDocument->importNode(dom_import_simplexml($new), true);
 
@@ -70,12 +74,9 @@ class Shopgate_Model_XmlResultObject
 	 * @param string $value
 	 * @param string $namespace
 	 */
-	public function addAttribute ($name, $value = null, $namespace = null) {
-		/**
-		 * @var Shopgate_Model_Catalog_Product $parent
-		 */
+	public function addAttribute($name, $value = null, $namespace = null) {
 		if (isset($value)) {
 			parent::addAttribute($name, $value, $namespace);
 		}
 	}
-}
+} 

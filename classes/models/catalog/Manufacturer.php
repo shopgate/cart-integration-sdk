@@ -33,27 +33,23 @@
  *  @method string  getTitle()
  *
  */
-class Shopgate_Model_Catalog_Manufacturer
-	extends Shopgate_Model_Abstract {
+class Shopgate_Model_Catalog_Manufacturer extends Shopgate_Model_Abstract {
 
 	/**
 	 * define allowed methods
 	 *
 	 * @var array
 	 */
-	protected $allowedMethods
-		= array(
-			'Uid',
-			'ItemNumber',
-			'Title'
-		);
+	protected $allowedMethods = array('Uid',
+									  'ItemNumber',
+									  'Title');
 
 	/**
 	 * @param Shopgate_Model_XmlResultObject $itemNode
 	 *
 	 * @return Shopgate_Model_XmlResultObject
 	 */
-	public function asXml (Shopgate_Model_XmlResultObject $itemNode) {
+	public function asXml(Shopgate_Model_XmlResultObject $itemNode) {
 		/**
 		 * @var Shopgate_Model_XmlResultObject $manufacturerNode
 		 */
@@ -68,7 +64,7 @@ class Shopgate_Model_Catalog_Manufacturer
 	/**
 	 * @return array|null
 	 */
-	public function asArray () {
+	public function asArray() {
 		$manufacturerResult = new Shopgate_Model_Abstract();
 
 		$manufacturerResult->setData('uid', $this->getUid());

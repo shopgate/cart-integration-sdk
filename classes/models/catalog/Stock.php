@@ -45,31 +45,27 @@
  * @method string   getAvailabilityText()
  *
  */
-class Shopgate_Model_Catalog_Stock
-	extends Shopgate_Model_Abstract {
+class Shopgate_Model_Catalog_Stock extends Shopgate_Model_Abstract {
 
 	/**
 	 * define allowed methods
 	 *
 	 * @var array
 	 */
-	protected $allowedMethods
-		= array(
-			'IsSaleable',
-			'Backorders',
-			'UseStock',
-			'StockQuantity',
-			'MinimumOrderQuantity',
-			'MaximumOrderQuantity',
-			'AvailabilityText'
-		);
+	protected $allowedMethods = array('IsSaleable',
+									  'Backorders',
+									  'UseStock',
+									  'StockQuantity',
+									  'MinimumOrderQuantity',
+									  'MaximumOrderQuantity',
+									  'AvailabilityText');
 
 	/**
 	 * @param Shopgate_Model_XmlResultObject $itemNode
 	 *
 	 * @return Shopgate_Model_XmlResultObject
 	 */
-	public function asXml (Shopgate_Model_XmlResultObject $itemNode) {
+	public function asXml(Shopgate_Model_XmlResultObject $itemNode) {
 		/**
 		 * @var Shopgate_Model_XmlResultObject $stockNode
 		 */
@@ -88,7 +84,7 @@ class Shopgate_Model_Catalog_Stock
 	/**
 	 * @return array|null
 	 */
-	public function asArray () {
+	public function asArray() {
 		$stockResult = new Shopgate_Model_Abstract();
 
 		$stockResult->setData('is_saleable', $this->getIsSaleable());

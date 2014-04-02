@@ -30,26 +30,22 @@
  * @method string   getValue()
  *
  */
-class Shopgate_Model_Catalog_Tag
-	extends Shopgate_Model_Abstract {
+class Shopgate_Model_Catalog_Tag extends Shopgate_Model_Abstract {
 
 	/**
 	 * define allowed methods
 	 *
 	 * @var array
 	 */
-	protected $allowedMethods
-		= array(
-			'Uid',
-			'Value'
-		);
+	protected $allowedMethods = array('Uid',
+									  'Value');
 
 	/**
 	 * @param Shopgate_Model_XmlResultObject $itemNode
 	 *
 	 * @return Shopgate_Model_XmlResultObject
 	 */
-	public function asXml (Shopgate_Model_XmlResultObject $itemNode) {
+	public function asXml(Shopgate_Model_XmlResultObject $itemNode) {
 		/**
 		 * @var Shopgate_Model_XmlResultObject $tagNode
 		 */
@@ -62,7 +58,7 @@ class Shopgate_Model_Catalog_Tag
 	/**
 	 * @return array|null
 	 */
-	public function asArray () {
+	public function asArray() {
 		$tagsResult = new Shopgate_Model_Abstract();
 
 		$tagsResult->setData('uid', $this->getUid());

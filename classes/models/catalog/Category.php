@@ -48,8 +48,7 @@
  *  @method bool                        getIsAnchor()
  *
  */
-class Shopgate_Model_Catalog_Category
-	extends Shopgate_Model_Abstract {
+class Shopgate_Model_Catalog_Category extends Shopgate_Model_Abstract {
 	/**
 	 * @var string
 	 */
@@ -65,44 +64,38 @@ class Shopgate_Model_Catalog_Category
 	 *
 	 * @var string
 	 */
-	protected $dtdFileLocation = 'catalog/category.dtd';
+	protected $dtdFileLocation = 'catalog/categories.dtd';
 
 	/**
 	 * @var array
 	 */
-	protected $fireMethods
-		= array(
-			'setUid',
-			'setSortOrder',
-			'setName',
-			'setParentUid',
-			'setSortOrder',
-			'setDeeplink',
-			'setIsAnchor',
-			'setImage'
-		);
+	protected $fireMethods = array('setUid',
+								   'setSortOrder',
+								   'setName',
+								   'setParentUid',
+								   'setSortOrder',
+								   'setDeeplink',
+								   'setIsAnchor',
+								   'setImage');
 
 	/**
 	 * define allowed methods
 	 *
 	 * @var array
 	 */
-	protected $allowedMethods
-		= array(
-			'Uid',
-			'SortOrder',
-			'Name',
-			'ParentUid',
-			'Image',
-			'IsActive',
-			'Deeplink',
-			'IsAnchor'
-		);
+	protected $allowedMethods = array('Uid',
+									  'SortOrder',
+									  'Name',
+									  'ParentUid',
+									  'Image',
+									  'IsActive',
+									  'Deeplink',
+									  'IsAnchor');
 
 	/**
 	 * init default object
 	 */
-	public function __construct () {
+	public function __construct() {
 		$this->setImage(new Shopgate_Model_Media_Image());
 	}
 
@@ -111,7 +104,7 @@ class Shopgate_Model_Catalog_Category
 	 *
 	 * @return Shopgate_Model_XmlResultObject
 	 */
-	public function asXml (Shopgate_Model_XmlResultObject $itemNode) {
+	public function asXml(Shopgate_Model_XmlResultObject $itemNode) {
 		/**
 		 * @var Shopgate_Model_XmlResultObject $categoryNode
 		 */
@@ -135,7 +128,7 @@ class Shopgate_Model_Catalog_Category
 	/**
 	 * @return array|null
 	 */
-	public function asArray () {
+	public function asArray() {
 		$categoryResult = new Shopgate_Model_Abstract();
 
 		$categoryResult->setData('uid', $this->getUid());

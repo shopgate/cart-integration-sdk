@@ -33,8 +33,7 @@
  * @method float    getReduction()
  *
  */
-class Shopgate_Model_Catalog_TierPrice
-	extends Shopgate_Model_Abstract {
+class Shopgate_Model_Catalog_TierPrice extends Shopgate_Model_Abstract {
 
 	const DEFAULT_TIER_PRICE_TYPE_PERCENT = 'percent';
 	const DEFAULT_TIER_PRICE_TYPE_FIXED = 'fixed';
@@ -45,19 +44,16 @@ class Shopgate_Model_Catalog_TierPrice
 	 *
 	 * @var array
 	 */
-	protected $allowedMethods
-		= array(
-			'FromQuantity',
-			'ReductionType',
-			'Reduction'
-		);
+	protected $allowedMethods = array('FromQuantity',
+									  'ReductionType',
+									  'Reduction');
 
 	/**
 	 * @param Shopgate_Model_XmlResultObject $itemNode
 	 *
 	 * @return Shopgate_Model_XmlResultObject
 	 */
-	public function asXml (Shopgate_Model_XmlResultObject $itemNode) {
+	public function asXml(Shopgate_Model_XmlResultObject $itemNode) {
 		/**
 		 * @var Shopgate_Model_XmlResultObject $tierPriceNode
 		 */

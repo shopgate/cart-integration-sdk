@@ -45,8 +45,7 @@
  * @method string                               getInfoText(string)
  *
  */
-class Shopgate_Model_Catalog_Input
-	extends Shopgate_Model_Abstract {
+class Shopgate_Model_Catalog_Input extends Shopgate_Model_Abstract {
 
 	const DEFAULT_INPUT_TYPE_SELECT = 'select';
 	const DEFAULT_INPUT_TYPE_MULTIPLE = 'multiple';
@@ -63,21 +62,18 @@ class Shopgate_Model_Catalog_Input
 	 *
 	 * @var array
 	 */
-	protected $allowedMethods
-		= array(
-			'Uid',
-			'Type',
-			'Options',
-			'Validation',
-			'Required',
-			'Label',
-			'InfoText'
-		);
+	protected $allowedMethods = array('Uid',
+									  'Type',
+									  'Options',
+									  'Validation',
+									  'Required',
+									  'Label',
+									  'InfoText');
 
 	/**
 	 * init default objects
 	 */
-	public function __construct () {
+	public function __construct() {
 		$this->setValidation(new Shopgate_Model_Catalog_Validation());
 		$this->setOptions(array());
 	}
@@ -87,7 +83,7 @@ class Shopgate_Model_Catalog_Input
 	 *
 	 * @return Shopgate_Model_XmlResultObject
 	 */
-	public function asXml (Shopgate_Model_XmlResultObject $itemNode) {
+	public function asXml(Shopgate_Model_XmlResultObject $itemNode) {
 		/**
 		 * @var Shopgate_Model_XmlResultObject    $inputNode
 		 * @var Shopgate_Model_XmlResultObject    $optionsNode
@@ -122,7 +118,7 @@ class Shopgate_Model_Catalog_Input
 	 *
 	 * @param Shopgate_Model_Catalog_Option $option
 	 */
-	public function addOption ($option) {
+	public function addOption($option) {
 		$options = $this->getOptions();
 		array_push($options, $option);
 		$this->setOptions($options);
