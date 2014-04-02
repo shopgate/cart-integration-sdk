@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.5.1'''
+* Refactoring von setter Methoden für Options u. Inputs
+
 '''Version 2.5.0'''
 * Medienexport zu Produkten implementiert
 * Die Methode check_stock eingeführt umd den Bestand der übermittelten Produkte zu prüfen.
@@ -223,6 +226,9 @@
 
 
 '''English'''
+
+'''Version 2.5.1'''
+* refactoring of setter methods for options and inputs
 
 '''Version 2.5.0'''
 * implemented media export for products
