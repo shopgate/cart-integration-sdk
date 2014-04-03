@@ -37,6 +37,18 @@
  *
  */
 class Shopgate_Model_Catalog_Option extends Shopgate_Model_Abstract {
+
+	/**
+	 * define allowed methods
+	 *
+	 * @var array
+	 */
+	protected $allowedMethods = array(
+		'Uid',
+		'Label',
+		'Value',
+		'AdditionalPrice');
+
 	/**
 	 * @param Shopgate_Model_XmlResultObject $itemNode
 	 *

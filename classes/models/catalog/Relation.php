@@ -40,6 +40,16 @@ class Shopgate_Model_Catalog_Relation extends Shopgate_Model_Abstract {
 	const DEFAULT_RELATION_TYPE_UPSELL = 'upsell';
 
 	/**
+	 * define allowed methods
+	 *
+	 * @var array
+	 */
+	protected $allowedMethods = array(
+		'Type',
+		'Values',
+		'Label');
+
+	/**
 	 * init default data
 	 */
 	public function __construct() {
@@ -77,4 +87,4 @@ class Shopgate_Model_Catalog_Relation extends Shopgate_Model_Abstract {
 		array_push($values, $value);
 		$this->setValues($values);
 	}
-} 
+}
