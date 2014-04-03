@@ -883,7 +883,27 @@ class ShopgateBuilder {
 		$pluginApi = new ShopgatePluginApi($this->config, $authService, $merchantApi, $plugin);
 
 		// instantiate export file buffer
-		$fileBuffer = new ShopgateFileBuffer($this->config->getExportBufferCapacity(), $this->config->getExportConvertEncoding(), $this->config->getEncoding());
+		if (!empty($_REQUEST['action']) && (($_REQUEST['action'] == 'get_items') || ($_REQUEST['action'] == 'get_categories'))) {
+			$xmlModelNames = array(
+					'get_items' => '',
+					'get_categories' => '',
+			);
+			
+			$format = (!empty($_REQUEST['response_type'])) ? $_REQUEST['response_type'] : '';
+			switch ($format) {
+				case 'json':
+					$fileBuffer = new ShopgateFileBufferJson($this->config->getExportBufferCapacity(), $this->config->getExportConvertEncoding(), $this->config->getEncoding());
+				break;
+				
+				default: case 'xml':
+					$xmlModel = new $xmlModelNames[$_REQUEST['action']]();
+					$xmlData = sprintf('<!DOCTYPE %s SYSTEM "%s">%s', $model->getIdentifier(), $model->getDtdFileLocation(), $model->getItemNodeIdentifier());
+					$fileBuffer = new ShopgateFileBufferXml($xmlModel, $this->config->getExportBufferCapacity(), $this->config->getExportConvertEncoding(), $this->config->getEncoding());
+				break;
+			}
+		} else {
+			$fileBuffer = new ShopgateFileBuffer($this->config->getExportBufferCapacity(), $this->config->getExportConvertEncoding(), $this->config->getEncoding());
+		}
 
 		// inject apis into plugin
 		$plugin->setConfig($this->config);
@@ -1261,20 +1281,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 
 		// store the builder
 		$this->builder = $builder;
-	}
-
-	/**
-	 * @param Shopgate_Model_Abstract $itemModel
-	 */
-	public function setResultItemModel($itemModel) {
-		$this->result_item_model = $itemModel;
-	}
-
-	/**
-	 * @return Shopgate_Model_Abstract
-	 */
-	public function getResultItemModel() {
-		return $this->result_item_model;
 	}
 
 	/**
@@ -2156,7 +2162,7 @@ interface ShopgateFileBufferInterface {
 	public function finish();
 }
 
-class ShopgateFileBuffer extends ShopgateObject implements ShopgateFileBufferInterface {
+abstract class ShopgateFileBuffer extends ShopgateObject implements ShopgateFileBufferInterface {
 	/**
 	 * @var string[]
 	 */
@@ -2320,6 +2326,52 @@ class ShopgateFileBuffer extends ShopgateObject implements ShopgateFileBufferInt
 		$this->log('Fertig, '.basename($this->filePath).' wurde erfolgreich erstellt', "access");
 		$duration = time() - $this->timeStart;
 		$this->log("Dauer: $duration Sekunden", "access");
+	}
+}
+
+class ShopgateFileBufferCsv extends ShopgateFileBuffer {
+	protected function flush() {
+		// write headline if it's the beginning of the file
+		if (ftell($this->fileHandle) == 0) {
+			fputcsv($this->fileHandle, array_keys($this->buffer[0]), ';', '"');
+		}
+		
+		foreach ($this->buffer as $item) {
+			if (!empty($this->convertEncoding)) {
+				foreach ($item as &$field) {
+					$field = $this->stringToUtf8($field, $this->allowedEncodings);
+				}
+			}
+			
+			fputcsv($this->fileHandle, $item, ";", "\"");
+		}
+	}
+}
+
+class ShopgateFileBufferJson extends ShopgateFileBuffer {
+}
+
+class ShopgateFileBufferXml extends ShopgateFileBuffer {
+	/**
+	 * @var Shopgate_Model_XmlResultObject
+	 */
+	protected $itemsNode;
+	
+	public function __construct(Shopgate_Model_XmlResultObject $itemsNode, $capacity, $convertEncoding = true, $sourceEncoding = null) {
+		parent::__construct($capacity, $convertEncoding, $sourceEncoding);
+		
+		$this->itemsNode = $itemsNode;
+	}
+	
+	protected function flush() {
+		$itemsNode = clone $this->itemsNode;
+		
+		foreach ($this->buffer as $item) {
+			/* @var $item Shopgate_Model_Catalog_Product */
+			$item->asXml($this->itemsNode);
+		}
+		
+		fputs($this->fileHandle, $this->itemsNode->asXML());
 	}
 }
 
