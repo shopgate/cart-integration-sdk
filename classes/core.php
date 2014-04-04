@@ -2130,7 +2130,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @throws ShopgateLibraryException
 	 */
-	//protected abstract function getPagesCsv();
+	protected abstract function createCategories($limit = null, $offset = null, array $categoryUids = array());
 }
 
 interface ShopgateFileBufferInterface {

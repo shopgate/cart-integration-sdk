@@ -564,7 +564,6 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			'items_csv_filename',
 			'categories_csv_filename',
 			'reviews_csv_filename',
-			'pages_csv_filename',
 			'access_log_filename',
 			'error_log_filename',
 			'request_log_filename',
@@ -816,20 +815,6 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			$this->response = new ShopgatePluginApiResponseTextCsv($this->trace_id);
 		}
 		$this->responseData = $this->config->getReviewsCsvPath();
-	}
-
-	/**
-	 * Represents the "get_pages_csv" action.
-	 *
-	 * @todo
-	 * @throws ShopgateLibraryException
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_pages_csv
-	 */
-	protected function getPagesCsv() {
-		if (empty($this->response)) {
-			$this->response = new ShopgatePluginApiResponseTextCsv($this->trace_id);
-		}
-		$this->responseData = $this->config->getPagesCsvPath();
 	}
 
 	/**
