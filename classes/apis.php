@@ -1610,6 +1610,15 @@ class ShopgatePluginApiResponseAppJsonExport extends ShopgatePluginApiResponseEx
 	}
 }
 
+class ShopgatePluginApiResponseAppGzipExport extends ShopgatePluginApiResponseExport {
+	protected function getHeaders() {
+		return array(
+				'Content-Type: application/gzip',
+				'Content-Disposition: attachment; filename="'.basename($this->data).'"',
+		);
+	}
+}
+
 
 /**
  * Wrapper for responses by the Shopgate Merchant API
