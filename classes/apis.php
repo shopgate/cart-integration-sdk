@@ -712,14 +712,12 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 * returns the items by request type
 	 */
 	protected function getItems() {
-		if (isset($this->params['limit']) && isset($this->params['offset'])) {
-			$this->plugin->setExportLimit((int)$this->params['limit']);
-			$this->plugin->setExportOffset((int)$this->params['offset']);
-			$this->plugin->setSplittedExport(true);
-		}
-
-		$this->plugin->startGetItems();
+		$limit = isset($this->params['limit']) ? (int) $this->params['limit'] : null;
+		$offset = isset($this->params['offset']) ? (int) $this->params['offset'] : null;
+		$uids = isset($this->params['uids']) ? (array) $this->params['uids'] : array();
 		$result_type = isset($this->params['result_type']) ? $this->params['result_type'] : false;
+		
+		$this->plugin->startGetItems($limit, $offset, $uids, $result_type);
 
 		/**
 		 * set result type
@@ -748,8 +746,12 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	}
 
 	protected function getCategories() {
-		$this->plugin->startGetCategories();
+		$limit = isset($this->params['limit']) ? (int) $this->params['limit'] : null;
+		$offset = isset($this->params['offset']) ? (int) $this->params['offset'] : null;
+		$uids = isset($this->params['uids']) ? (array) $this->params['uids'] : array();
 		$result_type = isset($this->params['result_type']) ? $this->params['result_type'] : false;
+		
+		$this->plugin->startGetCategories($limit, $offset, $uids, $result_type);
 
 		/**
 		 * set result type
@@ -828,15 +830,6 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			$this->response = new ShopgatePluginApiResponseTextCsv($this->trace_id);
 		}
 		$this->responseData = $this->config->getPagesCsvPath();
-	}
-
-	/**
-	 * returns the params
-	 *
-	 * @return mixed[]
-	 */
-	public function getParams() {
-		return $this->params;
 	}
 
 	/**

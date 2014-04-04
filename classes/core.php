@@ -885,24 +885,25 @@ class ShopgateBuilder {
 		// instantiate export file buffer
 		if (!empty($_REQUEST['action']) && (($_REQUEST['action'] == 'get_items') || ($_REQUEST['action'] == 'get_categories'))) {
 			$xmlModelNames = array(
-					'get_items' => '',
-					'get_categories' => '',
+					'get_items' => 'Shopgate_Model_Catalog_Product',
+					'get_categories' => 'Shopgate_Model_Catalog_Category',
 			);
 			
-			$format = (!empty($_REQUEST['response_type'])) ? $_REQUEST['response_type'] : '';
+			$format = (!empty($_REQUEST['result_type'])) ? $_REQUEST['result_type'] : '';
 			switch ($format) {
+				default: case 'xml':
+					/* @var $xmlModel Shopgate_Model_Abstract */
+					$xmlModel = new $xmlModelNames[$_REQUEST['action']]();
+					$xmlNode = new Shopgate_Model_XmlResultObject($xmlModel->getItemNodeIdentifier());
+					$fileBuffer = new ShopgateFileBufferXml($xmlModel, $xmlNode, $this->config->getExportBufferCapacity(), $this->config->getExportConvertEncoding(), $this->config->getEncoding());
+				break;
+				
 				case 'json':
 					$fileBuffer = new ShopgateFileBufferJson($this->config->getExportBufferCapacity(), $this->config->getExportConvertEncoding(), $this->config->getEncoding());
 				break;
-				
-				default: case 'xml':
-					$xmlModel = new $xmlModelNames[$_REQUEST['action']]();
-					$xmlData = sprintf('<!DOCTYPE %s SYSTEM "%s">%s', $model->getIdentifier(), $model->getDtdFileLocation(), $model->getItemNodeIdentifier());
-					$fileBuffer = new ShopgateFileBufferXml($xmlModel, $this->config->getExportBufferCapacity(), $this->config->getExportConvertEncoding(), $this->config->getEncoding());
-				break;
 			}
-		} else {
-			$fileBuffer = new ShopgateFileBuffer($this->config->getExportBufferCapacity(), $this->config->getExportConvertEncoding(), $this->config->getEncoding());
+		} else if (!empty($_REQUEST['action']) && (($_REQUEST['action'] == 'get_items_csv') || ($_REQUEST['action'] == 'get_categories_csv') || ($_REQUEST['action'] == 'get_reviews_csv'))) {
+			$fileBuffer = new ShopgateFileBufferCsv($this->config->getExportBufferCapacity(), $this->config->getExportConvertEncoding(), $this->config->getEncoding());
 		}
 
 		// inject apis into plugin
@@ -1360,22 +1361,18 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @throws ShopgateLibraryException
 	 */
-	public final function startGetItems() {
-		$params = $this->pluginApi->getParams();
-
-		/**
-		 * switch result type
-		 */
-		switch ($params['result_type']) {
-			case 'json' :
-				$this->buffer->setFile($this->config->getItemsJsonPath());
-				break;
-			default :
+	public final function startGetItems($limit = null, $offset = null, array $itemUids = array(), $resultType = 'xml') {
+		switch ($resultType) {
+			default: case 'xml':
 				$this->buffer->setFile($this->config->getItemsXmlPath());
+				break;
+				
+			case 'json':
+				$this->buffer->setFile($this->config->getItemsJsonPath());
 				break;
 		}
 
-		$this->createItems();
+		$this->createItems($limit, $offset, $itemUids);
 		$this->buffer->finish();
 	}
 
@@ -1384,22 +1381,18 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @throws ShopgateLibraryException
 	 */
-	public final function startGetCategories() {
-		$params = $this->pluginApi->getParams();
-
-		/**
-		 * switch result type
-		 */
-		switch ($params['result_type']) {
-			case 'json' :
-				$this->buffer->setFile($this->config->getCategoriesJsonPath());
-				break;
-			default :
+	public final function startGetCategories($limit = null, $offset = null, array $itemUids = array(), $resultType = 'xml') {
+		switch ($resultType) {
+			default: case 'xml':
 				$this->buffer->setFile($this->config->getCategoriesXmlPath());
+				break;
+				
+			case 'json':
+				$this->buffer->setFile($this->config->getCategoriesJsonPath());
 				break;
 		}
 
-		$this->createCategories();
+		$this->createCategories($limit, $offset, $itemUids);
 		$this->buffer->finish();
 	}
 
@@ -2128,6 +2121,9 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @throws ShopgateLibraryException
 	 */
 	protected abstract function createReviewsCsv();
+	
+	protected abstract function createItems($limit = null, $offset = null, array $itemUids = array());
+	protected abstract function createCategories($limit = null, $offset = null, array $itemUids = array());
 
 	/**
 	 * Loads the product pages of the shop system's database and passes them to the buffer.
@@ -2205,6 +2201,7 @@ abstract class ShopgateFileBuffer extends ShopgateObject implements ShopgateFile
 	 *
 	 * @param int  $capacity
 	 * @param bool $encoding true to enable automatic encoding conversion to utf-8
+	 * @param string $sourceEncoding
 	 */
 	public function __construct($capacity, $convertEncoding = true, $sourceEncoding = null) {
 		$this->timeStart = time();
@@ -2259,61 +2256,49 @@ abstract class ShopgateFileBuffer extends ShopgateObject implements ShopgateFile
 		if (empty($this->buffer) && ftell($this->fileHandle) == 0) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_EMPTY_BUFFER);
 		}
-
-		/**
-		 * @todo
-		 */
-		if ($_POST['action'] == 'get_items' || $_POST['action'] == 'get_categories') {
-			/** @var ShopgatePlugin $plugin */
-			$plugin = $GLOBALS['plugin'];
-			switch ($_POST['result_type']) {
-
-				case 'json':
-					$result = array();
-					foreach ($this->buffer as $item) {
-						/** @var PluginModelItemObject $item */
-						array_push($result, $item->asArray());
-					}
-					fputs($this->fileHandle, json_encode($result));
-					break;
-
-				/**
-				 * handle xml
-				 */
-				default :
-					$itemsNode = new Shopgate_Model_XmlResultObject(sprintf('<!DOCTYPE %s SYSTEM "%s">%s', $plugin->getResultItemModel()->getIdentifier(), $plugin->getResultItemModel()->getDtdFileLocation(), $plugin->getResultItemModel()->getItemNodeIdentifier()));
-					foreach ($this->buffer as $item) {
-						/** @var PluginModelItemObject $item */
-						$item->asXml($itemsNode);
-					}
-
-					fputs($this->fileHandle, $itemsNode->asXML());
-					break;
-			}
-		} else {
-			/**
-			 * default get_items_csv
-			 * write headline if it's the beginning of the file
-			 */
-			if (ftell($this->fileHandle) == 0) {
-				fputcsv($this->fileHandle, array_keys($this->buffer[0]), ';', '"');
-			}
-			foreach ($this->buffer as $item) {
-				if (!empty($this->convertEncoding)) {
-					foreach ($item as &$field) {
-						$field = $this->stringToUtf8($field, $this->allowedEncodings);
-					}
-				}
-
-				fputcsv($this->fileHandle, $item, ";", "\"");
-			}
+		
+		// perform prerequisites on first call
+		if (ftell($this->fileHandle) == 0) {
+			$this->onStart();
 		}
-
+		
+		// perform response type specific flushing
+		$this->onFlush();
+		
+		// clear buffer
 		$this->buffer = array();
 	}
+	
+	/**
+	 * Callback for deriving classes.
+	 *
+	 * This gets called when $this->flush() gets called for the first time and can be used to output headlines
+	 * or any other necessary prerequisite.
+	 */
+	abstract protected function onStart();
+	
+	/**
+	 * Callback for deriving classes.
+	 *
+	 * This gets called after checking for an empty buffer and before emptying $this->buffer and should
+	 * flush all data to the given output file.
+	 */
+	abstract protected function onFlush();
+	
+	/**
+	 * Callback for deriving classes.
+	 *
+	 * This gets called after all contents of the buffer have been flushed and before the temporary output file
+	 * is renamed to its original name.
+	 */
+	abstract protected function onFinish();
+	
 
 	public function finish() {
 		$this->flush();
+		
+		$this->onFinish();
+		
 		fclose($this->fileHandle);
 		$this->fileHandle = null;
 
@@ -2330,12 +2315,11 @@ abstract class ShopgateFileBuffer extends ShopgateObject implements ShopgateFile
 }
 
 class ShopgateFileBufferCsv extends ShopgateFileBuffer {
-	protected function flush() {
-		// write headline if it's the beginning of the file
-		if (ftell($this->fileHandle) == 0) {
-			fputcsv($this->fileHandle, array_keys($this->buffer[0]), ';', '"');
-		}
-		
+	protected function onStart() {
+		fputcsv($this->fileHandle, array_keys($this->buffer[0]), ';', '"');
+	}
+	
+	protected function onFlush() {
 		foreach ($this->buffer as $item) {
 			if (!empty($this->convertEncoding)) {
 				foreach ($item as &$field) {
@@ -2346,32 +2330,85 @@ class ShopgateFileBufferCsv extends ShopgateFileBuffer {
 			fputcsv($this->fileHandle, $item, ";", "\"");
 		}
 	}
+	
+	protected function onFinish() { /* no finishing necessary for CSV files */ }
 }
 
 class ShopgateFileBufferJson extends ShopgateFileBuffer {
+	protected function onStart() {
+		fputs($this->fileHandle, '[');
+	}
+	
+	protected function onFlush() {
+		$result = array();
+		
+		foreach ($this->buffer as $item) {
+			/* @var $item PluginModelItemObject */
+			$result[] = json_encode($item->asArray());
+		}
+		
+		if (!empty($result)) {
+			fputs($this->fileHandle, implode(',', $result).',');
+		}
+	}
+	
+	protected function onFinish() {
+		fseek($this->fileHandle, -1, SEEK_END);
+		fputs($this->fileHandle, ']');
+	}
 }
 
 class ShopgateFileBufferXml extends ShopgateFileBuffer {
 	/**
 	 * @var Shopgate_Model_XmlResultObject
 	 */
-	protected $itemsNode;
+	protected $xmlNode;
 	
-	public function __construct(Shopgate_Model_XmlResultObject $itemsNode, $capacity, $convertEncoding = true, $sourceEncoding = null) {
+	/**
+	 * @var Shopgate_Model_Abstract
+	 */
+	protected $xmlModel;
+	
+	/**
+	 * @param Shopgate_Model_XmlResultObject $itemsNode
+	 * @param int  $capacity
+	 * @param bool $encoding true to enable automatic encoding conversion to utf-8
+	 * @param string $sourceEncoding
+	 */
+	public function __construct(Shopgate_Model_Abstract $xmlModel, Shopgate_Model_XmlResultObject $xmlNode, $capacity, $convertEncoding = true, $sourceEncoding = null) {
 		parent::__construct($capacity, $convertEncoding, $sourceEncoding);
 		
-		$this->itemsNode = $itemsNode;
+		$this->xmlNode = $xmlNode;
+		$this->xmlModel = $xmlModel;
 	}
 	
-	protected function flush() {
-		$itemsNode = clone $this->itemsNode;
+	protected function onStart() {
+		$this->firstItem = $this->buffer[0];
+		
+		fputs($this->fileHandle, sprintf(
+				'<!DOCTYPE %s SYSTEM "%s">%s',
+				$this->xmlModel->getIdentifier(),
+				$this->xmlModel->getDtdFileLocation(),
+				'<'.$this->xmlModel->getIdentifier().'>')
+		);
+	}
+	
+	protected function onFlush() {
+		$itemsNode = clone $this->xmlNode;
 		
 		foreach ($this->buffer as $item) {
-			/* @var $item Shopgate_Model_Catalog_Product */
-			$item->asXml($this->itemsNode);
+			/* @var $item Shopgate_Model_Abstract */
+			$item->asXml($itemsNode);
 		}
 		
-		fputs($this->fileHandle, $this->itemsNode->asXML());
+		foreach ($itemsNode as $xmlItem) {
+			/* @var $xmlItem SimpleXMLElement */
+			fputs($this->fileHandle, $xmlItem->asXML());
+		}
+	}
+	
+	protected function onFinish() {
+		fputs($this->fileHandle, '</'.$this->xmlModel->getIdentifier().'>');
 	}
 }
 
