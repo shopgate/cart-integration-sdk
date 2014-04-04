@@ -82,9 +82,9 @@ class Shopgate_Model_Catalog_CategoryPath extends Shopgate_Model_Abstract {
 		$categoryPathNode = $itemNode->addChild('category');
 		$categoryPathNode->addAttribute('uid', $this->getUid());
 		$categoryPathNode->addAttribute('sort_order', $this->getSortOrder());
-		$itemsNode = $categoryPathNode->addChild('items');
+		$itemsNode = $categoryPathNode->addChild('paths');
 		foreach ($this->getItems() as $item) {
-			$itemsNode->addChildWithCDATA('item', $item->getData('path'))->addAttribute('level', $item->getData('level'));
+			$itemsNode->addChildWithCDATA('path', $item->getData('path'))->addAttribute('level', $item->getData('level'));
 		}
 
 		return $itemNode;
@@ -110,7 +110,7 @@ class Shopgate_Model_Catalog_CategoryPath extends Shopgate_Model_Abstract {
 			$itemResult->setData('path', $item->getData('path'));
 			array_push($itemsData, $itemResult->getData());
 		}
-		$categoryPathResult->setData('items', $itemsData);
+		$categoryPathResult->setData('paths', $itemsData);
 
 		return $categoryPathResult->getData();
 	}
