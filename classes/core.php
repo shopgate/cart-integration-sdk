@@ -904,6 +904,8 @@ class ShopgateBuilder {
 			}
 		} else if (!empty($_REQUEST['action']) && (($_REQUEST['action'] == 'get_items_csv') || ($_REQUEST['action'] == 'get_categories_csv') || ($_REQUEST['action'] == 'get_reviews_csv'))) {
 			$fileBuffer = new ShopgateFileBufferCsv($this->config->getExportBufferCapacity(), $this->config->getExportConvertEncoding(), $this->config->getEncoding());
+		} else {
+			$fileBuffer = new ShopgateFileBufferCsv($this->config->getExportBufferCapacity(), $this->config->getExportConvertEncoding(), $this->config->getEncoding());
 		}
 
 		// inject apis into plugin
