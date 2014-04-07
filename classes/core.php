@@ -2570,8 +2570,6 @@ class ShopgateFileBufferXml extends ShopgateFileBuffer {
 	}
 	
 	protected function onStart() {
-		$this->firstItem = $this->buffer[0];
-		
 		fputs($this->fileHandle, sprintf(
 				'<!DOCTYPE %s SYSTEM "%s">%s',
 				$this->xmlModel->getIdentifier(),
