@@ -1409,7 +1409,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @throws ShopgateLibraryException
 	 */
-	public final function startGetItems($limit = null, $offset = null, array $itemUids = array(), $resultType = 'xml') {
+	public final function startGetItems($limit = null, $offset = null, array $uids = array(), $resultType = 'xml') {
 		switch ($resultType) {
 			default: case 'xml':
 				$this->buffer->setFile($this->config->getItemsXmlPath());
@@ -1420,7 +1420,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 				break;
 		}
 
-		$this->createItems($limit, $offset, $itemUids);
+		$this->createItems($limit, $offset, $uids);
 		$this->buffer->finish();
 	}
 
@@ -1429,7 +1429,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @throws ShopgateLibraryException
 	 */
-	public final function startGetCategories($limit = null, $offset = null, array $categoryUids = array(), $resultType = 'xml') {
+	public final function startGetCategories($limit = null, $offset = null, array $uids = array(), $resultType = 'xml') {
 		switch ($resultType) {
 			default: case 'xml':
 				$this->buffer->setFile($this->config->getCategoriesXmlPath());
@@ -1440,7 +1440,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 				break;
 		}
 
-		$this->createCategories($limit, $offset, $categoryUids);
+		$this->createCategories($limit, $offset, $uids);
 		$this->buffer->finish();
 	}
 
@@ -2232,26 +2232,26 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @param int $limit pagination limit; if not null, the number of exported items must be <= $limit
 	 * @param int $offset pagination; if not null, start the export with the item at position $offset
-	 * @param string[] $itemUids a list of item UIDs that should be exported
+	 * @param string[] $uids a list of item UIDs that should be exported
 	 *
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_items
 	 *
 	 * @throws ShopgateLibraryException
 	 */
-	protected abstract function createItems($limit = null, $offset = null, array $itemUids = array());
+	protected abstract function createItems($limit = null, $offset = null, array $uids = array());
 	
 	/**
 	 * Loads the product categories of the shop system's database and passes them to the buffer.
 	 *
 	 * @param int $limit pagination limit; if not null, the number of exported categories must be <= $limit
 	 * @param int $offset pagination; if not null, start the export with the categories at position $offset
-	 * @param string[] $categoryUids a list of categories UIDs that should be exported
+	 * @param string[] $uids a list of categories UIDs that should be exported
 	 *
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_categories
 	 *
 	 * @throws ShopgateLibraryException
 	 */
-	protected abstract function createCategories($limit = null, $offset = null, array $categoryUids = array());
+	protected abstract function createCategories($limit = null, $offset = null, array $uids = array());
 
 	/**
 	 * Takes an array of arrays that contain all elements which are taken to create a cross-product of all elements. The resulting array is an array-list with
