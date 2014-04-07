@@ -785,7 +785,9 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		// generate / update items csv file if requested
 		$this->plugin->startGetMediaCsv();
 		
-		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseTextCsv($this->trace_id);
+		if (empty($this->response)) {
+			$this->response = new ShopgatePluginApiResponseTextCsv($this->trace_id);
+		}
 		$this->responseData = $this->config->getMediaCsvPath();
 	}
 	/**
@@ -817,25 +819,24 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$limit = isset($this->params['limit']) ? (int) $this->params['limit'] : null;
 		$offset = isset($this->params['offset']) ? (int) $this->params['offset'] : null;
 		$uids = isset($this->params['uids']) ? (array) $this->params['uids'] : array();
-		$result_type = isset($this->params['result_type']) ? $this->params['result_type'] : false;
+		$resultType = isset($this->params['result_type']) ? $this->params['result_type'] : false;
 		
-		$this->plugin->startGetItems($limit, $offset, $uids, $result_type);
+		$this->plugin->startGetItems($limit, $offset, $uids, $resultType);
 
-		switch ($result_type) {
+		switch ($resultType) {
 			default: case 'xml':
-				$responseType = new ShopgatePluginApiResponseAppXmlExport($this->trace_id);
+				$response = new ShopgatePluginApiResponseAppXmlExport($this->trace_id);
 				$responseData = $this->config->getItemsXmlPath();
 				break;
 
 			case 'json':
-				$responseType = new ShopgatePluginApiResponseAppJsonExport($this->trace_id);
+				$response = new ShopgatePluginApiResponseAppJsonExport($this->trace_id);
 				$responseData = $this->config->getItemsJsonPath();
 				break;
-
 		}
 
 		if (empty($this->response)) {
-			$this->response = $responseType;
+			$this->response = $response;
 		}
 
 		$this->responseData = $responseData;
@@ -845,24 +846,24 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$limit = isset($this->params['limit']) ? (int) $this->params['limit'] : null;
 		$offset = isset($this->params['offset']) ? (int) $this->params['offset'] : null;
 		$uids = isset($this->params['uids']) ? (array) $this->params['uids'] : array();
-		$result_type = isset($this->params['result_type']) ? $this->params['result_type'] : false;
+		$resultType = isset($this->params['result_type']) ? $this->params['result_type'] : false;
 		
 		$this->plugin->startGetCategories($limit, $offset, $uids, $result_type);
 
-		switch ($result_type) {
+		switch ($resultType) {
 			default: case 'xml':
-				$responseType = new ShopgatePluginApiResponseAppXmlExport($this->trace_id);
+				$response = new ShopgatePluginApiResponseAppXmlExport($this->trace_id);
 				$responseData = $this->config->getCategoriesXmlPath();
 				break;
 				
 			case 'json':
-				$responseType = new ShopgatePluginApiResponseAppJsonExport($this->trace_id);
+				$response = new ShopgatePluginApiResponseAppJsonExport($this->trace_id);
 				$responseData = $this->config->getCategoriesJsonPath();
 				break;
 		}
 
 		if (empty($this->response)) {
-			$this->response = $responseType;
+			$this->response = $response;
 		}
 
 		$this->responseData = $responseData;
