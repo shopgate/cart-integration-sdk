@@ -848,7 +848,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$uids = isset($this->params['uids']) ? (array) $this->params['uids'] : array();
 		$resultType = isset($this->params['result_type']) ? $this->params['result_type'] : false;
 		
-		$this->plugin->startGetCategories($limit, $offset, $uids, $result_type);
+		$this->plugin->startGetCategories($limit, $offset, $uids, $resultType);
 
 		switch ($resultType) {
 			default: case 'xml':
