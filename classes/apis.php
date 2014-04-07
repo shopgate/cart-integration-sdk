@@ -88,19 +88,20 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			'get_items_csv',
 			'get_categories_csv',
 			'get_reviews_csv',
-			'get_pages_csv',
+			'get_media_csv',
 			'get_log_file',
 			'clear_log_file',
 			'clear_cache',
 			'check_cart',
+			'check_stock',
 			'redeem_coupons',
 			'get_customer',
 			'register_customer',
 			'get_settings',
+			'set_settings',
 			'get_items',
 			'get_categories');
 	}
-
 
 	public function handleRequest(array $data = array()) {
 		// log incoming request
@@ -294,7 +295,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 
 				// check error count
 				if ($jobErrorcount > 0) {
-					$message .= 'Errors happend in job: "'.$job['job_name'].'" ('.$jobErrorcount.' errors)';
+					$message .= 'Errors happend in job: "'.$job['job_name'].'" ('.$jobErrorcount.' errors)\n';
 					$errorcount += $jobErrorcount;
 				}
 			} catch (Exception $e) {
@@ -457,65 +458,86 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		if (!isset($this->params['cart'])) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_CART);
 		}
-
-		if (empty($this->response)) {
-			$this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
-		}
-
+		
+		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
+		
 		$cart = new ShopgateCart($this->params['cart']);
 		$cartData = $this->plugin->checkCart($cart);
 		$responseData = array();
-
+		
+		$responseData['internal_cart_info'] = (isset($cartData['internal_cart_info'])) ? $cartData['internal_cart_info'] : null;
+		
 		if (!is_array($cartData)) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, '$cartData Is type of : '.is_object($cartData) ? get_class($cartData) : gettype($cartData));
+			throw new ShopgateLibraryException(
+				ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT,
+				'$cartData is of type: ' . is_object($cartData)
+					? get_class($cartData)
+					: gettype($cartData)
+			);
 		}
-
+		
 		if (!empty($cartData['currency'])) {
 			$responseData["currency"] = $cartData['currency'];
 		}
-
+		
 		$shippingMethods = array();
 		if (!empty($cartData['shipping_methods'])) {
 			foreach ($cartData["shipping_methods"] as $shippingMethod) {
 				/** @var ShopgateShippingMethod $shippingMethod */
 				if (!is_object($shippingMethod) || !($shippingMethod instanceof ShopgateShippingMethod)) {
-					throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, '$shippingMethod Is type of : '.is_object($shippingMethod) ? get_class($shippingMethod) : gettype($shippingMethod));
+					throw new ShopgateLibraryException(
+						ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT,
+						'$shippingMethod is of type: ' . is_object($shippingMethod)
+							? get_class($shippingMethod)
+							: gettype($shippingMethod)
+					);
 				}
 				$shippingMethods[] = $shippingMethod->toArray();
 			}
 		}
 		$responseData["shipping_methods"] = $shippingMethods;
-
+		
 		$paymentMethods = array();
 		if (!empty($cartData['payment_methods'])) {
 			foreach ($cartData["payment_methods"] as $paymentMethod) {
 				/** @var ShopgatePaymentMethod $paymentMethod */
 				if (!is_object($paymentMethod) || !($paymentMethod instanceof ShopgatePaymentMethod)) {
-					throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, '$paymentMethod Is type of : '.is_object($paymentMethod) ? get_class($paymentMethod) : gettype($paymentMethod));
+					throw new ShopgateLibraryException(
+						ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT,
+						'$paymentMethod is of type: ' . is_object($paymentMethod)
+							? get_class($paymentMethod)
+							: gettype($paymentMethod)
+					);
 				}
 				$paymentMethods[] = $paymentMethod->toArray();
 			}
 		}
 		$responseData["payment_methods"] = $paymentMethods;
-
+		
 		$cartItems = array();
 		if (!empty($cartData['items'])) {
 			foreach ($cartData["items"] as $cartItem) {
 				/** @var ShopgateCartItem $cartItem */
 				if (!is_object($cartItem) || !($cartItem instanceof ShopgateCartItem)) {
-					throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, '$cartItem Is type of : '.is_object($cartItem) ? get_class($cartItem) : gettype($cartItem));
+					throw new ShopgateLibraryException(
+						ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT,
+						'$cartItem is of type: ' . is_object($cartItem) ? get_class($cartItem) : gettype($cartItem)
+					);
 				}
 				$cartItems[] = $cartItem->toArray();
 			}
 		}
 		$responseData["items"] = $cartItems;
-
+		
 		$coupons = array();
 		if (!empty($cartData['external_coupons'])) {
 			foreach ($cartData["external_coupons"] as $coupon) {
 				/** @var ShopgateExternalCoupon $coupon */
 				if (!is_object($coupon) || !($coupon instanceof ShopgateExternalCoupon)) {
-					throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, '$coupon Is type of : '.is_object($coupon) ? get_class($coupon) : gettype($coupon));
+					throw new ShopgateLibraryException(
+						ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT,
+						'$coupon is of type: ' . is_object($coupon) ? get_class($coupon) : gettype($coupon)
+					);
 				}
 				$coupon = $coupon->toArray();
 				unset($coupon["order_index"]);
@@ -523,10 +545,65 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			}
 		}
 		$responseData["external_coupons"] = $coupons;
-
+		
 		$this->responseData = $responseData;
 	}
 
+	/**
+	 * Represents the "check_stock" action.
+	 *
+	 * @throws ShopgateLibraryException
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_check_stock
+	 */
+	protected function checkStock()
+	{
+		if (!isset($this->params['items'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ITEMS);
+		}
+
+		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
+
+		$cart = new ShopgateCart();
+		$cart->setItems($this->params['items']);
+		$items = $this->plugin->checkStock($cart);
+		$responseData = array();
+
+		if (!is_array($items)) {
+			throw new ShopgateLibraryException(
+				ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT,
+				'$cartData Is type of : ' . is_object($items)
+					? get_class($items)
+					: gettype($items)
+			);
+		}
+
+		$cartItems = array();
+		if (!empty($items)) {
+			foreach ($items as $cartItem) {
+				/** @var ShopgateCartItem $cartItem */
+				if (!is_object($cartItem) || !($cartItem instanceof ShopgateCartItem)) {
+					throw new ShopgateLibraryException(
+						ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT,
+						'$cartItem Is type of : ' . is_object($cartItem) ? get_class($cartItem) : gettype($cartItem)
+					);
+				}
+				$item = $cartItem->toArray();
+				$notNeededArrayKeys = array('qty_buyable', 'unit_amount', 'unit_amount_with_tax');
+				foreach ($notNeededArrayKeys as $key) {
+					if (array_key_exists($key, $item)) {
+						unset($item[$key]);
+					}
+				}
+
+				$cartItems[] = $item;
+			}
+		}
+
+		$responseData["items"] = $cartItems;
+
+		$this->responseData = $responseData;
+	}
+	
 	/**
 	 * Represents the "get_settings" action.
 	 *
@@ -639,6 +716,13 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$this->responseData["addresses"] = $addressList;
 	}
 
+	/**
+	 *
+	 * Represents the "register_customer" action.
+	 *
+	 * @throws ShopgateLibraryException
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_register_customer
+	 */
 	protected function registerCustomer() {
 		if (!isset($this->params['user'])) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_USER);
@@ -685,6 +769,25 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$this->responseData["addresses"] = $addressList;
 	}
 
+	/**
+	 * Represents the "get_media_csv" action.
+	 *
+	 * @throws ShopgateLibraryException
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_media_csv
+	 */
+	protected function getMediaCsv(){
+		if (isset($this->params['limit']) && isset($this->params['offset'])) {
+			$this->plugin->setExportLimit((int) $this->params['limit']);
+			$this->plugin->setExportOffset((int) $this->params['offset']);
+			$this->plugin->setSplittedExport(true);
+		}
+		
+		// generate / update items csv file if requested
+		$this->plugin->startGetMediaCsv();
+		
+		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseTextCsv($this->trace_id);
+		$this->responseData = $this->config->getMediaCsvPath();
+	}
 	/**
 	 * Represents the "get_items_csv" action.
 	 *

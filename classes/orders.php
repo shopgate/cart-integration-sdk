@@ -43,7 +43,7 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	const MASTPAY_PP = "MASTPAY_PP";
 	const SAGEPAY_PP = "SAGEPAY_PP";
 	const SG_PAYPAL = "SG_PAYPAL";
-
+	
 	const CC = "CC";
 	const AUTHN_CC = "AUTHN_CC";
 	const BCLEPDQ_CC = "BCLEPDQ_CC";
@@ -233,7 +233,7 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	 */
 	public function setCustomFields($value) {
 		if (!is_array($value)) {
-			$this->custom_fields = null;
+			$this->custom_fields = array();
 		}
 
 		foreach ($value as $index => &$element) {
@@ -514,6 +514,9 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	 * @return ShopgateOrderCustomField[]
 	 */
 	public function getCustomFields() {
+		if(!is_array($this->custom_fields)) {
+			$this->custom_fields = array();
+		}
 		return $this->custom_fields;
 	}
 
@@ -644,6 +647,22 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 }
 
 class ShopgateCart extends ShopgateCartBase {
+	protected $internal_cart_info;
+	
+	/**
+	 * @return string
+	 */
+	public function getInternalCartInfo() {
+		return $this->internal_cart_info;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setInternalCartInfo($value) {
+		$this->internal_cart_info = $value;
+	}
+	
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitCart($this);
 	}
@@ -1116,19 +1135,20 @@ class ShopgateOrderItem extends ShopgateContainer {
 			return;
 		}
 
-		// convert sub-arrays into ShopgateOrderItemOption objects if necessary
-		foreach ($value as $index => &$element) {
-			if ((!is_object($element) || !($element instanceof ShopgateOrderItemOption)) && !is_array($element)) {
-				unset($value[$index]);
+		$options = array();
+		foreach ($value as $index => $element) {
+			if (!($element instanceof ShopgateOrderItemOption) && !is_array($element)) {
 				continue;
 			}
 
 			if (is_array($element)) {
-				$element = new ShopgateOrderItemOption($element);
+				$options[] = new ShopgateOrderItemOption($element);
+			} else {
+				$options[] = $element;
 			}
 		}
 
-		$this->options = $value;
+		$this->options = $options;
 	}
 
 	/**
@@ -1140,20 +1160,21 @@ class ShopgateOrderItem extends ShopgateContainer {
 
 			return;
 		}
-
-		// convert sub-arrays into ShopgateOrderItemInputs objects if necessary
-		foreach ($value as $index => &$element) {
-			if ((!is_object($element) || !($element instanceof ShopgateOrderItemInput)) && !is_array($element)) {
-				unset($value[$index]);
+		
+		$inputs = array();
+		foreach ($value as $index => $element) {
+			if (!($element instanceof ShopgateOrderItemInput) && !is_array($element)) {
 				continue;
 			}
 
 			if (is_array(($element))) {
-				$element = new ShopgateOrderItemInput($element);
+				$inputs[] = new ShopgateOrderItemInput($element);
+			} else {
+				$inputs[] = $element;
 			}
 		}
-
-		$this->inputs = $value;
+		
+		$this->inputs = $inputs;
 	}
 
 	/**
@@ -1546,7 +1567,8 @@ class ShopgateShippingInfo extends ShopgateContainer {
 	protected $amount;
 	protected $weight;
 	protected $api_response;
-
+	protected $internal_shipping_info;
+	
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitShippingInfo($this);
 	}
@@ -1628,11 +1650,21 @@ class ShopgateShippingInfo extends ShopgateContainer {
 	 * @param string|mixed[] $value
 	 */
 	public function setApiResponse($value) {
-		if (is_string($value)) {
-			$value = $this->jsonDecode($value, true);
-		}
-
 		$this->api_response = $value;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getInternalShippingInfo() {
+		return $this->internal_shipping_info;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setInternalShippingInfo($value) {
+		$this->internal_shipping_info = $value;
 	}
 }
 
@@ -2068,7 +2100,7 @@ class ShopgateShippingMethod extends ShopgateContainer {
 	protected $amount_with_tax;
 	protected $tax_class;
 	protected $tax_percent;
-	protected $internal_shipping_infos;
+	protected $internal_shipping_info;
 
 	##########
 	# Setter #
@@ -2108,7 +2140,7 @@ class ShopgateShippingMethod extends ShopgateContainer {
 	public function setSortOrder($value) {
 		$this->sort_order = $value;
 	}
-
+	
 	/**
 	 * @param float $value
 	 */
@@ -2122,26 +2154,27 @@ class ShopgateShippingMethod extends ShopgateContainer {
 	public function setAmountWithTax($value) {
 		$this->amount_with_tax = $value;
 	}
-
+	
 	/**
 	 * @param string $value
 	 */
 	public function setTaxClass($value) {
 		$this->tax_class = $value;
 	}
-
+	
 	/**
 	 * @param string $value
 	 */
 	public function setTaxPercent($value) {
 		$this->tax_percent = $value;
 	}
-
+	
 	/**
 	 * @param string $value
 	 */
-	public function setInternalShippingInfos($value) {
-		$this->internal_shipping_infos = $value;
+	public function setInternalShippingInfo($value)
+	{
+		$this->internal_shipping_info = $value;
 	}
 
 	##########
@@ -2175,7 +2208,7 @@ class ShopgateShippingMethod extends ShopgateContainer {
 	public function getDescription() {
 		return $this->description;
 	}
-
+	
 	/**
 	 * @return int
 	 */
@@ -2189,33 +2222,33 @@ class ShopgateShippingMethod extends ShopgateContainer {
 	public function getAmount() {
 		return $this->amount;
 	}
-
+	
 	/**
 	 * @return float
 	 */
 	public function getAmountWithTax() {
 		return $this->amount_with_tax;
 	}
-
+	
 	/**
 	 * @return string
 	 */
 	public function getTaxClass() {
 		return $this->tax_class;
 	}
-
+	
 	/**
 	 * @return string
 	 */
 	public function getTaxPercent() {
 		return $this->tax_percent;
 	}
-
+	
 	/**
 	 * @return string
 	 */
-	public function getInternalShippingInfos() {
-		return $this->internal_shipping_infos;
+	public function getInternalShippingInfo() {
+		return $this->internal_shipping_info;
 	}
 
 	/**
@@ -2329,6 +2362,7 @@ class ShopgateCartItem extends ShopgateContainer {
 	protected $item_number;
 	protected $is_buyable;
 	protected $qty_buyable;
+	protected $stock_quantity;
 	protected $unit_amount;
 	protected $unit_amount_with_tax;
 	protected $error;
@@ -2362,6 +2396,14 @@ class ShopgateCartItem extends ShopgateContainer {
 		$this->qty_buyable = $value;
 	}
 
+	/**
+	 * @param int $value
+	 */
+	public function setStockQuantity($value)
+	{
+		$this->stock_quantity = $value;
+	}
+	
 	/**
 	 * @param float $value
 	 */
@@ -2400,19 +2442,20 @@ class ShopgateCartItem extends ShopgateContainer {
 			return;
 		}
 
-		// convert sub-arrays into ShopgateOrderItemOption objects if necessary
-		foreach ($value as $index => &$element) {
-			if ((!is_object($element) || !($element instanceof ShopgateOrderItemOption)) && !is_array($element)) {
-				unset($value[$index]);
+		$options = array();
+		foreach ($value as $index => $element) {
+			if (!($element instanceof ShopgateOrderItemOption) && !is_array($element)) {
 				continue;
 			}
 
 			if (is_array($element)) {
-				$element = new ShopgateOrderItemOption($element);
+				$options[] = new ShopgateOrderItemOption($element);
+			} else {
+				$options[] = $element;
 			}
 		}
 
-		$this->options = $value;
+		$this->options = $options;
 	}
 
 	/**
@@ -2425,19 +2468,20 @@ class ShopgateCartItem extends ShopgateContainer {
 			return;
 		}
 
-		// convert sub-arrays into ShopgateOrderItemInputs objects if necessary
-		foreach ($value as $index => &$element) {
-			if ((!is_object($element) || !($element instanceof ShopgateOrderItemInput)) && !is_array($element)) {
-				unset($value[$index]);
+		$inputs = array();
+		foreach ($value as $index => $element) {
+			if (!($element instanceof ShopgateOrderItemInput) && !is_array($element)) {
 				continue;
 			}
 
-			if (is_array(($element))) {
-				$element = new ShopgateOrderItemInput($element);
+			if (is_array($element)) {
+				$inputs[] = new ShopgateOrderItemInput($element);
+			} else {
+				$inputs[] = $element;
 			}
 		}
 
-		$this->inputs = $value;
+		$this->inputs = $inputs;
 	}
 
 	/**
@@ -2490,6 +2534,14 @@ class ShopgateCartItem extends ShopgateContainer {
 		return $this->qty_buyable;
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getStockQuantity()
+	{
+		return $this->stock_quantity;
+	}
+	
 	/**
 	 * @return float
 	 */
