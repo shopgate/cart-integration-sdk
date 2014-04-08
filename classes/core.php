@@ -895,6 +895,11 @@ class ShopgateBuilder {
 					'get_categories' => 'Shopgate_Model_Catalog_Category',
 			);
 			
+			$sourceEncoding = $this->config->getExportConvertEncoding();
+			if (!empty($sourceEncoding)) {
+				array_splice(Shopgate_Model_Abstract::$allowedEncodings, 1, 0, $sourceEncoding);
+			}
+			
 			$format = (!empty($_REQUEST['result_type'])) ? $_REQUEST['result_type'] : '';
 			switch ($format) {
 				default: case 'xml':
@@ -2396,13 +2401,7 @@ abstract class ShopgateFileBuffer extends ShopgateObject implements ShopgateFile
 		$this->capacity = $capacity;
 		$this->convertEncoding = $convertEncoding;
 
-		$this->allowedEncodings = array(
-			SHOPGATE_LIBRARY_ENCODING,
-			'ASCII',
-			'CP1252',
-			'ISO-8859-15',
-			'UTF-16LE',
-			'ISO-8859-1');
+		$this->allowedEncodings = array(SHOPGATE_LIBRARY_ENCODING, 'ASCII', 'CP1252', 'ISO-8859-15', 'UTF-16LE', 'ISO-8859-1');
 
 		if (!empty($sourceEncoding)) {
 			array_splice($this->allowedEncodings, 1, 0, $sourceEncoding);
@@ -2587,7 +2586,7 @@ class ShopgateFileBufferXml extends ShopgateFileBuffer {
 		}
 		
 		foreach ($itemsNode as $xmlItem) {
-			/* @var $xmlItem SimpleXMLElement */
+			/* @var $xmlItem Shopgate_Model_XmlResultObject */
 			fputs($this->fileHandle, $xmlItem->asXML());
 		}
 	}

@@ -25,8 +25,9 @@
  *
  *
  */
-class Shopgate_Model_Abstract {
-
+class Shopgate_Model_Abstract extends ShopgateObject {
+	public static $allowedEncodings = array(SHOPGATE_LIBRARY_ENCODING, 'ASCII', 'CP1252', 'ISO-8859-15', 'UTF-16LE', 'ISO-8859-1');
+	
 	/**
 	 * Object attributes
 	 *
@@ -167,10 +168,10 @@ class Shopgate_Model_Abstract {
 	public function setData($key, $value = null) {
 		if (is_array($key)) {
 			foreach ($key as $key => $value) {
-				$this->$key = $value;
+				$this->$key = $this->stringToUtf8($value, self::$allowedEncodings);
 			}
 		} else {
-			$this->$key = $value;
+			$this->$key = $this->$key = $this->stringToUtf8($value, self::$allowedEncodings);
 		}
 
 		return $this;
@@ -258,4 +259,4 @@ class Shopgate_Model_Abstract {
 
 		return $this;
 	}
-} 
+}
