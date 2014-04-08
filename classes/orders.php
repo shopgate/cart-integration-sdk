@@ -995,6 +995,7 @@ class ShopgateOrder extends ShopgateCartBase {
 class ShopgateOrderItem extends ShopgateContainer {
 	protected $item_number;
 	protected $item_number_public;
+	protected $order_item_id;
 
 	protected $quantity;
 
@@ -1041,6 +1042,13 @@ class ShopgateOrderItem extends ShopgateContainer {
 	 */
 	public function setItemNumberPublic($value) {
 		$this->item_number_public = $value;
+	}
+	
+	/**
+	 * @param int $value
+	 */
+	public function setOrderItemId($value) {
+		$this->order_item_id = $value;
 	}
 
 	/**
@@ -1201,6 +1209,13 @@ class ShopgateOrderItem extends ShopgateContainer {
 	 */
 	public function getItemNumberPublic() {
 		return $this->item_number_public;
+	}
+	
+	/**
+	 * @return int
+	 */
+	public function getOrderItemId() {
+		return $this->order_item_id;
 	}
 
 	/**
