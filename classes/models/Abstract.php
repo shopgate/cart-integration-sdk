@@ -137,7 +137,7 @@ class Shopgate_Model_Abstract {
 	public function __call($method, $args) {
 
 		if (!in_array(substr($method, 3), $this->allowedMethods)) {
-			throw new ShopgateLibraryException('invalid Method '.$method);
+			trigger_error('Call to undefined magic method '.get_class($this).'::'.$method.'()', E_USER_ERROR);
 		}
 
 		switch (substr($method, 0, 3)) {
