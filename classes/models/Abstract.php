@@ -168,10 +168,16 @@ class Shopgate_Model_Abstract extends ShopgateObject {
 	public function setData($key, $value = null) {
 		if (is_array($key)) {
 			foreach ($key as $key => $value) {
-				$this->$key = $this->stringToUtf8($value, self::$allowedEncodings);
+				if (!is_array($value) && !is_object($value)) {
+					$value = $this->stringToUtf8($value, self::$allowedEncodings);
+				}
+				$this->$key = $value;
 			}
 		} else {
-			$this->$key = $this->$key = $this->stringToUtf8($value, self::$allowedEncodings);
+			if (!is_array($value) && !is_object($value)) {
+				$value = $this->stringToUtf8($value, self::$allowedEncodings);
+			}
+			$this->$key = $value;
 		}
 
 		return $this;
