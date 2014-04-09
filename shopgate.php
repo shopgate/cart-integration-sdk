@@ -39,6 +39,7 @@ require_once(dirname(__FILE__).DS.'classes'.DS.'redirect.php');
  * global
  */
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/Abstract.php');
+require_once(dirname(__FILE__).DS.'classes'.DS.'models/AbstractXml.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/XmlResultObject.php');
 
 /**

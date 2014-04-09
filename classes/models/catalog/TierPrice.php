@@ -33,7 +33,7 @@
  * @method float    getReduction()
  *
  */
-class Shopgate_Model_Catalog_TierPrice extends Shopgate_Model_Abstract {
+class Shopgate_Model_Catalog_TierPrice extends Shopgate_Model_AbstractXml {
 
 	const DEFAULT_TIER_PRICE_TYPE_PERCENT = 'percent';
 	const DEFAULT_TIER_PRICE_TYPE_FIXED = 'fixed';

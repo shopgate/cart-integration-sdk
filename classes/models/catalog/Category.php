@@ -48,7 +48,7 @@
  *  @method bool                        getIsAnchor()
  *
  */
-class Shopgate_Model_Catalog_Category extends Shopgate_Model_Abstract {
+class Shopgate_Model_Catalog_Category extends Shopgate_Model_AbstractXml {
 	/**
 	 * @var string
 	 */

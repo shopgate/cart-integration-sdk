@@ -35,29 +35,6 @@ class Shopgate_Model_Abstract extends ShopgateObject {
 	 */
 	protected $data = array();
 
-	/** @var stdClass $item */
-	protected $item;
-
-	/**
-	 * @var string
-	 */
-	protected $xsdFileLocation = false;
-
-	/**
-	 * @var string
-	 */
-	protected $itemNodeIdentifier = '<items></items>';
-
-	/**
-	 * @var string
-	 */
-	protected $identifier = 'items';
-
-	/**
-	 * @var array
-	 */
-	protected $fireMethods = array();
-
 	/**
 	 * define allowed methods
 	 *
@@ -84,46 +61,6 @@ class Shopgate_Model_Abstract extends ShopgateObject {
 		}
 
 		return $result;
-	}
-
-	/**
-	 * returns the xsd file location
-	 *
-	 * @return string
-	 */
-	public function getXsdFileLocation() {
-		return sprintf('%s/%s', ShopgateConfig::getCurrentXsdLocation(), $this->xsdFileLocation);
-	}
-
-	/**
-	 * returns the item node identifier
-	 *
-	 * @return string
-	 */
-	public function getItemNodeIdentifier() {
-		return $this->itemNodeIdentifier;
-	}
-
-	/**
-	 * returns the identifier
-	 *
-	 * @return string
-	 */
-	public function getIdentifier() {
-		return $this->identifier;
-	}
-
-	/**
-	 * generate data dom object
-	 *
-	 * @return $this
-	 */
-	public function generateData() {
-		foreach ($this->fireMethods as $method) {
-			$this->{$method}();
-		}
-
-		return $this;
 	}
 
 	/**
@@ -169,14 +106,10 @@ class Shopgate_Model_Abstract extends ShopgateObject {
 		if (is_array($key)) {
 			foreach ($key as $key => $value) {
 				if (!is_array($value) && !is_object($value)) {
-					$value = $this->stringToUtf8($value, self::$allowedEncodings);
+					$this->$key = $value;
 				}
-				$this->$key = $value;
 			}
 		} else {
-			if (!is_array($value) && !is_object($value)) {
-				$value = $this->stringToUtf8($value, self::$allowedEncodings);
-			}
 			$this->$key = $value;
 		}
 
@@ -255,14 +188,4 @@ class Shopgate_Model_Abstract extends ShopgateObject {
 		$this->data[$columnName] = $value;
 	}
 
-	/**
-	 * @param $item
-	 *
-	 * @return $this
-	 */
-	public function setItem($item) {
-		$this->item = $item;
-
-		return $this;
-	}
 }
