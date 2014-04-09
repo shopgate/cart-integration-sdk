@@ -28,9 +28,8 @@ define('SHOPGATE_LIBRARY_VERSION', '2.5.1');
 define('SHOPGATE_LIBRARY_ENCODING' , 'UTF-8');
 define('SHOPGATE_BASE_DIR', realpath(dirname(__FILE__).'/../'));
 
-function getErrorType($type){
-	switch($type)
-	{
+function shopgateGetErrorType($type) {
+	switch($type) {
 		case E_ERROR: // 1 //
 			return 'E_ERROR';
 		case E_WARNING: // 2 //
@@ -62,6 +61,7 @@ function getErrorType($type){
 		case E_USER_DEPRECATED: // 16384 //
 			return 'E_USER_DEPRECATED';
 	}
+	
 	return "UNKWOWN_ERROR_CODE";
 }
 
@@ -71,10 +71,9 @@ function getErrorType($type){
  */
 function ShopgateShutdownHandler(){
 
-	if(function_exists("error_get_last")){
-		if(!is_null($e = error_get_last()))
-		{
-			$type = getErrorType($e['type']);
+	if (function_exists("error_get_last")){
+		if (!is_null($e = error_get_last())) {
+			$type = shopgateGetErrorType($e['type']);
 			ShopgateLogger::getInstance()->log("{$e['message']} \n {$e['file']} : [{$e['line']}] , Type: {$type}", ShopgateLogger::LOGTYPE_ERROR);
 		}
 	}
@@ -1949,7 +1948,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_check_cart#API_Response
 	 *
 	 * @param ShopgateCart $cart The ShopgateCart object to be checked and validated.
-	 * 
+	 *
 	 * @return array(
 	 *          'items' => array(...), # list of item changes
 	 * )
