@@ -48,7 +48,7 @@
  *  @method bool                        getIsAnchor()
  *
  */
-class Shopgate_Model_Catalog_Category extends Shopgate_Model_Abstract {
+class Shopgate_Model_Catalog_Category extends Shopgate_Model_AbstractXml {
 	/**
 	 * @var string
 	 */
@@ -60,11 +60,11 @@ class Shopgate_Model_Catalog_Category extends Shopgate_Model_Abstract {
 	protected $identifier = 'categories';
 
 	/**
-	 * define dtd file location
+	 * define xsd file location
 	 *
 	 * @var string
 	 */
-	protected $dtdFileLocation = 'catalog/categories.dtd';
+	protected $xsdFileLocation = 'catalog/categories.xsd';
 
 	/**
 	 * @var array

@@ -30,7 +30,7 @@
  * @method string   getValue()
  *
  */
-class Shopgate_Model_Catalog_Validation extends Shopgate_Model_Abstract {
+class Shopgate_Model_Catalog_Validation extends Shopgate_Model_AbstractXml {
 	/**
 	 * types
 	 */

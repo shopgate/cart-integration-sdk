@@ -33,7 +33,7 @@
  * @method string       getLabel()
  *
  */
-class Shopgate_Model_Catalog_Attribute extends Shopgate_Model_Abstract {
+class Shopgate_Model_Catalog_Attribute extends Shopgate_Model_AbstractXml {
 
 	/**
 	 * define allowed methods

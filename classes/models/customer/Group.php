@@ -30,7 +30,7 @@
  * @method array    getTierPrices();
  *
  */
-class Shopgate_Model_Customer_Group extends Shopgate_Model_Abstract {
+class Shopgate_Model_Customer_Group extends Shopgate_Model_AbstractXml {
 
 	/**
 	 * define allowed methods

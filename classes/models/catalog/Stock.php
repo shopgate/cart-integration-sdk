@@ -45,7 +45,7 @@
  * @method string   getAvailabilityText()
  *
  */
-class Shopgate_Model_Catalog_Stock extends Shopgate_Model_Abstract {
+class Shopgate_Model_Catalog_Stock extends Shopgate_Model_AbstractXml {
 
 	/**
 	 * define allowed methods

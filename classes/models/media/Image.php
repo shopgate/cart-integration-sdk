@@ -39,7 +39,7 @@
  *  @method string  getAlt()
  *
  */
-class Shopgate_Model_Media_Image extends Shopgate_Model_Abstract {
+class Shopgate_Model_Media_Image extends Shopgate_Model_AbstractXml {
 
 	/**
 	 * define allowed methods

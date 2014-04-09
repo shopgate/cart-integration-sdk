@@ -45,7 +45,7 @@
  *  @method int     getMinimumOrderAmount()
  *
  */
-class Shopgate_Model_Catalog_Price extends Shopgate_Model_Abstract {
+class Shopgate_Model_Catalog_Price extends Shopgate_Model_AbstractXml {
 	/**
 	 * default price types
 	 */

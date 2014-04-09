@@ -42,7 +42,7 @@
  *  @method string  getFileName()
  *
  */
-class Shopgate_Model_Media_Attachment extends Shopgate_Model_Abstract {
+class Shopgate_Model_Media_Attachment extends Shopgate_Model_AbstractXml {
 	/**
 	 * @param Shopgate_Model_XmlResultObject $itemNode
 	 *

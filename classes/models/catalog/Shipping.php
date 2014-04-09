@@ -33,7 +33,7 @@
  * @method bool     getIsFree()
  *
  */
-class Shopgate_Model_Catalog_Shipping extends Shopgate_Model_Abstract {
+class Shopgate_Model_Catalog_Shipping extends Shopgate_Model_AbstractXml {
 
 	/**
 	 * define allowed methods

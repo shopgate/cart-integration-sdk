@@ -24,7 +24,7 @@
 ###################################################################################
 # define constants
 ###################################################################################
-define('SHOPGATE_LIBRARY_VERSION', '2.5.1');
+define('SHOPGATE_LIBRARY_VERSION', '2.5.2');
 define('SHOPGATE_LIBRARY_ENCODING' , 'UTF-8');
 define('SHOPGATE_BASE_DIR', realpath(dirname(__FILE__).'/../'));
 
@@ -2570,11 +2570,10 @@ class ShopgateFileBufferXml extends ShopgateFileBuffer {
 	
 	protected function onStart() {
 		fputs($this->fileHandle, sprintf(
-				'<!DOCTYPE %s SYSTEM "%s">%s',
-				$this->xmlModel->getIdentifier(),
-				$this->xmlModel->getDtdFileLocation(),
-				'<'.$this->xmlModel->getIdentifier().'>')
-		);
+			'<%s xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="%s">',
+			$this->xmlModel->getIdentifier(),
+			$this->xmlModel->getXsdFileLocation()
+		));
 	}
 	
 	protected function onFlush() {
