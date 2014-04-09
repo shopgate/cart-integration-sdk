@@ -897,13 +897,13 @@ class ShopgateBuilder {
 			
 			$sourceEncoding = $this->config->getExportConvertEncoding();
 			if (!empty($sourceEncoding)) {
-				array_splice(Shopgate_Model_Abstract::$allowedEncodings, 1, 0, $sourceEncoding);
+				array_splice(Shopgate_Model_AbstractExport::$allowedEncodings, 1, 0, $sourceEncoding);
 			}
 			
 			$format = (!empty($_REQUEST['result_type'])) ? $_REQUEST['result_type'] : '';
 			switch ($format) {
 				default: case 'xml':
-					/* @var $xmlModel Shopgate_Model_Abstract */
+					/* @var $xmlModel Shopgate_Model_AbstractExport */
 					$xmlModel = new $xmlModelNames[$_REQUEST['action']]();
 					$xmlNode = new Shopgate_Model_XmlResultObject($xmlModel->getItemNodeIdentifier());
 					$fileBuffer = new ShopgateFileBufferXml($xmlModel, $xmlNode, $this->config->getExportBufferCapacity(), $this->config->getExportConvertEncoding(), $this->config->getEncoding());
@@ -2529,7 +2529,7 @@ class ShopgateFileBufferJson extends ShopgateFileBuffer {
 		$result = array();
 		
 		foreach ($this->buffer as $item) {
-			/* @var $item PluginModelItemObject */
+			/* @var $item Shopgate_Model_AbstractExport */
 			$result[] = json_encode($item->asArray());
 		}
 		
@@ -2551,7 +2551,7 @@ class ShopgateFileBufferXml extends ShopgateFileBuffer {
 	protected $xmlNode;
 	
 	/**
-	 * @var Shopgate_Model_Abstract
+	 * @var Shopgate_Model_AbstractExport
 	 */
 	protected $xmlModel;
 	
@@ -2580,7 +2580,7 @@ class ShopgateFileBufferXml extends ShopgateFileBuffer {
 		$itemsNode = clone $this->xmlNode;
 		
 		foreach ($this->buffer as $item) {
-			/* @var $item Shopgate_Model_Abstract */
+			/* @var $item Shopgate_Model_AbstractExport */
 			$item->asXml($itemsNode);
 		}
 		
