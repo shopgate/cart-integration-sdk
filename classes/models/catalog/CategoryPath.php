@@ -45,7 +45,7 @@
  *  @method string                      getDeeplink()
  *
  */
-class Shopgate_Model_Catalog_CategoryPath extends Shopgate_Model_AbstractXml {
+class Shopgate_Model_Catalog_CategoryPath extends Shopgate_Model_AbstractExport {
 
 	/**
 	 * define allowed methods
@@ -129,4 +129,4 @@ class Shopgate_Model_Catalog_CategoryPath extends Shopgate_Model_AbstractXml {
 		array_push($items, $item);
 		$this->setItems($items);
 	}
-} 
+}

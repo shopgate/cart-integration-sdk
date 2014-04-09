@@ -45,7 +45,7 @@
  * @method string                               getInfoText(string)
  *
  */
-class Shopgate_Model_Catalog_Input extends Shopgate_Model_AbstractXml {
+class Shopgate_Model_Catalog_Input extends Shopgate_Model_AbstractExport {
 
 	const DEFAULT_INPUT_TYPE_SELECT = 'select';
 	const DEFAULT_INPUT_TYPE_MULTIPLE = 'multiple';
@@ -124,4 +124,4 @@ class Shopgate_Model_Catalog_Input extends Shopgate_Model_AbstractXml {
 		array_push($options, $option);
 		$this->setOptions($options);
 	}
-} 
+}

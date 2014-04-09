@@ -30,7 +30,7 @@
  * @method string   getValue()
  *
  */
-class Shopgate_Model_Catalog_Tag extends Shopgate_Model_AbstractXml {
+class Shopgate_Model_Catalog_Tag extends Shopgate_Model_AbstractExport {
 
 	/**
 	 * define allowed methods
@@ -67,4 +67,4 @@ class Shopgate_Model_Catalog_Tag extends Shopgate_Model_AbstractXml {
 
 		return $tagsResult->getData();
 	}
-} 
+}

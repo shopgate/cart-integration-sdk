@@ -39,7 +39,7 @@
  *  @method string  getAlt()
  *
  */
-class Shopgate_Model_Media_Image extends Shopgate_Model_AbstractXml {
+class Shopgate_Model_Media_Image extends Shopgate_Model_AbstractExport {
 
 	/**
 	 * define allowed methods
@@ -87,4 +87,4 @@ class Shopgate_Model_Media_Image extends Shopgate_Model_AbstractXml {
 		return $imageResult->getData();
 
 	}
-} 
+}

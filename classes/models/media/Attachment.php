@@ -13,7 +13,7 @@
  * obtain it through the world-wide-web, please send an email
  * to interfaces@shopgate.com so we can send you a copy immediately.
  *
- * @author     Shopgate GmbH, Schloﬂstraﬂe 10, 35510 Butzbach <interfaces@shopgate.com>
+ * @author     Shopgate GmbH, Schlo√üstra√üe 10, 35510 Butzbach <interfaces@shopgate.com>
  * @copyright  Shopgate GmbH
  * @license    http://opensource.org/licenses/AFL-3.0 Academic Free License ("AFL"), in the version 3.0
  *
@@ -42,7 +42,7 @@
  *  @method string  getFileName()
  *
  */
-class Shopgate_Model_Media_Attachment extends Shopgate_Model_AbstractXml {
+class Shopgate_Model_Media_Attachment extends Shopgate_Model_AbstractExport {
 	/**
 	 * @param Shopgate_Model_XmlResultObject $itemNode
 	 *
@@ -62,4 +62,4 @@ class Shopgate_Model_Media_Attachment extends Shopgate_Model_AbstractXml {
 
 		return $itemNode;
 	}
-} 
+}

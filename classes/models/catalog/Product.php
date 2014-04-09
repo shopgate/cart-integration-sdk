@@ -113,7 +113,7 @@
  * @method                                      setChildren(array $value)
  *
  */
-class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractXml {
+class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport {
 
 	/**
 	 * define identifier uid

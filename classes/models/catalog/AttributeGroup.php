@@ -30,7 +30,7 @@
  * @method string   getLabel()
  *
  */
-class Shopgate_Model_Catalog_AttributeGroup extends Shopgate_Model_AbstractXml {
+class Shopgate_Model_Catalog_AttributeGroup extends Shopgate_Model_AbstractExport {
 
 	/**
 	 * define allowed methods
@@ -55,4 +55,4 @@ class Shopgate_Model_Catalog_AttributeGroup extends Shopgate_Model_AbstractXml {
 
 		return $itemNode;
 	}
-} 
+}

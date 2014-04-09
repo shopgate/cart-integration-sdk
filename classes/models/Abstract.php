@@ -26,8 +26,6 @@
  *
  */
 class Shopgate_Model_Abstract extends ShopgateObject {
-	public static $allowedEncodings = array(SHOPGATE_LIBRARY_ENCODING, 'ASCII', 'CP1252', 'ISO-8859-15', 'UTF-16LE', 'ISO-8859-1');
-	
 	/**
 	 * Object attributes
 	 *

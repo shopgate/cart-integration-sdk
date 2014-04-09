@@ -33,7 +33,7 @@
  *  @method string  getTitle()
  *
  */
-class Shopgate_Model_Catalog_Manufacturer extends Shopgate_Model_AbstractXml {
+class Shopgate_Model_Catalog_Manufacturer extends Shopgate_Model_AbstractExport {
 
 	/**
 	 * define allowed methods
@@ -74,4 +74,4 @@ class Shopgate_Model_Catalog_Manufacturer extends Shopgate_Model_AbstractXml {
 
 		return $manufacturerResult->getData();
 	}
-} 
+}

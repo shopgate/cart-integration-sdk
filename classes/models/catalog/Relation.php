@@ -33,7 +33,7 @@
  * @method string   getLabel()
  *
  */
-class Shopgate_Model_Catalog_Relation extends Shopgate_Model_AbstractXml {
+class Shopgate_Model_Catalog_Relation extends Shopgate_Model_AbstractExport {
 	const DEFAULT_RELATION_TYPE_CROSSSELL = 'crosssell';
 	const DEFAULT_RELATION_TYPE_RELATION = 'relation';
 	const DEFAULT_RELATION_TYPE_CUSTOM = 'custom';

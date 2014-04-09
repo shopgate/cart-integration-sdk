@@ -30,7 +30,7 @@
  * @method string   getLevel()
  *
  */
-class Shopgate_Model_Catalog_Visibility extends Shopgate_Model_AbstractXml {
+class Shopgate_Model_Catalog_Visibility extends Shopgate_Model_AbstractExport {
 
 	/**
 	 * define allowed methods
@@ -73,4 +73,4 @@ class Shopgate_Model_Catalog_Visibility extends Shopgate_Model_AbstractXml {
 
 		return $visibilityResult->getData();
 	}
-} 
+}

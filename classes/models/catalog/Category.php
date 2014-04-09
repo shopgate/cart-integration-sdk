@@ -48,7 +48,7 @@
  *  @method bool                        getIsAnchor()
  *
  */
-class Shopgate_Model_Catalog_Category extends Shopgate_Model_AbstractXml {
+class Shopgate_Model_Catalog_Category extends Shopgate_Model_AbstractExport {
 	/**
 	 * @var string
 	 */
@@ -145,4 +145,4 @@ class Shopgate_Model_Catalog_Category extends Shopgate_Model_AbstractXml {
 
 		return $categoryResult->getData();
 	}
-} 
+}

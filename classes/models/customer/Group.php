@@ -30,7 +30,7 @@
  * @method array    getTierPrices();
  *
  */
-class Shopgate_Model_Customer_Group extends Shopgate_Model_AbstractXml {
+class Shopgate_Model_Customer_Group extends Shopgate_Model_AbstractExport {
 
 	/**
 	 * define allowed methods
@@ -79,4 +79,4 @@ class Shopgate_Model_Customer_Group extends Shopgate_Model_AbstractXml {
 		array_push($tierPrices, $tierPrice);
 		$this->setTierPrices($tierPrices);
 	}
-} 
+}

@@ -45,7 +45,7 @@
  *  @method int     getMinimumOrderAmount()
  *
  */
-class Shopgate_Model_Catalog_Price extends Shopgate_Model_AbstractXml {
+class Shopgate_Model_Catalog_Price extends Shopgate_Model_AbstractExport {
 	/**
 	 * default price types
 	 */
@@ -72,11 +72,6 @@ class Shopgate_Model_Catalog_Price extends Shopgate_Model_AbstractXml {
 		$this->setTierPricesGroup(array());
 	}
 
-	/**
-	 * @param Shopgate_Model_XmlResultObject $itemNode
-	 *
-	 * @return Shopgate_Model_XmlResultObject
-	 */
 	public function asXml(Shopgate_Model_XmlResultObject $itemNode) {
 		/**
 		 * @var Shopgate_Model_XmlResultObject $tierPricesNode
@@ -108,4 +103,4 @@ class Shopgate_Model_Catalog_Price extends Shopgate_Model_AbstractXml {
 		array_push($tierPrices, $tierPrice);
 		$this->setTierPricesGroup($tierPrices);
 	}
-} 
+}
