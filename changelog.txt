@@ -2,6 +2,7 @@
 
 '''Version 2.5.2'''
 * ShopgateOrderItem::$order_item_id inkl. Getter und Setter eingefügt
+* Funktion getErrorType() im globalen Kontext umbenannt in shopgateGetErrorType()
 
 '''Version 2.5.1'''
 * Fehler in den Setter-Methoden mancher von ShopgateContainer abgeleiteten Klassen behoben
@@ -232,6 +233,7 @@
 
 '''Version 2.5.2'''
 * added ShopgateOrderItem::$order_item_id incl. getters and setters
+* renamed function getErrorType() which is in global context to shopgateGetErrorType()
 
 '''Version 2.5.1'''
 * fixed a bug in the setter methods of some classes derived from ShopgateContainer
