@@ -33,9 +33,9 @@
 class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterface {
 
 	/**
-	 * default dtd location url
+	 * default xsd location url
 	 */
-	const DEFAULT_DTD_URL_LOCATION = 'http://development.local';
+	const DEFAULT_XSD_URL_LOCATION = 'http://files.shopgate.com/xml/xsd';
 
 	/**
 	 * @var string The path to the folder where the config file(s) are saved.
@@ -506,12 +506,12 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	}
 
 	/**
-	 * returns the current dtd location
+	 * returns the current xsd location
 	 *
 	 * @return string
 	 */
-	public static function getCurrentDtdLocation() {
-		return ShopgateConfig::DEFAULT_DTD_URL_LOCATION;
+	public static function getCurrentXsdLocation() {
+		return ShopgateConfig::DEFAULT_XSD_URL_LOCATION;
 	}
 
 	/**

@@ -160,11 +160,11 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_Abstract {
 	protected $identifier = 'items';
 
 	/**
-	 * define dtd file location
+	 * define xsd file location
 	 *
 	 * @var string
 	 */
-	protected $dtdFileLocation = 'catalog/products.dtd';
+	protected $xsdFileLocation = 'catalog/products.xsd';
 
 	/**
 	 * @var bool

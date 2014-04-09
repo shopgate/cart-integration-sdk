@@ -41,7 +41,7 @@ class Shopgate_Model_Abstract extends ShopgateObject {
 	/**
 	 * @var string
 	 */
-	protected $dtdFileLocation = false;
+	protected $xsdFileLocation = false;
 
 	/**
 	 * @var string
@@ -87,12 +87,12 @@ class Shopgate_Model_Abstract extends ShopgateObject {
 	}
 
 	/**
-	 * returns the dtd file location
+	 * returns the xsd file location
 	 *
 	 * @return string
 	 */
-	public function getDtdFileLocation() {
-		return sprintf('%s/%s', ShopgateConfig::getCurrentDtdLocation(), $this->dtdFileLocation);
+	public function getXsdFileLocation() {
+		return sprintf('%s/%s', ShopgateConfig::getCurrentXsdLocation(), $this->xsdFileLocation);
 	}
 
 	/**

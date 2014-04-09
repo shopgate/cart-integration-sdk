@@ -2570,11 +2570,10 @@ class ShopgateFileBufferXml extends ShopgateFileBuffer {
 	
 	protected function onStart() {
 		fputs($this->fileHandle, sprintf(
-				'<!DOCTYPE %s SYSTEM "%s">%s',
-				$this->xmlModel->getIdentifier(),
-				$this->xmlModel->getDtdFileLocation(),
-				'<'.$this->xmlModel->getIdentifier().'>')
-		);
+			'<%s xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="%s">',
+			$this->xmlModel->getIdentifier(),
+			$this->xmlModel->getXsdFileLocation()
+		));
 	}
 	
 	protected function onFlush() {
