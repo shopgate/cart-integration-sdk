@@ -228,11 +228,6 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	/**
 	 * @var bool
 	 */
-	protected $enable_get_pages_csv;
-
-	/**
-	 * @var bool
-	 */
 	protected $enable_get_media_csv;
 	
 	/**
@@ -354,9 +349,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	protected $reviews_csv_filename;
 
 	/**
-	 * @var string The name of the pages CSV file.
 	 */
-	protected $pages_csv_filename;
 
 	/**
 	 * @var string The name of the access log file.
@@ -443,7 +436,6 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_get_media_csv = 0;
 		$this->enable_get_categories_csv = 0;
 		$this->enable_get_reviews_csv = 0;
-		$this->enable_get_pages_csv = 0;
 		$this->enable_get_log_file = 1;
 		$this->enable_mobile_website = 0;
 		$this->enable_cron = 0;
@@ -479,7 +471,6 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->categories_json_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'categories.json';
 
 		$this->reviews_csv_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'reviews.csv';
-		$this->pages_csv_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'pages.csv';
 
 		$this->access_log_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'access.log';
 		$this->request_log_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'request.log';
@@ -649,7 +640,6 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->items_csv_filename = 'items-'.$this->language.'.csv';
 		$this->categories_csv_filename = 'categories-'.$this->language.'.csv';
 		$this->reviews_csv_filename = 'reviews-'.$this->language.'.csv';
-		$this->pages_csv_filename = 'pages-'.$this->language.'.csv';
 
 		$this->access_log_filename = 'access-'.$this->language.'.log';
 		$this->request_log_filename = 'request-'.$this->language.'.log';
@@ -1008,10 +998,6 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->enable_get_reviews_csv;
 	}
 
-	public function getEnableGetPagesCsv() {
-		return $this->enable_get_pages_csv;
-	}
-	
 	public function getEnableGetMediaCsv(){
 		return $this->enable_get_media_csv;
 	}
@@ -1100,8 +1086,6 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->reviews_csv_filename;
 	}
 
-	public function getPagesCsvFilename() {
-		return $this->pages_csv_filename;
 	}
 
 	public function getAccessLogFilename() {
@@ -1158,10 +1142,6 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 
 	public function getReviewsCsvPath() {
 		return rtrim($this->export_folder_path.DS.$this->reviews_csv_filename, DS);
-	}
-
-	public function getPagesCsvPath() {
-		return rtrim($this->export_folder_path.DS.$this->pages_csv_filename, DS);
 	}
 
 	public function getAccessLogPath() {
@@ -1319,10 +1299,6 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_get_reviews_csv = $value;
 	}
 
-	public function setEnableGetPagesCsv($value) {
-		$this->enable_get_pages_csv = $value;
-	}
-	
 	public function setEnableGetMediaCsv($value){
 		$this->enable_get_media_csv = $value;
 	}
@@ -1411,10 +1387,6 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->reviews_csv_filename = $value;
 	}
 
-	public function setPagesCsvFilename($value) {
-		$this->pages_csv_filename = $value;
-	}
-
 	public function setAccessLogFilename($value) {
 		$this->access_log_filename = $value;
 	}
@@ -1479,13 +1451,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		}
 	}
 
-	public function setPagesCsvPath($value) {
 		$dir = dirname($value);
 		$file = basename($value);
 
 		if (!empty($dir) && !empty($file)) {
 			$this->export_folder_path = $dir;
-			$this->pages_csv_filename = $file;
 		}
 	}
 
@@ -1580,7 +1550,6 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$properties['media_csv_path'] = $this->getMediaCsvPath();
 		$properties['categories_csv_path'] = $this->getCategoriesCsvPath();
 		$properties['reviews_csv_path'] = $this->getReviewsCsvPath();
-		$properties['pages_csv_path'] = $this->getPagesCsvPath();
 
 		$properties['access_log_path'] = $this->getAccessLogPath();
 		$properties['request_log_path'] = $this->getRequestLogPath();
@@ -2318,7 +2287,6 @@ interface ShopgateConfigInterface {
 	/**
 	 * @return bool
 	 */
-	public function getEnableGetPagesCsv();
 
 	/**
 	 * @return bool
@@ -2476,9 +2444,7 @@ interface ShopgateConfigInterface {
 	public function getReviewsCsvPath();
 
 	/**
-	 * @return string The path to where the pages CSV file is stored and retrieved from.
 	 */
-	public function getPagesCsvPath();
 
 	/**
 	 * @return string The path to the access log file.
@@ -2659,7 +2625,6 @@ interface ShopgateConfigInterface {
 	/**
 	 * @param bool $value
 	 */
-	public function setEnableGetPagesCsv($value);
 
 	/**
 	 * @param bool $value
@@ -2817,9 +2782,7 @@ interface ShopgateConfigInterface {
 	public function setReviewsCsvPath($value);
 
 	/**
-	 * @param string $value The path to where the pages CSV file is stored and retrieved from.
 	 */
-	public function setPagesCsvPath($value);
 
 	/**
 	 * @param string $value The path to the access log file.
