@@ -1509,6 +1509,14 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		
 		$this->addRow( $item );
 	}
+	
+	/**
+	 * @param Shopgate_Model_Catalog_Product $category
+	 */
+	protected final function addCategoryModel(Shopgate_Model_Catalog_Category $category) {
+		$this->addModel($category);
+	}
+	
 	/**
 	 * @param mixed[] $itemArr
 	 */
