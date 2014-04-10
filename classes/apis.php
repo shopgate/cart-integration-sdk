@@ -819,11 +819,16 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$limit = isset($this->params['limit']) ? (int) $this->params['limit'] : null;
 		$offset = isset($this->params['offset']) ? (int) $this->params['offset'] : null;
 		$uids = isset($this->params['uids']) ? (array) $this->params['uids'] : array();
-		$resultType = isset($this->params['result_type']) ? $this->params['result_type'] : false;
+		$responseType = isset($this->params['response_type']) ? $this->params['response_type'] : false;
 		
-		$this->plugin->startGetItems($limit, $offset, $uids, $resultType);
+		$supportedResponseTypes = $this->config->getSupportedResponseTypes();
+		if (!empty($responseType) && !in_array($responseType, $supportedResponseTypes['get_items'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_UNSUPPORTED_RESPONSE_TYPE, 'Requested type: "'.$responseType.'"');
+		}
+		
+		$this->plugin->startGetItems($limit, $offset, $uids, $responseType);
 
-		switch ($resultType) {
+		switch ($responseType) {
 			default: case 'xml':
 				$response = new ShopgatePluginApiResponseAppXmlExport($this->trace_id);
 				$responseData = $this->config->getItemsXmlPath();
@@ -846,11 +851,16 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$limit = isset($this->params['limit']) ? (int) $this->params['limit'] : null;
 		$offset = isset($this->params['offset']) ? (int) $this->params['offset'] : null;
 		$uids = isset($this->params['uids']) ? (array) $this->params['uids'] : array();
-		$resultType = isset($this->params['result_type']) ? $this->params['result_type'] : false;
+		$responseType = isset($this->params['response_type']) ? $this->params['response_type'] : false;
 		
-		$this->plugin->startGetCategories($limit, $offset, $uids, $resultType);
+		$supportedResponseTypes = $this->config->getSupportedResponseTypes();
+		if (!empty($responseType) && !in_array($responseType, $supportedResponseTypes['get_categories'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_UNSUPPORTED_RESPONSE_TYPE, 'Requested type: "'.$responseType.'"');
+		}
+		
+		$this->plugin->startGetCategories($limit, $offset, $uids, $responseType);
 
-		switch ($resultType) {
+		switch ($responseType) {
 			default: case 'xml':
 				$response = new ShopgatePluginApiResponseAppXmlExport($this->trace_id);
 				$responseData = $this->config->getCategoriesXmlPath();

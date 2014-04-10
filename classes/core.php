@@ -163,6 +163,7 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_API_CRON_NO_JOBS = 40;
 	const PLUGIN_API_CRON_NO_JOB_NAME = 41;
 	const PLUGIN_API_NO_SHOPGATE_SETTINGS = 50;
+	const PLUGIN_API_UNSUPPORTED_RESPONSE_TYPE = 51;
 
 	// Plugin errors
 	const PLUGIN_DUPLICATE_ORDER = 60;
@@ -252,6 +253,7 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_API_CRON_NO_JOBS => 'parameter "jobs" missing',
 		self::PLUGIN_API_CRON_NO_JOB_NAME => 'field "job_name" in parameter "jobs" missing',
 		self::PLUGIN_API_NO_SHOPGATE_SETTINGS => 'parameter "shopgate_settings" missing',
+		self::PLUGIN_API_UNSUPPORTED_RESPONSE_TYPE => 'parameter "response_type" contains an unsupported type',
 
 		// Plugin errors
 		self::PLUGIN_DUPLICATE_ORDER => 'duplicate order',
@@ -900,7 +902,7 @@ class ShopgateBuilder {
 				array_splice(Shopgate_Model_AbstractExport::$allowedEncodings, 1, 0, $sourceEncoding);
 			}
 			
-			$format = (!empty($_REQUEST['result_type'])) ? $_REQUEST['result_type'] : '';
+			$format = (!empty($_REQUEST['response_type'])) ? $_REQUEST['response_type'] : '';
 			switch ($format) {
 				default: case 'xml':
 					/* @var $xmlModel Shopgate_Model_AbstractExport */
@@ -1414,8 +1416,8 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @throws ShopgateLibraryException
 	 */
-	public final function startGetItems($limit = null, $offset = null, array $uids = array(), $resultType = 'xml') {
-		switch ($resultType) {
+	public final function startGetItems($limit = null, $offset = null, array $uids = array(), $responseType = 'xml') {
+		switch ($responseType) {
 			default: case 'xml':
 				$this->buffer->setFile($this->config->getItemsXmlPath());
 				break;
@@ -1434,8 +1436,8 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @throws ShopgateLibraryException
 	 */
-	public final function startGetCategories($limit = null, $offset = null, array $uids = array(), $resultType = 'xml') {
-		switch ($resultType) {
+	public final function startGetCategories($limit = null, $offset = null, array $uids = array(), $responseType = 'xml') {
+		switch ($responseType) {
 			default: case 'xml':
 				$this->buffer->setFile($this->config->getCategoriesXmlPath());
 				break;
