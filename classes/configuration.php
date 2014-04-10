@@ -145,6 +145,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @var bool true to enable automatic encoding conversion to utf-8 during export
 	 */
 	protected $export_convert_encoding;
+	
+	/**
+	 * @var array<string, string[]> the list of formats supported by the plugin, indexed by exports
+	 */
+	protected $supported_formats;
 
 
 	##############################################################
@@ -418,6 +423,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_default_redirect = 1;
 		$this->encoding = 'UTF-8';
 		$this->export_convert_encoding = 1;
+		$this->supported_formats = array(
+				'items' => array('xml'),
+				'categories' => array('xml'),
+		);
 
 		$this->enable_ping = 1;
 		$this->enable_add_order = 0;
@@ -938,6 +947,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	public function getExportConvertEncoding() {
 		return $this->export_convert_encoding;
 	}
+	
+	public function getSupportedFormats() {
+		return $this->supported_formats;
+	}
 
 	public function getEnablePing() {
 		return $this->enable_ping;
@@ -1244,6 +1257,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 
 	public function setExportConvertEncoding($value) {
 		$this->export_convert_encoding = $value;
+	}
+	
+	public function setSupportedFormats($value) {
+		$this->supported_formats = $value;
 	}
 
 	public function setEnablePing($value) {
@@ -2231,6 +2248,11 @@ interface ShopgateConfigInterface {
 	 * @return bool true to enable automatic encoding conversion to utf-8 during export
 	 */
 	public function getExportConvertEncoding();
+	
+	/**
+	 * @return array<string, string[]> the list of formats supported by the plugin, indexed by exports
+	 */
+	public function getSupportedFormats();
 
 	/**
 	 * @return bool
@@ -2567,6 +2589,11 @@ interface ShopgateConfigInterface {
 	 * @param bool $value true to enable automatic encoding conversion to utf-8 during export
 	 */
 	public function setExportConvertEncoding($value);
+	
+	/**
+	 * @param array<string, string[]> $value the list of formats supported by the plugin, indexed by exports
+	 */
+	public function setSupportedFormats($value);
 
 	/**
 	 * @param bool $value
