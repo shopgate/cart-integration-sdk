@@ -1486,12 +1486,10 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	}
 
 	/**
-	 *  Calls the addRow() method on the currently associated ShopgateFileBuffer
-	 *
-	 * @param $item
+	 * @param Shopgate_Model_Catalog_Product $item
 	 */
-	protected final function addItemObject($item) {
-		$this->addRow($item);
+	protected final function addItemModel(Shopgate_Model_Catalog_Product $item) {
+		$this->addModel($item);
 	}
 
 	/**
