@@ -1475,7 +1475,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @throws ShopgateLibraryException if flushing the buffer fails.
 	 */
 	private final function addModel(Shopgate_Model_AbstractExport $object) {
-		$this->buffer->addRow($row);
+		$this->buffer->addRow($object);
 	}
 
 	/**
