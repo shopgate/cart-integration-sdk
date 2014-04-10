@@ -147,9 +147,9 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	protected $export_convert_encoding;
 	
 	/**
-	 * @var array<string, string[]> the list of formats supported by the plugin, indexed by exports
+	 * @var array<string, string[]> the list of response types supported by the plugin, indexed by actions
 	 */
-	protected $supported_formats;
+	protected $supported_response_types;
 
 
 	##############################################################
@@ -428,9 +428,9 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_default_redirect = 1;
 		$this->encoding = 'UTF-8';
 		$this->export_convert_encoding = 1;
-		$this->supported_formats = array(
-				'items' => array('xml'),
-				'categories' => array('xml'),
+		$this->supported_response_types = array(
+				'get_items' => array('xml'),
+				'get_categories' => array('xml'),
 		);
 
 		$this->enable_ping = 1;
@@ -958,8 +958,8 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->export_convert_encoding;
 	}
 	
-	public function getSupportedFormats() {
-		return $this->supported_formats;
+	public function getSupportedResponseTypes() {
+		return $this->supported_response_types;
 	}
 
 	public function getEnablePing() {
@@ -1273,8 +1273,8 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->export_convert_encoding = $value;
 	}
 	
-	public function setSupportedFormats($value) {
-		$this->supported_formats = $value;
+	public function setSupportedResponseTypes($value) {
+		$this->supported_response_types = $value;
 	}
 
 	public function setEnablePing($value) {
@@ -2308,9 +2308,9 @@ interface ShopgateConfigInterface {
 	public function getExportConvertEncoding();
 	
 	/**
-	 * @return array<string, string[]> the list of formats supported by the plugin, indexed by exports
+	 * @return array<string, string[]> the list of response types supported by the plugin, indexed by exports
 	 */
-	public function getSupportedFormats();
+	public function getSupportedResponseTypes();
 
 	/**
 	 * @return bool
@@ -2698,9 +2698,9 @@ interface ShopgateConfigInterface {
 	public function setExportConvertEncoding($value);
 	
 	/**
-	 * @param array<string, string[]> $value the list of formats supported by the plugin, indexed by exports
+	 * @param array<string, string[]> $value the list of response types supported by the plugin, indexed by exports
 	 */
-	public function setSupportedFormats($value);
+	public function setSupportedResponseTypes($value);
 
 	/**
 	 * @param bool $value
