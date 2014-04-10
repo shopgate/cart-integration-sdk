@@ -1551,6 +1551,14 @@ abstract class ShopgatePlugin extends ShopgateObject {
 
 		return $row;
 	}
+	
+	/**
+	 * @return Shopgate_Model_Catalog_Category
+	 * @see http://wiki.shopgate.com/get_categories
+	 */
+	protected function buildDefaultCategoryModel() {
+		return new Shopgate_Model_Catalog_Category();
+	}
 
 	/**
 	 * set the number of attributes to put in the csv head row
@@ -1730,6 +1738,14 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			$inputs;
 		
 		return $row;
+	}
+	
+	/**
+	 * @return Shopgate_Model_Catalog_Product
+	 * @see http://wiki.shopgate.com/get_items
+	 */
+	protected function buildDefaultItemModel() {
+		return new Shopgate_Model_Catalog_Product();
 	}
 
 	/**
