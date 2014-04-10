@@ -1466,6 +1466,17 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	private final function addRow($row) {
 		$this->buffer->addRow($row);
 	}
+	
+	/**
+	 * Calls the addRow() method on the currently associated ShopgateFileBuffer
+	 *
+	 * @param Shopgate_Model_AbstractExport $object
+	 *
+	 * @throws ShopgateLibraryException if flushing the buffer fails.
+	 */
+	private final function addModel(Shopgate_Model_AbstractExport $object) {
+		$this->buffer->addRow($row);
+	}
 
 	/**
 	 * @deprecated Use ShopgatePlugin::addItemRow(), ::addCategoryRow() or ::addReviewRow().
