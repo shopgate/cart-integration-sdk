@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.5.3'''
+* Klasse ShopgateOrderItem um ein Feld namens "parent_item_number" erweitert
+
 '''Version 2.5.2'''
 * ShopgateOrderItem::$order_item_id inkl. Getter und Setter eingefügt
 * Funktion getErrorType() im globalen Kontext umbenannt in shopgateGetErrorType()
@@ -230,6 +233,9 @@
 
 
 '''English'''
+
+'''Version 2.5.3'''
+* added field "parent_item_number" to class ShopgateOrderItem
 
 '''Version 2.5.2'''
 * added ShopgateOrderItem::$order_item_id incl. getters and setters
