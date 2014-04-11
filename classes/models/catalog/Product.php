@@ -246,23 +246,26 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport {
 	 * init default object
 	 */
 	public function __construct() {
-		$this->setPrice(new Shopgate_Model_Catalog_Price());
-		$this->setShipping(new Shopgate_Model_Catalog_Shipping());
-		$this->setManufacturer(new Shopgate_Model_Catalog_Manufacturer());
-		$this->setVisibility(new Shopgate_Model_Catalog_Visibility());
-		$this->setStock(new Shopgate_Model_Catalog_Stock());
-
-		$this->setInputs(array());
-		$this->setChildren(array());
-		$this->setAttributeGroups(array());
-		$this->setRelations(array());
-		$this->setTags(array());
-		$this->setIdentifiers(array());
-		$this->setProperties(array());
-		$this->setCategoryPaths(array());
-		$this->setImages(array());
-		$this->setAttachments(array());
-		$this->setAttributes(array());
+		$this->setData(
+			array(
+				'price' => new Shopgate_Model_Catalog_Price(),
+				'shipping' => new Shopgate_Model_Catalog_Shipping(),
+				'manufacturer' => new Shopgate_Model_Catalog_Manufacturer(),
+				'visibility' => new Shopgate_Model_Catalog_Visibility(),
+				'stock' => new Shopgate_Model_Catalog_Stock(),
+				'inputs' => array(),
+				'children' => array(),
+				'attribute_groups' => array(),
+				'relations' => array(),
+				'tags' => array(),
+				'identifiers' => array(),
+				'properties' => array(),
+				'category_paths' => array(),
+				'images' => array(),
+				'attachments' => array(),
+				'attributes' => array()
+			)
+		);
 	}
 
 	/**
