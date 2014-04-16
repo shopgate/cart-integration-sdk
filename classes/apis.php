@@ -577,13 +577,16 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		if (!isset($this->params['customer_token'])) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_NO_CUSTOMER_TOKEN);
 		}
-		if (!isset($this->params['items']) || !is_array($this->params['items'])) {
+		if (!isset($this->params['items'])) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ITEMS);
+		}
+		if (empty($this->params['items'])) {
+			$this->params['items'] = array(); // a hack because there is no "empty array" representation in POST
 		}
 		if (empty($this->response)) {
 			$this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
 		}
-	
+		
 		$syncItems = array();
 		foreach ($this->params['items'] as $syncItem) {
 			if (!isset($syncItem['item_number'])) {
