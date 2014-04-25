@@ -1852,13 +1852,20 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @return mixed[] An array with additional information.
 	 */
 	public function createShopInfo() {
-		return array(
+		$shopInfo = array(
 			'category_count' => 0,
 			'item_count' => 0,
-			'review_count' => 0,
-			'media_count' => 0,
-			'third_party_modules' => array()
 		);
+		
+		if($this->config->getEnableGetReviewsCsv()) {
+			$shopInfo['review_count'] = 0;
+		}
+		
+		if($this->config->getEnableGetMediaCsv()) {
+			$shopInfo['media_count'] = array();
+		}
+		
+		return $shopInfo;
 	}
 
 	/**
