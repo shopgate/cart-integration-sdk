@@ -1845,6 +1845,23 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	public function createPluginInfo() { return array(); }
 
 	/**
+	 * Callback function for the Shopgate Plugin API ping action.
+	 *
+	 * Override this to append additional information about shop system to the response of the ping action.
+	 *
+	 * @return mixed[] An array with additional information.
+	 */
+	public function createShopInfo() {
+		return array(
+			'category_count' => 0,
+			'item_count' => 0,
+			'review_count' => 0,
+			'media_count' => 0,
+			'third_party_modules' => array()
+		);
+	}
+
+	/**
 	 * Callback function for the Shopgate Plugin API Debug action.
 	 *
 	 * Override this to append additional information about shop system to the response of the Debug action.
