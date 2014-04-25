@@ -32,6 +32,12 @@
  * @method          setReduction(float $value)
  * @method float    getReduction()
  *
+ * @method			setCustomerGroupUid(int $value)
+ * @method int		getCustomerGroupUid()
+ *
+ * @method			setToQuantity(int $value)
+ * @method int		getToQuantity()
+ *
  */
 class Shopgate_Model_Catalog_TierPrice extends Shopgate_Model_AbstractExport {
 
@@ -47,7 +53,9 @@ class Shopgate_Model_Catalog_TierPrice extends Shopgate_Model_AbstractExport {
 	protected $allowedMethods = array(
 		'FromQuantity',
 		'ReductionType',
-		'Reduction');
+		'Reduction',
+		'CustomerGroupUid',
+		'ToQuantity');
 
 	/**
 	 * @param Shopgate_Model_XmlResultObject $itemNode
@@ -59,8 +67,10 @@ class Shopgate_Model_Catalog_TierPrice extends Shopgate_Model_AbstractExport {
 		 * @var Shopgate_Model_XmlResultObject $tierPriceNode
 		 */
 		$tierPriceNode = $itemNode->addChild('tier_price', $this->getReduction());
-		$tierPriceNode->addAttribute('treshold', $this->getFromQuantity());
+		$tierPriceNode->addAttribute('threshold', $this->getFromQuantity());
+		$tierPriceNode->addAttribute('max_quantity', $this->getToQuantity());
 		$tierPriceNode->addAttribute('type', $this->getReductionType());
+		$tierPriceNode->addAttribute('customer_group_uid', $this->getCustomerGroupUid());
 
 		return $itemNode;
 	}

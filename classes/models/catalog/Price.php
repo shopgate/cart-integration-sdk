@@ -96,9 +96,9 @@ class Shopgate_Model_Catalog_Price extends Shopgate_Model_AbstractExport {
 	/**
 	 * add tier price
 	 *
-	 * @param Shopgate_Model_Customer_Group $tierPrice
+	 * @param Shopgate_Model_Catalog_TierPrice $tierPrice
 	 */
-	public function addTierPriceGroup(Shopgate_Model_Customer_Group $tierPrice) {
+	public function addTierPriceGroup(Shopgate_Model_Catalog_TierPrice $tierPrice) {
 		$tierPrices = $this->getTierPricesGroup();
 		array_push($tierPrices, $tierPrice);
 		$this->setTierPricesGroup($tierPrices);

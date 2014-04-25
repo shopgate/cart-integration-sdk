@@ -71,11 +71,6 @@ require_once(dirname(__FILE__).DS.'classes'.DS.'models/catalog/Attribute.php');
  */
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/media/Image.php');
 
-/**
- * customer
- */
-require_once(dirname(__FILE__).DS.'classes'.DS.'models/customer/Group.php');
-
 // Shopgate-Vendors
 require_once(dirname(__FILE__).DS.'vendors'.DS.'2d_is.php');
 require_once(dirname(__FILE__).DS.'vendors'.DS.'mobile_redirect.class.php');

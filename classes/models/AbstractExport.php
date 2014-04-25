@@ -69,7 +69,9 @@ abstract class Shopgate_Model_AbstractExport extends Shopgate_Model_Abstract {
 			}
 		} else {
 			if (!is_array($value) && !is_object($value)) {
-				$value = $this->stringToUtf8($value, self::$allowedEncodings);
+				if(!is_null($value)) {
+					$value = $this->stringToUtf8($value, self::$allowedEncodings);
+				}
 			}
 			$this->$key = $value;
 		}
