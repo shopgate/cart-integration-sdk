@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.5.4'''
+* Die Methode Ping um einen zusätzlichen Informationskontainer erweitert ('shop_info')
+
 '''Version 2.5.3'''
 * Klasse ShopgateOrderItem um ein Feld namens "parent_item_number" erweitert
 
@@ -233,6 +236,9 @@
 
 
 '''English'''
+
+'''Version 2.5.4'''
+* extended the method ping with an additional information container ('shop_info')
 
 '''Version 2.5.3'''
 * added field "parent_item_number" to class ShopgateOrderItem
