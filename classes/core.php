@@ -1,36 +1,35 @@
 <?php
 /*
-* Shopgate GmbH
-*
-* URHEBERRECHTSHINWEIS
-*
-* Dieses Plugin ist urheberrechtlich geschützt. Es darf ausschließlich von Kunden der Shopgate GmbH
-* zum Zwecke der eigenen Kommunikation zwischen dem IT-System des Kunden mit dem IT-System der
-* Shopgate GmbH über www.shopgate.com verwendet werden. Eine darüber hinausgehende Vervielfältigung, Verbreitung,
-* öffentliche Zugänglichmachung, Bearbeitung oder Weitergabe an Dritte ist nur mit unserer vorherigen
-* schriftlichen Zustimmung zulässig. Die Regelungen der §§ 69 d Abs. 2, 3 und 69 e UrhG bleiben hiervon unberührt.
-*
-* COPYRIGHT NOTICE
-*
-* This plugin is the subject of copyright protection. It is only for the use of Shopgate GmbH customers,
-* for the purpose of facilitating communication between the IT system of the customer and the IT system
-* of Shopgate GmbH via www.shopgate.com. Any reproduction, dissemination, public propagation, processing or
-* transfer to third parties is only permitted where we previously consented thereto in writing. The provisions
-* of paragraph 69 d, sub-paragraphs 2, 3 and paragraph 69, sub-paragraph e of the German Copyright Act shall remain unaffected.
-*
-*  @author Shopgate GmbH <interfaces@shopgate.com>
-*/
+ * Shopgate GmbH
+ *
+ * URHEBERRECHTSHINWEIS
+ *
+ * Dieses Plugin ist urheberrechtlich geschützt. Es darf ausschließlich von Kunden der Shopgate GmbH
+ * zum Zwecke der eigenen Kommunikation zwischen dem IT-System des Kunden mit dem IT-System der
+ * Shopgate GmbH über www.shopgate.com verwendet werden. Eine darüber hinausgehende Vervielfältigung, Verbreitung,
+ * öffentliche Zugänglichmachung, Bearbeitung oder Weitergabe an Dritte ist nur mit unserer vorherigen
+ * schriftlichen Zustimmung zulässig. Die Regelungen der §§ 69 d Abs. 2, 3 und 69 e UrhG bleiben hiervon unberührt.
+ *
+ * COPYRIGHT NOTICE
+ *
+ * This plugin is the subject of copyright protection. It is only for the use of Shopgate GmbH customers,
+ * for the purpose of facilitating communication between the IT system of the customer and the IT system
+ * of Shopgate GmbH via www.shopgate.com. Any reproduction, dissemination, public propagation, processing or
+ * transfer to third parties is only permitted where we previously consented thereto in writing. The provisions
+ * of paragraph 69 d, sub-paragraphs 2, 3 and paragraph 69, sub-paragraph e of the German Copyright Act shall remain unaffected.
+ *
+ * @author Shopgate GmbH <interfaces@shopgate.com>
+ */
 
 ###################################################################################
 # define constants
 ###################################################################################
-define('SHOPGATE_LIBRARY_VERSION', '2.5.0');
+define('SHOPGATE_LIBRARY_VERSION', '2.5.4');
 define('SHOPGATE_LIBRARY_ENCODING' , 'UTF-8');
 define('SHOPGATE_BASE_DIR', realpath(dirname(__FILE__).'/../'));
 
-function getErrorType($type){
-	switch($type)
-	{
+function shopgateGetErrorType($type) {
+	switch($type) {
 		case E_ERROR: // 1 //
 			return 'E_ERROR';
 		case E_WARNING: // 2 //
@@ -62,6 +61,7 @@ function getErrorType($type){
 		case E_USER_DEPRECATED: // 16384 //
 			return 'E_USER_DEPRECATED';
 	}
+	
 	return "UNKWOWN_ERROR_CODE";
 }
 
@@ -71,10 +71,9 @@ function getErrorType($type){
  */
 function ShopgateShutdownHandler(){
 
-	if(function_exists("error_get_last")){
-		if(!is_null($e = error_get_last()))
-		{
-			$type = getErrorType($e['type']);
+	if (function_exists("error_get_last")){
+		if (!is_null($e = error_get_last())) {
+			$type = shopgateGetErrorType($e['type']);
 			ShopgateLogger::getInstance()->log("{$e['message']} \n {$e['file']} : [{$e['line']}] , Type: {$type}", ShopgateLogger::LOGTYPE_ERROR);
 		}
 	}
@@ -1846,6 +1845,30 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	public function createPluginInfo() { return array(); }
 
 	/**
+	 * Callback function for the Shopgate Plugin API ping action.
+	 *
+	 * Override this to append additional information about shop system to the response of the ping action.
+	 *
+	 * @return mixed[] An array with additional information.
+	 */
+	public function createShopInfo() {
+		$shopInfo = array(
+			'category_count' => 0,
+			'item_count' => 0,
+		);
+		
+		if($this->config->getEnableGetReviewsCsv()) {
+			$shopInfo['review_count'] = 0;
+		}
+		
+		if($this->config->getEnableGetMediaCsv()) {
+			$shopInfo['media_count'] = array();
+		}
+		
+		return $shopInfo;
+	}
+
+	/**
 	 * Callback function for the Shopgate Plugin API Debug action.
 	 *
 	 * Override this to append additional information about shop system to the response of the Debug action.
@@ -1949,7 +1972,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_check_cart#API_Response
 	 *
 	 * @param ShopgateCart $cart The ShopgateCart object to be checked and validated.
-	 * 
+	 *
 	 * @return array(
 	 *          'items' => array(...), # list of item changes
 	 * )

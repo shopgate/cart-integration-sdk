@@ -1,9 +1,22 @@
 '''Deutsch'''
 
+'''Version 2.5.4'''
+* Die Methode Ping um einen zusätzlichen Informationskontainer erweitert ('shop_info')
+
+'''Version 2.5.3'''
+* Klasse ShopgateOrderItem um ein Feld namens "parent_item_number" erweitert
+
+'''Version 2.5.2'''
+* ShopgateOrderItem::$order_item_id inkl. Getter und Setter eingefügt
+* Funktion getErrorType() im globalen Kontext umbenannt in shopgateGetErrorType()
+
+'''Version 2.5.1'''
+* Fehler in den Setter-Methoden mancher von ShopgateContainer abgeleiteten Klassen behoben
+
 '''Version 2.5.0'''
 * Medienexport zu Produkten implementiert
-* Die Methode check_stock eingeführt umd den Bestand der übermittelten Produkte zu prüfen.
-* Validierung der Individualisierungsoption(text), falls eingegebener Text zu lang ist.
+* Die Methode check_stock eingeführt und den Bestand der übermittelten Produkte zu prüfen
+* Validierung der Individualisierungsoption(text), falls eingegebener Text zu lang ist
 
 '''Version 2.4.16'''
 * ShopgateCart::$internal_cart_info inkl. Getter und Setter eingefügt
@@ -223,6 +236,19 @@
 
 
 '''English'''
+
+'''Version 2.5.4'''
+* extended the method ping with an additional information container ('shop_info')
+
+'''Version 2.5.3'''
+* added field "parent_item_number" to class ShopgateOrderItem
+
+'''Version 2.5.2'''
+* added ShopgateOrderItem::$order_item_id incl. getters and setters
+* renamed function getErrorType() which is in global context to shopgateGetErrorType()
+
+'''Version 2.5.1'''
+* fixed a bug in the setter methods of some classes derived from ShopgateContainer
 
 '''Version 2.5.0'''
 * implemented media export for products
