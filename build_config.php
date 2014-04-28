@@ -14,6 +14,20 @@ $buildConfig = array (
 			'replace' => "define('SHOPGATE_LIBRARY_VERSION', '{PLUGIN_VERSION}')",
 		),
 	),
+	'wiki' => array (
+			'changelog' => array (
+					'path' => "./",
+					'pages' => array (
+							'ShopgateLibrary' => array (
+									'title' => "Template:Shopgate_Library_Changelog",
+									'languages' => array (
+											'0' => "English",
+											'1' => "Deutsch",
+									),
+							),
+					),
+			),
+	),
 	'zip_basedir' => "shopgate_library",
 	'exclude_files' => array (
 	),
