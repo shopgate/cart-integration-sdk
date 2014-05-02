@@ -1001,9 +1001,10 @@ abstract class ShopgateObject {
 	 * @param string $string The string to encode.
 	 * @param string|string[] $sourceEncoding The (possible) encoding(s) of $string.
 	 * @param bool $force Set this true to enforce encoding even if the source encoding is already UTF-8.
+	 * @param bool $useIconv True to use iconv instead of mb_convert_encoding even if the mb library is present.
 	 * @return string The UTF-8 encoded string.
 	 */
-	public function stringToUtf8($string, $sourceEncoding = 'ISO-8859-15', $force = false) {
+	public function stringToUtf8($string, $sourceEncoding = 'ISO-8859-15', $force = false, $useIconv = false) {
 		$conditions =
 			is_string($sourceEncoding) &&
 			($sourceEncoding == SHOPGATE_LIBRARY_ENCODING) &&
@@ -1011,7 +1012,7 @@ abstract class ShopgateObject {
 		
 		return ($conditions)
 			? $string
-			: $this->convertEncoding($string, SHOPGATE_LIBRARY_ENCODING, $sourceEncoding);
+			: $this->convertEncoding($string, SHOPGATE_LIBRARY_ENCODING, $sourceEncoding, $useIconv);
 	}
 
 	/**
@@ -1020,12 +1021,13 @@ abstract class ShopgateObject {
 	 * @param string $string The string to decode.
 	 * @param string $destinationEncoding The desired encoding of the return value.
 	 * @param bool $force Set this true to enforce encoding even if the destination encoding is set to UTF-8.
+	 * @param bool $useIconv True to use iconv instead of mb_convert_encoding even if the mb library is present.
 	 * @return string The UTF-8 decoded string.
 	 */
-	public function stringFromUtf8($string, $destinationEncoding = 'ISO-8859-15', $force = false) {
+	public function stringFromUtf8($string, $destinationEncoding = 'ISO-8859-15', $force = false, $useIconv = false) {
 		return ($destinationEncoding == SHOPGATE_LIBRARY_ENCODING) && !$force
 				? $string
-				: $this->convertEncoding($string, $destinationEncoding, SHOPGATE_LIBRARY_ENCODING);
+				: $this->convertEncoding($string, $destinationEncoding, SHOPGATE_LIBRARY_ENCODING, $useIconv);
 	}
 	
 	/**
@@ -1043,10 +1045,11 @@ abstract class ShopgateObject {
 	 * @param string $string The string to decode.
 	 * @param string $destinationEncoding The desired encoding of the return value.
 	 * @param string|string[] $sourceEncoding The (possible) encoding(s) of $string.
+	 * @param bool $useIconv True to use iconv instead of mb_convert_encoding even if the mb library is present.
 	 * @return string The UTF-8 decoded string.
 	 */
-	protected function convertEncoding($string, $destinationEncoding, $sourceEncoding) {
-		if (function_exists('mb_convert_encoding')) {
+	protected function convertEncoding($string, $destinationEncoding, $sourceEncoding, $useIconv = false) {
+		if (function_exists('mb_convert_encoding') && !$useIconv) {
 			return mb_convert_encoding($string, $destinationEncoding, $sourceEncoding);
 		} else {
 			// I have no excuse for the following. Please forgive me.
@@ -2363,10 +2366,11 @@ abstract class ShopgateContainer extends ShopgateObject {
 	 *
 	 * @param String $sourceEncoding The source Encoding of the strings
 	 * @param bool $force Set this true to enforce encoding even if the source encoding is already UTF-8.
+	 * @param bool $useIconv True to use iconv instead of mb_convert_encoding even if the mb library is present.
 	 * @return ShopgateContainer The new object with utf-8 encoded values.
 	 */
-	public function utf8Encode($sourceEncoding = 'ISO-8859-15', $force = false) {
-		$visitor = new ShopgateContainerUtf8Visitor(ShopgateContainerUtf8Visitor::MODE_ENCODE, $sourceEncoding, $force);
+	public function utf8Encode($sourceEncoding = 'ISO-8859-15', $force = false, $useIconv = false) {
+		$visitor = new ShopgateContainerUtf8Visitor(ShopgateContainerUtf8Visitor::MODE_ENCODE, $sourceEncoding, $force, $useIconv);
 		$visitor->visitContainer($this);
 		return $visitor->getObject();
 	}
@@ -2376,10 +2380,11 @@ abstract class ShopgateContainer extends ShopgateObject {
 	 *
 	 * @param String $destinationEncoding The destination Encoding for the strings
 	 * @param bool $force Set this true to enforce encoding even if the destination encoding is set to UTF-8.
+	 * @param bool $useIconv True to use iconv instead of mb_convert_encoding even if the mb library is present.
 	 * @return ShopgateContainer The new object with utf-8 decoded values.
 	 */
-	public function utf8Decode($destinationEncoding = 'ISO-8859-15', $force = false) {
-		$visitor = new ShopgateContainerUtf8Visitor(ShopgateContainerUtf8Visitor::MODE_DECODE, $destinationEncoding, $force);
+	public function utf8Decode($destinationEncoding = 'ISO-8859-15', $force = false, $useIconv = false) {
+		$visitor = new ShopgateContainerUtf8Visitor(ShopgateContainerUtf8Visitor::MODE_DECODE, $destinationEncoding, $force, $useIconv);
 		$visitor->visitContainer($this);
 		return $visitor->getObject();
 	}
@@ -2456,14 +2461,16 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 	protected $mode;
 	protected $encoding;
 	protected $force;
+	protected $useIconv;
 
 	/**
 	 * @param int $mode Set mode to one of the two class constants. Default is MODE_DECODE.
 	 * @param string $encoding The source or destination encoding according to PHP's mb_convert_encoding().
 	 * @param bool $force Set this true to enforce encoding even if the source or destination encoding is UTF-8.
+	 * @param bool $useIconv True to use iconv instead of mb_convert_encoding even if the mb library is present.
 	 * @see http://www.php.net/manual/en/function.mb-convert-encoding.php
 	 */
-	public function __construct($mode = self::MODE_DECODE, $encoding = 'ISO-8859-15', $force = false) {
+	public function __construct($mode = self::MODE_DECODE, $encoding = 'ISO-8859-15', $force = false, $useIconv = false) {
 		switch ($mode) {
 			// default mode
 			default: $mode = self::MODE_DECODE;
@@ -2475,6 +2482,7 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 		}
 		$this->encoding = $encoding;
 		$this->force = $force;
+		$this->useIconv = $useIconv;
 	}
 
 	/**
@@ -2886,8 +2894,8 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 
 			// perform encoding / decoding on simple types
 			switch ($this->mode) {
-				case self::MODE_ENCODE: $value = $this->firstObject->stringToUtf8($value, $this->encoding, $this->force); break;
-				case self::MODE_DECODE: $value = $this->firstObject->stringFromUtf8($value, $this->encoding, $this->force); break;
+				case self::MODE_ENCODE: $value = $this->firstObject->stringToUtf8($value, $this->encoding, $this->force, $this->useIconv); break;
+				case self::MODE_DECODE: $value = $this->firstObject->stringFromUtf8($value, $this->encoding, $this->force, $this->useIconv); break;
 			}
 		}
 	}
