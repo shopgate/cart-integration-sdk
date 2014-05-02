@@ -2,7 +2,7 @@
 $buildConfig = array (
 	'major' => 2,
 	'minor' => 5,
-	'build' => 4,
+	'build' => 5,
 	'shopgate_library_path' => "",
 	'plugin_name' => "library",
 	'display_name' => "Shopgate Library 2.5.x",
@@ -15,18 +15,18 @@ $buildConfig = array (
 		),
 	),
 	'wiki' => array (
-			'changelog' => array (
-					'path' => "./",
-					'pages' => array (
-							'ShopgateLibrary' => array (
-									'title' => "Template:Shopgate_Library_Changelog",
-									'languages' => array (
-											'0' => "English",
-											'1' => "Deutsch",
-									),
-							),
+		'changelog' => array (
+			'path' => "./",
+			'pages' => array (
+				'ShopgateLibrary' => array (
+					'title' => "Template:Shopgate_Library_Changelog",
+					'languages' => array (
+						'0' => "English",
+						'1' => "Deutsch",
 					),
+				),
 			),
+		),
 	),
 	'zip_basedir' => "shopgate_library",
 	'exclude_files' => array (
