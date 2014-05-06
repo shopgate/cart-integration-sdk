@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.5.5'''
+* Encoding-Funktionen um Parameter zur Nutzung von iconv() anstatt mb_convert_encoding() erweitert
+
 '''Version 2.5.4'''
 * Die Methode Ping um einen zusätzlichen Informationskontainer erweitert ('shop_info')
 
@@ -236,6 +239,9 @@
 
 
 '''English'''
+
+'''Version 2.5.5'''
+* added a parameter to all encoding functions allowing to use iconv() instead of mb_convert_encoding()
 
 '''Version 2.5.4'''
 * extended the method ping with an additional information container ('shop_info')

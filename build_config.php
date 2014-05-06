@@ -2,7 +2,7 @@
 $buildConfig = array (
 	'major' => 2,
 	'minor' => 5,
-	'build' => 3,
+	'build' => 5,
 	'shopgate_library_path' => "",
 	'plugin_name' => "library",
 	'display_name' => "Shopgate Library 2.5.x",
@@ -12,6 +12,20 @@ $buildConfig = array (
 			'path' => "/classes/core.php",
 			'match' => "/define\(\'SHOPGATE_LIBRARY_VERSION\',(.+)\)/",
 			'replace' => "define('SHOPGATE_LIBRARY_VERSION', '{PLUGIN_VERSION}')",
+		),
+	),
+	'wiki' => array (
+		'changelog' => array (
+			'path' => "./",
+			'pages' => array (
+				'ShopgateLibrary' => array (
+					'title' => "Template:Shopgate_Library_Changelog",
+					'languages' => array (
+						'0' => "English",
+						'1' => "Deutsch",
+					),
+				),
+			),
 		),
 	),
 	'zip_basedir' => "shopgate_library",
