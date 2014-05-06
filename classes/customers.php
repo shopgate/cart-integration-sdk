@@ -27,9 +27,8 @@ class ShopgateCustomer extends ShopgateContainer {
 	
 	protected $customer_id;
 	protected $customer_number;
-	protected $customer_group;
-	protected $customer_group_id;
-	
+	protected $customer_groups;
+
 	protected $tax_class_key;
 	protected $tax_class_id;
 	
@@ -75,17 +74,10 @@ class ShopgateCustomer extends ShopgateContainer {
 	}
 	
 	/**
-	 * @param string $value
+	 * @param array $value
 	 */
-	public function setCustomerGroup($value) {
-		$this->customer_group = $value;
-	}
-	
-	/**
-	 * @param string $value
-	 */
-	public function setCustomerGroupId($value) {
-		$this->customer_group_id = $value;
+	public function setCustomerGroups($value) {
+		$this->customer_groups = $value;
 	}
 	
 	/**
@@ -238,17 +230,10 @@ class ShopgateCustomer extends ShopgateContainer {
 	}
 	
 	/**
-	 * @return string
+	 * @return array
 	 */
-	public function getCustomerGroup() {
-		return $this->customer_group;
-	}
-	
-	/**
-	 * @return string
-	 */
-	public function getCustomerGroupId() {
-		return $this->customer_group_id;
+	public function getCustomerGroups() {
+		return $this->customer_groups;
 	}
 	
 	/**
