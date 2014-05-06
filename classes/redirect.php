@@ -608,6 +608,8 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	
 	public function buildScriptShop($autoRedirect = true){
 		$this->redirectType = 'start';
+		
+		$this->setAdditionalHttpHeaders();
 		return $this->redirect($this->getShopUrl(), $autoRedirect);
 	}
 	
