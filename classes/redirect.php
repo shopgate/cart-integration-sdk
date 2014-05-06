@@ -585,6 +585,15 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 				'keywords' => $keywordsFromFile,
 			);
 	}
+	
+	/**
+	 * Sets additional http headers like Vary
+	 * 
+	 * @return void
+	 */
+	protected function setAdditionalHttpHeaders() {
+		header('Vary: User-Agent');
+	}
 
 	#############################
 	### mobile url generation ###
@@ -605,36 +614,48 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	public function buildScriptItem($itemNumber, $autoRedirect = true){
 		$this->itemNumber = $itemNumber;
 		$this->redirectType = 'item';
+
+		$this->setAdditionalHttpHeaders();
 		return $this->redirect($this->getItemUrl($itemNumber), $autoRedirect);
 	}
 	
 	public function buildScriptItemPublic($itemNumberPublic, $autoRedirect = true){
 		$this->itemNumberPublic = $itemNumberPublic;
 		$this->redirectType = 'itempublic';
+
+		$this->setAdditionalHttpHeaders();
 		return $this->redirect($this->getItemPublicUrl($itemNumberPublic), $autoRedirect);
 	}
 	
 	public function buildScriptCategory($categoryNumber, $autoRedirect = true){
 		$this->categoryNumber = $categoryNumber;
 		$this->redirectType = 'category';
+
+		$this->setAdditionalHttpHeaders();
 		return $this->redirect($this->getCategoryUrl($categoryNumber), $autoRedirect);
 	}
 	
 	public function buildScriptCms($cmsPage, $autoRedirect = true){
 		$this->cmsPage = $cmsPage;
 		$this->redirectType = 'cms';
+
+		$this->setAdditionalHttpHeaders();
 		return $this->redirect($this->getCmsUrl($cmsPage), $autoRedirect);
 	}
 	
 	public function buildScriptBrand($manufacturerName, $autoRedirect = true){
 		$this->manufacturerName = $manufacturerName;
 		$this->redirectType = 'brand';
+
+		$this->setAdditionalHttpHeaders();
 		return $this->redirect($this->getBrandUrl($manufacturerName), $autoRedirect);
 	}
 	
 	public function buildScriptSearch($searchQuery, $autoRedirect = true){
 		$this->searchQuery = $searchQuery;
 		$this->redirectType = 'search';
+
+		$this->setAdditionalHttpHeaders();
 		return $this->redirect($this->getSearchUrl($searchQuery), $autoRedirect);
 	}
 	
