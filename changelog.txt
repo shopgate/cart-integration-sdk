@@ -433,7 +433,7 @@
 * fixed timestamp error
 
 '''Version 2.1.9'''
-* extended authentification
+* extended authentication
 * disable log entries if cache is not writeable
 
 '''Version 2.1.8'''
