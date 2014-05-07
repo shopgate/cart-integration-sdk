@@ -38,7 +38,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	protected $merchantApi;
 
 	/**
-	 * @var ShopgateAuthentificationServiceInterface
+	 * @var ShopgateAuthenticationServiceInterface
 	 */
 	protected $authService;
 
@@ -63,7 +63,10 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 * @var ShopgatePluginApiResponse
 	 */
 	protected $response;
-	
+
+	/** @var bool */
+	protected $preventResponseOutput;
+
 	/**
 	 * @var string The trace ID of the incoming request.
 	 */
@@ -71,7 +74,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	
 	public function __construct(
 			ShopgateConfigInterface $config,
-			ShopgateAuthentificationServiceInterface $authService,
+			ShopgateAuthenticationServiceInterface $authService,
 			ShopgateMerchantApiInterface $merchantApi,
 			ShopgatePlugin $plugin,
 			ShopgatePluginApiResponse $response = null
@@ -82,49 +85,60 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$this->plugin = $plugin;
 		$this->response = $response;
 		$this->responseData = array();
+		$this->preventResponseOutput = false;
 		
 		// initialize action whitelist
 		$this->actionWhitelist = array(
-				'ping',
-				'cron',
-				'add_order',
-				'update_order',
-				'get_debug_info',
-				'get_items_csv',
-				'get_categories_csv',
-				'get_reviews_csv',
-				'get_pages_csv',
-				'get_media_csv',
-				'get_log_file',
-				'clear_log_file',
-				'clear_cache',
-				'check_cart',
-				'check_stock',
-				'redeem_coupons',
-				'get_customer',
-				'register_customer',
-				'get_settings',
-				'set_settings',
+			'ping',
+			'cron',
+			'add_order',
+			'update_order',
+			'get_debug_info',
+			'get_items_csv',
+			'get_categories_csv',
+			'get_reviews_csv',
+			'get_pages_csv',
+			'get_media_csv',
+			'get_log_file',
+			'clear_log_file',
+			'clear_cache',
+			'check_cart',
+			'check_stock',
+			'redeem_coupons',
+			'get_customer',
+			'register_customer',
+			'get_settings',
+			'set_settings',
+			'receive_authorization',
+		);
+		
+		// list of action that do not require authentication
+		$this->authlessActionWhitelist = array(
+			'receive_authorization',
 		);
 	}
 
 	
 	
 	public function handleRequest(array $data = array()) {
+		$errortext = '';
+		
 		// log incoming request
 		$this->log(ShopgateLogger::getInstance()->cleanParamsForLog($data), ShopgateLogger::LOGTYPE_ACCESS);
-
+		
 		// save the params
 		$this->params = $data;
-
+		
 		// save trace_id
 		if (isset($this->params['trace_id'])) {
 			$this->trace_id = $this->params['trace_id'];
 		}
 		
 		try {
-			$this->authService->checkAuthentification();
-
+			if(!in_array($this->params['action'], $this->authlessActionWhitelist)) {
+				$this->authService->checkAuthentication();
+			}
+			
 			// set error handler to Shopgate's handler if requested
 			if (!empty($this->params['use_errorhandler'])) {
 				set_error_handler('ShopgateErrorHandler');
@@ -162,22 +176,25 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			) {
 				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_UNKNOWN_SHOP_NUMBER, "{$this->params['shop_number']}");
 			}
-
+			
 			// check if an action to call has been passed, is known and enabled
 			if (empty($this->params['action'])) {
 				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ACTION, 'Passed parameters: '.var_export($this->params, true));
 			}
-
+			
 			// check if the action is white-listed
 			if (!in_array($this->params['action'], $this->actionWhitelist)) {
 				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_UNKNOWN_ACTION, "{$this->params['action']}");
 			}
-
+			
 			// check if action is enabled in the config
 			$configArray = $this->config->toArray();
 			if (empty($configArray['enable_'.$this->params['action']])) {
 				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_DISABLED_ACTION, "{$this->params['action']}");
 			}
+
+			// response output is active by default and can be deactivated to allow actions to print a custom output
+			$this->preventResponseOutput = false;
 			
 			// call the action
 			$action = $this->camelize($this->params['action']);
@@ -192,25 +209,27 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			$message  = "\n".get_class($e)."\n";
 			$message .= 'with code:   '.$e->getCode()."\n";
 			$message .= 'and message: \''.$e->getMessage()."'\n";
-
+			
 			// new ShopgateLibraryException to build proper error message and perform logging
 			$se = new ShopgateLibraryException($message);
 			$error = $se->getCode();
 			$errortext = $se->getMessage();
 		}
-
+		
 		// print out the response
 		if (!empty($error)) {
 			if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
 			$this->response->markError($error, $errortext);
 		}
 		
-		if (empty($this->response)) {
+		if (empty($this->response) && !$this->preventResponseOutput) {
 			trigger_error('No response object defined. This should _never_ happen.', E_USER_ERROR);
 		}
-
-		$this->response->setData($this->responseData);
-		$this->response->send();
+		
+		if(!$this->preventResponseOutput) {
+			$this->response->setData($this->responseData);
+			$this->response->send();
+		}
 		
 		// return true or false
 		return (empty($error));
@@ -927,6 +946,91 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		//if (!empty($this->params['external_customer_number'])) {
 	}
 
+	/**
+	 * Represents the "receive_authorization" action.
+	 *
+	 * @throws ShopgateLibraryException
+	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_receive_authorization
+	 */
+	protected function receiveAuthorization() {
+		if (empty($this->params['code'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_AUTHORIZATION_CODE);
+		}
+		
+		// request an access_token via curl, using the authorization code ($this->params['code'])
+		$tokenRequestUrl = 'http://www.rutkowski.localdev.cc/php/shopgate/oauth/token';
+		$calledScriptUrl = 'http'.(!empty($_SERVER['HTTPS']) ? 's' : '').'://'. trim($_SERVER['HTTP_HOST'], '/') . '/' . trim($_SERVER['SCRIPT_NAME'], '/');
+		$parameters = array(
+			'client_id' => 'ShopgatePlugin',
+			'grant_type' => 'authorization_code',
+			'redirect_uri' => $calledScriptUrl,
+			'code' => $this->params['code'],
+		);
+		
+		$curlOpt = array(
+			CURLOPT_HEADER => false,
+			CURLOPT_USERAGENT => 'ShopgatePlugin/'.(defined('SHOPGATE_PLUGIN_VERSION') ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin'),
+			CURLOPT_SSL_VERIFYPEER => false,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_HTTPHEADER => array(
+				'X-Shopgate-Library-Version: '.SHOPGATE_LIBRARY_VERSION,
+				'X-Shopgate-Plugin-Version: '.(defined('SHOPGATE_PLUGIN_VERSION') ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin'),
+			),
+			CURLOPT_TIMEOUT => 30, // Default timeout 30sec
+			CURLOPT_POST => true,
+		);
+		
+		// init cURL connection and send the request
+		$curl = curl_init($tokenRequestUrl);
+		curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($parameters));
+		curl_setopt_array($curl, $curlOpt);
+		$response = curl_exec($curl);
+		$info = curl_getinfo($curl);
+		curl_close($curl);
+		
+		// check the curl-result
+		if(!$response) {
+			// exception without logging - this might cause spamming your logs and we will know when our API is offline anyways
+			throw new ShopgateLibraryException(ShopgateLibraryException::SHOPGATE_OAUTH_NO_CONNECTION, null, false, false);
+		}
+		
+		if(empty($response)) {
+			// exception without logging - this might cause spamming your logs and we will know when our API is offline anyways
+			throw new ShopgateLibraryException(ShopgateLibraryException::SHOPGATE_OAUTH_INVALID_RESPONSE, 'Response: '.$response, true, false);
+		}
+		// convert returned json string
+		$decodedResponse = $this->jsonDecode($response, true);
+		
+		// check for valid access token
+		$accessToken = !empty($decodedResponse['access_token']) ? $decodedResponse['access_token'] : '';
+		if(empty($accessToken)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::SHOPGATE_OAUTH_MISSING_ACCESS_TOKEN);
+		}
+		
+		// Load shop related information and access data
+		$shopInfo = $this->merchantApi->getShopInfo(array(
+			'access_token' => $accessToken,
+		))->getData();
+		if(empty($shopInfo)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE, '"shop info" not set. Response: '.var_export($shopInfo, true));
+		}
+		if(empty($this->response)) {
+			$this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
+		}
+		
+		// TODO: save all shop data to config using the save method
+		
+		// TODO: show a "thank you" screen or let the plugin do that
+		
+		//		$returnVal = $this->plugin->METHODENAME_HERE(<params_here>);
+		//		if (is_array($orderData)) {
+		//			$this->responseData = $orderData;
+		//		} else {
+		//			$this->responseData['external_order_id'] = $orderData;
+		//			$this->responseData['external_order_number'] = null;
+		//		}
+		$this->preventResponseOutput = true;
+	}
 	
 	###############
 	### Helpers ###
@@ -1040,7 +1144,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 
 class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiInterface {
 	/**
-	 * @var ShopgateAuthentificationServiceInterface
+	 * @var ShopgateAuthenticationServiceInterface
 	 */
 	private $authService;
 	
@@ -1054,7 +1158,7 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 	 */
 	private $apiUrl;
 	
-	public function __construct(ShopgateAuthentificationServiceInterface $authService, $shopNumber, $apiUrl) {
+	public function __construct(ShopgateAuthenticationServiceInterface $authService, $shopNumber, $apiUrl) {
 		$this->authService = $authService;
 		$this->shopNumber = $shopNumber;
 		$this->apiUrl = $apiUrl;
@@ -1140,11 +1244,24 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 	######################################################################
 	
 	######################################################################
+	## Shop                                                             ##
+	######################################################################
+	public function getShopInfo($parameters) {
+		$request = array(
+			'action' => 'get_shop_info',
+		);
+		
+		$request = array_merge($request, $parameters);
+		
+		return $this->sendRequest($request);
+	}
+
+	######################################################################
 	## Orders                                                           ##
 	######################################################################
 	public function getOrders($parameters) {
 		$request = array(
-				'action' => 'get_orders',
+			'action' => 'get_orders',
 		);
 		
 		$request = array_merge($request, $parameters);
@@ -1397,7 +1514,7 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 	}
 }
 
-class ShopgateAuthentificationService extends ShopgateObject implements ShopgateAuthentificationServiceInterface {
+class ShopgateAuthenticationService extends ShopgateObject implements ShopgateAuthenticationServiceInterface {
 	private $customerNumber;
 	private $apiKey;
 	private $timestamp;
@@ -1437,7 +1554,7 @@ class ShopgateAuthentificationService extends ShopgateObject implements Shopgate
 		return $this->buildAuthTokenHeader('SPA');
 	}
 
-	public function checkAuthentification() {
+	public function checkAuthentication() {
 		if(defined('SHOPGATE_DEBUG') && SHOPGATE_DEBUG === 1) return;
 
 		if (empty($_SERVER[self::PHP_X_SHOPGATE_AUTH_USER]) || empty($_SERVER[self::PHP_X_SHOPGATE_AUTH_TOKEN])){
@@ -1463,7 +1580,7 @@ class ShopgateAuthentificationService extends ShopgateObject implements Shopgate
 			throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTICATION_FAILED, 'Request too old or too far in the future.');
 		}
 		
-		// create the authentification-password
+		// create the authentication-password
 		$generatedPassword = $this->buildCustomAuthToken('SPA', $customer_number, $timestamp, $this->apiKey);
 
 		// compare customer-number and auth-password and make sure, the API key was set in the configuration
@@ -1767,6 +1884,23 @@ interface ShopgatePluginApiInterface {
  */
 interface ShopgateMerchantApiInterface {
 	######################################################################
+	## Shop                                                             ##
+	######################################################################
+	/**
+	 * Represents the "get_shop_info" action.
+	 *
+	 * @param mixed[] $parameters
+	 *
+	 * @return ShopgateMerchantApiResponse
+	 *
+	 * @throws ShopgateLibraryException in case the connection can't be established
+	 * @throws ShopgateMerchantApiException in case the response is invalid or an error occured
+	 *
+	 * @see http://wiki.shopgate.com/Merchant_API_get_orders
+	 */
+	public function getShopInfo($parameters);
+
+	######################################################################
 	## Orders                                                           ##
 	######################################################################
 	/**
@@ -2043,7 +2177,7 @@ interface ShopgateMerchantApiInterface {
 }
 
 /**
- * This class provides methods to check and generate authentification strings.
+ * This class provides methods to check and generate authentication strings.
  *
  * It is used internally by the Shopgate Library to send requests or check incoming requests.
  *
@@ -2052,7 +2186,7 @@ interface ShopgateMerchantApiInterface {
  *
  * @author Shopgate GmbH, 35510 Butzbach, DE
  */
-interface ShopgateAuthentificationServiceInterface {
+interface ShopgateAuthenticationServiceInterface {
 	const HEADER_X_SHOPGATE_AUTH_USER  = 'X-Shopgate-Auth-User';
 	const HEADER_X_SHOPGATE_AUTH_TOKEN = 'X-Shopgate-Auth-Token';
 	const PHP_X_SHOPGATE_AUTH_USER  = 'HTTP_X_SHOPGATE_AUTH_USER';
@@ -2093,7 +2227,7 @@ interface ShopgateAuthentificationServiceInterface {
 	/**
 	 * @throws ShopgateLibraryException if authentication fails
 	 */
-	public function checkAuthentification();
+	public function checkAuthentication();
 
 	/**
 	 * Start a new Authentication session

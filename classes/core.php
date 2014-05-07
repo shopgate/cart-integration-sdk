@@ -201,7 +201,7 @@ class ShopgateLibraryException extends Exception {
 	const SHOPGATE_OAUTH_INVALID_RESPONSE = 116;
 	const SHOPGATE_OAUTH_MISSING_ACCESS_TOKEN = 117;
 	
-	// Authentification errors
+	// Authentication errors
 	const AUTHENTICATION_FAILED = 120;
 	
 	// File errors
@@ -315,7 +315,7 @@ class ShopgateLibraryException extends Exception {
 		self::CART_ITEM_REQUESTED_QUANTITY_NOT_AVAILABLE => 'less stock available than requested',
 		self::CART_ITEM_INPUT_VALIDATION_FAILED => 'cart item input validation failed',
 		
-		// Authentification errors
+		// Authentication errors
 		self::AUTHENTICATION_FAILED => 'authentication failed',
 		
 		self::MULTIPLE_ERRORS => '',
