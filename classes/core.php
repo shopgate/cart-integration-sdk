@@ -156,6 +156,7 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_API_NO_ORDER_NUMBER = 30;
 	const PLUGIN_API_NO_CART = 31;
 	const PLUGIN_API_NO_ITEMS = 32;
+	const PLUGIN_API_NO_AUTHORIZATION_CODE = 33;
 	const PLUGIN_API_NO_USER = 35;
 	const PLUGIN_API_NO_PASS = 36;
 	const PLUGIN_API_NO_USER_DATA = 37;
@@ -194,6 +195,11 @@ class ShopgateLibraryException extends Exception {
 	const MERCHANT_API_NO_CONNECTION = 100;
 	const MERCHANT_API_INVALID_RESPONSE = 101;
 	const MERCHANT_API_ERROR_RECEIVED = 102;
+	
+	// OAuth errors
+	const SHOPGATE_OAUTH_NO_CONNECTION = 115;
+	const SHOPGATE_OAUTH_INVALID_RESPONSE = 116;
+	const SHOPGATE_OAUTH_MISSING_ACCESS_TOKEN = 117;
 	
 	// Authentification errors
 	const AUTHENTICATION_FAILED = 120;
@@ -283,6 +289,11 @@ class ShopgateLibraryException extends Exception {
 		self::MERCHANT_API_NO_CONNECTION => 'no connection to server',
 		self::MERCHANT_API_INVALID_RESPONSE => 'error parsing response',
 		self::MERCHANT_API_ERROR_RECEIVED => 'error code received',
+
+		// OAuth errors
+		self::SHOPGATE_OAUTH_NO_CONNECTION => 'no connection to shopgate server',
+		self::SHOPGATE_OAUTH_INVALID_RESPONSE => 'error parsing response',
+		self::SHOPGATE_OAUTH_MISSING_ACCESS_TOKEN => 'no oauth access token received',
 		
 		// File errors
 		self::FILE_READ_WRITE_ERROR => 'error reading or writing file',
@@ -851,7 +862,7 @@ class ShopgateBuilder {
 		}
 		
 		// instantiate API stuff
-		$authService = new ShopgateAuthentificationService($this->config->getCustomerNumber(), $this->config->getApikey());
+		$authService = new ShopgateAuthenticationService($this->config->getCustomerNumber(), $this->config->getApikey());
 		$merchantApi = new ShopgateMerchantApi($authService, $this->config->getShopNumber(), $this->config->getApiUrl());
 		$pluginApi = new ShopgatePluginApi($this->config, $authService, $merchantApi, $plugin);
 		
@@ -871,7 +882,7 @@ class ShopgateBuilder {
 	 * @return ShopgateMerchantApi
 	 */
 	public function buildMerchantApi() {
-		$authService = new ShopgateAuthentificationService($this->config->getCustomerNumber(), $this->config->getApikey());
+		$authService = new ShopgateAuthenticationService($this->config->getCustomerNumber(), $this->config->getApikey());
 		$merchantApi = new ShopgateMerchantApi($authService, $this->config->getShopNumber(), $this->config->getApiUrl());
 		
 		return $merchantApi;
