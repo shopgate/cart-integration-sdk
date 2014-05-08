@@ -1018,7 +1018,10 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			$this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
 		}
 		
-		// TODO: save all shop data to config using the save method
+		// save all shop data to plugin-config using the plugins save method
+		$shopgateSettingsNew = array_merge($this->config->toArray(), $shopInfo);
+		$this->config->load($shopgateSettingsNew);
+		$this->config->save(array_keys($shopgateSettingsNew), true);
 		
 		// TODO: show a "thank you" screen or let the plugin do that
 		
