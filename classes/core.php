@@ -2424,6 +2424,7 @@ abstract class ShopgateContainer extends ShopgateObject {
 interface ShopgateContainerVisitor {
 	public function visitContainer(ShopgateContainer $c);
 	public function visitCustomer(ShopgateCustomer $c);
+	public function visitCustomerGroup(ShopgateCustomerGroup $c);
 	public function visitAddress(ShopgateAddress $a);
 	public function visitCart(ShopgateCart $c);
 	public function visitOrder(ShopgateOrder $o);
@@ -2510,10 +2511,26 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 		// iterate ShopgateAddress objects
 		$properties['custom_fields'] = $this->iterateObjectList($properties['custom_fields']);
 		$properties['addresses'] = $this->iterateObjectList($properties['addresses']);
+		$properties['customer_groups'] = $this->iterateObjectList($properties['customer_groups']);
 
 		// create new object with utf-8 en- / decoded data
 		try {
 			$this->object = new ShopgateCustomer($properties);
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+
+	public function visitCustomerGroup(ShopgateCustomerGroup $c) {
+		// get properties
+		$properties = $c->buildProperties();
+
+		// iterate the simple variables
+		$this->iterateSimpleProperties($properties);
+
+		// create new object with utf-8 en- / decoded data
+		try {
+			$this->object = new ShopgateCustomerGroup($properties);
 		} catch (ShopgateLibraryException $e) {
 			$this->object = null;
 		}
@@ -2987,6 +3004,18 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 		// iterate ShopgateAddress objects
 		$properties['custom_fields'] = $this->iterateObjectList($properties['custom_fields']);
 		$properties['addresses'] = $this->iterateObjectList($properties['addresses']);
+		$properties['customer_groups'] = $this->iterateObjectList($properties['customer_groups']);
+
+		// set last value to converted array
+		$this->array = $properties;
+	}
+
+	public function visitCustomerGroup(ShopgateCustomerGroup $c) {
+		// get properties
+		$properties = $c->buildProperties();
+
+		// iterate the simple variables
+		$properties = $this->iterateSimpleProperties($properties);
 
 		// set last value to converted array
 		$this->array = $properties;

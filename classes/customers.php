@@ -373,6 +373,57 @@ class ShopgateCustomer extends ShopgateContainer {
 	}
 }
 
+/**
+ * Class ShopgateCustomerGroup
+ */
+class ShopgateCustomerGroup extends ShopgateContainer {
+	protected $id;
+	protected $name;
+
+	##########
+	# Setter #
+	##########
+	
+	/**
+	 * @param int $value
+	 */
+	public function setId($value) {
+		$this->id = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setName($value) {
+		$this->name = $value;
+	}
+
+	##########
+	# Getter #
+	##########
+	
+	/**
+	 * @return int
+	 */
+	public function getId() {
+		return $this->id;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getName() {
+		return $this->name;
+	}
+
+	/**
+	 * @param ShopgateContainerVisitor $v
+	 */
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitCustomerGroup($this);
+	}
+}
+
 class ShopgateAddress extends ShopgateContainer {
 	const MALE = "m";
 	const FEMALE = "f";

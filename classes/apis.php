@@ -703,6 +703,18 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$customer = $this->plugin->getCustomer($this->params['user'], $this->params['pass']);
 		if (!is_object($customer) || !($customer instanceof ShopgateCustomer)) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT, 'Plugin Response: '.var_export($customer, true));
+		
+			foreach ($customer->getCustomerGroups() as $customerGroup) {
+				/** @var ShopgateCustomerGroup $customerGroup */
+				if (!is_object($customerGroup) || !($customerGroup instanceof ShopgateCustomerGroup)) {
+					throw new ShopgateLibraryException(
+						ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT,
+						'$customerGroup is of type: ' . is_object($customerGroup)
+							? get_class($customerGroup)
+							: gettype($customerGroup)
+					);
+				}
+			}
 		}
 
 		$customerData = $customer->toArray();
