@@ -1017,15 +1017,21 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		if(empty($this->response)) {
 			$this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
 		}
+
+		// remap "access_token" key to "oauth_access_token" if it exists
+		if(empty($shopInfo['oauth_access_token']) && !empty($shopInfo['access_token'])) {
+			$shopInfo['oauth_access_token'] = $shopInfo['access_token'];
+			unset($shopInfo['access_token']);
+		}
 		
+			$this->config->load($shopgateSettingsNew);
 		// save all shop data to plugin-config using the plugins save method
 		$shopgateSettingsNew = array_merge($this->config->toArray(), $shopInfo);
-		$this->config->load($shopgateSettingsNew);
 		$this->config->save(array_keys($shopgateSettingsNew), true);
 		
 		// TODO: show a "thank you" screen or let the plugin do that
 		
-		//		$returnVal = $this->plugin->METHODENAME_HERE(<params_here>);
+		//		$returnVal = $this->plugin->METHODNAME_HERE(<params_here>);
 		//		if (is_array($orderData)) {
 		//			$this->responseData = $orderData;
 		//		} else {
