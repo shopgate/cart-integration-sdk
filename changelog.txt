@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.5.6'''
+* Standardwert für "enable_default_redirect" in der ShopgateConfig Klasse geändert
+
 '''Version 2.5.5'''
 * Encoding-Funktionen um Parameter zur Nutzung von iconv() anstatt mb_convert_encoding() erweitert
 
@@ -239,6 +242,9 @@
 
 
 '''English'''
+
+'''Version 2.5.6'''
+* modifed default value for "enable_default_redirect" in class ShopgateConfig
 
 '''Version 2.5.5'''
 * added a parameter to all encoding functions allowing to use iconv() instead of mb_convert_encoding()

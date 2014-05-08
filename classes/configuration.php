@@ -387,7 +387,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->shop_is_active = 0;
 		$this->always_use_ssl = 0;
 		$this->enable_redirect_keyword_update = 0;
-		$this->enable_default_redirect = 1;
+		$this->enable_default_redirect = 0;
 		$this->encoding = 'UTF-8';
 		$this->export_convert_encoding = 1;
 		
