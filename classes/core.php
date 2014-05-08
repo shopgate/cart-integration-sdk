@@ -2113,6 +2113,16 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		
 		return array_merge($firstRow, $result);
 	}
+
+	/**
+	 * Callback method for the PluginAPI to be able to retrieve the correct URI directing to a specific PluginAPI-action
+	 * Override this method if the plugin does not have its own entry point (e.g. MVC-implementations that only provide a controller and controller-action as entry point)
+	 * @param $pluginApiActionName
+	 */
+	protected function getActionUrl($pluginApiActionName) {
+		$action = $this->camelize($pluginApiActionName);
+		return 'http'.(!empty($_SERVER['HTTPS']) ? 's' : '').'://'. trim($_SERVER['HTTP_HOST'], '/') . '/' . trim($_SERVER['SCRIPT_NAME'], '/');
+	}
 }
 
 interface ShopgateFileBufferInterface {

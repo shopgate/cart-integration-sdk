@@ -959,7 +959,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		
 		// request an access_token via curl, using the authorization code ($this->params['code'])
 		$tokenRequestUrl = 'http://www.rutkowski.localdev.cc/php/shopgate/oauth/token';
-		$calledScriptUrl = 'http'.(!empty($_SERVER['HTTPS']) ? 's' : '').'://'. trim($_SERVER['HTTP_HOST'], '/') . '/' . trim($_SERVER['SCRIPT_NAME'], '/');
+		$calledScriptUrl = $this->plugin->getActionUrl($this->params['action']);
 		$parameters = array(
 			'client_id' => 'ShopgatePlugin',
 			'grant_type' => 'authorization_code',
@@ -1004,7 +1004,14 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		// check for valid access token
 		$accessToken = !empty($decodedResponse['access_token']) ? $decodedResponse['access_token'] : '';
 		if(empty($accessToken)) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::SHOPGATE_OAUTH_MISSING_ACCESS_TOKEN);
+			throw new ShopgateLibraryException(
+				ShopgateLibraryException::SHOPGATE_OAUTH_MISSING_ACCESS_TOKEN,
+				((!empty($decodedResponse['error']) && !empty($decodedResponse['error_description']))
+					? ' [Shopgate authorization failure "'.$decodedResponse['error'].'": ' . $decodedResponse['error_description'] . ']'
+					: ' [Shopgate authorization failure: Unexpected server response]'
+				),
+				true
+			);
 		}
 		
 		// Load shop related information and access data
