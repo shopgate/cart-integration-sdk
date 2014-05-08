@@ -483,7 +483,6 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 						: gettype($cartCustomer)
 				);
 			}
-			$cartCustomerGroups = array();
 			foreach ($cartCustomer->getCustomerGroups() as $cartCustomerGroup) {
 				/** @var ShopgateCartCustomerGroup $cartCustomerGroup */
 				if (!is_object($cartCustomerGroup) || !($cartCustomerGroup instanceof ShopgateCartCustomerGroup)) {
