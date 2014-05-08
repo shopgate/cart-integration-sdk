@@ -473,8 +473,29 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			$responseData["currency"] = $cartData['currency'];
 		}
 		
-		if (!empty($cartData['customer'])) {
-			$responseData["customer"] = $cartData['customer'];
+		if (!empty($cartData['customer']) && $cartCustomer = $cartData['customer']) {
+			/** @var ShopgateCartCustomer $cartCustomer */
+			if (!is_object($cartCustomer) || !($cartCustomer instanceof ShopgateCartCustomer)) {
+				throw new ShopgateLibraryException(
+					ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT,
+					"$cartCustomer is of type: " . is_object($cartCustomer)
+						? get_class($cartCustomer)
+						: gettype($cartCustomer)
+				);
+			}
+			$cartCustomerGroups = array();
+			foreach ($cartCustomer->getCustomerGroups() as $cartCustomerGroup) {
+				/** @var ShopgateCartCustomerGroup $cartCustomerGroup */
+				if (!is_object($cartCustomerGroup) || !($cartCustomerGroup instanceof ShopgateCartCustomerGroup)) {
+					throw new ShopgateLibraryException(
+						ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT,
+						'$cartCustomerGroup is of type: ' . is_object($cartCustomerGroup)
+							? get_class($cartCustomerGroup)
+							: gettype($cartCustomerGroup)
+					);
+				}
+			}
+			$responseData["customer"] = $cartCustomer->toArray();
 		}
 		
 		$shippingMethods = array();
