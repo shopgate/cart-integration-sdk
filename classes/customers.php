@@ -420,7 +420,7 @@ class ShopgateCustomerGroup extends ShopgateContainer {
 	 * @param ShopgateContainerVisitor $v
 	 */
 	public function accept(ShopgateContainerVisitor $v) {
-		$v->visitCustomerGroup($this);
+		$v->visitPlainObject($this);
 	}
 }
 

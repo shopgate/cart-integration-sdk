@@ -2423,8 +2423,8 @@ abstract class ShopgateContainer extends ShopgateObject {
  */
 interface ShopgateContainerVisitor {
 	public function visitContainer(ShopgateContainer $c);
+	public function visitPlainObject(ShopgateContainer $c);
 	public function visitCustomer(ShopgateCustomer $c);
-	public function visitCustomerGroup(ShopgateCustomerGroup $c);
 	public function visitAddress(ShopgateAddress $a);
 	public function visitCart(ShopgateCart $c);
 	public function visitOrder(ShopgateOrder $o);
@@ -2447,7 +2447,6 @@ interface ShopgateContainerVisitor {
 	public function visitPaymentMethod(ShopgatePaymentMethod $c);
 	public function visitCartItem(ShopgateCartItem $c);
 	public function visitCartCustomer(ShopgateCartCustomer $c);
-	public function visitCartCustomerGroup(ShopgateCartCustomerGroup $c);
 }
 
 /**
@@ -2501,6 +2500,22 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 		$c->accept($this);
 	}
 
+	public function visitPlainObject(ShopgateContainer $c) {
+		// get properties
+		$properties = $c->buildProperties();
+
+		// iterate the simple variables
+		$this->iterateSimpleProperties($properties);
+
+		// create new object with utf-8 en- / decoded data
+		try {
+			$className = get_class($c);
+			$this->object = new $className($properties);
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+
 	public function visitCustomer(ShopgateCustomer $c) {
 		// get properties
 		$properties = $c->buildProperties();
@@ -2516,21 +2531,6 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 		// create new object with utf-8 en- / decoded data
 		try {
 			$this->object = new ShopgateCustomer($properties);
-		} catch (ShopgateLibraryException $e) {
-			$this->object = null;
-		}
-	}
-
-	public function visitCustomerGroup(ShopgateCustomerGroup $c) {
-		// get properties
-		$properties = $c->buildProperties();
-
-		// iterate the simple variables
-		$this->iterateSimpleProperties($properties);
-
-		// create new object with utf-8 en- / decoded data
-		try {
-			$this->object = new ShopgateCustomerGroup($properties);
 		} catch (ShopgateLibraryException $e) {
 			$this->object = null;
 		}
@@ -3010,7 +3010,7 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 		$this->array = $properties;
 	}
 
-	public function visitCustomerGroup(ShopgateCustomerGroup $c) {
+	public function visitPlainObject(ShopgateContainer $c) {
 		// get properties
 		$properties = $c->buildProperties();
 
@@ -3161,19 +3161,6 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 
 		// iterate the customer_groups
 		$properties['customer_groups'] = $this->iterateObjectList($properties['customer_groups']);
-
-		// set last value to converted array
-		$this->array = $properties;
-	}
-
-	/**
-	 * @param ShopgateCartCustomerGroup $c
-	 */
-	public function visitCartCustomerGroup(ShopgateCartCustomerGroup $c) {
-		$properties = $c->buildProperties();
-
-		// iterate the simple variables
-		$properties = $this->iterateSimpleProperties($properties);
 
 		// set last value to converted array
 		$this->array = $properties;

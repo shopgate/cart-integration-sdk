@@ -2717,6 +2717,6 @@ class ShopgateCartCustomerGroup extends ShopgateContainer {
 	 * @param ShopgateContainerVisitor $v
 	 */
 	public function accept(ShopgateContainerVisitor $v) {
-		$v->visitCartCustomerGroup($this);
+		$v->visitPlainObject($this);
 	}
 }
