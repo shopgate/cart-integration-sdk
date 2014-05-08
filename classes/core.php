@@ -2442,9 +2442,11 @@ interface ShopgateContainerVisitor {
 	public function visitItemOptionValue(ShopgateItemOptionValue $i);
 	public function visitItemInput(ShopgateItemInput $i);
 	public function visitConfig(ShopgateConfig $c);
-    public function visitShippingMethod(ShopgateShippingMethod $c);
-    public function visitPaymentMethod(ShopgatePaymentMethod $c);
-    public function visitCartItem(ShopgateCartItem $c);
+	public function visitShippingMethod(ShopgateShippingMethod $c);
+	public function visitPaymentMethod(ShopgatePaymentMethod $c);
+	public function visitCartItem(ShopgateCartItem $c);
+	public function visitCartCustomer(ShopgateCartCustomer $c);
+	public function visitCartCustomerGroup(ShopgateCartCustomerGroup $c);
 }
 
 /**
@@ -2879,6 +2881,43 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
         }
     }
 
+	/**
+	 * @param ShopgateCartCustomer $c
+	 */
+	public function visitCartCustomer(ShopgateCartCustomer $c) {
+		$properties = $c->buildProperties();
+
+		// iterate the simple variables
+		$this->iterateSimpleProperties($properties);
+
+		// iterate the customer_groups
+		$properties['customer_groups'] = $this->iterateObjectList($properties['customer_groups']);
+
+		// create new object with utf-8 en- / decoded data
+		try {
+			$this->object = new ShopgateCartCustomer($properties);
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+
+	/**
+	 * @param ShopgateCartCustomerGroup $c
+	 */
+	public function visitCartCustomerGroup(ShopgateCartCustomerGroup $c) {
+		$properties = $c->buildProperties();
+
+		// iterate the simple variables
+		$this->iterateSimpleProperties($properties);
+
+		// create new object with utf-8 en- / decoded data
+		try {
+			$this->object = new ShopgateCartCustomerGroup($properties);
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+
 	protected function iterateSimpleProperties(array &$properties) {
 		foreach ($properties as $key => &$value) {
 			if (empty($value)) continue;
@@ -3082,12 +3121,40 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
         $this->array = $properties;
     }
 
-    /**
-     * @param ShopgatePaymentMethod $c
-     */
-    public function visitPaymentMethod(ShopgatePaymentMethod $c)
-    {
-        $properties = $c->buildProperties();
+	/**
+	 * @param ShopgateCartCustomer $c
+	 */
+	public function visitCartCustomer(ShopgateCartCustomer $c) {
+		$properties = $c->buildProperties();
+
+		// iterate the simple variables
+		$properties = $this->iterateSimpleProperties($properties);
+
+		// iterate the customer_groups
+		$properties['customer_groups'] = $this->iterateObjectList($properties['customer_groups']);
+
+		// set last value to converted array
+		$this->array = $properties;
+	}
+
+	/**
+	 * @param ShopgateCartCustomerGroup $c
+	 */
+	public function visitCartCustomerGroup(ShopgateCartCustomerGroup $c) {
+		$properties = $c->buildProperties();
+
+		// iterate the simple variables
+		$properties = $this->iterateSimpleProperties($properties);
+
+		// set last value to converted array
+		$this->array = $properties;
+	}
+
+	/**
+	 * @param ShopgatePaymentMethod $c
+	 */
+	public function visitPaymentMethod(ShopgatePaymentMethod $c) {
+		$properties = $c->buildProperties();
 
         // iterate the simple variables
         $properties = $this->iterateSimpleProperties($properties);
