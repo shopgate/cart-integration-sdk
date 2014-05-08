@@ -2918,23 +2918,6 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 		}
 	}
 
-	/**
-	 * @param ShopgateCartCustomerGroup $c
-	 */
-	public function visitCartCustomerGroup(ShopgateCartCustomerGroup $c) {
-		$properties = $c->buildProperties();
-
-		// iterate the simple variables
-		$this->iterateSimpleProperties($properties);
-
-		// create new object with utf-8 en- / decoded data
-		try {
-			$this->object = new ShopgateCartCustomerGroup($properties);
-		} catch (ShopgateLibraryException $e) {
-			$this->object = null;
-		}
-	}
-
 	protected function iterateSimpleProperties(array &$properties) {
 		foreach ($properties as $key => &$value) {
 			if (empty($value)) continue;
