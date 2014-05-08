@@ -247,6 +247,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 */
 	protected $enable_set_settings;
 	
+	/**
+	 * @var bool
+	 */
+	protected $enable_receive_authorization;
+	
 	#######################################################
 	### Options regarding shop system specific settings ###
 	#######################################################
@@ -965,6 +970,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	public function getEnableSetSettings() {
 		return $this->enable_set_settings;
 	}
+
+	public function getEnableReceiveAuthorization() {
+		return $this->enable_receive_authorization;
+	}
 	
 	public function getCountry() {
 		return strtoupper($this->country);
@@ -1247,6 +1256,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	
 	public function setEnableSetSettings($value) {
 		$this->enable_set_settings = $value;
+	}
+	
+	public function setEnableeReceiveAuthorization($value) {
+		$this->enable_receive_authorization = $value;
 	}
 	
 	public function setCountry($value) {
