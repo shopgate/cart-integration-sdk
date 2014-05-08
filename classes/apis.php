@@ -1023,10 +1023,10 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			$shopInfo['oauth_access_token'] = $shopInfo['access_token'];
 			unset($shopInfo['access_token']);
 		}
-		
-			$this->config->load($shopgateSettingsNew);
-		// save all shop data to plugin-config using the plugins save method
 		$shopgateSettingsNew = array_merge($this->config->toArray(), $shopInfo);
+
+		// save all shop data to plugin-config using the plugins save method
+		$this->config->load($shopgateSettingsNew);
 		$this->config->save(array_keys($shopgateSettingsNew), true);
 		
 		// TODO: show a "thank you" screen or let the plugin do that
