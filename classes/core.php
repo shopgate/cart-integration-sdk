@@ -2423,6 +2423,7 @@ abstract class ShopgateContainer extends ShopgateObject {
  */
 interface ShopgateContainerVisitor {
 	public function visitContainer(ShopgateContainer $c);
+	public function visitPlainObject(ShopgateContainer $c);
 	public function visitCustomer(ShopgateCustomer $c);
 	public function visitAddress(ShopgateAddress $a);
 	public function visitCart(ShopgateCart $c);
@@ -2442,9 +2443,10 @@ interface ShopgateContainerVisitor {
 	public function visitItemOptionValue(ShopgateItemOptionValue $i);
 	public function visitItemInput(ShopgateItemInput $i);
 	public function visitConfig(ShopgateConfig $c);
-    public function visitShippingMethod(ShopgateShippingMethod $c);
-    public function visitPaymentMethod(ShopgatePaymentMethod $c);
-    public function visitCartItem(ShopgateCartItem $c);
+	public function visitShippingMethod(ShopgateShippingMethod $c);
+	public function visitPaymentMethod(ShopgatePaymentMethod $c);
+	public function visitCartItem(ShopgateCartItem $c);
+	public function visitCartCustomer(ShopgateCartCustomer $c);
 }
 
 /**
@@ -2498,6 +2500,22 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 		$c->accept($this);
 	}
 
+	public function visitPlainObject(ShopgateContainer $c) {
+		// get properties
+		$properties = $c->buildProperties();
+
+		// iterate the simple variables
+		$this->iterateSimpleProperties($properties);
+
+		// create new object with utf-8 en- / decoded data
+		try {
+			$className = get_class($c);
+			$this->object = new $className($properties);
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+
 	public function visitCustomer(ShopgateCustomer $c) {
 		// get properties
 		$properties = $c->buildProperties();
@@ -2508,6 +2526,7 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 		// iterate ShopgateAddress objects
 		$properties['custom_fields'] = $this->iterateObjectList($properties['custom_fields']);
 		$properties['addresses'] = $this->iterateObjectList($properties['addresses']);
+		$properties['customer_groups'] = $this->iterateObjectList($properties['customer_groups']);
 
 		// create new object with utf-8 en- / decoded data
 		try {
@@ -2879,6 +2898,26 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
         }
     }
 
+	/**
+	 * @param ShopgateCartCustomer $c
+	 */
+	public function visitCartCustomer(ShopgateCartCustomer $c) {
+		$properties = $c->buildProperties();
+
+		// iterate the simple variables
+		$this->iterateSimpleProperties($properties);
+
+		// iterate the customer_groups
+		$properties['customer_groups'] = $this->iterateObjectList($properties['customer_groups']);
+
+		// create new object with utf-8 en- / decoded data
+		try {
+			$this->object = new ShopgateCartCustomer($properties);
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+
 	protected function iterateSimpleProperties(array &$properties) {
 		foreach ($properties as $key => &$value) {
 			if (empty($value)) continue;
@@ -2948,6 +2987,18 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 		// iterate ShopgateAddress objects
 		$properties['custom_fields'] = $this->iterateObjectList($properties['custom_fields']);
 		$properties['addresses'] = $this->iterateObjectList($properties['addresses']);
+		$properties['customer_groups'] = $this->iterateObjectList($properties['customer_groups']);
+
+		// set last value to converted array
+		$this->array = $properties;
+	}
+
+	public function visitPlainObject(ShopgateContainer $c) {
+		// get properties
+		$properties = $c->buildProperties();
+
+		// iterate the simple variables
+		$properties = $this->iterateSimpleProperties($properties);
 
 		// set last value to converted array
 		$this->array = $properties;
@@ -3082,12 +3133,27 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
         $this->array = $properties;
     }
 
-    /**
-     * @param ShopgatePaymentMethod $c
-     */
-    public function visitPaymentMethod(ShopgatePaymentMethod $c)
-    {
-        $properties = $c->buildProperties();
+	/**
+	 * @param ShopgateCartCustomer $c
+	 */
+	public function visitCartCustomer(ShopgateCartCustomer $c) {
+		$properties = $c->buildProperties();
+
+		// iterate the simple variables
+		$properties = $this->iterateSimpleProperties($properties);
+
+		// iterate the customer_groups
+		$properties['customer_groups'] = $this->iterateObjectList($properties['customer_groups']);
+
+		// set last value to converted array
+		$this->array = $properties;
+	}
+
+	/**
+	 * @param ShopgatePaymentMethod $c
+	 */
+	public function visitPaymentMethod(ShopgatePaymentMethod $c) {
+		$properties = $c->buildProperties();
 
         // iterate the simple variables
         $properties = $this->iterateSimpleProperties($properties);

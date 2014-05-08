@@ -2,6 +2,8 @@
 
 '''Version 2.5.6'''
 * Standardwert für "enable_default_redirect" in der ShopgateConfig Klasse geändert
+* Einbinden von Vary Header für Seiten die auf mobile Endgeräte weitergeleitet werden können
+* Implementierung von ShopgateCartCustomer und ShopgateCartCustomerGroup für checkCart
 
 '''Version 2.5.5'''
 * Encoding-Funktionen um Parameter zur Nutzung von iconv() anstatt mb_convert_encoding() erweitert
@@ -245,6 +247,8 @@
 
 '''Version 2.5.6'''
 * modifed default value for "enable_default_redirect" in class ShopgateConfig
+* embedding of Vary Header for pages which are potentially redirected to mobile devices
+* implemented ShopgateCartCustomer and ShopgateCartCustomerGroup for checkCart
 
 '''Version 2.5.5'''
 * added a parameter to all encoding functions allowing to use iconv() instead of mb_convert_encoding()
