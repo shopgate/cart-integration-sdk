@@ -92,7 +92,7 @@ class ShopgateCustomer extends ShopgateContainer {
 	}
 	
 	/**
-	 * @param int $value
+	 * @param string $value
 	 * @deprecated
 	 */
 	public function setCustomerGroupId($value) {
@@ -100,7 +100,7 @@ class ShopgateCustomer extends ShopgateContainer {
 	}
 
 	/**
-	 * @param array $value
+	 * @param ShopgateCustomerGroup[] $value
 	 */
 	public function setCustomerGroups($value) {
 		$this->customer_groups = $value;
@@ -264,7 +264,7 @@ class ShopgateCustomer extends ShopgateContainer {
 	}
 
 	/**
-	 * @return int
+	 * @return string
 	 * @deprecated
 	 */
 	public function getCustomerGroupId() {
@@ -272,7 +272,7 @@ class ShopgateCustomer extends ShopgateContainer {
 	}
 
 	/**
-	 * @return array
+	 * @return ShopgateCustomerGroup[]
 	 */
 	public function getCustomerGroups() {
 		return $this->customer_groups;
@@ -385,7 +385,7 @@ class ShopgateCustomerGroup extends ShopgateContainer {
 	##########
 	
 	/**
-	 * @param int $value
+	 * @param string $value
 	 */
 	public function setId($value) {
 		$this->id = $value;
@@ -403,7 +403,7 @@ class ShopgateCustomerGroup extends ShopgateContainer {
 	##########
 	
 	/**
-	 * @return int
+	 * @return string
 	 */
 	public function getId() {
 		return $this->id;

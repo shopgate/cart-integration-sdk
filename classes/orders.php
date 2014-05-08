@@ -2653,7 +2653,7 @@ class ShopgateCartCustomer extends ShopgateContainer {
 	}
 	
 	/**
-	 * @param array $value
+	 * @param ShopgateCartCustomerGroup[] $value
 	 */
 	public function setCustomerGroups($value) {
 		$this->customer_groups = $value;
@@ -2671,7 +2671,7 @@ class ShopgateCartCustomer extends ShopgateContainer {
 	}
 	
 	/**
-	 * @return array $value
+	 * @return ShopgateCartCustomerGroup[]
 	 */
 	public function getCustomerGroups() {
 		return $this->customer_groups;
@@ -2696,7 +2696,7 @@ class ShopgateCartCustomerGroup extends ShopgateContainer {
 	##########
 	
 	/**
-	 * @param int $value
+	 * @param string $value
 	 */
 	public function setId($value) {
 		$this->id = $value;
@@ -2707,7 +2707,7 @@ class ShopgateCartCustomerGroup extends ShopgateContainer {
 	##########
 	
 	/**
-	 * @param int $value
+	 * @param string $value
 	 */
 	public function getId() {
 		return $this->id;
