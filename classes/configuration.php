@@ -69,6 +69,21 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	### basic shop information necessary for use of the APIs, mobile redirect etc. ###
 	##################################################################################
 	/**
+	 * @var int Shopgate oauth access token
+	 */
+	protected $access_token;
+	
+	/**
+	 * @var int Class name for the authentication service, that is used for the Shopgate PluginAPI
+	 */
+	protected $spa_auth_service_class_name;
+	
+	/**
+	 * @var int Class name for the authentication service, that is used for the Shopgate MerchantAPI
+	 */
+	protected $sma_auth_service_class_name;
+
+	/**
 	 * @var int Shopgate customer number (at least 5 digits)
 	 */
 	protected $customer_number;
@@ -97,6 +112,24 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @var string The server to use for Shopgate Merchant API communication ("live" or "pg" or "custom")
 	 */
 	protected $server;
+	
+	/**
+	 * @var string api url map for server and authentication service type
+	 */
+	protected $api_urls = array(
+		'live' => array(
+			ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_SHOPGATE	=> ShopgateConfigInterface::SHOPGATE_API_URL_LIVE,
+			ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_OAUTH		=> ShopgateConfigInterface::SHOPGATE_API_URL_LIVE_OAUTH,
+		),
+		'pg' => array(
+			ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_SHOPGATE	=> ShopgateConfigInterface::SHOPGATE_API_URL_PG,
+			ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_OAUTH		=> ShopgateConfigInterface::SHOPGATE_API_URL_PG_OAUTH,
+		),
+		'sl' => array(
+			ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_SHOPGATE	=> ShopgateConfigInterface::SHOPGATE_API_URL_SL,
+			ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_OAUTH		=> ShopgateConfigInterface::SHOPGATE_API_URL_SL_OAUTH,
+		),
+	);
 	
 	/**
 	 * @var string If $server is set to custom, Shopgate Merchant API calls will be made to this URL (empty or a string beginning with "http://" or "https://" followed by any number of non-whitespace characters)
@@ -829,6 +862,18 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->use_custom_error_handler;
 	}
 	
+	public function getSPAAuthServiceClassName() {
+		return $this->spa_auth_service_class_name;
+	}
+	
+	public function getSMAAuthServiceClassName() {
+		return $this->sma_auth_service_class_name;
+	}
+	
+	public function getAccessToken() {
+		return $this->access_token;
+	}
+	
 	public function getCustomerNumber() {
 		return $this->customer_number;
 	}
@@ -854,12 +899,14 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	}
 	
 	public function getApiUrl() {
-		switch ($this->getServer()) {
+		switch($this->server) {
 			default: // fall through to 'live'
-			case 'live':   return ShopgateConfigInterface::SHOPGATE_API_URL_LIVE;
-			case 'sl':     return ShopgateConfigInterface::SHOPGATE_API_URL_SL;
-			case 'pg':     return ShopgateConfigInterface::SHOPGATE_API_URL_PG;
-			case 'custom': return $this->api_url;
+			case 'live':
+			case 'sl':
+			case 'pg':
+				return $this->api_urls[$this->server][$this->sma_auth_service_class_name];
+			case 'custom':
+				return $this->api_url;
 		}
 	}
 	
@@ -1120,6 +1167,18 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	
 	public function setUseCustomErrorHandler($value) {
 		$this->use_custom_error_handler = $value;
+	}
+
+	public function setSPAAuthServiceClassName($value) {
+		$this->spa_auth_service_class_name = $value;
+	}
+
+	public function setSMAAuthServiceClassName($value) {
+		$this->sma_auth_service_class_name = $value;
+	}
+
+	public function setAccessToken($value) {
+		$this->access_token = $value;
 	}
 	
 	public function setCustomerNumber($value) {
@@ -2023,9 +2082,15 @@ class ShopgateConfigOld extends ShopgateObject {
  * @author Shopgate GmbH, 35510 Butzbach, DE
  */
 interface ShopgateConfigInterface {
-	const SHOPGATE_API_URL_LIVE = 'https://api.shopgate.com/merchant/';
-	const SHOPGATE_API_URL_SL   = 'https://api.shopgatesl.com/merchant/';
-	const SHOPGATE_API_URL_PG   = 'https://api.shopgatepg.com/merchant/';
+	const SHOPGATE_API_URL_LIVE			= 'https://api.shopgate.com/merchant/';
+	const SHOPGATE_API_URL_LIVE_OAUTH	= 'https://api.shopgate.com/merchant2/';
+	const SHOPGATE_API_URL_SL			= 'https://api.shopgatesl.com/merchant/';
+	const SHOPGATE_API_URL_SL_OAUTH		= 'https://api.shopgatesl.com/merchant2/';
+	const SHOPGATE_API_URL_PG			= 'https://api.shopgatepg.com/merchant/';
+	const SHOPGATE_API_URL_PG_OAUTH		= 'https://api.shopgatepg.com/merchant2/';
+	
+	const SHOPGATE_AUTH_SERVICE_CLASS_NAME_SHOPGATE	= 'ShopgateAuthenticationServiceShopgate';
+	const SHOPGATE_AUTH_SERVICE_CLASS_NAME_OAUTH	= 'ShopgateAuthenticationServiceOAuth';
 	
 	const SHOPGATE_FILE_PREFIX = 'shopgate_';
 	
@@ -2074,6 +2139,21 @@ interface ShopgateConfigInterface {
 	 */
 	public function getUseCustomErrorHandler();
 
+	/**
+	 * @return string $value Class name for the PluginAPI auth service
+	 */
+	public function getSPAAuthServiceClassName();
+
+	/**
+	 * @return string $value Class name for the MerchantAPI auth service
+	 */
+	public function getSMAAuthServiceClassName();
+
+	/**
+	 * @return string Access token
+	 */
+	public function getAccessToken();
+	
 	/**
 	 * @return int Shopgate customer number (at least 5 digits)
 	 */
@@ -2412,6 +2492,21 @@ interface ShopgateConfigInterface {
 	 * @param bool $value true to activate the Shopgate error handler.
 	 */
 	public function setUseCustomErrorHandler($value);
+
+	/**
+	 * @param string $value Class name for the PluginAPI authentication service
+	 */
+	public function setSPAAuthServiceClassName($value);
+
+	/**
+	 * @param string $value Class name for the MerchantAPI authentication service
+	 */
+	public function setSMAAuthServiceClassName($value);
+
+	/**
+	 * @param string $value Access token
+	 */
+	public function setAccessToken($value);
 
 	/**
 	 * @param int $value Shopgate customer number (at least 5 digits)
