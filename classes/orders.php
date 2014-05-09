@@ -1017,6 +1017,7 @@ class ShopgateOrder extends ShopgateCartBase {
 class ShopgateOrderItem extends ShopgateContainer {
 	protected $item_number;
 	protected $item_number_public;
+	protected $parent_item_number;
 	protected $order_item_id;
 
 	protected $quantity;
@@ -1064,6 +1065,10 @@ class ShopgateOrderItem extends ShopgateContainer {
 	 */
 	public function setItemNumberPublic($value) {
 		$this->item_number_public = $value;
+	}
+	
+	public function setParentItemNumber($value) {
+		$this->parent_item_number = $value;
 	}
 	
 	/**
@@ -1234,6 +1239,10 @@ class ShopgateOrderItem extends ShopgateContainer {
 	 */
 	public function getItemNumberPublic() {
 		return $this->item_number_public;
+	}
+	
+	public function getParentItemNumber() {
+		return $this->parent_item_number;
 	}
 	
 	/**
@@ -2611,5 +2620,92 @@ class ShopgateCartItem extends ShopgateContainer {
 	 */
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitCartItem($this);
+	}
+}
+
+/**
+ * Class ShopgateCartCustomer
+ */
+class ShopgateCartCustomer extends ShopgateContainer {
+	protected $customer_tax_class_key;
+	protected $customer_groups;
+
+	##########
+	# Setter #
+	##########
+	
+	/**
+	 * @param string $value
+	 */
+	public function setCustomerTaxClassKey($value) {
+		$this->customer_tax_class_key = $value;
+	}
+	
+	/**
+	 * @param ShopgateCartCustomerGroup[] $value
+	 */
+	public function setCustomerGroups($value) {
+		$this->customer_groups = $value;
+	}
+
+	##########
+	# Getter #
+	##########
+	
+	/**
+	 * @return string $value
+	 */
+	public function getCustomerTaxClassKey() {
+		return $this->customer_tax_class_key;
+	}
+	
+	/**
+	 * @return ShopgateCartCustomerGroup[]
+	 */
+	public function getCustomerGroups() {
+		return $this->customer_groups;
+	}
+
+	/**
+	 * @param ShopgateContainerVisitor $v
+	 */
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitCartCustomer($this);
+	}
+}
+
+/**
+ * Class ShopgateCartCustomerGroup
+ */
+class ShopgateCartCustomerGroup extends ShopgateContainer {
+	protected $id;
+
+	##########
+	# Setter #
+	##########
+	
+	/**
+	 * @param string $value
+	 */
+	public function setId($value) {
+		$this->id = $value;
+	}
+
+	##########
+	# Getter #
+	##########
+	
+	/**
+	 * @param string $value
+	 */
+	public function getId() {
+		return $this->id;
+	}
+
+	/**
+	 * @param ShopgateContainerVisitor $v
+	 */
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitPlainObject($this);
 	}
 }
