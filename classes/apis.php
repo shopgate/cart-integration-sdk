@@ -1032,7 +1032,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		
 		// Load shop related information and access data
 		$shopInfo = $this->merchantApi->getShopInfo(array(
-			'access_token' => $accessToken,
+			'access_token' => $accessToken, // override the access_token, stored in the config, since the actual one has been newly created
 		))->getData();
 		if(empty($shopInfo)) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE, '"shop info" not set. Response: '.var_export($shopInfo, true));
