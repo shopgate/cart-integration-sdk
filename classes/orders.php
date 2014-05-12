@@ -1562,6 +1562,7 @@ class ShopgateOrderItemAttribute extends ShopgateContainer {
 
 class ShopgateShippingInfo extends ShopgateContainer {
 	protected $name;
+	protected $display_name;
 	protected $description;
 	protected $amount;
 	protected $weight;
@@ -1585,6 +1586,21 @@ class ShopgateShippingInfo extends ShopgateContainer {
 	 */
 	public function setName($value) {
 		$this->name = $value;
+	}
+	
+	/**
+	 *
+	 * @return string
+	 */
+	public function getDisplayName() {
+		return $this->display_name;
+	}
+	/**
+	 *
+	 * @param string $value
+	 */
+	public function setDisplayName($value) {
+		$this->display_name = $value;
 	}
 	
 	/**
