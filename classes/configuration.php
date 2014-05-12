@@ -71,7 +71,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	/**
 	 * @var int Shopgate oauth access token
 	 */
-	protected $access_token;
+	protected $oauth_access_token;
 	
 //	/**
 //	 * @var int Class name for the authentication service, that is used for the Shopgate PluginAPI
@@ -870,8 +870,8 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->sma_auth_service_class_name;
 	}
 	
-	public function getAccessToken() {
-		return $this->access_token;
+	public function getOAuthAccessToken() {
+		return $this->oauth_access_token;
 	}
 	
 	public function getCustomerNumber() {
@@ -1177,8 +1177,8 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->sma_auth_service_class_name = $value;
 	}
 
-	public function setAccessToken($value) {
-		$this->access_token = $value;
+	public function setOAuthAccessToken($value) {
+		$this->oauth_access_token = $value;
 	}
 	
 	public function setCustomerNumber($value) {
@@ -2150,9 +2150,9 @@ interface ShopgateConfigInterface {
 	public function getSMAAuthServiceClassName();
 
 	/**
-	 * @return string Access token
+	 * @return string OAuth access token
 	 */
-	public function getAccessToken();
+	public function getOAuthAccessToken();
 	
 	/**
 	 * @return int Shopgate customer number (at least 5 digits)
@@ -2504,9 +2504,9 @@ interface ShopgateConfigInterface {
 	public function setSMAAuthServiceClassName($value);
 
 	/**
-	 * @param string $value Access token
+	 * @param string $value OAuth access token
 	 */
-	public function setAccessToken($value);
+	public function setOAuthAccessToken($value);
 
 	/**
 	 * @param int $value Shopgate customer number (at least 5 digits)
