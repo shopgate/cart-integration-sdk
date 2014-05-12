@@ -862,15 +862,15 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->use_custom_error_handler;
 	}
 	
-//	public function getSPAAuthServiceClassName() {
+//	public function getSpaAuthServiceClassName() {
 //		return $this->spa_auth_service_class_name;
 //	}
 	
-	public function getSMAAuthServiceClassName() {
+	public function getSmaAuthServiceClassName() {
 		return $this->sma_auth_service_class_name;
 	}
 	
-	public function getOAuthAccessToken() {
+	public function getOauthAccessToken() {
 		return $this->oauth_access_token;
 	}
 	
@@ -1169,15 +1169,15 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->use_custom_error_handler = $value;
 	}
 
-//	public function setSPAAuthServiceClassName($value) {
+//	public function setSpaAuthServiceClassName($value) {
 //		$this->spa_auth_service_class_name = $value;
 //	}
 
-	public function setSMAAuthServiceClassName($value) {
+	public function setSmaAuthServiceClassName($value) {
 		$this->sma_auth_service_class_name = $value;
 	}
 
-	public function setOAuthAccessToken($value) {
+	public function setOauthAccessToken($value) {
 		$this->oauth_access_token = $value;
 	}
 	
@@ -2142,17 +2142,17 @@ interface ShopgateConfigInterface {
 //	/**
 //	 * @return string $value Class name for the PluginAPI auth service
 //	 */
-//	public function getSPAAuthServiceClassName();
+//	public function getSpaAuthServiceClassName();
 
 	/**
 	 * @return string $value Class name for the MerchantAPI auth service
 	 */
-	public function getSMAAuthServiceClassName();
+	public function getSmaAuthServiceClassName();
 
 	/**
 	 * @return string OAuth access token
 	 */
-	public function getOAuthAccessToken();
+	public function getOauthAccessToken();
 	
 	/**
 	 * @return int Shopgate customer number (at least 5 digits)
@@ -2496,17 +2496,17 @@ interface ShopgateConfigInterface {
 //	/**
 //	 * @param string $value Class name for the PluginAPI authentication service
 //	 */
-//	public function setSPAAuthServiceClassName($value);
+//	public function setSpaAuthServiceClassName($value);
 
 	/**
 	 * @param string $value Class name for the MerchantAPI authentication service
 	 */
-	public function setSMAAuthServiceClassName($value);
+	public function setSmaAuthServiceClassName($value);
 
 	/**
 	 * @param string $value OAuth access token
 	 */
-	public function setOAuthAccessToken($value);
+	public function setOauthAccessToken($value);
 
 	/**
 	 * @param int $value Shopgate customer number (at least 5 digits)
