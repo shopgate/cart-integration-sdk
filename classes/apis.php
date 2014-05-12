@@ -1214,7 +1214,7 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 				'X-Shopgate-Plugin-Version: '.(defined('SHOPGATE_PLUGIN_VERSION') ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin'),
 		);
 		$opt[CURLOPT_HTTPHEADER] = !empty($opt[CURLOPT_HTTPHEADER])
-			? array_merge($opt[CURLOPT_HTTPHEADER], $this->authService->getAuthHttpHeaders())
+			? ($this->authService->getAuthHttpHeaders() + $opt[CURLOPT_HTTPHEADER])
 			: $this->authService->getAuthHttpHeaders()
 		;
 		$opt[CURLOPT_TIMEOUT] = 30; // Default timeout 30sec
@@ -1236,7 +1236,7 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 			$parameters['shop_number'] = $this->shopNumber;
 		}
 		$parameters = !empty($parameters)
-			? array_merge($parameters, $this->authService->getAuthPostParams())
+			? array_merge($this->authService->getAuthPostParams(), $parameters)
 			: $this->authService->getAuthPostParams()
 		;
 		$parameters['trace_id'] = 'spa-'.uniqid();
