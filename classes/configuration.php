@@ -73,10 +73,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 */
 	protected $access_token;
 	
-	/**
-	 * @var int Class name for the authentication service, that is used for the Shopgate PluginAPI
-	 */
-	protected $spa_auth_service_class_name;
+//	/**
+//	 * @var int Class name for the authentication service, that is used for the Shopgate PluginAPI
+//	 */
+//	protected $spa_auth_service_class_name;
 	
 	/**
 	 * @var int Class name for the authentication service, that is used for the Shopgate MerchantAPI
@@ -862,9 +862,9 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->use_custom_error_handler;
 	}
 	
-	public function getSPAAuthServiceClassName() {
-		return $this->spa_auth_service_class_name;
-	}
+//	public function getSPAAuthServiceClassName() {
+//		return $this->spa_auth_service_class_name;
+//	}
 	
 	public function getSMAAuthServiceClassName() {
 		return $this->sma_auth_service_class_name;
@@ -1169,9 +1169,9 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->use_custom_error_handler = $value;
 	}
 
-	public function setSPAAuthServiceClassName($value) {
-		$this->spa_auth_service_class_name = $value;
-	}
+//	public function setSPAAuthServiceClassName($value) {
+//		$this->spa_auth_service_class_name = $value;
+//	}
 
 	public function setSMAAuthServiceClassName($value) {
 		$this->sma_auth_service_class_name = $value;
@@ -2139,10 +2139,10 @@ interface ShopgateConfigInterface {
 	 */
 	public function getUseCustomErrorHandler();
 
-	/**
-	 * @return string $value Class name for the PluginAPI auth service
-	 */
-	public function getSPAAuthServiceClassName();
+//	/**
+//	 * @return string $value Class name for the PluginAPI auth service
+//	 */
+//	public function getSPAAuthServiceClassName();
 
 	/**
 	 * @return string $value Class name for the MerchantAPI auth service
@@ -2493,10 +2493,10 @@ interface ShopgateConfigInterface {
 	 */
 	public function setUseCustomErrorHandler($value);
 
-	/**
-	 * @param string $value Class name for the PluginAPI authentication service
-	 */
-	public function setSPAAuthServiceClassName($value);
+//	/**
+//	 * @param string $value Class name for the PluginAPI authentication service
+//	 */
+//	public function setSPAAuthServiceClassName($value);
 
 	/**
 	 * @param string $value Class name for the MerchantAPI authentication service
