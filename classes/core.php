@@ -860,11 +860,35 @@ class ShopgateBuilder {
 		if ($this->config->getUseCustomErrorHandler()) {
 			set_error_handler('ShopgateErrorHandler');
 		}
-		
+
 		// instantiate API stuff
-		$authService = new ShopgateAuthenticationService($this->config->getCustomerNumber(), $this->config->getApikey());
-		$merchantApi = new ShopgateMerchantApi($authService, $this->config->getShopNumber(), $this->config->getApiUrl());
-		$pluginApi = new ShopgatePluginApi($this->config, $authService, $merchantApi, $plugin);
+		// -> PluginAPI auth service
+		switch($spaAuthServiceClassName = $this->config->getSPAAuthServiceClassName) {
+			case ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_SHOPGATE:
+				$spaAuthService = new $spaAuthServiceClassName($this->config->getCustomerNumber(), $this->config->getApikey());
+				break;
+			case ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_OAUTH:
+				$spaAuthService = new $spaAuthServiceClassName($this->config->getAccessToken());
+				break;
+			default:
+				// undefined auth service
+				break;
+		}
+		// -> MerchantAPI auth service
+		switch($smaAuthServiceClassName = $this->config->getSMAAuthServiceClassName) {
+			case ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_SHOPGATE:
+				$smaAuthService = new $smaAuthServiceClassName($this->config->getCustomerNumber(), $this->config->getApikey());
+				$merchantApi = new ShopgateMerchantApi($smaAuthService, $this->config->getApiUrl(), $this->config->getShopNumber());
+				break;
+			case ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_OAUTH:
+				$smaAuthService = new $smaAuthServiceClassName($this->config->getAccessToken());
+				$merchantApi = new ShopgateMerchantApi($smaAuthService, $this->config->getApiUrl());
+				break;
+			default:
+				// undefined auth service
+				break;
+		}
+		$pluginApi = new ShopgatePluginApi($this->config, $spaAuthService, $merchantApi, $plugin);
 		
 		// instantiate export file buffer
 		$fileBuffer = new ShopgateFileBuffer($this->config->getExportBufferCapacity(), $this->config->getExportConvertEncoding(), $this->config->getEncoding());
@@ -882,8 +906,20 @@ class ShopgateBuilder {
 	 * @return ShopgateMerchantApi
 	 */
 	public function buildMerchantApi() {
-		$authService = new ShopgateAuthenticationService($this->config->getCustomerNumber(), $this->config->getApikey());
-		$merchantApi = new ShopgateMerchantApi($authService, $this->config->getShopNumber(), $this->config->getApiUrl());
+		$merchantApi = null;
+		switch($smaAuthServiceClassName = $this->config->getSMAAuthServiceClassName) {
+			case ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_SHOPGATE:
+				$smaAuthService = new $smaAuthServiceClassName($this->config->getCustomerNumber(), $this->config->getApikey());
+				$merchantApi = new ShopgateMerchantApi($smaAuthService, $this->config->getApiUrl(), $this->config->getShopNumber());
+				break;
+			case ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_OAUTH:
+				$smaAuthService = new $smaAuthServiceClassName($this->config->getAccessToken());
+				$merchantApi = new ShopgateMerchantApi($smaAuthService, $this->config->getApiUrl());
+				break;
+			default:
+				// undefined auth service
+				break;
+		}
 		
 		return $merchantApi;
 	}
