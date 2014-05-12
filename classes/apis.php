@@ -947,26 +947,43 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	}
 
 	/**
-	 * Represents the "receive_authorization" action.
+	 * Represents the "receive_authorization" action (OAUTH ONLY!).
+	 * Please make sure to allow calls to this action only for admin users with proper rights (only call inside of the
+	 * admin area or check for admin-login set when providing an action from outside of the admin area)
+	 * @see ShopgatePlugin::checkAdminLogin method
 	 *
 	 * @throws ShopgateLibraryException
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_receive_authorization
 	 */
 	protected function receiveAuthorization() {
-		if (empty($this->params['code'])) {
+		if(!$this->plugin->checkAdminLogin()) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_ADMIN_LOGIN_REQUIRED, '=> "receive_authorization" action can only be launched by administrators', true);
+		}
+		
+		if($this->config->getSMAAuthServiceClassName() != ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_OAUTH) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_INVALID_ACTION, '=> "receive_authorization" action can only be called for plugins with SMA-AuthService set to "OAuth" type', true);
+		}
+		
+		if(empty($this->params['code'])) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_AUTHORIZATION_CODE);
 		}
 		
 		// request an access_token via curl, using the authorization code ($this->params['code'])
-		$tokenRequestUrl = 'http://www.rutkowski.localdev.cc/php/shopgate/oauth/token';
+		// -> get the token request URL by parsing the merchant api url, extract the host and append the fixed controller-/action- combination
+		$merchantApiUrl = $this->config->getApiUrl();
+		$requestServerHost = explode('/api/', $merchantApiUrl); // defaults to <host>/api[controller]/<merchant-action-name> (e.g. https://api.shopgate.com/api/merchant2/)
+		$requestServerHost = trim($requestServerHost[0], '/');
+		$tokenRequestUrl = $requestServerHost . '/oauth/token';
+		// -> get the url to the actual action to be processed (needs to stay the same to keep the access token valid)
 		$calledScriptUrl = $this->plugin->getActionUrl($this->params['action']);
+		// -> setup request POST parameters
 		$parameters = array(
 			'client_id' => 'ShopgatePlugin',
 			'grant_type' => 'authorization_code',
 			'redirect_uri' => $calledScriptUrl,
 			'code' => $this->params['code'],
 		);
-		
+		// -> setup request headers
 		$curlOpt = array(
 			CURLOPT_HEADER => false,
 			CURLOPT_USERAGENT => 'ShopgatePlugin/'.(defined('SHOPGATE_PLUGIN_VERSION') ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin'),
@@ -979,8 +996,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			CURLOPT_TIMEOUT => 30, // Default timeout 30sec
 			CURLOPT_POST => true,
 		);
-		
-		// init cURL connection and send the request
+		// -> init cURL connection and send the request
 		$curl = curl_init($tokenRequestUrl);
 		curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($parameters));
 		curl_setopt_array($curl, $curlOpt);

@@ -153,6 +153,9 @@ class ShopgateLibraryException extends Exception {
 	
 	const PLUGIN_API_UNKNOWN_SHOP_NUMBER = 24;
 	
+	const PLUGIN_API_INVALID_ACTION = 25;
+	const PLUGIN_API_ADMIN_LOGIN_REQUIRED = 26;
+	
 	const PLUGIN_API_NO_ORDER_NUMBER = 30;
 	const PLUGIN_API_NO_CART = 31;
 	const PLUGIN_API_NO_ITEMS = 32;
@@ -164,7 +167,7 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_API_CRON_NO_JOBS = 40;
 	const PLUGIN_API_CRON_NO_JOB_NAME = 41;
 	const PLUGIN_API_NO_SHOPGATE_SETTINGS = 50;
-
+	
 	// Plugin errors
 	const PLUGIN_DUPLICATE_ORDER = 60;
 	const PLUGIN_ORDER_NOT_FOUND = 61;
@@ -247,6 +250,9 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_API_WRONG_RESPONSE_FORMAT => 'wrong response format',
 		
 		self::PLUGIN_API_UNKNOWN_SHOP_NUMBER => 'unknown shop number received',
+		
+		self::PLUGIN_API_INVALID_ACTION => 'invalid action call',
+		self::PLUGIN_API_ADMIN_LOGIN_REQUIRED => 'the requested action needs the user possess shop backend access rights',
 		
 		self::PLUGIN_API_NO_ORDER_NUMBER => 'parameter "order_number" missing',
 		self::PLUGIN_API_NO_CART => 'parameter "cart" missing',
@@ -860,7 +866,7 @@ class ShopgateBuilder {
 		if ($this->config->getUseCustomErrorHandler()) {
 			set_error_handler('ShopgateErrorHandler');
 		}
-
+		
 		// instantiate API stuff
 		// -> PluginAPI auth service (actually the plugin API supports only )
 		$spaAuthServiceClassName = ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_SHOPGATE;
@@ -1882,6 +1888,16 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 */
 	public function getActionUrl($pluginApiActionName) {
 		return 'http'.(!empty($_SERVER['HTTPS']) ? 's' : '').'://'. trim($_SERVER['HTTP_HOST'], '/') . '/' . trim($_SERVER['SCRIPT_NAME'], '/');
+	}
+
+	/**
+	 * Callback method for the PluginAPI to be able to tell the calling pluginAPI-Action to check whether the (logged in) user is an admin or not
+	 * Return true if the user has admin access rights, or if this check is not necessary, return false otherwise
+	 * 
+	 * @return bool The status of an admin logged in or not
+	 */
+	public function checkAdminLogin() {
+		return false;
 	}
 
 	/**
