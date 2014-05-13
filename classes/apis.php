@@ -109,13 +109,13 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			'register_customer',
 			'get_settings',
 			'set_settings',
-			'receive_authorization',
+//			'receive_authorization',
 		);
 		
-		// list of action that do not require authentication
-		$this->authlessActionWhitelist = array(
-			'receive_authorization',
-		);
+//		// list of action that do not require authentication
+//		$this->authlessActionWhitelist = array(
+//			'receive_authorization',
+//		);
 	}
 
 	
@@ -956,114 +956,111 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_receive_authorization
 	 */
 	protected function receiveAuthorization() {
-		if(!$this->plugin->checkAdminLogin()) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_ADMIN_LOGIN_REQUIRED, '=> "receive_authorization" action can only be launched by administrators', true);
-		}
-		
-		if($this->config->getSmaAuthServiceClassName() != ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_OAUTH) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_INVALID_ACTION, '=> "receive_authorization" action can only be called for plugins with SMA-AuthService set to "OAuth" type', true);
-		}
-		
-		if(empty($this->params['code'])) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_AUTHORIZATION_CODE);
-		}
-		
-		// request an access_token via curl, using the authorization code ($this->params['code'])
-		// -> get the token request URL by parsing the merchant api url, extract the host and append the fixed controller-/action- combination
-		$merchantApiUrl = $this->config->getApiUrl();
-		$requestServerHost = explode('/api/', $merchantApiUrl); // defaults to <host>/api[controller]/<merchant-action-name> (e.g. https://api.shopgate.com/api/merchant2/)
-		$requestServerHost = trim($requestServerHost[0], '/');
-		$tokenRequestUrl = $requestServerHost . '/oauth/token';
-		// -> get the url to the actual action to be processed (needs to stay the same to keep the access token valid)
-		$calledScriptUrl = $this->plugin->getActionUrl($this->params['action']);
-		// -> setup request POST parameters
-		$parameters = array(
-			'client_id' => 'ShopgatePlugin',
-			'grant_type' => 'authorization_code',
-			'redirect_uri' => $calledScriptUrl,
-			'code' => $this->params['code'],
-		);
-		// -> setup request headers
-		$curlOpt = array(
-			CURLOPT_HEADER => false,
-			CURLOPT_USERAGENT => 'ShopgatePlugin/'.(defined('SHOPGATE_PLUGIN_VERSION') ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin'),
-			CURLOPT_SSL_VERIFYPEER => false,
-			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_HTTPHEADER => array(
-				'X-Shopgate-Library-Version: '.SHOPGATE_LIBRARY_VERSION,
-				'X-Shopgate-Plugin-Version: '.(defined('SHOPGATE_PLUGIN_VERSION') ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin'),
-			),
-			CURLOPT_TIMEOUT => 30, // Default timeout 30sec
-			CURLOPT_POST => true,
-		);
-		// -> init cURL connection and send the request
-		$curl = curl_init($tokenRequestUrl);
-		curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($parameters));
-		curl_setopt_array($curl, $curlOpt);
-		$response = curl_exec($curl);
-		$info = curl_getinfo($curl);
-		curl_close($curl);
-		
-		// check the curl-result
-		if(!$response) {
-			// exception without logging - this might cause spamming your logs and we will know when our API is offline anyways
-			throw new ShopgateLibraryException(ShopgateLibraryException::SHOPGATE_OAUTH_NO_CONNECTION, null, false, false);
-		}
-		
-		if(empty($response)) {
-			// exception without logging - this might cause spamming your logs and we will know when our API is offline anyways
-			throw new ShopgateLibraryException(ShopgateLibraryException::SHOPGATE_OAUTH_INVALID_RESPONSE, 'Response: '.$response, true, false);
-		}
-		// convert returned json string
-		$decodedResponse = $this->jsonDecode($response, true);
-		
-		// check for valid access token
-		$accessToken = !empty($decodedResponse['access_token']) ? $decodedResponse['access_token'] : '';
-		if(empty($accessToken)) {
-			throw new ShopgateLibraryException(
-				ShopgateLibraryException::SHOPGATE_OAUTH_MISSING_ACCESS_TOKEN,
-				((!empty($decodedResponse['error']) && !empty($decodedResponse['error_description']))
-					? ' [Shopgate authorization failure "'.$decodedResponse['error'].'": ' . $decodedResponse['error_description'] . ']'
-					: ' [Shopgate authorization failure: Unexpected server response]'
-				),
-				true
-			);
-		}
-		
-		// Load shop related information and access data
-		$shopInfo = $this->merchantApi->getShopInfo(array(
-			'access_token' => $accessToken, // override the access_token, stored in the config, since the actual one has been newly created
-		))->getData();
-		if(empty($shopInfo)) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE, '"shop info" not set. Response: '.var_export($shopInfo, true));
-		}
-		if(empty($this->response)) {
-			$this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
-		}
-
-		// remap "access_token" key to "oauth_access_token" if it exists
-		if(empty($shopInfo['oauth_access_token']) && !empty($shopInfo['access_token'])) {
-			$shopInfo['oauth_access_token'] = $shopInfo['access_token'];
-			unset($shopInfo['access_token']);
-		}
-		$shopgateSettingsNew = array_merge($this->config->toArray(), $shopInfo);
-
-		// save all shop data to plugin-config using the plugins save method
-		$this->config->load($shopgateSettingsNew);
-		$this->config->save(array_keys($shopgateSettingsNew), true);
-		
-		// TODO: show a "thank you" screen or let the plugin do that
-		
-		//		$returnVal = $this->plugin->METHODNAME_HERE(<params_here>);
-		//		if (is_array($orderData)) {
-		//			$this->responseData = $orderData;
-		//		} else {
-		//			$this->responseData['external_order_id'] = $orderData;
-		//			$this->responseData['external_order_number'] = null;
-		//		}
-		$this->preventResponseOutput = true;
+//		if($this->config->getSmaAuthServiceClassName() != ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_OAUTH) {
+//			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_INVALID_ACTION, '=> "receive_authorization" action can only be called for plugins with SMA-AuthService set to "OAuth" type', true);
+//		}
+//		
+//		if(empty($this->params['code'])) {
+//			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_AUTHORIZATION_CODE);
+//		}
+//		
+//		// request an access_token via curl, using the authorization code ($this->params['code'])
+//		// -> get the token request URL by parsing the merchant api url, extract the host and append the fixed controller-/action- combination
+//		$merchantApiUrl = $this->config->getApiUrl();
+//		if($this->config->getServer() == 'custom') {
+//			// defaults to https://api.<hostname>/api[controller]/<merchant-action-name> for custom server
+//			$requestServerHost = explode('/api/', $merchantApiUrl);
+//			$requestServerHost = trim($requestServerHost[0], '/');
+//		} else {
+//			// defaults to https://api.<hostname>/<merchant-action-name> for live, pg and sl server
+//			$matches = array();
+//			preg_match('/^(?P<protocol>http(s)?:\/\/)api.(?P<hostname>[^\/]+)\/merchant.*$/', $merchantApiUrl, $matches);
+//			$protocol = (!empty($matches['protocol']) ? $matches['protocol'] : 'https://');
+//			$hostname = (!empty($matches['hostname']) ? $matches['hostname'] : 'shopgate.com');
+//			$requestServerHost = $protocol.'admin.'.$hostname;
+//		}
+//		$tokenRequestUrl = $requestServerHost . '/oauth/token';
+//		// -> get the url to the actual action to be processed (needs to stay the same to keep the access token valid)
+//		$calledScriptUrl = $this->plugin->getActionUrl($this->params['action']);
+//		// -> setup request POST parameters
+//		$parameters = array(
+//			'client_id' => 'ShopgatePlugin',
+//			'grant_type' => 'authorization_code',
+//			'redirect_uri' => $calledScriptUrl,
+//			'code' => $this->params['code'],
+//		);
+//		// -> setup request headers
+//		$curlOpt = array(
+//			CURLOPT_HEADER => false,
+//			CURLOPT_USERAGENT => 'ShopgatePlugin/'.(defined('SHOPGATE_PLUGIN_VERSION') ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin'),
+//			CURLOPT_SSL_VERIFYPEER => false,
+//			CURLOPT_RETURNTRANSFER => true,
+//			CURLOPT_HTTPHEADER => array(
+//				'X-Shopgate-Library-Version: '.SHOPGATE_LIBRARY_VERSION,
+//				'X-Shopgate-Plugin-Version: '.(defined('SHOPGATE_PLUGIN_VERSION') ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin'),
+//			),
+//			CURLOPT_TIMEOUT => 30, // Default timeout 30sec
+//			CURLOPT_POST => true,
+//		);
+//		// -> init cURL connection and send the request
+//		$curl = curl_init($tokenRequestUrl);
+//		curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($parameters));
+//		curl_setopt_array($curl, $curlOpt);
+//		$response = curl_exec($curl);
+//		$info = curl_getinfo($curl);
+//		curl_close($curl);
+//		
+//		// check the curl-result
+//		if(!$response) {
+//			// exception without logging - this might cause spamming your logs and we will know when our API is offline anyways
+//			throw new ShopgateLibraryException(ShopgateLibraryException::SHOPGATE_OAUTH_NO_CONNECTION, null, false, false);
+//		}
+//		
+//		if(empty($response)) {
+//			// exception without logging - this might cause spamming your logs and we will know when our API is offline anyways
+//			throw new ShopgateLibraryException(ShopgateLibraryException::SHOPGATE_OAUTH_INVALID_RESPONSE, 'Response: '.$response, true, false);
+//		}
+//		// convert returned json string
+//		$decodedResponse = $this->jsonDecode($response, true);
+//		
+//		// check for valid access token
+//		$accessToken = !empty($decodedResponse['access_token']) ? $decodedResponse['access_token'] : '';
+//		if(empty($accessToken)) {
+//			throw new ShopgateLibraryException(
+//				ShopgateLibraryException::SHOPGATE_OAUTH_MISSING_ACCESS_TOKEN,
+//				((!empty($decodedResponse['error']) && !empty($decodedResponse['error_description']))
+//					? ' [Shopgate authorization failure "'.$decodedResponse['error'].'": ' . $decodedResponse['error_description'] . ']'
+//					: ' [Shopgate authorization failure: Unexpected server response]'
+//				),
+//				true
+//			);
+//		}
+//		
+//		// Load shop related information and access data
+//		$shopInfo = $this->merchantApi->getShopInfo(array(
+//			'access_token' => $accessToken, // override the access_token, stored in the config, since the actual one has been newly created
+//		))->getData();
+//		if(empty($shopInfo)) {
+//			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE, '"shop info" not set. Response: '.var_export($shopInfo, true));
+//		}
+//		if(empty($this->response)) {
+//			$this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
+//		}
+//		
+//		$shopgateSettingsNew = array_merge($this->config->toArray(), $shopInfo);
+//		
+//		// save all shop data to plugin-config using the configs save method
+//		$this->config->load($shopgateSettingsNew);
+//		$this->config->save(array_keys($shopgateSettingsNew), true);
+//		
+//		$this->responseData = null;
+//		$this->preventResponseOutput = true;
+		// TODO: where to go from now
+//		$this->plugin->receiveAuthorization();
 	}
+
 	
+
 	###############
 	### Helpers ###
 	###############
@@ -1285,7 +1282,7 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 	######################################################################
 	## Shop                                                             ##
 	######################################################################
-	public function getShopInfo($parameters) {
+	public function getShopInfo($parameters = array()) {
 		$request = array(
 			'action' => 'get_shop_info',
 		);
@@ -1669,8 +1666,9 @@ class ShopgateAuthenticationServiceShopgate extends ShopgateObject implements Sh
 
 class ShopgateAuthenticationServiceOAuth extends ShopgateObject implements ShopgateAuthenticationServiceInterface {
 	private $accessToken;
+	private $timestamp;
 
-	public function __construct($accessToken) {
+	public function __construct($accessToken = null) {
 		$this->accessToken = $accessToken;
 		
 		$this->startNewSession();
@@ -1720,6 +1718,62 @@ class ShopgateAuthenticationServiceOAuth extends ShopgateObject implements Shopg
 		// compare customer-number and auth-password and make sure, the API key was set in the configuration
 		if (($customer_number != $this->customerNumber) || ($token != $generatedPassword) || (empty($this->apiKey))) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::AUTHENTICATION_FAILED, 'Invalid authentication data.');
+		}
+	}
+
+	public function requestAccessToken($code, $calledScriptUrl, $tokenRequestUrl) {
+		// setup request POST parameters
+		$parameters = array(
+			'client_id' => 'ShopgatePlugin',
+			'grant_type' => 'authorization_code',
+			'redirect_uri' => $calledScriptUrl,
+			'code' => $code,
+		);
+		// -> setup request headers
+		$curlOpt = array(
+			CURLOPT_HEADER => false,
+			CURLOPT_USERAGENT => 'ShopgatePlugin/'.(defined('SHOPGATE_PLUGIN_VERSION') ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin'),
+			CURLOPT_SSL_VERIFYPEER => false,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_HTTPHEADER => array(
+				'X-Shopgate-Library-Version: '.SHOPGATE_LIBRARY_VERSION,
+				'X-Shopgate-Plugin-Version: '.(defined('SHOPGATE_PLUGIN_VERSION') ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin'),
+			),
+			CURLOPT_TIMEOUT => 30, // Default timeout 30sec
+			CURLOPT_POST => true,
+		);
+		// -> init cURL connection and send the request
+		$curl = curl_init($tokenRequestUrl);
+		curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($parameters));
+		curl_setopt_array($curl, $curlOpt);
+		$response = curl_exec($curl);
+		$info = curl_getinfo($curl);
+		curl_close($curl);
+		
+		// check the curl-result
+		if(!$response) {
+			// exception without logging - this might cause spamming your logs and we will know when our API is offline anyways
+			throw new ShopgateLibraryException(ShopgateLibraryException::SHOPGATE_OAUTH_NO_CONNECTION, null, false, false);
+		}
+		
+		if(empty($response)) {
+			// exception without logging - this might cause spamming your logs and we will know when our API is offline anyways
+			throw new ShopgateLibraryException(ShopgateLibraryException::SHOPGATE_OAUTH_INVALID_RESPONSE, 'Response: '.$response, true, false);
+		}
+		// convert returned json string
+		$decodedResponse = $this->jsonDecode($response, true);
+		
+		// check for valid access token
+		$this->accessToken = !empty($decodedResponse['access_token']) ? $decodedResponse['access_token'] : '';
+		if(empty($this->accessToken)) {
+			throw new ShopgateLibraryException(
+				ShopgateLibraryException::SHOPGATE_OAUTH_MISSING_ACCESS_TOKEN,
+				((!empty($decodedResponse['error']) && !empty($decodedResponse['error_description']))
+					? ' [Shopgate authorization failure "'.$decodedResponse['error'].'": ' . $decodedResponse['error_description'] . ']'
+					: ' [Shopgate authorization failure: Unexpected server response]'
+				),
+				true
+			);
 		}
 	}
 
@@ -2032,7 +2086,7 @@ interface ShopgateMerchantApiInterface {
 	 *
 	 * @see http://wiki.shopgate.com/Merchant_API_get_orders
 	 */
-	public function getShopInfo($parameters);
+	public function getShopInfo($parameters = array());
 
 	######################################################################
 	## Orders                                                           ##

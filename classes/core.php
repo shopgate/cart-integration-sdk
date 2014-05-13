@@ -868,9 +868,22 @@ class ShopgateBuilder {
 		}
 		
 		// instantiate API stuff
+		// -> MerchantAPI auth service (needs to be initialized first, since the config still can change along with the authentication information
+		switch($this->config->getSmaAuthServiceClassName()) {
+			case ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_SHOPGATE:
+				$smaAuthService = new ShopgateAuthenticationServiceShopgate($this->config->getCustomerNumber(), $this->config->getApikey());
+				$merchantApi = new ShopgateMerchantApi($smaAuthService, $this->config->getApiUrl(), $this->config->getShopNumber());
+				break;
+			case ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_OAUTH:
+				$smaAuthService = new ShopgateAuthenticationServiceOAuth($this->config->getOauthAccessToken());
+				$merchantApi = new ShopgateMerchantApi($smaAuthService, $this->config->getApiUrl());
+				break;
+			default:
+				// undefined auth service
+				break;
+		}
 		// -> PluginAPI auth service (actually the plugin API supports only )
-		$spaAuthServiceClassName = ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_SHOPGATE;
-		$spaAuthService = new $spaAuthServiceClassName($this->config->getCustomerNumber(), $this->config->getApikey());
+		$spaAuthService = new ShopgateAuthenticationServiceShopgate($this->config->getCustomerNumber(), $this->config->getApikey());
 //		switch($spaAuthServiceClassName = $this->config->getSpaAuthServiceClassName()) {
 //			case ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_SHOPGATE:
 //				$spaAuthService = new $spaAuthServiceClassName($this->config->getCustomerNumber(), $this->config->getApikey());
@@ -882,20 +895,6 @@ class ShopgateBuilder {
 //				// undefined auth service
 //				break;
 //		}
-		// -> MerchantAPI auth service
-		switch($smaAuthServiceClassName = $this->config->getSmaAuthServiceClassName()) {
-			case ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_SHOPGATE:
-				$smaAuthService = new $smaAuthServiceClassName($this->config->getCustomerNumber(), $this->config->getApikey());
-				$merchantApi = new ShopgateMerchantApi($smaAuthService, $this->config->getApiUrl(), $this->config->getShopNumber());
-				break;
-			case ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_OAUTH:
-				$smaAuthService = new $smaAuthServiceClassName($this->config->getOauthAccessToken());
-				$merchantApi = new ShopgateMerchantApi($smaAuthService, $this->config->getApiUrl());
-				break;
-			default:
-				// undefined auth service
-				break;
-		}
 		$pluginApi = new ShopgatePluginApi($this->config, $spaAuthService, $merchantApi, $plugin);
 		
 		// instantiate export file buffer
@@ -917,11 +916,11 @@ class ShopgateBuilder {
 		$merchantApi = null;
 		switch($smaAuthServiceClassName = $this->config->getSmaAuthServiceClassName) {
 			case ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_SHOPGATE:
-				$smaAuthService = new $smaAuthServiceClassName($this->config->getCustomerNumber(), $this->config->getApikey());
+				$smaAuthService = new ShopgateAuthenticationServiceShopgate($this->config->getCustomerNumber(), $this->config->getApikey());
 				$merchantApi = new ShopgateMerchantApi($smaAuthService, $this->config->getApiUrl(), $this->config->getShopNumber());
 				break;
 			case ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_OAUTH:
-				$smaAuthService = new $smaAuthServiceClassName($this->config->getOauthAccessToken());
+				$smaAuthService = new ShopgateAuthenticationServiceOAuth($this->config->getOauthAccessToken());
 				$merchantApi = new ShopgateMerchantApi($smaAuthService, $this->config->getApiUrl());
 				break;
 			default:
@@ -1341,6 +1340,48 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @return bool false if an error occured, otherwise true.
 	 */
 	public final function handleRequest($data = array()) {
+		// check if this is a OAuth-plugin-connection-request
+		if(!empty($data['action']) && $data['action'] == 'receive_authorization' && !empty($data['code'])) {
+			// the access token needs to be requested first (compute a request target url for this)
+			$merchantApiUrl = $this->config->getApiUrl();
+			if($this->config->getServer() == 'custom') {
+				// defaults to https://api.<hostname>/api[controller]/<merchant-action-name> for custom server
+				$requestServerHost = explode('/api/', $merchantApiUrl);
+				$requestServerHost = trim($requestServerHost[0], '/');
+			} else {
+				// defaults to https://api.<hostname>/<merchant-action-name> for live, pg and sl server
+				$matches = array();
+				preg_match('/^(?P<protocol>http(s)?:\/\/)api.(?P<hostname>[^\/]+)\/merchant.*$/', $merchantApiUrl, $matches);
+				$protocol = (!empty($matches['protocol']) ? $matches['protocol'] : 'https://');
+				$hostname = (!empty($matches['hostname']) ? $matches['hostname'] : 'shopgate.com');
+				$requestServerHost = $protocol.'admin.'.$hostname;
+			}
+			$tokenRequestUrl = $requestServerHost . '/oauth/token';
+			// the "receive_authorization" action url is needed (again) for requesting an access token
+			$calledScriptUrl = $this->getActionUrl($data['action']);
+			
+			// Re-initialize the OAuth auth service object and the ShopgateMerchantAPI object 
+			$smaAuthService = new ShopgateAuthenticationServiceOAuth();
+			$smaAuthService->requestAccessToken($data['code'], $calledScriptUrl, $tokenRequestUrl);
+			$this->merchantApi = new ShopgateMerchantApi($smaAuthService, $this->config->getApiUrl());
+			
+			// finally load all shop info via the MerchantAPI and store it in the config
+			$shopInfo = $this->merchantApi->getShopInfo()->getData();
+			if(empty($shopInfo)) {
+				throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE, '"shop info" not set. Response: '.var_export($shopInfo, true));
+			}
+			
+			$shopgateSettingsNew = array_merge($this->config->toArray(), $shopInfo);
+			
+			// save all shop config data to plugin-config using the configs save method
+			$this->config->load($shopgateSettingsNew);
+			$this->config->save(array_keys($shopgateSettingsNew), true);
+			
+			// TODO: where to go from now
+//			return $this->receiveAuthorization();
+//			return $this->renderSuccessTemplate();
+		}
+		
 		return $this->pluginApi->handleRequest($data);
 	}
 
@@ -1888,16 +1929,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 */
 	public function getActionUrl($pluginApiActionName) {
 		return 'http'.(!empty($_SERVER['HTTPS']) ? 's' : '').'://'. trim($_SERVER['HTTP_HOST'], '/') . '/' . trim($_SERVER['SCRIPT_NAME'], '/');
-	}
-
-	/**
-	 * Callback method for the PluginAPI to be able to tell the calling pluginAPI-Action to check whether the (logged in) user is an admin or not
-	 * Return true if the user has admin access rights, or if this check is not necessary, return false otherwise
-	 * 
-	 * @return bool The status of an admin logged in or not
-	 */
-	public function checkAdminLogin() {
-		return false;
 	}
 
 	/**
