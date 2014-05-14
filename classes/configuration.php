@@ -218,11 +218,6 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	/**
 	 * @var bool
 	 */
-	protected $enable_register_customer;
-	
-	/**
-	 * @var bool
-	 */
 	protected $enable_get_items_csv;
 	
 	/**
@@ -279,6 +274,16 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @var bool
 	 */
 	protected $enable_set_settings;
+	
+	/**
+	 * @var bool
+	 */
+	protected $enable_register_customer;
+	
+	/**
+	 * @var bool
+	 */
+	protected $enable_receive_authorization;
 	
 	#######################################################
 	### Options regarding shop system specific settings ###
@@ -446,6 +451,9 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_get_settings = 0;
 		$this->enable_set_settings = 1;
 		$this->enable_register_customer = 0;
+		$this->enable_receive_authorization = 1;
+
+		$this->sma_auth_service_class_name = ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_OAUTH;
 		
 		$this->country = 'DE';
 		$this->language = 'de';
@@ -1013,6 +1021,14 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->enable_set_settings;
 	}
 	
+	public function getEnableRegisterCustomer() {
+		return $this->enable_register_customer;
+	}
+	
+	public function getEnableReceiveAuthorization() {
+		return $this->enable_receive_authorization;
+	}
+	
 	public function getCountry() {
 		return strtoupper($this->country);
 	}
@@ -1143,10 +1159,6 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	
 	public function getIsShopgateAdapter() {
 		return $this->is_shopgate_adapter;
-	}
-	
-	public function getEnableRegisterCustomer() {
-		return $this->enable_register_customer;
 	}
 
 	###############
@@ -1306,6 +1318,14 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	
 	public function setEnableSetSettings($value) {
 		$this->enable_set_settings = $value;
+	}
+	
+	public function setEnableRegisterCustomer($value) {
+		$this->enable_register_customer = $value;
+	}
+	
+	public function setEnableReceiveAuthorization($value) {
+		$this->enable_receive_authorization = $value;
 	}
 	
 	public function setCountry($value) {
@@ -1506,9 +1526,6 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->is_shopgate_adapter = $value;
 	}
 	
-	public function setEnableRegisterCustomer($value) {
-		$this->enable_register_customer = $value;
-	}
 	
 	###############
 	### Helpers ###
@@ -2311,6 +2328,16 @@ interface ShopgateConfigInterface {
 	public function getEnableSetSettings();
 	
 	/**
+	 * @return bool
+	 */
+	public function getEnableRegisterCustomer();
+	
+	/**
+	 * @return bool
+	 */
+	public function getEnableReceiveAuthorization();
+	
+	/**
 	 * @return string The ISO 3166 ALPHA-2 code of the country the plugin uses for export.
 	 */
 	public function getCountry();
@@ -2660,6 +2687,16 @@ interface ShopgateConfigInterface {
 	 * @param bool $value
 	 */
 	public function setEnableSetSettings($value);
+	
+	/**
+	 * @param bool $value
+	 */
+	public function setEnableRegisterCustomer($value);
+	
+	/**
+	 * @param bool $value
+	 */
+	public function setEnableReceiveAuthorization($value);
 	
 	/**
 	 * @param string The ISO 3166 ALPHA-2 code of the country the plugin uses for export.
