@@ -133,6 +133,15 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 */
 	protected $export_convert_encoding;
 	
+	/**
+	 * @var array<string> the list of fields supported by the plugin method check_cart
+	 */
+	protected $supported_fields_check_cart;
+	
+	/**
+	 * @var array<string> the list of fields supported by the plugin method get_settings
+	 */
+	protected $supported_fields_get_settings;
 	
 	##############################################################
 	### Indicators to (de)activate Shopgate Plugin API actions ###
@@ -390,6 +399,8 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_default_redirect = 0;
 		$this->encoding = 'UTF-8';
 		$this->export_convert_encoding = 1;
+		$this->supported_fields_check_cart = array();
+		$this->supported_fields_get_settings = array();
 		
 		$this->enable_ping = 1;
 		$this->enable_add_order = 0;
@@ -882,6 +893,14 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->export_convert_encoding;
 	}
 	
+	public function getSupportedFieldsCheckCart() {
+		return $this->supported_fields_check_cart;
+	}
+
+	public function getSupportedFieldsGetSettings() {
+		return $this->supported_fields_get_settings;
+	}
+	
 	public function getEnablePing() {
 		return $this->enable_ping;
 	}
@@ -1163,6 +1182,14 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	
 	public function setExportConvertEncoding($value) {
 		$this->export_convert_encoding = $value;
+	}
+	
+	public function setSupportedFieldsCheckCart($value) {
+		$this->supported_fields_check_cart = $value;
+	}
+	
+	public function setSupportedFieldsGetSettings($value) {
+		$this->supported_fields_get_settings = $value;
 	}
 	
 	public function setEnablePing($value) {
@@ -2130,6 +2157,16 @@ interface ShopgateConfigInterface {
 	public function getExportConvertEncoding();
 
 	/**
+	 * @return array the list of fields supported by the plugin method check_cart
+	 */
+	public function getSupportedFieldsCheckCart();
+
+	/**
+	 * @return array the list of fields supported by the plugin method get_settings
+	 */
+	public function getSupportedFieldsGetSettings();
+
+	/**
 	 * @return bool
 	 */
 	public function getEnablePing();
@@ -2464,6 +2501,16 @@ interface ShopgateConfigInterface {
 	 * @param bool $value true to enable automatic encoding conversion to utf-8 during export
 	 */
 	public function setExportConvertEncoding($value);
+	
+	/**
+	 * @param array the list of fields supported by the plugin method check_cart
+	 */
+	public function setSupportedFieldsCheckCart($value);
+	
+	/**
+	 * @param array the list of fields supported by the plugin method get_settings
+	 */
+	public function setSupportedFieldsGetSettings($value);
 
 	/**
 	 * @param bool $value
