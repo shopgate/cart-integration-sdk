@@ -1012,7 +1012,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 
 		// no specific data needs to be returned
 		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
-		$this->responseData = null;
+		$this->responseData = array();
 	}
 
 
