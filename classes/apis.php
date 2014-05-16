@@ -1010,11 +1010,9 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$this->config->load($shopgateSettingsNew);
 		$this->config->save(array_keys($shopgateSettingsNew), true);
 
-		// return success
+		// no specific data needs to be returned
 		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
-		$this->responseData = array(
-			'oauth_success' => 'true',
-		);
+		$this->responseData = null;
 	}
 
 
