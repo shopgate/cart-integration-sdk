@@ -980,7 +980,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		}
 		$tokenRequestUrl = $requestServerHost . '/oauth/token';
 		// the "receive_authorization" action url is needed (again) for requesting an access token
-		$calledScriptUrl = $this->getActionUrl($this->params['action']);
+		$calledScriptUrl = $this->plugin->getActionUrl($this->params['action']);
 		
 		// Re-initialize the OAuth auth service object and the ShopgateMerchantAPI object 
 		$smaAuthService = new ShopgateAuthenticationServiceOAuth();
