@@ -956,110 +956,60 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_receive_authorization
 	 */
 	protected function receiveAuthorization() {
-//		if($this->config->getSmaAuthServiceClassName() != ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_OAUTH) {
-//			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_INVALID_ACTION, '=> "receive_authorization" action can only be called for plugins with SMA-AuthService set to "OAuth" type', true);
-//		}
-//		
-//		if(empty($this->params['code'])) {
-//			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_AUTHORIZATION_CODE);
-//		}
-//		
-//		// request an access_token via curl, using the authorization code ($this->params['code'])
-//		// -> get the token request URL by parsing the merchant api url, extract the host and append the fixed controller-/action- combination
-//		$merchantApiUrl = $this->config->getApiUrl();
-//		if($this->config->getServer() == 'custom') {
-//			// defaults to https://api.<hostname>/api[controller]/<merchant-action-name> for custom server
-//			$requestServerHost = explode('/api/', $merchantApiUrl);
-//			$requestServerHost = trim($requestServerHost[0], '/');
-//		} else {
-//			// defaults to https://api.<hostname>/<merchant-action-name> for live, pg and sl server
-//			$matches = array();
-//			preg_match('/^(?P<protocol>http(s)?:\/\/)api.(?P<hostname>[^\/]+)\/merchant.*$/', $merchantApiUrl, $matches);
-//			$protocol = (!empty($matches['protocol']) ? $matches['protocol'] : 'https://');
-//			$hostname = (!empty($matches['hostname']) ? $matches['hostname'] : 'shopgate.com');
-//			$requestServerHost = $protocol.'admin.'.$hostname;
-//		}
-//		$tokenRequestUrl = $requestServerHost . '/oauth/token';
-//		// -> get the url to the actual action to be processed (needs to stay the same to keep the access token valid)
-//		$calledScriptUrl = $this->plugin->getActionUrl($this->params['action']);
-//		// -> setup request POST parameters
-//		$parameters = array(
-//			'client_id' => 'ShopgatePlugin',
-//			'grant_type' => 'authorization_code',
-//			'redirect_uri' => $calledScriptUrl,
-//			'code' => $this->params['code'],
-//		);
-//		// -> setup request headers
-//		$curlOpt = array(
-//			CURLOPT_HEADER => false,
-//			CURLOPT_USERAGENT => 'ShopgatePlugin/'.(defined('SHOPGATE_PLUGIN_VERSION') ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin'),
-//			CURLOPT_SSL_VERIFYPEER => false,
-//			CURLOPT_RETURNTRANSFER => true,
-//			CURLOPT_HTTPHEADER => array(
-//				'X-Shopgate-Library-Version: '.SHOPGATE_LIBRARY_VERSION,
-//				'X-Shopgate-Plugin-Version: '.(defined('SHOPGATE_PLUGIN_VERSION') ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin'),
-//			),
-//			CURLOPT_TIMEOUT => 30, // Default timeout 30sec
-//			CURLOPT_POST => true,
-//		);
-//		// -> init cURL connection and send the request
-//		$curl = curl_init($tokenRequestUrl);
-//		curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($parameters));
-//		curl_setopt_array($curl, $curlOpt);
-//		$response = curl_exec($curl);
-//		$info = curl_getinfo($curl);
-//		curl_close($curl);
-//		
-//		// check the curl-result
-//		if(!$response) {
-//			// exception without logging - this might cause spamming your logs and we will know when our API is offline anyways
-//			throw new ShopgateLibraryException(ShopgateLibraryException::SHOPGATE_OAUTH_NO_CONNECTION, null, false, false);
-//		}
-//		
-//		if(empty($response)) {
-//			// exception without logging - this might cause spamming your logs and we will know when our API is offline anyways
-//			throw new ShopgateLibraryException(ShopgateLibraryException::SHOPGATE_OAUTH_INVALID_RESPONSE, 'Response: '.$response, true, false);
-//		}
-//		// convert returned json string
-//		$decodedResponse = $this->jsonDecode($response, true);
-//		
-//		// check for valid access token
-//		$accessToken = !empty($decodedResponse['access_token']) ? $decodedResponse['access_token'] : '';
-//		if(empty($accessToken)) {
-//			throw new ShopgateLibraryException(
-//				ShopgateLibraryException::SHOPGATE_OAUTH_MISSING_ACCESS_TOKEN,
-//				((!empty($decodedResponse['error']) && !empty($decodedResponse['error_description']))
-//					? ' [Shopgate authorization failure "'.$decodedResponse['error'].'": ' . $decodedResponse['error_description'] . ']'
-//					: ' [Shopgate authorization failure: Unexpected server response]'
-//				),
-//				true
-//			);
-//		}
-//		
-//		// Load shop related information and access data
-//		$shopInfo = $this->merchantApi->getShopInfo(array(
-//			'access_token' => $accessToken, // override the access_token, stored in the config, since the actual one has been newly created
-//		))->getData();
-//		if(empty($shopInfo)) {
-//			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE, '"shop info" not set. Response: '.var_export($shopInfo, true));
-//		}
-//		if(empty($this->response)) {
-//			$this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
-//		}
-//		
-//		$shopgateSettingsNew = array_merge($this->config->toArray(), $shopInfo);
-//		
-//		// save all shop data to plugin-config using the configs save method
-//		$this->config->load($shopgateSettingsNew);
-//		$this->config->save(array_keys($shopgateSettingsNew), true);
-//		
-//		$this->responseData = null;
-//		$this->preventResponseOutput = true;
-		// TODO: where to go from now
-//		$this->plugin->receiveAuthorization();
+		if($this->config->getSmaAuthServiceClassName() != ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_OAUTH) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_INVALID_ACTION, '=> "receive_authorization" action can only be called for plugins with SMA-AuthService set to "OAuth" type', true);
+		}
+		
+		if(empty($this->params['code'])) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_AUTHORIZATION_CODE);
+		}
+		
+		// the access token needs to be requested first (compute a request target url for this)
+		$merchantApiUrl = $this->config->getApiUrl();
+		if($this->config->getServer() == 'custom') {
+			// defaults to https://api.<hostname>/api[controller]/<merchant-action-name> for custom server
+			$requestServerHost = explode('/api/', $merchantApiUrl);
+			$requestServerHost = trim($requestServerHost[0], '/');
+		} else {
+			// defaults to https://api.<hostname>/<merchant-action-name> for live, pg and sl server
+			$matches = array();
+			preg_match('/^(?P<protocol>http(s)?:\/\/)api.(?P<hostname>[^\/]+)\/merchant.*$/', $merchantApiUrl, $matches);
+			$protocol = (!empty($matches['protocol']) ? $matches['protocol'] : 'https://');
+			$hostname = (!empty($matches['hostname']) ? $matches['hostname'] : 'shopgate.com');
+			$requestServerHost = $protocol.'admin.'.$hostname;
+		}
+		$tokenRequestUrl = $requestServerHost . '/oauth/token';
+		// the "receive_authorization" action url is needed (again) for requesting an access token
+		$calledScriptUrl = $this->getActionUrl($this->params['action']);
+		
+		// Re-initialize the OAuth auth service object and the ShopgateMerchantAPI object 
+		$smaAuthService = new ShopgateAuthenticationServiceOAuth();
+		$accessToken = $smaAuthService->requestAccessToken($this->params['code'], $calledScriptUrl, $tokenRequestUrl);
+
+		// at this Point there is a valid access token available, since this point would not be reached otherwise
+		// -> get a new ShopgateMerchantApi object, containing a fully configured OAuth auth service including the access token
+		$this->merchantApi = new ShopgateMerchantApi($smaAuthService, $this->config->getApiUrl());
+		
+		// load all shop info via the MerchantAPI and store it in the config (via OAuth and a valid access token)
+		$shopInfo = $this->merchantApi->getShopInfo()->getData();
+		if(empty($shopInfo)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE, '-> "shop info" not set. Response data: '.var_export($shopInfo, true));
+		}
+		
+		// create a new settings array
+		$shopgateSettingsNew = array_merge($this->config->toArray(), $shopInfo);
+		
+		// save all shop config data to plugin-config using the configs save method
+		$this->config->load($shopgateSettingsNew);
+		$this->config->save(array_keys($shopgateSettingsNew), true);
+		
+		// return success
+		$this->responseData = array(
+			'oauth_success' => 'true',
+		);
 	}
 
-	
+
 
 	###############
 	### Helpers ###
@@ -1775,6 +1725,8 @@ class ShopgateAuthenticationServiceOAuth extends ShopgateObject implements Shopg
 				true
 			);
 		}
+		
+		return $this->accessToken;
 	}
 
 	/**

@@ -1340,48 +1340,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @return bool false if an error occured, otherwise true.
 	 */
 	public final function handleRequest($data = array()) {
-		// check if this is a OAuth-plugin-connection-request
-		if(!empty($data['action']) && $data['action'] == 'receive_authorization' && !empty($data['code'])) {
-			// the access token needs to be requested first (compute a request target url for this)
-			$merchantApiUrl = $this->config->getApiUrl();
-			if($this->config->getServer() == 'custom') {
-				// defaults to https://api.<hostname>/api[controller]/<merchant-action-name> for custom server
-				$requestServerHost = explode('/api/', $merchantApiUrl);
-				$requestServerHost = trim($requestServerHost[0], '/');
-			} else {
-				// defaults to https://api.<hostname>/<merchant-action-name> for live, pg and sl server
-				$matches = array();
-				preg_match('/^(?P<protocol>http(s)?:\/\/)api.(?P<hostname>[^\/]+)\/merchant.*$/', $merchantApiUrl, $matches);
-				$protocol = (!empty($matches['protocol']) ? $matches['protocol'] : 'https://');
-				$hostname = (!empty($matches['hostname']) ? $matches['hostname'] : 'shopgate.com');
-				$requestServerHost = $protocol.'admin.'.$hostname;
-			}
-			$tokenRequestUrl = $requestServerHost . '/oauth/token';
-			// the "receive_authorization" action url is needed (again) for requesting an access token
-			$calledScriptUrl = $this->getActionUrl($data['action']);
-			
-			// Re-initialize the OAuth auth service object and the ShopgateMerchantAPI object 
-			$smaAuthService = new ShopgateAuthenticationServiceOAuth();
-			$smaAuthService->requestAccessToken($data['code'], $calledScriptUrl, $tokenRequestUrl);
-			$this->merchantApi = new ShopgateMerchantApi($smaAuthService, $this->config->getApiUrl());
-			
-			// finally load all shop info via the MerchantAPI and store it in the config
-			$shopInfo = $this->merchantApi->getShopInfo()->getData();
-			if(empty($shopInfo)) {
-				throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE, '"shop info" not set. Response: '.var_export($shopInfo, true));
-			}
-			
-			$shopgateSettingsNew = array_merge($this->config->toArray(), $shopInfo);
-			
-			// save all shop config data to plugin-config using the configs save method
-			$this->config->load($shopgateSettingsNew);
-			$this->config->save(array_keys($shopgateSettingsNew), true);
-			
-			// TODO: where to go from now
-//			return $this->receiveAuthorization();
-//			return $this->renderSuccessTemplate();
-		}
-		
 		return $this->pluginApi->handleRequest($data);
 	}
 
