@@ -997,13 +997,21 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		}
 		
 		// create a new settings array
-		$shopgateSettingsNew = array_merge($this->config->toArray(), $shopInfo);
-		
+		$shopgateSettingsNew = array(
+			$field = 'oauth_access_token'	=> $shopInfo[$field],
+			$field = 'customer_number'		=> $shopInfo[$field],
+			$field = 'shop_number'			=> $shopInfo[$field],
+			$field = 'apikey'				=> $shopInfo[$field],
+			$field = 'alias'				=> $shopInfo[$field],
+			$field = 'cname'				=> $shopInfo[$field],
+		);
+
 		// save all shop config data to plugin-config using the configs save method
 		$this->config->load($shopgateSettingsNew);
 		$this->config->save(array_keys($shopgateSettingsNew), true);
-		
+
 		// return success
+		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
 		$this->responseData = array(
 			'oauth_success' => 'true',
 		);
