@@ -109,13 +109,13 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			'register_customer',
 			'get_settings',
 			'set_settings',
-//			'receive_authorization',
+			'receive_authorization',
 		);
 		
-//		// list of action that do not require authentication
-//		$this->authlessActionWhitelist = array(
-//			'receive_authorization',
-//		);
+		// list of action that do not require authentication
+		$this->authlessActionWhitelist = array(
+			'receive_authorization',
+		);
 	}
 
 	
