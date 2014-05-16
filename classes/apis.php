@@ -985,7 +985,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		// Re-initialize the OAuth auth service object and the ShopgateMerchantAPI object 
 		$smaAuthService = new ShopgateAuthenticationServiceOAuth();
 		$accessToken = $smaAuthService->requestAccessToken($this->params['code'], $calledScriptUrl, $tokenRequestUrl);
-
+		
 		// at this Point there is a valid access token available, since this point would not be reached otherwise
 		// -> get a new ShopgateMerchantApi object, containing a fully configured OAuth auth service including the access token
 		$this->merchantApi = new ShopgateMerchantApi($smaAuthService, $this->config->getApiUrl());
@@ -1005,11 +1005,11 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			$field = 'alias'				=> $shopInfo[$field],
 			$field = 'cname'				=> $shopInfo[$field],
 		);
-
+		
 		// save all shop config data to plugin-config using the configs save method
 		$this->config->load($shopgateSettingsNew);
 		$this->config->save(array_keys($shopgateSettingsNew), true);
-
+		
 		// no specific data needs to be returned
 		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
 		$this->responseData = array();
