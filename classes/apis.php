@@ -982,9 +982,12 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		// the "receive_authorization" action url is needed (again) for requesting an access token
 		$calledScriptUrl = $this->plugin->getActionUrl($this->params['action']);
 		
+		// get the admin backend url if there is one
+		$oAuthAbortReturnUrl = $this->plugin->getOAuthAbortReturnUrl();
+		
 		// Re-initialize the OAuth auth service object and the ShopgateMerchantAPI object 
 		$smaAuthService = new ShopgateAuthenticationServiceOAuth();
-		$accessToken = $smaAuthService->requestAccessToken($this->params['code'], $calledScriptUrl, $tokenRequestUrl);
+		$accessToken = $smaAuthService->requestOAuthAccessToken($this->params['code'], $calledScriptUrl, $oAuthAbortReturnUrl, $tokenRequestUrl);
 		
 		// at this Point there is a valid access token available, since this point would not be reached otherwise
 		// -> get a new ShopgateMerchantApi object, containing a fully configured OAuth auth service including the access token
@@ -1677,7 +1680,7 @@ class ShopgateAuthenticationServiceOAuth extends ShopgateObject implements Shopg
 		}
 	}
 
-	public function requestAccessToken($code, $calledScriptUrl, $tokenRequestUrl) {
+	public function requestOAuthAccessToken($code, $calledScriptUrl, $oAuthAbortReturnUrl, $tokenRequestUrl) {
 		// setup request POST parameters
 		$parameters = array(
 			'client_id' => 'ShopgatePlugin',
@@ -1685,6 +1688,9 @@ class ShopgateAuthenticationServiceOAuth extends ShopgateObject implements Shopg
 			'redirect_uri' => $calledScriptUrl,
 			'code' => $code,
 		);
+		if(!empty($adminBackendUrl)) {
+			$parameters['abort_return_uri'] = $oAuthAbortReturnUrl;
+		}
 		// -> setup request headers
 		$curlOpt = array(
 			CURLOPT_HEADER => false,
