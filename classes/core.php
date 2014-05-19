@@ -1890,16 +1890,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	}
 
 	/**
-	 * Callback method for the PluginAPI to be able to retrieve a URL in the shoppingsystem to which the user will be redirected if he declines the authorization process,
-	 * Override this method to specify a URL (e.g. to return a URL to the shoppingsystems admin backend)
-	 * 
-	 * @return string URL
-	 */
-	public function getOAuthAbortReturnUrl() {
-		return '';
-	}
-
-	/**
 	 * Executes a cron job with parameters.
 	 *
 	 * @param string $jobname The name of the job to execute.
