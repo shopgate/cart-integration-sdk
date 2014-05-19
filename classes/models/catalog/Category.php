@@ -77,7 +77,8 @@ class Shopgate_Model_Catalog_Category extends Shopgate_Model_AbstractExport {
 		'setSortOrder',
 		'setDeeplink',
 		'setIsAnchor',
-		'setImage');
+		'setImage',
+		'setIsActive');
 
 	/**
 	 * define allowed methods
