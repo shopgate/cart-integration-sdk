@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.6.1’’’
+* Kategorien können nun in Chunks abgerufen werden
+
 '''Version 2.6.0'''
 * XML Export für Produkte und Kategorien hinzugefügt.
 
@@ -251,6 +254,9 @@
 
 
 '''English'''
+
+'''Version 2.6.1’’’
+* added feature to get categories in chunks
 
 '''Version 2.6.0'''
 * Added - Functionality XML export for products and categories.

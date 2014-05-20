@@ -823,6 +823,12 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_categories_csv
 	 */
 	protected function getCategoriesCsv() {
+		if (isset($this->params['limit']) && isset($this->params['offset'])) {
+			$this->plugin->setExportLimit((int) $this->params['limit']);
+			$this->plugin->setExportOffset((int) $this->params['offset']);
+			$this->plugin->setSplittedExport(true);
+		}
+		
 		// generate / update categories csv file
 		$this->plugin->startGetCategoriesCsv();
 
