@@ -1,6 +1,6 @@
 '''Deutsch'''
 
-'''Version 2.5.8'''
+'''Version 2.6.0'''
 * XML Export für Produkte und Kategorien hinzugefügt.
 
 '''Version 2.5.7'''
@@ -252,7 +252,7 @@
 
 '''English'''
 
-'''Version 2.5.8'''
+'''Version 2.6.0'''
 * Added - Functionality XML export for products and categories.
 
 '''Version 2.5.7'''
