@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.5.8'''
+* XML Export für Produkte und Kategorien hinzugefügt.
+
 '''Version 2.5.7'''
 * Feld display_name zu ShopgateShippingInfo hinzugefügt
 * Felder supported_fields_get_settings und supported_fields_check_cart in ShopgateConfig hinzugefügt
@@ -248,6 +251,9 @@
 
 
 '''English'''
+
+'''Version 2.5.8'''
+* Added - Functionality XML export for products and categories.
 
 '''Version 2.5.7'''
 * added field display_name to class ShopgateShippingInfo
