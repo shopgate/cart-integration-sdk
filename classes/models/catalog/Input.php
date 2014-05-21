@@ -56,6 +56,7 @@ class Shopgate_Model_Catalog_Input extends Shopgate_Model_AbstractExport {
 	const DEFAULT_INPUT_TYPE_FILE = 'file';
 	const DEFAULT_INPUT_TYPE_DATE = 'date';
 	const DEFAULT_INPUT_TYPE_TIME = 'time';
+	const DEFAULT_INPUT_TYPE_DATETIME = 'datetime';
 
 	/**
 	 * define allowed methods
