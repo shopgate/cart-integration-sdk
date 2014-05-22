@@ -99,7 +99,11 @@ class Shopgate_Model_Catalog_Category extends Shopgate_Model_AbstractExport {
 	 * init default object
 	 */
 	public function __construct() {
-		$this->setImage(new Shopgate_Model_Media_Image());
+		$this->setData(
+			array(
+				'image' => new Shopgate_Model_Media_Image()
+			)
+		);
 	}
 
 	/**
