@@ -48,8 +48,15 @@
 class Shopgate_Model_Catalog_Price extends Shopgate_Model_AbstractExport {
 	/**
 	 * default price types
+	 *
+	 * gross
 	 */
-	const DEFAULT_PRICE_TYPE_NOT_GROSS = 'net/gross';
+	const DEFAULT_PRICE_TYPE_GROSS = 'gross';
+
+	/**
+	 * net
+	 */
+	const DEFAULT_PRICE_TYPE_NET = 'net';
 
 	/**
 	 * define allowed methods
