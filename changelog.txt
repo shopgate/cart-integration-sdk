@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.6.5'''
+* Fehler in der mobilen Weiterleitung behoben
+
 '''Version 2.6.4'''
 * Performance Steigerung bei Nutzung der mobilen Weiterleitung
 
@@ -263,6 +266,9 @@
 
 
 '''English'''
+
+'''Version 2.6.5'''
+* bugfix in mobile redirect
 
 '''Version 2.6.4'''
 * Performance increased for the mobile redirect
