@@ -1,12 +1,15 @@
 '''Deutsch'''
 
-'''Version 2.6.3’’’
+'''Version 2.6.4'''
+* Performance Steigerung bei Nutzung der mobilen Weiterleitung
+
+'''Version 2.6.3'''
 * Konstruktor refaktoriert
 
-'''Version 2.6.2’’’
+'''Version 2.6.2'''
 * neuen default Datentype "datetime" hinzugefügt
 
-'''Version 2.6.1’’’
+'''Version 2.6.1'''
 * Kategorien können nun in Chunks abgerufen werden
 
 '''Version 2.6.0'''
@@ -261,13 +264,16 @@
 
 '''English'''
 
-'''Version 2.6.3’’’
+'''Version 2.6.4'''
+* Performance increased for the mobile redirect
+
+'''Version 2.6.3'''
 * Refactored constructor
 
-'''Version 2.6.2’’’
+'''Version 2.6.2'''
 * New default data type "datetime" added
 
-'''Version 2.6.1’’’
+'''Version 2.6.1'''
 * added feature to get categories in chunks
 
 '''Version 2.6.0'''

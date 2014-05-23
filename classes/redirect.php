@@ -158,7 +158,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	/**
 	 * Instantiates the Shopgate mobile redirector.
 	 *
-	 * @param string $shopgateConfig An instance of the ShopgateConfig
+	 * @param ShopgateConfig $shopgateConfig An instance of the ShopgateConfig
 	 * @param ShopgateMerchantApiInterface $merchantApi An instance of the ShopgateMerchantApi required for keyword updates or null.
 	 */
 	public function __construct(ShopgateConfig $shopgateConfig, ShopgateMerchantApiInterface $merchantApi = null) {
@@ -287,7 +287,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	}
 
 	public function redirect($url, $autoRedirect = true) {
-		if (!$this->config->getShopNumber()) {
+		if (!$this->config->getShopNumber() || !$this->isMobileRequest()) {
 			return '';
 		}
 
@@ -543,7 +543,9 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	 *
 	 * @param string[] $keywords The list of keywords to write to the file.
 	 * @param string $file The path to the file.
+	 * @param null $timestamp 
 	 */
+
 	protected function saveKeywordsToFile($keywords, $file, $timestamp = null) {
 		if(is_null($timestamp)){
 			$timestamp = time();
@@ -857,7 +859,6 @@ interface ShopgateMobileRedirectInterface {
 	 *
 	 * @deprecated
 	 * @param string $url the URL to redirect to
-	 * @param bool $setCookie true to set the redirection cookie and activate redirection
 	 * @return false if the passed $url parameter is no valid URL
 	 */
 	public function redirect($url);

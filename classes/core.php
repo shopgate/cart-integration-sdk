@@ -88,6 +88,7 @@ function ShopgateShutdownHandler(){
  * @param string $errstr
  * @param string $errfile
  * @param int $errline
+ * @return boolean
  * @see http://php.net/manual/en/function.set-error-handler.php
  */
 function ShopgateErrorHandler($errno, $errstr, $errfile, $errline) {
@@ -323,8 +324,8 @@ class ShopgateLibraryException extends Exception {
 	 *
 	 * @param int $code One of the constants defined in ShopgateLibraryException.
 	 * @param string $additionalInformation More detailed information on what exactly went wrong.
-	 * @param boolean $appendAdditionalInformationOnMessage Set true to output the additional information to the response. Set false to log it silently.
-	 * @param boolean $writeLog true to create a log entry in the error log, false otherwise.
+	 * @param bool $appendAdditionalInformationToMessage Set true to output the additional information to the response. Set false to log it silently.
+	 * @param bool $writeLog true to create a log entry in the error log, false otherwise.
 	 */
 	public function __construct($code, $additionalInformation = null, $appendAdditionalInformationToMessage = false, $writeLog = true) {
 		// Set code and message
@@ -374,6 +375,7 @@ class ShopgateLibraryException extends Exception {
 	 * Gets the error message for an error code.
 	 *
 	 * @param int $code One of the constants in this class.
+	 * @return string
 	 */
 	public static function getMessageFor($code) {
 		if (isset(self::$errorMessages[$code])) {
@@ -393,6 +395,7 @@ class ShopgateLibraryException extends Exception {
 	 *
 	 * @param int $code One of the constants defined in ShopgateLibraryException.
 	 * @param string $additionalInformation More detailed information on what exactly went wrong.
+	 * @return string
 	 */
 	public static function buildLogMessageFor($code, $additionalInformation) {
 		$logMessage = self::getMessageFor($code);
@@ -526,7 +529,12 @@ class ShopgateLogger {
 		$this->removeFields = array('cart');
 	}
 	
+	
 	/**
+	 * @param string $accessLogPath
+	 * @param string $requestLogPath
+	 * @param string $errorLogPath
+	 * @param string $debugLogPath
 	 * @return ShopgateLogger
 	 */
 	public static function getInstance($accessLogPath = null, $requestLogPath = null, $errorLogPath = null, $debugLogPath = null) {
@@ -701,7 +709,7 @@ class ShopgateLogger {
 	 * @param string $type The log file to be read
 	 * @param int $lines Number of lines to return
 	 * @return string The requested log file content
-	 *
+	 * @throws ShopgateLibraryException
 	 * @see http://tekkie.flashbit.net/php/tail-functionality-in-php
 	 */
 	public function tail($type = self::LOGTYPE_ERROR, $lines = 20) {
@@ -1006,7 +1014,8 @@ abstract class ShopgateObject {
 	 *
 	 * If json_encode() exists it's done by that, otherwise an external class provided with the Shopgate Library is used.
 	 *
-	 * @param string $value
+	 * @param $json
+	 * @param bool $assoc
 	 * @return mixed
 	 */
 	public function jsonDecode($json, $assoc = false) {
@@ -1106,6 +1115,8 @@ abstract class ShopgateObject {
 	 *
 	 * @param mixed $subject
 	 * @param array $ignore
+	 * @param int $depth
+	 * @param array $refChain
 	 */
 	protected function user_print_r($subject, $ignore = array(), $depth = 1, $refChain = array()){
 		static $maxDepth = 5;
@@ -1306,7 +1317,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	}
 
 	/**
-	 * @param ShopgateFileBuffer $buffer
+	 * @param ShopgateFileBufferInterface $buffer
 	 */
 	public final function setBuffer(ShopgateFileBufferInterface $buffer) {
 		$this->buffer = $buffer;
@@ -1429,7 +1440,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * Calls the addRow() method on the currently associated ShopgateFileBuffer
 	 *
 	 * @param Shopgate_Model_AbstractExport $object
-	 *
 	 * @throws ShopgateLibraryException if flushing the buffer fails.
 	 */
 	private final function addModel(Shopgate_Model_AbstractExport $object) {
@@ -1451,7 +1461,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	}
 
 	/**
-	 * @param mixed[] $itemArr
+	 * @param mixed[] $item
 	 */
 	protected final function addItemRow($item) {
 		$item = array_merge( $this->buildDefaultItemRow(), $item );
@@ -1459,7 +1469,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		$this->addRow( $item );
 	}
 	/**
-	 * @param mixed[] $itemArr
+	 * @param mixed[] $item
 	 */
 	protected final function addMediaRow($item) {
 		$item = array_merge( $this->buildDefaultMediaRow(), $item );
@@ -1467,14 +1477,14 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		$this->addRow( $item );
 	}
 	/**
-	 * @param Shopgate_Model_Catalog_Product $category
+	 * @param Shopgate_Model_Catalog_Category $category
 	 */
 	protected final function addCategoryModel(Shopgate_Model_Catalog_Category $category) {
 		$this->addModel($category);
 	}
 	
 	/**
-	 * @param mixed[] $itemArr
+	 * @param mixed[] $category
 	 */
 	protected final function addCategoryRow($category) {
 		$category = array_merge($this->buildDefaultCategoryRow(), $category);
@@ -1482,7 +1492,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		$this->addRow($category);
 	}
 	/**
-	 * @param mixed[] $itemArr
+	 * @param mixed[] $review
 	 */
 	protected final function addReviewRow($review) {
 		$review = array_merge($this->buildDefaultReviewRow(), $review);
@@ -1550,7 +1560,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	
 	/**
 	 * set the number of inputs to put in the csv head row
-	 * @param number $inputCount
+	 * @param int $inputCount
 	 */
 	protected function setDefaultItemRowInputCount($inputCount=10) {
 		$this->defaultItemRowInputCount = max(1, $inputCount);
@@ -1743,6 +1753,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @param int $digits The number of digits after the decimal separator.
 	 * @param string $decimalPoint The decimal separator.
 	 * @param string $thousandPoints The thousands separator.
+	 * @return float|string
 	 */
 	protected function formatPriceNumber($price, $digits = 2, $decimalPoint = ".", $thousandPoints = "") {
 		$price = round($price, $digits);
@@ -1806,10 +1817,9 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	}
 
 	/**
-	 *
 	 * @param array $loaders
-	 * @param array $shopgateItemArray
-	 * @param mixed $dataObject or $dataArray to access
+	 * @return mixed
+	 * @throws ShopgateLibraryException
 	 */
 	protected final function executeLoaders(array $loaders/*, &$csvArray, $item[, ...]*/)
 	{
@@ -1837,7 +1847,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	
 	/**
 	 * Creates an array of corresponding helper method names, based on the export type given
-	 * @param string $exportType
+	 * @param string $subjectName
 	 * @return array
 	 */
 	private final function getCreateCsvLoaders($subjectName) {
@@ -2217,7 +2227,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * 	)
 	 *
 	 * @param array $src: The (at least) double dimensioned array input
-	 * @param string $enableFirstRow: Disabled by default
+	 * @param bool $enableFirstRow: Disabled by default
 	 * @return array[][]:
 	 */
 	protected function arrayCross(array $src, $enableFirstRow = false) {
@@ -2320,7 +2330,7 @@ abstract class ShopgateFileBuffer extends ShopgateObject implements ShopgateFile
 	 * The object is NOT ready to use. Call setFile() first to associate it with a file first.
 	 *
 	 * @param int $capacity
-	 * @param bool $encoding true to enable automatic encoding conversion to utf-8
+	 * @param bool $convertEncoding true to enable automatic encoding conversion to utf-8
 	 * @param string $sourceEncoding
 	 */
 	public function __construct($capacity, $convertEncoding = true, $sourceEncoding = null) {
@@ -2486,10 +2496,11 @@ class ShopgateFileBufferXml extends ShopgateFileBuffer {
 	protected $xmlModel;
 	
 	/**
-	 * @param Shopgate_Model_XmlResultObject $itemsNode
-	 * @param int  $capacity
-	 * @param bool $encoding true to enable automatic encoding conversion to utf-8
-	 * @param string $sourceEncoding
+	 * @param Shopgate_Model_Abstract $xmlModel
+	 * @param Shopgate_Model_XmlResultObject $xmlNode
+	 * @param null|string $capacity
+	 * @param bool $convertEncoding
+	 * @param null $sourceEncoding
 	 */
 	public function __construct(Shopgate_Model_Abstract $xmlModel, Shopgate_Model_XmlResultObject $xmlNode, $capacity, $convertEncoding = true, $sourceEncoding = null) {
 		parent::__construct($capacity, $convertEncoding, $sourceEncoding);
@@ -2579,7 +2590,7 @@ abstract class ShopgateContainer extends ShopgateObject {
 	 *
 	 * @param ShopgateContainer $obj
 	 * @param ShopgateContainer $obj2
-	 * @param string[] $whiteList list of fields to be compared
+	 * @param $whitelist
 	 * @return bool
 	 */
 	public function compare($obj,$obj2,$whitelist){
