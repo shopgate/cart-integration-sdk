@@ -438,10 +438,6 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		$html = str_replace('{$ssl_url}', $sslUrl, $html);
 		$html = str_replace('{$non_ssl_url}', $nonSslUrl, $html);
 		
-		if(!$this->isMobileRequest()){
-			$html = preg_replace('~<\s*\bscript\b[^>]*>(.*?)<\s*\/\s*script\s*>~is', "", $html);
-		}
-		
 		return $html;
 	}
 
