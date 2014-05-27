@@ -970,8 +970,8 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		
 		// Re-initialize the OAuth auth service object and the ShopgateMerchantAPI object 
 		$smaAuthService = new ShopgateAuthenticationServiceOAuth();
-		$accessToken = $smaAuthService->requestAccessToken($this->params['code'], $calledScriptUrl, $tokenRequestUrl);
-
+		$accessToken = $smaAuthService->requestOAuthAccessToken($this->params['code'], $calledScriptUrl, $tokenRequestUrl);
+		
 		// at this Point there is a valid access token available, since this point would not be reached otherwise
 		// -> get a new ShopgateMerchantApi object, containing a fully configured OAuth auth service including the access token
 		$this->merchantApi = new ShopgateMerchantApi($smaAuthService, $this->config->getApiUrl());
@@ -983,16 +983,22 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		}
 		
 		// create a new settings array
-		$shopgateSettingsNew = array_merge($this->config->toArray(), $shopInfo);
+		$shopgateSettingsNew = array(
+			$field = 'oauth_access_token'	=> $shopInfo[$field],
+			$field = 'customer_number'		=> $shopInfo[$field],
+			$field = 'shop_number'			=> $shopInfo[$field],
+			$field = 'apikey'				=> $shopInfo[$field],
+			$field = 'alias'				=> $shopInfo[$field],
+			$field = 'cname'				=> $shopInfo[$field],
+		);
 		
 		// save all shop config data to plugin-config using the configs save method
 		$this->config->load($shopgateSettingsNew);
 		$this->config->save(array_keys($shopgateSettingsNew), true);
 		
-		// return success
-		$this->responseData = array(
-			'oauth_success' => 'true',
-		);
+		// no specific data needs to be returned
+		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
+		$this->responseData = array();
 	}
 
 
@@ -1675,7 +1681,7 @@ class ShopgateAuthenticationServiceOAuth extends ShopgateObject implements Shopg
 		}
 	}
 
-	public function requestAccessToken($code, $calledScriptUrl, $tokenRequestUrl) {
+	public function requestOAuthAccessToken($code, $calledScriptUrl, $tokenRequestUrl) {
 		// setup request POST parameters
 		$parameters = array(
 			'client_id' => 'ShopgatePlugin',
