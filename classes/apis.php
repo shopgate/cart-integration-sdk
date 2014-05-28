@@ -964,21 +964,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_AUTHORIZATION_CODE);
 		}
 		
-		// the access token needs to be requested first (compute a request target url for this)
-		$merchantApiUrl = $this->config->getApiUrl();
-		if($this->config->getServer() == 'custom') {
-			// defaults to https://api.<hostname>/api[controller]/<merchant-action-name> for custom server
-			$requestServerHost = explode('/api/', $merchantApiUrl);
-			$requestServerHost = trim($requestServerHost[0], '/');
-		} else {
-			// defaults to https://api.<hostname>/<merchant-action-name> for live, pg and sl server
-			$matches = array();
-			preg_match('/^(?P<protocol>http(s)?:\/\/)api.(?P<hostname>[^\/]+)\/merchant.*$/', $merchantApiUrl, $matches);
-			$protocol = (!empty($matches['protocol']) ? $matches['protocol'] : 'https://');
-			$hostname = (!empty($matches['hostname']) ? $matches['hostname'] : 'shopgate.com');
-			$requestServerHost = $protocol.'admin.'.$hostname;
-		}
-		$tokenRequestUrl = $requestServerHost . '/oauth/token';
+		$tokenRequestUrl = $this->buildShopgateOAuthUrl('token');
 		// the "receive_authorization" action url is needed (again) for requesting an access token
 		$calledScriptUrl = $this->plugin->getActionUrl($this->params['action']);
 		
@@ -1020,6 +1006,25 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	###############
 	### Helpers ###
 	###############
+	
+	public function buildShopgateOAuthUrl($shopgateOAuthActionName) {
+		// the access token needs to be requested first (compute a request target url for this)
+		$merchantApiUrl = $this->config->getApiUrl();
+		if($this->config->getServer() == 'custom') {
+			// defaults to https://api.<hostname>/api[controller]/<merchant-action-name> for custom server
+			$requestServerHost = explode('/api/', $merchantApiUrl);
+			$requestServerHost = trim($requestServerHost[0], '/');
+		} else {
+			// defaults to https://api.<hostname>/<merchant-action-name> for live, pg and sl server
+			$matches = array();
+			preg_match('/^(?P<protocol>http(s)?:\/\/)api.(?P<hostname>[^\/]+)\/merchant.*$/', $merchantApiUrl, $matches);
+			$protocol = (!empty($matches['protocol']) ? $matches['protocol'] : 'https://');
+			$hostname = (!empty($matches['hostname']) ? $matches['hostname'] : 'shopgate.com');
+			$requestServerHost = $protocol.'admin.'.$hostname;
+		}
+		
+		return $requestServerHost . '/oauth/' . $shopgateOAuthActionName;
+	}
 	
 	private function getPhpSettings() {
 		$settingDetails = array();
@@ -1124,7 +1129,6 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 
 		return $meta;
 	}
-
 }
 
 class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiInterface {

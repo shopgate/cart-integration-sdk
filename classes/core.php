@@ -1342,6 +1342,16 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	public final function handleRequest($data = array()) {
 		return $this->pluginApi->handleRequest($data);
 	}
+	
+	/**
+	 * Wrapper method to fetch OAuth url from ShopgatePluginApi
+	 *
+	 * @param string $shopgateOAuthActionName
+	 * @return string
+	 */
+	public final function buildShopgateOAuthUrl($shopgateOAuthActionName) {
+		return $this->pluginApi->buildShopgateOAuthUrl($shopgateOAuthActionName);
+	}
 
 	/**
 	 * Takes care of buffer and file handlers and calls ShopgatePlugin::createItemsCsv().
