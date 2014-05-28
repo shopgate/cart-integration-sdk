@@ -69,7 +69,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	### basic shop information necessary for use of the APIs, mobile redirect etc. ###
 	##################################################################################
 	/**
-	 * @var int Shopgate oauth access token
+	 * @var string Shopgate oauth access token
 	 */
 	protected $oauth_access_token;
 	
@@ -79,7 +79,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 //	protected $spa_auth_service_class_name;
 	
 	/**
-	 * @var int Class name for the authentication service, that is used for the Shopgate MerchantAPI
+	 * @var string Class name for the authentication service, that is used for the Shopgate MerchantAPI
 	 */
 	protected $sma_auth_service_class_name;
 
