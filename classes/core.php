@@ -1349,7 +1349,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @param string $shopgateOAuthActionName
 	 * @return string
 	 */
-	public final function buildShopgateOAuthUrl($shopgateOAuthActionName) {
+	public function buildShopgateOAuthUrl($shopgateOAuthActionName) {
 		return $this->pluginApi->buildShopgateOAuthUrl($shopgateOAuthActionName);
 	}
 
