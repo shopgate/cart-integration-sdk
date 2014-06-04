@@ -914,7 +914,7 @@ class ShopgateBuilder {
 	 */
 	public function buildMerchantApi() {
 		$merchantApi = null;
-		switch($smaAuthServiceClassName = $this->config->getSmaAuthServiceClassName) {
+		switch($smaAuthServiceClassName = $this->config->getSmaAuthServiceClassName()) {
 			case ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_SHOPGATE:
 				$smaAuthService = new ShopgateAuthenticationServiceShopgate($this->config->getCustomerNumber(), $this->config->getApikey());
 				$merchantApi = new ShopgateMerchantApi($smaAuthService, $this->config->getApiUrl(), $this->config->getShopNumber());
