@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.6.7'''
+* verbessertes Exception Handling in "loader" Methoden
+
 '''Version 2.6.6'''
 * Performance Steigerung bei Nutzung der mobilen Weiterleitung rückgängig
 
@@ -269,6 +272,9 @@
 
 
 '''English'''
+
+'''Version 2.6.7'''
+* improved exception handling in loader methods
 
 '''Version 2.6.6'''
 * Performance increased for the mobile redirect removed
