@@ -172,7 +172,8 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		} else {
 			$this->disableKeywordUpdate();
 		}
-		
+
+		$this->enableDefaultRedirect = $this->config->getEnableDefaultRedirect();
 		$this->redirectKeywordCacheTime = ShopgateMobileRedirectInterface::DEFAULT_CACHE_TIME;
 		$this->buttonParent = 'body';
 		$this->buttonPrepend = true;
@@ -604,7 +605,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	
 	public function buildScriptDefault($autoRedirect = true) {
 		$this->redirectType = 'default';
-		$this->enableDefaultRedirect = $this->config->getEnableDefaultRedirect();
+		
 		return $this->redirect($this->getShopUrl(), $autoRedirect);
 	}
 	
