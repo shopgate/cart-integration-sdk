@@ -152,9 +152,12 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	 * @var string searchQuery used for creating a mobile search url  / mobile head js
 	 */
 	protected $searchQuery;
+	
+	/**
+	 * @var boolean determines if for a specific case the mobile redirect should be suppressed
+	 */
+	protected $suppressRedirect;
 
-	
-	
 	/**
 	 * Instantiates the Shopgate mobile redirector.
 	 *
@@ -174,6 +177,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		}
 
 		$this->enableDefaultRedirect = $this->config->getEnableDefaultRedirect();
+		$this->suppressRedirect = false;
 		$this->redirectKeywordCacheTime = ShopgateMobileRedirectInterface::DEFAULT_CACHE_TIME;
 		$this->buttonParent = 'body';
 		$this->buttonPrepend = true;
@@ -211,6 +215,10 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	public function setParentElement($identifier, $prepend = true) {
 		$this->buttonParent = $identifier;
 		$this->buttonPrepend = $prepend;
+	}
+	
+	public function suppressRedirect() {
+		$this->suppressRedirect = true;
 	}
 	
 	public function enableKeywordUpdate($cacheTime = ShopgateMobileRedirectInterface::DEFAULT_CACHE_TIME) {
@@ -281,6 +289,11 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		// if GET parameter is set create cookie and do not redirect
 		if (!empty($_GET['shopgate_redirect'])) {
 			setcookie(ShopgateMobileRedirectInterface::COOKIE_NAME, 1, time() + 604800, '/'); // expires after 7 days
+			return false;
+		}
+		
+		// if the plugin wants to suppress the redirect
+		if($this->suppressRedirect) {
 			return false;
 		}
 		
@@ -408,6 +421,10 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		
 		if($redirectCode == 'default') {
 			$additionalParameters .= '_shopgate.is_default_redirect_disabled = '.((!$this->enableDefaultRedirect) ? 'true' : 'false').';';
+		}
+		
+		if($this->suppressRedirect) {
+			$additionalParameters .= "\n    " . '_shopgate.redirect_to_webapp = false;';
 		}
 		
 		switch($this->config->getServer()){
