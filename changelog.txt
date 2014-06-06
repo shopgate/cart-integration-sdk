@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.6.x'''
+* Methode ping um XML Pfade erweitert
+
 '''Version 2.6.7'''
 * verbessertes Exception Handling in "loader" Methoden
 * Funktionalität nachgereicht um den mobilen redirect via javascript zu unterbinden
@@ -273,6 +276,9 @@
 
 
 '''English'''
+
+'''Version 2.6.x'''
+* extended method ping for xml paths
 
 '''Version 2.6.7'''
 * improved exception handling in loader methods
