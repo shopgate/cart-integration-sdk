@@ -1354,6 +1354,28 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	}
 
 	/**
+	 * Checks the config for every 'enabled_<action-name>' setting and returns all active as an indexed list 
+	 * @return array
+	 */
+	public function getEnabledPluginActions() {
+		$enabledActionsList = array();
+		
+		$configValues = $this->config->toArray();
+		
+		// find all settings that start with "enable_" in the config-value-name and collect all active ones
+		$searchKeyPart = 'enable_';
+		foreach($configValues as $key => $val) {
+			if(substr($key, 0, strlen($searchKeyPart) == $searchKeyPart)) {
+				if($val) {
+					$pluginFunctionalityList[$key] = $val;
+				}
+			}
+		}
+		
+		return $enabledActionsList;
+	}
+
+	/**
 	 * Takes care of buffer and file handlers and calls ShopgatePlugin::createItemsCsv().
 	 *
 	 * @throws ShopgateLibraryException

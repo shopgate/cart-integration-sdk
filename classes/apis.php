@@ -1008,19 +1008,33 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	###############
 	
 	public function buildShopgateOAuthUrl($shopgateOAuthActionName) {
+		// based on the oauth action name the subdomain can differ
+		switch($shopgateOAuthActionName) {
+			case 'authorize':
+				$subdomain = 'admin';
+				break;
+			case 'token':
+				$subdomain = 'api';
+				break;
+			default:
+				$subdomain = 'www';
+				break;
+		}
+		
 		// the access token needs to be requested first (compute a request target url for this)
 		$merchantApiUrl = $this->config->getApiUrl();
 		if($this->config->getServer() == 'custom') {
-			// defaults to https://api.<hostname>/api[controller]/<merchant-action-name> for custom server
+			// defaults to https://<subdomain>.<hostname>/api[controller]/<merchant-action-name> for custom server
 			$requestServerHost = explode('/api/', $merchantApiUrl);
+			$requestServerHost[0] = str_replace('://api.', "://{$subdomain}.", $requestServerHost[0]);
 			$requestServerHost = trim($requestServerHost[0], '/');
 		} else {
-			// defaults to https://api.<hostname>/<merchant-action-name> for live, pg and sl server
+			// defaults to https://<subdomain>.<hostname>/<merchant-action-name> for live, pg and sl server
 			$matches = array();
 			preg_match('/^(?P<protocol>http(s)?:\/\/)api.(?P<hostname>[^\/]+)\/merchant.*$/', $merchantApiUrl, $matches);
 			$protocol = (!empty($matches['protocol']) ? $matches['protocol'] : 'https://');
 			$hostname = (!empty($matches['hostname']) ? $matches['hostname'] : 'shopgate.com');
-			$requestServerHost = $protocol.'admin.'.$hostname;
+			$requestServerHost = $protocol.$subdomain.$hostname;
 		}
 		
 		return $requestServerHost . '/oauth/' . $shopgateOAuthActionName;
