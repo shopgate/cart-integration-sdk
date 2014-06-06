@@ -1365,7 +1365,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		// find all settings that start with "enable_" in the config-value-name and collect all active ones
 		$searchKeyPart = 'enable_';
 		foreach($configValues as $key => $val) {
-			if(substr($key, 0, strlen($searchKeyPart) == $searchKeyPart)) {
+			if(substr($key, 0, strlen($searchKeyPart)) == $searchKeyPart) {
 				if($val) {
 					$pluginFunctionalityList[$key] = $val;
 				}
