@@ -2,6 +2,7 @@
 
 '''Version 2.6.7'''
 * verbessertes Exception Handling in "loader" Methoden
+* Funktionalität nachgereicht um den mobilen redirect via javascript zu unterbinden
 
 '''Version 2.6.6'''
 * Performance Steigerung bei Nutzung der mobilen Weiterleitung rückgängig
@@ -275,6 +276,7 @@
 
 '''Version 2.6.7'''
 * improved exception handling in loader methods
+* implemented functionality to suppress the mobile redirect via javascript
 
 '''Version 2.6.6'''
 * Performance increased for the mobile redirect removed
