@@ -1367,7 +1367,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		foreach($configValues as $key => $val) {
 			if(substr($key, 0, strlen($searchKeyPart)) == $searchKeyPart) {
 				if($val) {
-					$pluginFunctionalityList[$key] = $val;
+					$enabledActionsList[$key] = $val;
 				}
 			}
 		}
