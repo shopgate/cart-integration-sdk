@@ -1,6 +1,7 @@
 '''Deutsch'''
 
-'''Version 2.6.x'''
+'''Version 2.6.8'''
+* Durchreichen von Get Parametern für den mobilen Redirect bezüglich tracking
 * Methode ping um XML Pfade erweitert
 
 '''Version 2.6.7'''
@@ -277,7 +278,8 @@
 
 '''English'''
 
-'''Version 2.6.x'''
+'''Version 2.6.8'''
+* passthrough of get params for mobile redirect related to tracking
 * extended method ping for xml paths
 
 '''Version 2.6.7'''

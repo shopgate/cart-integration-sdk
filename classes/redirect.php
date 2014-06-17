@@ -304,6 +304,8 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		if (!$this->config->getShopNumber()) {
 			return '';
 		}
+		
+		$url .= $this->processQueryString($url);
 
 		if(!$this->isRedirectAllowed() || !$this->isMobileRequest() || !$autoRedirect || (($this->redirectType == 'default') && !$this->enableDefaultRedirect)) {
 			return $this->getJsHeader($url);
@@ -613,6 +615,21 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	 */
 	protected function setAdditionalHttpHeaders() {
 		header('Vary: User-Agent');
+	}
+	
+	/**
+	 * Passes allowed get params to the url as querystring
+	 * 
+	 * @param string $url
+	 * @return string $url
+	 */
+	protected function processQueryString($url) {
+		$queryDataKeys = array_intersect_key($this->config->getRedirectableGetParams(), array_keys($_GET));
+		$queryData = array_intersect_key($_GET, array_flip($queryDataKeys));
+		
+		$connector = preg_match('/\?/', $url) ? "&" : "?";
+		
+		return count($queryData) ? $connector .http_build_query($queryData) : "";
 	}
 
 	#############################
