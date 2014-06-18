@@ -629,7 +629,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		
 		$connector = preg_match('/\?/', $url) ? "&" : "?";
 		
-		return count($queryData) ? $connector .http_build_query($queryData, "", "&", PHP_QUERY_RFC3986) : "";
+		return count($queryData) ? $connector .http_build_query($queryData) : "";
 	}
 
 	#############################
