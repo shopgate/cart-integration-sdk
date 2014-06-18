@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.6.x'''
+* Bugfix für das encoding von Get Parameter beim mobilen Redirect
+
 '''Version 2.6.8'''
 * Durchreichen von Get Parametern für den mobilen Redirect bezüglich tracking
 * Methode ping um XML Pfade erweitert
@@ -277,6 +280,9 @@
 
 
 '''English'''
+
+'''Version 2.6.x'''
+* bugfix for the encoding of get params while redirecting mobile
 
 '''Version 2.6.8'''
 * passthrough of get params for mobile redirect related to tracking
