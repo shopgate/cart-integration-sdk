@@ -1034,7 +1034,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			preg_match('/^(?P<protocol>http(s)?:\/\/)api.(?P<hostname>[^\/]+)\/merchant.*$/', $merchantApiUrl, $matches);
 			$protocol = (!empty($matches['protocol']) ? $matches['protocol'] : 'https://');
 			$hostname = (!empty($matches['hostname']) ? $matches['hostname'] : 'shopgate.com');
-			$requestServerHost = $protocol.$subdomain.$hostname;
+			$requestServerHost = "{$protocol}{$subdomain}.{$hostname}";
 		}
 		
 		return $requestServerHost . '/oauth/' . $shopgateOAuthActionName;
