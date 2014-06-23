@@ -624,7 +624,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	 * @return string $url
 	 */
 	protected function processQueryString($url) {
-		$queryDataKeys = array_intersect_key($this->config->getRedirectableGetParams(), array_keys($_GET));
+		$queryDataKeys = array_intersect($this->config->getRedirectableGetParams(), array_keys($_GET));
 		$queryData = array_intersect_key($_GET, array_flip($queryDataKeys));
 		
 		$connector = preg_match('/\?/', $url) ? "&" : "?";
