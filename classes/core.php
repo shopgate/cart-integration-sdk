@@ -1837,27 +1837,29 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @return mixed
 	 * @throws ShopgateLibraryException
 	 */
-	protected final function executeLoaders(array $loaders/*, &$csvArray, $item[, ...]*/)
+	protected final function executeLoaders(array $loaders)
 	{
 		$arguments = func_get_args();
 		array_shift($arguments);
-	
+
 		foreach ($loaders as $method) {
 			if (method_exists($this, $method)) {
 				$this->log("Calling function \"{$method}\": Actual memory usage before method: " . $this->getMemoryUsageString(), ShopgateLogger::LOGTYPE_DEBUG);
 				try {
 					$result = call_user_func_array( array( $this, $method ), $arguments );
+				} catch (ShopgateLibraryException $e) {
+					// pass through known Shopgate Library Exceptions
+					throw $e;
 				} catch (Exception $e) {
-					throw new ShopgateLibraryException("An exception has been thrown in loader method \"{$method}\". Memory usage ".$this->getMemoryUsageString()." Exception '".get_class($e)."': [Code: {$e->getCode()}] {$e->getMessage()}");
+					throw new ShopgateLibraryException("An unknown exception has been thrown in loader method \"{$method}\". Memory usage ".$this->getMemoryUsageString()." Exception '".get_class($e)."': [Code: {$e->getCode()}] {$e->getMessage()}");
 				}
 
- 				if($result) {
- 					// put back the result into argument-list (&$csvArray)
+				if ($result) {
 					$arguments[0] = $result;
- 				}
+				}
 			}
 		}
-		
+
 		return $arguments[0];
 	}
 	
