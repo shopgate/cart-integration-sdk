@@ -24,7 +24,7 @@
 ###################################################################################
 # define constants
 ###################################################################################
-define('SHOPGATE_LIBRARY_VERSION', '2.6.8');
+define('SHOPGATE_LIBRARY_VERSION', '2.6.5');
 define('SHOPGATE_LIBRARY_ENCODING' , 'UTF-8');
 define('SHOPGATE_BASE_DIR', realpath(dirname(__FILE__).'/../'));
 
@@ -1088,6 +1088,9 @@ abstract class ShopgateObject {
 	 * @return string The UTF-8 decoded string.
 	 */
 	protected function convertEncoding($string, $destinationEncoding, $sourceEncoding, $useIconv = false) {
+
+		$string = $this->unicodeEscapeSequences($string);
+
 		if (function_exists('mb_convert_encoding') && !$useIconv) {
 			return mb_convert_encoding($string, $destinationEncoding, $sourceEncoding);
 		} else {
@@ -1108,6 +1111,19 @@ abstract class ShopgateObject {
 			
 			return @iconv($sourceEncoding, $destinationEncoding.'//IGNORE', $string);
 		}
+	}
+
+	/**
+	 * escape the unicode sequences
+	 *
+	 * @param $str
+	 *
+	 * @return mixed
+	 */
+	protected function unicodeEscapeSequences($str) {
+		$working = json_encode($str);
+		$working = preg_replace('/\\\u([0-9a-z]{4})/', '&#x$1;', $working);
+		return json_decode($working);
 	}
 
 	/**
@@ -1825,25 +1841,25 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	{
 		$arguments = func_get_args();
 		array_shift($arguments);
-	
+
 		foreach ($loaders as $method) {
 			if (method_exists($this, $method)) {
 				$this->log("Calling function \"{$method}\": Actual memory usage before method: " . $this->getMemoryUsageString(), ShopgateLogger::LOGTYPE_DEBUG);
 				try {
 					$result = call_user_func_array( array( $this, $method ), $arguments );
 				} catch (ShopgateLibraryException $e) {
-                    // pass through known Shopgate Library Exceptions  
-                    throw $e;
-                } catch (Exception $e) {
+					// pass through known Shopgate Library Exceptions
+					throw $e;
+				} catch (Exception $e) {
 					throw new ShopgateLibraryException("An unknown exception has been thrown in loader method \"{$method}\". Memory usage ".$this->getMemoryUsageString()." Exception '".get_class($e)."': [Code: {$e->getCode()}] {$e->getMessage()}");
 				}
 
- 				if ($result) {
+				if ($result) {
 					$arguments[0] = $result;
- 				}
+				}
 			}
 		}
-		
+
 		return $arguments[0];
 	}
 	
