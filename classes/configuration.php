@@ -1412,6 +1412,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_get_customer = $value;
 	}
 
+	public function setEnableRegisterCustomer($value) {
+		$this->enable_register_customer = $value;
+	}
+
 	public function setEnableGetDebugInfo($value) {
 		$this->enable_get_debug_info = $value;
 	}
@@ -1466,10 +1470,6 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 
 	public function setEnableSetSettings($value) {
 		$this->enable_set_settings = $value;
-	}
-	
-	public function setEnableRegisterCustomer($value) {
-		$this->enable_register_customer = $value;
 	}
 	
 	public function setEnableReceiveAuthorization($value) {
