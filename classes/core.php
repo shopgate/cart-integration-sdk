@@ -1122,7 +1122,7 @@ abstract class ShopgateObject {
 	 */
 	protected function unicodeEscapeSequences($str) {
 		$working = json_encode($str);
-		$working = preg_replace('/\\\u([0-9a-z]{4})/', '&#x$1;', $working);
+		$working = preg_replace('/\\\u([0-9a-f]{4})/', '&#x$1;', $working);
 		return json_decode($working);
 	}
 
