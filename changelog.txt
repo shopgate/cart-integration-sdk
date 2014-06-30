@@ -2,6 +2,7 @@
 
 '''Version 2.6.x'''
 * Bugfix für das encoding von Get Parameter beim mobilen Redirect
+* Bugfix für das filtern von Get Parametern beim mobilen Redirect
 * Bugfix für das encoding von unicode
 
 '''Version 2.6.8'''
@@ -284,6 +285,7 @@
 
 '''Version 2.6.x'''
 * bugfix for the encoding of get params while redirecting mobile
+* bugfix for the filtering of get params while redirecting mobile
 * Bugfix encoding unicode
 
 '''Version 2.6.8'''
