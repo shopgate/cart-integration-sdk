@@ -155,7 +155,6 @@ class ShopgateLibraryException extends Exception {
 	
 	const PLUGIN_API_NO_ORDER_NUMBER = 30;
 	const PLUGIN_API_NO_CART = 31;
-	const PLUGIN_API_NO_ITEMS = 32;
 	const PLUGIN_API_INVALID_BACKEND_CREDENTIALS = 34;
 	const PLUGIN_API_NO_USER = 35;
 	const PLUGIN_API_NO_PASS = 36;
@@ -247,7 +246,6 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_API_NO_ORDER_NUMBER => 'parameter "order_number" missing',
 		self::PLUGIN_API_NO_CART => 'parameter "cart" missing',
 		self::PLUGIN_API_NO_ITEMS => 'parameter "items" missing',
-		self::PLUGIN_API_INVALID_BACKEND_CREDENTIALS => 'invalid backend credentials',
 		self::PLUGIN_API_NO_USER => 'parameter "user" missing',
 		self::PLUGIN_API_NO_PASS => 'parameter "pass" missing',
 		self::PLUGIN_API_NO_USER_DATA => 'parameter "user_data" missing',
