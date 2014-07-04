@@ -24,7 +24,7 @@
 ###################################################################################
 # define constants
 ###################################################################################
-define('SHOPGATE_LIBRARY_VERSION', '2.6.5');
+define('SHOPGATE_LIBRARY_VERSION', '2.6.9');
 define('SHOPGATE_LIBRARY_ENCODING' , 'UTF-8');
 define('SHOPGATE_BASE_DIR', realpath(dirname(__FILE__).'/../'));
 
@@ -182,6 +182,7 @@ class ShopgateLibraryException extends Exception {
 	const PLUGIN_WRONG_USERNAME_OR_PASSWORD = 71;
 	const PLUGIN_CUSTOMER_ACCOUNT_NOT_CONFIRMED =72;
 	const PLUGIN_CUSTOMER_UNKNOWN_ERROR =73;
+	const PLUGIN_MISSING_ACCOUNT_PERMISSIONS = 74;
 	
 	const PLUGIN_FILE_DELETE_ERROR = 79;
 	const PLUGIN_FILE_NOT_FOUND = 80;
@@ -280,6 +281,7 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_WRONG_USERNAME_OR_PASSWORD => 'wrong username or password',
 		self::PLUGIN_CUSTOMER_ACCOUNT_NOT_CONFIRMED => 'customer account not confirmed',
 		self::PLUGIN_CUSTOMER_UNKNOWN_ERROR => 'unknown error while customer login',
+		self::PLUGIN_MISSING_ACCOUNT_PERMISSIONS => 'missing account permissions',
 		
 		self::PLUGIN_FILE_DELETE_ERROR => 'cannot delete file(s)',
 		self::PLUGIN_FILE_NOT_FOUND => 'file not found',

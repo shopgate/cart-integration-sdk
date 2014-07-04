@@ -1,9 +1,13 @@
 '''Deutsch'''
 
-'''Version 2.6.x'''
+'''Version 2.6.10'''
+* Verschwundene Konstante PLUGIN_API_NO_ITEMS wieder hinzugefügt.
+
+
 * Bugfix für das encoding von Get Parameter beim mobilen Redirect
 * Bugfix für das filtern von Get Parametern beim mobilen Redirect
 * Bugfix für das encoding von unicode
+* Neue Fehler-Code-Konstante PLUGIN_MISSING_ACCOUNT_PERMISSIONS
 
 '''Version 2.6.8'''
 * Durchreichen von Get Parametern für den mobilen Redirect bezüglich tracking
@@ -283,10 +287,14 @@
 
 '''English'''
 
-'''Version 2.6.x'''
+'''Version 2.6.10'''
+* added a missing constant PLUGIN_API_NO_ITEMS.
+
+'''Version 2.6.9'''
 * bugfix for the encoding of get params while redirecting mobile
 * bugfix for the filtering of get params while redirecting mobile
 * Bugfix encoding unicode
+* new error code constant PLUGIN_MISSING_ACCOUNT_PERMISSIONS
 
 '''Version 2.6.8'''
 * passthrough of get params for mobile redirect related to tracking
