@@ -1,6 +1,9 @@
 '''Deutsch'''
 
-'''Version 2.6.9'''
+'''Version 2.6.10'''
+* Verschwundene Konstante PLUGIN_API_NO_ITEMS wieder hinzugefügt.
+
+
 * Bugfix für das encoding von Get Parameter beim mobilen Redirect
 * Bugfix für das filtern von Get Parametern beim mobilen Redirect
 * Bugfix für das encoding von unicode
@@ -283,6 +286,9 @@
 
 
 '''English'''
+
+'''Version 2.6.10'''
+* added a missing constant PLUGIN_API_NO_ITEMS.
 
 '''Version 2.6.9'''
 * bugfix for the encoding of get params while redirecting mobile
