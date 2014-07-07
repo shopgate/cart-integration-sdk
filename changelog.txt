@@ -1,8 +1,10 @@
 '''Deutsch'''
 
+'''Version 2.6.x'''
+* Einführung von OAuth als zusätzlicher Authentifizierungs-Service zur Shopgate MerchantAPI.
+
 '''Version 2.6.10'''
 * Verschwundene Konstante PLUGIN_API_NO_ITEMS wieder hinzugefügt.
-
 
 * Bugfix für das encoding von Get Parameter beim mobilen Redirect
 * Bugfix für das filtern von Get Parametern beim mobilen Redirect
@@ -286,6 +288,9 @@
 
 
 '''English'''
+
+'''Version 2.6.x'''
+* included OAuth as an additional authentication service to connect with the Shopgate MerchantAPI.
 
 '''Version 2.6.10'''
 * added a missing constant PLUGIN_API_NO_ITEMS.
