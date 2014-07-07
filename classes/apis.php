@@ -1993,7 +1993,7 @@ class ShopgatePluginApiResponseAppJson extends ShopgatePluginApiResponse {
  */
 abstract class ShopgatePluginApiResponseExport extends ShopgatePluginApiResponse {
 	public function setData($data) {
-		if (!file_exists($data)) {
+		if (!file_exists($data) && !preg_match("/^php/", $data)) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_NOT_FOUND, 'File: '.$data, true);
 		}
 		
@@ -2001,6 +2001,10 @@ abstract class ShopgatePluginApiResponseExport extends ShopgatePluginApiResponse
 	}
 	
 	public function send() {
+		if (preg_match("/^php/", $this->data)) { // don't output files when the "file" is a stream
+			exit;
+		}
+		
 		$fp = @fopen($this->data, 'r');
 		if (!$fp) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR, 'File: '.$this->data, true);
