@@ -2355,7 +2355,9 @@ abstract class ShopgateFileBuffer extends ShopgateObject implements ShopgateFile
 		$this->buffer = array();
 		
 		if (empty($this->fileHandle)) {
-			$filePath = $this->filePath.".tmp";
+			if (!preg_match("/^php/", $filePath)) {
+				$filePath = $this->filePath.".tmp";
+			}
 			$this->log('Trying to create "'.basename($filePath).'". ', 'access');
 			
 			$this->fileHandle = @fopen($filePath, 'w');
@@ -2429,12 +2431,14 @@ abstract class ShopgateFileBuffer extends ShopgateObject implements ShopgateFile
 		
 		fclose($this->fileHandle);
 		$this->fileHandle = null;
-
-		// FIX for Windows Servers
-		if (file_exists($this->filePath)) {
-			unlink($this->filePath);
+		
+		if (!preg_match("/^php/", $this->filePath)) {
+			// FIX for Windows Servers
+			if (file_exists($this->filePath)) {
+				unlink($this->filePath);
+			}
+			rename($this->filePath.".tmp", $this->filePath);
 		}
-		rename($this->filePath.".tmp", $this->filePath);
 
 		$this->log('Fertig, '.basename($this->filePath).' wurde erfolgreich erstellt', "access");
 		$duration = time() - $this->timeStart;
