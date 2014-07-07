@@ -509,9 +509,9 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_get_settings = 0;
 		$this->enable_set_settings = 1;
 		$this->enable_register_customer = 0;
-		$this->enable_receive_authorization = 1;
+		$this->enable_receive_authorization = 0;
 
-		$this->sma_auth_service_class_name = ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_OAUTH;
+		$this->sma_auth_service_class_name = ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_SHOPGATE;
 		
 		$this->country = 'DE';
 		$this->language = 'de';
