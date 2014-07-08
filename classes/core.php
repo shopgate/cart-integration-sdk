@@ -219,6 +219,8 @@ class ShopgateLibraryException extends Exception {
 	const CART_ITEM_PRODUCT_NOT_FOUND = 301;
 	const CART_ITEM_REQUESTED_QUANTITY_NOT_AVAILABLE = 302;
 	const CART_ITEM_INPUT_VALIDATION_FAILED = 303;
+	const CART_ITEM_REQUESTED_QUANTITY_UNDER_MINIMUM_QUANTITY = 304;
+	const CART_ITEM_REQUESTED_QUANTITY_OVER_MAXIMUM_QUANTITY = 305;
 	
 	// extended error code format that contains information on multiple errors
 	const MULTIPLE_ERRORS = 998;
