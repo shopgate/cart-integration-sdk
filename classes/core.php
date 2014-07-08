@@ -203,8 +203,7 @@ class ShopgateLibraryException extends Exception {
 	
 	// OAuth errors
 	const SHOPGATE_OAUTH_NO_CONNECTION = 115;
-	const SHOPGATE_OAUTH_INVALID_RESPONSE = 116;
-	const SHOPGATE_OAUTH_MISSING_ACCESS_TOKEN = 117;
+	const SHOPGATE_OAUTH_MISSING_ACCESS_TOKEN = 116;
 	
 	// Authentication errors
 	const AUTHENTICATION_FAILED = 120;
@@ -256,7 +255,7 @@ class ShopgateLibraryException extends Exception {
 		self::PLUGIN_API_UNKNOWN_SHOP_NUMBER => 'unknown shop number received',
 		
 		self::PLUGIN_API_INVALID_ACTION => 'invalid action call',
-		self::PLUGIN_API_ADMIN_LOGIN_REQUIRED => 'the requested action needs the user possess shop backend access rights',
+		self::PLUGIN_API_ADMIN_LOGIN_REQUIRED => 'login/access rights required',
 		
 		self::PLUGIN_API_NO_ORDER_NUMBER => 'parameter "order_number" missing',
 		self::PLUGIN_API_NO_CART => 'parameter "cart" missing',
@@ -304,7 +303,6 @@ class ShopgateLibraryException extends Exception {
 
 		// OAuth errors
 		self::SHOPGATE_OAUTH_NO_CONNECTION => 'no connection to shopgate server',
-		self::SHOPGATE_OAUTH_INVALID_RESPONSE => 'error parsing response',
 		self::SHOPGATE_OAUTH_MISSING_ACCESS_TOKEN => 'no oauth access token received',
 		
 		// File errors
@@ -893,9 +891,10 @@ class ShopgateBuilder {
 				break;
 			default:
 				// undefined auth service
+				trigger_error('Invalid SMA-Auth-Service defined - this should not happen with valid plugin code', E_USER_ERROR);
 				break;
 		}
-		// -> PluginAPI auth service (actually the plugin API supports only )
+		// -> PluginAPI auth service (currently the plugin API supports only one auth service)
 		$spaAuthService = new ShopgateAuthenticationServiceShopgate($this->config->getCustomerNumber(), $this->config->getApikey());
 //		switch($spaAuthServiceClassName = $this->config->getSpaAuthServiceClassName()) {
 //			case ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_SHOPGATE:
@@ -966,6 +965,7 @@ class ShopgateBuilder {
 				break;
 			default:
 				// undefined auth service
+				trigger_error('Invalid SMA-Auth-Service defined - this should not happen with valid plugin code', E_USER_ERROR);
 				break;
 		}
 		

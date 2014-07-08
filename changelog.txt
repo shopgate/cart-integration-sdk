@@ -4,7 +4,6 @@
 * Einführung von OAuth als zusätzlicher Authentifizierungs-Service zur Shopgate MerchantAPI.
 * Unterstützung für Streaming-Ausgabe der Exporte via php://out
 
-
 '''Version 2.6.10'''
 * Verschwundene Konstante PLUGIN_API_NO_ITEMS wieder hinzugefügt.
 
