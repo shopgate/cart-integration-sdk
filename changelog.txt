@@ -4,9 +4,9 @@
 * Verschwundene Konstante PLUGIN_API_NO_ITEMS wieder hinzugefügt.
 
 '''Version 2.6.9'''
-* Bugfix für das encoding von Get Parameter beim mobilen Redirect
-* Bugfix für das filtern von Get Parametern beim mobilen Redirect
-* Bugfix für das encoding von unicode
+* Bugfix für das Encoding von Get Parameter beim mobilen Redirect
+* Bugfix für das Filtern von Get Parametern beim mobilen Redirect
+* Bugfix für das Encoding von unicode
 * Neue Fehler-Code-Konstante PLUGIN_MISSING_ACCOUNT_PERMISSIONS
 
 '''Version 2.6.8'''
