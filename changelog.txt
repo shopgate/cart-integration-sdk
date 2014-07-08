@@ -1,15 +1,20 @@
 '''Deutsch'''
 
-'''Version 2.6.x'''
+'''Version 2.6.11'''
 * Einführung von OAuth als zusätzlicher Authentifizierungs-Service zur Shopgate MerchantAPI.
+* Unterstützung für Streaming-Ausgabe der Exporte via php://out
+
 
 '''Version 2.6.10'''
 * Verschwundene Konstante PLUGIN_API_NO_ITEMS wieder hinzugefügt.
 
-* Bugfix für das encoding von Get Parameter beim mobilen Redirect
-* Bugfix für das filtern von Get Parametern beim mobilen Redirect
-* Bugfix für das encoding von unicode
+'''Version 2.6.9'''
+* Bugfix für das Encoding von Get Parameter beim mobilen Redirect
+* Bugfix für das Filtern von Get Parametern beim mobilen Redirect
+* Bugfix für das Encoding von unicode
 * Neue Fehler-Code-Konstante PLUGIN_MISSING_ACCOUNT_PERMISSIONS
+* Neue Fehler-Code-Konstante CART_ITEM_REQUESTED_QUANTITY_UNDER_MINIMUM_QUANTITY
+* Neue Fehler-Code-Konstante CART_ITEM_REQUESTED_QUANTITY_OVER_MAXIMUM_QUANTITY
 
 '''Version 2.6.8'''
 * Durchreichen von Get Parametern für den mobilen Redirect bezüglich tracking
@@ -289,11 +294,14 @@
 
 '''English'''
 
-'''Version 2.6.x'''
+'''Version 2.6.11'''
 * included OAuth as an additional authentication service to connect with the Shopgate MerchantAPI.
+* supports streaming exports to php://out
 
 '''Version 2.6.10'''
 * added a missing constant PLUGIN_API_NO_ITEMS.
+* added a new constant CART_ITEM_REQUESTED_QUANTITY_UNDER_MINIMUM_QUANTITY
+* added a new constant CART_ITEM_REQUESTED_QUANTITY_OVER_MAXIMUM_QUANTITY
 
 '''Version 2.6.9'''
 * bugfix for the encoding of get params while redirecting mobile
