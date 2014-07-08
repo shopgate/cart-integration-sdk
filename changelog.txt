@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.6.11'''
+* Unterstützung für Streaming-Ausgabe der Exporte via php://out
+
 '''Version 2.6.10'''
 * Verschwundene Konstante PLUGIN_API_NO_ITEMS wieder hinzugefügt.
 
@@ -286,6 +289,9 @@
 
 
 '''English'''
+
+'''Versuion 2.6.11'''
+* supports streaming exports to php://out
 
 '''Version 2.6.10'''
 * added a missing constant PLUGIN_API_NO_ITEMS.
