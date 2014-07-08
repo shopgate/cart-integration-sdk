@@ -3,7 +3,7 @@
 '''Version 2.6.10'''
 * Verschwundene Konstante PLUGIN_API_NO_ITEMS wieder hinzugefügt.
 
-
+'''Version 2.6.9'''
 * Bugfix für das encoding von Get Parameter beim mobilen Redirect
 * Bugfix für das filtern von Get Parametern beim mobilen Redirect
 * Bugfix für das encoding von unicode
