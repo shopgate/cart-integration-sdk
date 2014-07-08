@@ -11,6 +11,8 @@
 * Bugfix für das Filtern von Get Parametern beim mobilen Redirect
 * Bugfix für das Encoding von unicode
 * Neue Fehler-Code-Konstante PLUGIN_MISSING_ACCOUNT_PERMISSIONS
+* Neue Fehler-Code-Konstante CART_ITEM_REQUESTED_QUANTITY_UNDER_MINIMUM_QUANTITY
+* Neue Fehler-Code-Konstante CART_ITEM_REQUESTED_QUANTITY_OVER_MAXIMUM_QUANTITY
 
 '''Version 2.6.8'''
 * Durchreichen von Get Parametern für den mobilen Redirect bezüglich tracking
@@ -295,6 +297,8 @@
 
 '''Version 2.6.10'''
 * added a missing constant PLUGIN_API_NO_ITEMS.
+* added a new constant CART_ITEM_REQUESTED_QUANTITY_UNDER_MINIMUM_QUANTITY
+* added a new constant CART_ITEM_REQUESTED_QUANTITY_OVER_MAXIMUM_QUANTITY
 
 '''Version 2.6.9'''
 * bugfix for the encoding of get params while redirecting mobile
