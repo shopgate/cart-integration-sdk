@@ -883,11 +883,11 @@ class ShopgateBuilder {
 		switch($this->config->getSmaAuthServiceClassName()) {
 			case ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_SHOPGATE:
 				$smaAuthService = new ShopgateAuthenticationServiceShopgate($this->config->getCustomerNumber(), $this->config->getApikey());
-				$merchantApi = new ShopgateMerchantApi($smaAuthService, $this->config->getApiUrl(), $this->config->getShopNumber());
+				$merchantApi = new ShopgateMerchantApi($smaAuthService, $this->config->getShopNumber(), $this->config->getApiUrl());
 				break;
 			case ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_OAUTH:
 				$smaAuthService = new ShopgateAuthenticationServiceOAuth($this->config->getOauthAccessToken());
-				$merchantApi = new ShopgateMerchantApi($smaAuthService, $this->config->getApiUrl());
+				$merchantApi = new ShopgateMerchantApi($smaAuthService, null, $this->config->getApiUrl());
 				break;
 			default:
 				// undefined auth service
@@ -957,11 +957,11 @@ class ShopgateBuilder {
 		switch($smaAuthServiceClassName = $this->config->getSmaAuthServiceClassName()) {
 			case ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_SHOPGATE:
 				$smaAuthService = new ShopgateAuthenticationServiceShopgate($this->config->getCustomerNumber(), $this->config->getApikey());
-				$merchantApi = new ShopgateMerchantApi($smaAuthService, $this->config->getApiUrl(), $this->config->getShopNumber());
+				$merchantApi = new ShopgateMerchantApi($smaAuthService, $this->config->getShopNumber(), $this->config->getApiUrl());
 				break;
 			case ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_OAUTH:
 				$smaAuthService = new ShopgateAuthenticationServiceOAuth($this->config->getOauthAccessToken());
-				$merchantApi = new ShopgateMerchantApi($smaAuthService, $this->config->getApiUrl());
+				$merchantApi = new ShopgateMerchantApi($smaAuthService, null, $this->config->getApiUrl());
 				break;
 			default:
 				// undefined auth service

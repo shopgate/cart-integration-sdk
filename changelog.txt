@@ -1,9 +1,7 @@
 '''Deutsch'''
 
-'''Version 2.6.*'''
+'''Version 2.7.0'''
 * neues Attribute für XML Export tierprices (AggregateChildren) eingefügt
-
-'''Version 2.6.11'''
 * Einführung von OAuth als zusätzlicher Authentifizierungs-Service zur Shopgate MerchantAPI.
 * Unterstützung für Streaming-Ausgabe der Exporte via php://out
 

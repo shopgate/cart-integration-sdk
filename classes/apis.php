@@ -1297,10 +1297,10 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 	 */
 	private $apiUrl;
 	
-	public function __construct(ShopgateAuthenticationServiceInterface $authService, $apiUrl, $shopNumber = null) {
+	public function __construct(ShopgateAuthenticationServiceInterface $authService, $shopNumber = null, $apiUrl = null) {
 		$this->authService = $authService;
-		$this->apiUrl = $apiUrl;
 		$this->shopNumber = $shopNumber;
+		$this->apiUrl = $apiUrl;
 	}
 	
 	/**
