@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.7.x'''
+* Bugfix in der receive_authorization PluginAPI-Action
+
 '''Version 2.7.0'''
 * neues Attribute für XML Export tierprices (AggregateChildren) eingefügt
 * Einführung von OAuth als zusätzlicher Authentifizierungs-Service zur Shopgate MerchantAPI.
@@ -294,7 +297,10 @@
 
 '''English'''
 
-'''Version 2.6.*'''
+'''Version 2.7.x'''
+* fixed a bug in the receive_authorization PluginAPI action
+
+'''Version 2.7.0'''
 * added new attribute (AggregateChildren) for xml / tierprices
 
 '''Version 2.6.11'''

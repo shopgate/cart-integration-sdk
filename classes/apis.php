@@ -1106,7 +1106,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		
 		// at this Point there is a valid access token available, since this point would not be reached otherwise
 		// -> get a new ShopgateMerchantApi object, containing a fully configured OAuth auth service including the access token
-		$this->merchantApi = new ShopgateMerchantApi($smaAuthService, $this->config->getApiUrl());
+		$this->merchantApi = new ShopgateMerchantApi($smaAuthService, null, $this->config->getApiUrl());
 		
 		// load all shop info via the MerchantAPI and store it in the config (via OAuth and a valid access token)
 		$shopInfo = $this->merchantApi->getShopInfo()->getData();
