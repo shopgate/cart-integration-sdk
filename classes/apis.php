@@ -136,6 +136,9 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		}
 		
 		try {
+			// do all extended auth service initialization stuff before actually using it
+			$this->authService->startup($this->config);
+			
 			if(!in_array($this->params['action'], $this->authlessActionWhitelist)) {
 				$this->authService->checkAuthentication();
 			}
@@ -1672,6 +1675,13 @@ class ShopgateAuthenticationServiceShopgate extends ShopgateObject implements Sh
 		$this->startNewSession();
 	}
 
+	/**
+	 * @param ShopgateConfig $config
+	 */
+	public function startup($config = null) {
+		// nothing to do here
+	}
+	
 	public function startNewSession() {
 		$this->timestamp = time();
 	}
@@ -1782,6 +1792,43 @@ class ShopgateAuthenticationServiceOAuth extends ShopgateObject implements Shopg
 		$this->accessToken = $accessToken;
 		
 		$this->startNewSession();
+	}
+
+	/**
+	 * @param ShopgateConfig $config
+	 */
+	public function startup($config = null) {
+		// needs to check if an old config is presen without any access token
+		if($config->getCustomerNumber() && $config->getShopNumber() && $config->getApiKey() && !$config->getOauthAccessToken()) {
+			// needs to load the non-oauth-url since the new access token needs to be generated using the classig shopgate merchant api authentication 
+			$apiUrls = $config->getApiUrls();
+			$apiUrl = $config->getServer() == 'custom' ? $config->getApiUrl() : $apiUrls[$config->getServer()][ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_SHOPGATE];
+			$smaAuthServiceShopgate = new ShopgateAuthenticationServiceShopgate($config->getCustomerNumber(), $config->getApiKey());
+			$smaAuthServiceShopgate->startup($config);
+			$classicSma = new ShopgateMerchantApi($smaAuthServiceShopgate, $config->getShopNumber(), $apiUrl);
+			
+			// the "get_shop_info"
+			$shopInfo = $classicSma->getShopInfo()->getData();
+			
+			// set newly generated access token
+			$this->accessToken = $shopInfo['oauth_access_token'];
+			
+			// create a new settings array
+			$shopgateSettingsNew = array(
+				$field = 'oauth_access_token'	=> $shopInfo[$field],
+				$field = 'customer_number'		=> $shopInfo[$field],
+				$field = 'shop_number'			=> $shopInfo[$field],
+				$field = 'apikey'				=> $shopInfo[$field],
+				$field = 'alias'				=> $shopInfo[$field],
+				$field = 'cname'				=> $shopInfo[$field],
+			);
+
+			// save all shop config data to plugin-config using the configs save method
+			$config->load($shopgateSettingsNew);
+			$config->save(array_keys($shopgateSettingsNew), true);
+		} elseif(!$this->accessToken && $config->getOauthAccessToken()) {
+			$this->accessToken = $config->getOauthAccessToken();
+		}
 	}
 
 	public function startNewSession() {
@@ -2551,6 +2598,11 @@ interface ShopgateAuthenticationServiceInterface {
 	const HEADER_X_SHOPGATE_AUTH_TOKEN = 'X-Shopgate-Auth-Token';
 	const PHP_X_SHOPGATE_AUTH_USER  = 'HTTP_X_SHOPGATE_AUTH_USER';
 	const PHP_X_SHOPGATE_AUTH_TOKEN = 'HTTP_X_SHOPGATE_AUTH_TOKEN';
+
+	/**
+	 * @param ShopgateConfig $config
+	 */
+	public function startup($config = null);
 
 	/**
 	 * @return array A list of all necessary post parameters for the authentication process

@@ -2,6 +2,7 @@
 
 '''Version 2.7.x'''
 * Bugfix in der receive_authorization PluginAPI-Action
+* Shops mit bereits eingerichtetem Shopgate-Plugin bekommen nun automatisch ein Oauth-Access-Token zugewiesen
 
 '''Version 2.7.0'''
 * neues Attribute für XML Export tierprices (AggregateChildren) eingefügt
@@ -299,6 +300,7 @@
 
 '''Version 2.7.x'''
 * fixed a bug in the receive_authorization PluginAPI action
+* shops that already have a configured SShopgate-Plugin, will now automatically get an oauth access token assigned
 
 '''Version 2.7.0'''
 * added new attribute (AggregateChildren) for xml / tierprices

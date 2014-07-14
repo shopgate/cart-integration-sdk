@@ -989,6 +989,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->server;
 	}
 
+	public function getApiUrls() {
+		return $this->api_urls;
+	}
+
 	public function getApiUrl() {
 		switch($this->server) {
 			default: // fall through to 'live'
@@ -1338,6 +1342,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 
 	public function setServer($value) {
 		$this->server = $value;
+	}
+
+	public function setApiUrls(/* fixed: $value */) {
+		// fixed value -> can't be changed
 	}
 
 	public function setApiUrl($value) {
@@ -2402,6 +2410,11 @@ interface ShopgateConfigInterface {
 	public function getServer();
 
 	/**
+	 * @return array => returns all possible fixed api urls
+	 */
+	public function getApiUrls();
+
+	/**
 	 * @return string If getServer() returns "live", ShopgateConfigInterface::SHOPGATE_API_URL_LIVE is returned.<br />
 	 *                 If getServer() returns "pg", ShopgateConfigInterface::SHOPGATE_API_URL_PG is returned.<br />
 	 *                 If getServer() returns "custom": A custom API url (empty or a string beginning with "http://" or "https://" followed by any number of non-whitespace characters) is returned.<br />
@@ -2823,6 +2836,11 @@ interface ShopgateConfigInterface {
 	 * @param string $value The server to use for Shopgate Merchant API communication ("live" or "pg" or "custom")
 	 */
 	public function setServer($value);
+
+	/**
+	 * the possible api urls are fixed!
+	 */
+	public function setApiUrls(/* fixed: $value */);
 
 	/**
 	 * @param string $value If $server is set to custom, Shopgate Merchant API calls will be made to this URL (empty or a string beginning with "http://" or "https://" followed by any number of non-whitespace characters)
