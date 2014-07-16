@@ -136,9 +136,6 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		}
 		
 		try {
-			// do all extended auth service initialization stuff before actually using it
-			$this->authService->startup($this->config);
-			
 			if(!in_array($this->params['action'], $this->authlessActionWhitelist)) {
 				$this->authService->checkAuthentication();
 			}
