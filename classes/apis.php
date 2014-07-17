@@ -1801,7 +1801,7 @@ class ShopgateAuthenticationServiceOAuth extends ShopgateObject implements Shopg
 			$apiUrls = $config->getApiUrls();
 			$apiUrl = $config->getServer() == 'custom' ? str_replace('/api/merchant2', '/api/merchant', $config->getApiUrl()) : $apiUrls[$config->getServer()][ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_SHOPGATE];
 			$smaAuthServiceShopgate = new ShopgateAuthenticationServiceShopgate($config->getCustomerNumber(), $config->getApiKey());
-			$smaAuthServiceShopgate->startup($config);
+			$smaAuthServiceShopgate->setup($config);
 			$classicSma = new ShopgateMerchantApi($smaAuthServiceShopgate, $config->getShopNumber(), $apiUrl);
 			
 			// the "get_shop_info" returns an oauth access token
