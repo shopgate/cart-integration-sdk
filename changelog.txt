@@ -1,7 +1,8 @@
 '''Deutsch'''
 
-'''Version 2.7.x'''
+'''Version 2.7.2'''
 * Bugfix für Inkonsistenz während Methodenumbenennung
+* Verschleiern des oauth_access_token bei der Ausgabe der Ping-Methode
 
 '''Version 2.7.1'''
 * Bugfix in der receive_authorization PluginAPI-Action
@@ -301,7 +302,8 @@
 
 '''English'''
 
-'''Version 2.7.x'''
+'''Version 2.7.2'''
+* obfuscation of the oauth_access_token on ping method output
 * bugfix for inconsistency while renaming of methods
 
 '''Version 2.7.1'''

@@ -249,9 +249,10 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	protected function ping() {
 		// obfuscate data relevant for authentication
 		$config = $this->config->toArray();
-		$config['customer_number']	= ShopgateLogger::OBFUSCATION_STRING;
-		$config['shop_number']		= ShopgateLogger::OBFUSCATION_STRING;
-		$config['apikey']			= ShopgateLogger::OBFUSCATION_STRING;
+		$config['customer_number']		= ShopgateLogger::OBFUSCATION_STRING;
+		$config['shop_number']			= ShopgateLogger::OBFUSCATION_STRING;
+		$config['apikey']				= ShopgateLogger::OBFUSCATION_STRING;
+		$config['oauth_access_token']	= ShopgateLogger::OBFUSCATION_STRING;
 
 		// prepare response data array
 		$this->responseData['pong'] = 'OK';
