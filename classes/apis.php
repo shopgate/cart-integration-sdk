@@ -1675,7 +1675,7 @@ class ShopgateAuthenticationServiceShopgate extends ShopgateObject implements Sh
 	/**
 	 * @param ShopgateConfig $config
 	 */
-	public function startup($config = null) {
+	public function startup(ShopgateConfig $config) {
 		// nothing to do here
 	}
 	
@@ -1794,7 +1794,7 @@ class ShopgateAuthenticationServiceOAuth extends ShopgateObject implements Shopg
 	/**
 	 * @param ShopgateConfig $config
 	 */
-	public function startup($config = null) {
+	public function startup(ShopgateConfig $config) {
 		// needs to check if an old config is presen without any access token
 		if($config->getCustomerNumber() && $config->getShopNumber() && $config->getApiKey() && !$config->getOauthAccessToken()) {
 			// needs to load the non-oauth-url since the new access token needs to be generated using the classig shopgate merchant api authentication 
@@ -1804,7 +1804,7 @@ class ShopgateAuthenticationServiceOAuth extends ShopgateObject implements Shopg
 			$smaAuthServiceShopgate->startup($config);
 			$classicSma = new ShopgateMerchantApi($smaAuthServiceShopgate, $config->getShopNumber(), $apiUrl);
 			
-			// the "get_shop_info"
+			// the "get_shop_info" returns an oauth access token
 			$shopInfo = $classicSma->getShopInfo()->getData();
 			
 			// set newly generated access token
@@ -1824,7 +1824,12 @@ class ShopgateAuthenticationServiceOAuth extends ShopgateObject implements Shopg
 			$config->load($shopgateSettingsNew);
 			$config->save(array_keys($shopgateSettingsNew), true);
 		} elseif(!$this->accessToken && $config->getOauthAccessToken()) {
+			// this would mean the data was somehow not in sync (should no be happening by default)
 			$this->accessToken = $config->getOauthAccessToken();
+		} else {
+			// skip this since the connection is fully functional or there has not been made any connection at all, yet
+			// -> missing data (except the oauth access token) is treated as "no valid connection available"
+			// -> in either case there is nothing to do here
 		}
 	}
 
@@ -2599,7 +2604,7 @@ interface ShopgateAuthenticationServiceInterface {
 	/**
 	 * @param ShopgateConfig $config
 	 */
-	public function startup($config = null);
+	public function startup(ShopgateConfig $config);
 
 	/**
 	 * @return array A list of all necessary post parameters for the authentication process
