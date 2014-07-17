@@ -1344,10 +1344,6 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->server = $value;
 	}
 
-	public function setApiUrls(/* fixed: $value */) {
-		// fixed value -> can't be changed
-	}
-
 	public function setApiUrl($value) {
 		$this->api_url = $value;
 	}
@@ -2836,11 +2832,6 @@ interface ShopgateConfigInterface {
 	 * @param string $value The server to use for Shopgate Merchant API communication ("live" or "pg" or "custom")
 	 */
 	public function setServer($value);
-
-	/**
-	 * the possible api urls are fixed!
-	 */
-	public function setApiUrls(/* fixed: $value */);
 
 	/**
 	 * @param string $value If $server is set to custom, Shopgate Merchant API calls will be made to this URL (empty or a string beginning with "http://" or "https://" followed by any number of non-whitespace characters)

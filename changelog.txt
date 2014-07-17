@@ -1,6 +1,6 @@
 '''Deutsch'''
 
-'''Version 2.7.x'''
+'''Version 2.7.1'''
 * Bugfix in der receive_authorization PluginAPI-Action
 * Shops mit bereits eingerichtetem Shopgate-Plugin bekommen nun automatisch ein Oauth-Access-Token zugewiesen
 
@@ -298,9 +298,9 @@
 
 '''English'''
 
-'''Version 2.7.x'''
+'''Version 2.7.1'''
 * fixed a bug in the receive_authorization PluginAPI action
-* shops that already have a configured SShopgate-Plugin, will now automatically get an oauth access token assigned
+* shops that already have a configured Shopgate-Plugin, will now automatically get an oauth access token assigned
 
 '''Version 2.7.0'''
 * added new attribute (AggregateChildren) for xml / tierprices

@@ -1673,9 +1673,9 @@ class ShopgateAuthenticationServiceShopgate extends ShopgateObject implements Sh
 	}
 
 	/**
-	 * @param ShopgateConfig $config
+	 * @param ShopgateConfigInterface $config
 	 */
-	public function startup(ShopgateConfig $config) {
+	public function setup(ShopgateConfigInterface $config) {
 		// nothing to do here
 	}
 	
@@ -1792,14 +1792,14 @@ class ShopgateAuthenticationServiceOAuth extends ShopgateObject implements Shopg
 	}
 
 	/**
-	 * @param ShopgateConfig $config
+	 * @param ShopgateConfigInterface $config
 	 */
-	public function startup(ShopgateConfig $config) {
-		// needs to check if an old config is presen without any access token
+	public function setup(ShopgateConfigInterface $config) {
+		// needs to check if an old config is present without any access token
 		if($config->getCustomerNumber() && $config->getShopNumber() && $config->getApiKey() && !$config->getOauthAccessToken()) {
-			// needs to load the non-oauth-url since the new access token needs to be generated using the classig shopgate merchant api authentication 
+			// needs to load the non-oauth-url since the new access token needs to be generated using the classic shopgate merchant api authentication 
 			$apiUrls = $config->getApiUrls();
-			$apiUrl = $config->getServer() == 'custom' ? $config->getApiUrl() : $apiUrls[$config->getServer()][ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_SHOPGATE];
+			$apiUrl = $config->getServer() == 'custom' ? str_replace('/api/merchant2', '/api/merchant', $config->getApiUrl()) : $apiUrls[$config->getServer()][ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_SHOPGATE];
 			$smaAuthServiceShopgate = new ShopgateAuthenticationServiceShopgate($config->getCustomerNumber(), $config->getApiKey());
 			$smaAuthServiceShopgate->startup($config);
 			$classicSma = new ShopgateMerchantApi($smaAuthServiceShopgate, $config->getShopNumber(), $apiUrl);
@@ -2602,9 +2602,9 @@ interface ShopgateAuthenticationServiceInterface {
 	const PHP_X_SHOPGATE_AUTH_TOKEN = 'HTTP_X_SHOPGATE_AUTH_TOKEN';
 
 	/**
-	 * @param ShopgateConfig $config
+	 * @param ShopgateConfigInterface $config
 	 */
-	public function startup(ShopgateConfig $config);
+	public function setup(ShopgateConfigInterface $config);
 
 	/**
 	 * @return array A list of all necessary post parameters for the authentication process
