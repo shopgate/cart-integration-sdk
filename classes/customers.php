@@ -28,6 +28,7 @@ class ShopgateCustomer extends ShopgateContainer {
 	protected $customer_id;
 	protected $customer_number;
 	protected $customer_token;
+	
 	protected $customer_groups;
 
 	protected $tax_class_key;
@@ -49,12 +50,12 @@ class ShopgateCustomer extends ShopgateContainer {
 	
 	protected $addresses;
 	
-	/** 
+	/**
 	 * @deprecated
 	 */
 	protected $customer_group;
 	
-	/** 
+	/**
 	 * @deprecated
 	 */
 	protected $customer_group_id;

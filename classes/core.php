@@ -2855,6 +2855,8 @@ interface ShopgateContainerVisitor {
 	public function visitCart(ShopgateCart $c);
 	public function visitOrder(ShopgateOrder $o);
 	public function visitExternalOrder(ShopgateExternalOrder $o);
+	public function visitExternalOrderTax(ShopgateExternalOrderTax $t);
+	public function visitExternalOrderExtraCost(ShopgateExternalOrderExtraCost $c);
 	public function visitOrderItem(ShopgateOrderItem $i);
 	public function visitExternalOrderItem(ShopgateExternalOrderItem $i);
 	public function visitSyncItem(ShopgateSyncItem $i);
@@ -2864,8 +2866,6 @@ interface ShopgateContainerVisitor {
 	public function visitOrderCustomField(ShopgateOrderCustomField $c);
 	public function visitShippingInfo(ShopgateShippingInfo $o);
 	public function visitOrderDeliveryNote(ShopgateDeliveryNote $d);
-	public function visitOrderTax(ShopgateOrderTax $t);
-	public function visitOrderExtraCost(ShopgateOrderExtraCost $c);
 	public function visitExternalCoupon(ShopgateExternalCoupon $c);
 	public function visitShopgateCoupon(ShopgateShopgateCoupon $c);
 	public function visitCategory(ShopgateCategory $d);
@@ -3093,6 +3093,30 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 		}
 	}
 
+	public function visitExternalOrderTax(ShopgateExternalOrderTax $t) {
+		$properties = $t->buildProperties();
+		$this->iterateSimpleProperties($properties);
+		
+		// create new object with utf-8 en- / decoded data
+		try {
+			$this->object = new ShopgateExternalOrderTax($properties);
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+
+	public function visitExternalOrderExtraCost(ShopgateExternalOrderExtraCost $c) {
+		$properties = $c->buildProperties();
+		$this->iterateSimpleProperties($properties);
+		
+		// create new object with utf-8 en- / decoded data
+		try {
+			$this->object = new ShopgateExternalOrderExtraCost($properties);
+		} catch (ShopgateLibraryException $e) {
+			$this->object = null;
+		}
+	}
+	
 	public function visitOrderItem(ShopgateOrderItem $i) {
 		// get properties
 		$properties = $i->buildProperties();
@@ -3217,31 +3241,6 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 			$this->object = null;
 		}
 	}
-	
-	public function visitOrderTax(ShopgateOrderTax $t) {
-		$properties = $t->buildProperties();
-		$this->iterateSimpleProperties($properties);
-		
-		// create new object with utf-8 en- / decoded data
-		try {
-			$this->object = new ShopgateOrderTax($properties);
-		} catch (ShopgateLibraryException $e) {
-			$this->object = null;
-		}
-	}
-
-	public function visitOrderExtraCost(ShopgateOrderExtraCost $c) {
-		$properties = $c->buildProperties();
-		$this->iterateSimpleProperties($properties);
-		
-		// create new object with utf-8 en- / decoded data
-		try {
-			$this->object = new ShopgateOrderExtraCost($properties);
-		} catch (ShopgateLibraryException $e) {
-			$this->object = null;
-		}
-	}
-	
 	
 	public function visitExternalCoupon(ShopgateExternalCoupon $c) {
 		$properties = $c->buildProperties();
@@ -3635,6 +3634,15 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 		$this->array = $properties;
 	}
 	
+	public function visitExternalOrderTax(ShopgateExternalOrderTax $t) {
+		// get properties and iterate (no complex types in ShopgateExternalOrderTax objects)
+		$this->array = $this->iterateSimpleProperties($t->buildProperties());
+	}
+	public function visitExternalOrderExtraCost(ShopgateExternalOrderExtraCost $c) {
+		// get properties and iterate (no complex types in ShopgateExternalOrderExtraCost objects)
+		$this->array = $this->iterateSimpleProperties($c->buildProperties());
+	}
+	
 	public function visitOrderItem(ShopgateOrderItem $i) {
 		// get properties
 		$properties = $i->buildProperties();
@@ -3761,15 +3769,6 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 		$this->array = $this->iterateSimpleProperties($d->buildProperties());
 	}
 
-	public function visitOrderTax(ShopgateOrderTax $t) {
-		// get properties and iterate (no complex types in ShopgateOrderTax objects)
-		$this->array = $this->iterateSimpleProperties($t->buildProperties());
-	}
-	public function visitOrderExtraCost(ShopgateOrderExtraCost $c) {
-		// get properties and iterate (no complex types in ShopgateOrderExtraCost objects)
-		$this->array = $this->iterateSimpleProperties($c->buildProperties());
-	}
-	
 	public function visitExternalCoupon(ShopgateExternalCoupon $c) {
 		// get properties and iterate (no complex types in ShopgateExternalCoupon objects)
 		$this->array = $this->iterateSimpleProperties($c->buildProperties());

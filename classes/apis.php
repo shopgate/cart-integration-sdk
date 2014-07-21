@@ -719,7 +719,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$this->responseData['shopgate_settings'] = $diff;
 	}
 
-	protected function getOrders(){
+	protected function getOrders() {
 		if (!isset($this->params['customer_token'])) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_NO_CUSTOMER_TOKEN);
 		}
@@ -1146,19 +1146,6 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		}
 	
 		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseAppJson($this->trace_id);
-	}
-
-	/**
-	 * Represents the "get_orders" action.
-	 *
-	 * @throws ShopgateLibraryException
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_orders
-	 * @todo
-	 */
-	protected function getOrders() {
-		/**** not yet implemented ****/
-
-		//if (!empty($this->params['external_customer_number'])) {
 	}
 
 	/**
