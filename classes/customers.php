@@ -27,10 +27,9 @@ class ShopgateCustomer extends ShopgateContainer {
 	
 	protected $customer_id;
 	protected $customer_number;
-	protected $customer_group;
 	protected $customer_token;
-	protected $customer_group_id;
-	
+	protected $customer_groups;
+
 	protected $tax_class_key;
 	protected $tax_class_id;
 	
@@ -50,11 +49,21 @@ class ShopgateCustomer extends ShopgateContainer {
 	
 	protected $addresses;
 	
+	/** 
+	 * @deprecated
+	 */
+	protected $customer_group;
 	
+	/** 
+	 * @deprecated
+	 */
+	protected $customer_group_id;
+
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitCustomer($this);
 	}
 	
+
 	
 	##########
 	# Setter #
@@ -76,6 +85,7 @@ class ShopgateCustomer extends ShopgateContainer {
 	
 	/**
 	 * @param string $value
+	 * @deprecated
 	 */
 	public function setCustomerGroup($value) {
 		$this->customer_group = $value;
@@ -90,9 +100,17 @@ class ShopgateCustomer extends ShopgateContainer {
 	
 	/**
 	 * @param string $value
+	 * @deprecated
 	 */
 	public function setCustomerGroupId($value) {
 		$this->customer_group_id = $value;
+	}
+
+	/**
+	 * @param ShopgateCustomerGroup[] $value
+	 */
+	public function setCustomerGroups($value) {
+		$this->customer_groups = $value;
 	}
 	
 	/**
@@ -179,7 +197,7 @@ class ShopgateCustomer extends ShopgateContainer {
 	 */
 	public function setCustomFields($value) {
 		if (!is_array($value)) {
-			$this->custom_fields = null;
+			$this->custom_fields = array();
 		}
 		
 		foreach ($value as $index => &$element) {
@@ -246,11 +264,12 @@ class ShopgateCustomer extends ShopgateContainer {
 	
 	/**
 	 * @return string
+	 * @deprecated
 	 */
 	public function getCustomerGroup() {
 		return $this->customer_group;
 	}
-	
+
 	/**
 	 * @return string
 	 */
@@ -260,9 +279,17 @@ class ShopgateCustomer extends ShopgateContainer {
 	
 	/**
 	 * @return string
+	 * @deprecated
 	 */
 	public function getCustomerGroupId() {
 		return $this->customer_group_id;
+	}
+
+	/**
+	 * @return ShopgateCustomerGroup[]
+	 */
+	public function getCustomerGroups() {
+		return $this->customer_groups;
 	}
 	
 	/**
@@ -328,6 +355,9 @@ class ShopgateCustomer extends ShopgateContainer {
 	 * @return ShopgateOrderCustomField[]
 	 */
 	public function getCustomFields() {
+		if(!is_array($this->custom_fields)) {
+			$this->custom_fields = array();
+		}
 		return $this->custom_fields;
 	}
 
@@ -354,6 +384,57 @@ class ShopgateCustomer extends ShopgateContainer {
 		}
 
 		return $addresses;
+	}
+}
+
+/**
+ * Class ShopgateCustomerGroup
+ */
+class ShopgateCustomerGroup extends ShopgateContainer {
+	protected $id;
+	protected $name;
+
+	##########
+	# Setter #
+	##########
+	
+	/**
+	 * @param string $value
+	 */
+	public function setId($value) {
+		$this->id = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setName($value) {
+		$this->name = $value;
+	}
+
+	##########
+	# Getter #
+	##########
+	
+	/**
+	 * @return string
+	 */
+	public function getId() {
+		return $this->id;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getName() {
+		return $this->name;
+	}
+
+	/**
+	 * @param ShopgateContainerVisitor $v
+	 */
+	public function accept(ShopgateContainerVisitor $v) {
+		$v->visitPlainObject($this);
 	}
 }
 
@@ -389,6 +470,19 @@ class ShopgateAddress extends ShopgateContainer {
 	
 	protected $custom_fields;
 
+	/**
+	 * Checks if two ShopgateAddress objects are equal.
+	 *
+	 * Two addresses are equal when following fields contain the same value:
+	 * 'gender','first_name','last_name','street_1','street_2','zipcode','city','country'
+	 *
+	 * @param ShopgateAddress $address
+	 * @return bool
+	 */
+	public function equals(ShopgateAddress $address){
+		$whiteList = array('gender','first_name','last_name','street_1','street_2','zipcode','city','country');
+		return $this->compare($this, $address,$whiteList);
+	}
 
 	##########
 	# Setter #
@@ -544,7 +638,7 @@ class ShopgateAddress extends ShopgateContainer {
 	 */
 	public function setCustomFields($value) {
 		if (!is_array($value)) {
-			$this->custom_fields = null;
+			$this->custom_fields = array();
 		}
 		
 		foreach ($value as $index => &$element) {
@@ -711,6 +805,9 @@ class ShopgateAddress extends ShopgateContainer {
 	 * @return ShopgateOrderCustomField[]
 	 */
 	public function getCustomFields() {
+		if(!is_array($this->custom_fields)) {
+			$this->custom_fields = array();
+		}
 		return $this->custom_fields;
 	}
 
