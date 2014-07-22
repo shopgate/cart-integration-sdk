@@ -32,6 +32,7 @@ require_once(dirname(__FILE__).DS.'classes'.DS.'apis.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'configuration.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'customers.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'orders.php');
+require_once(dirname(__FILE__).DS.'classes'.DS.'external_orders.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'items.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'redirect.php');
 
