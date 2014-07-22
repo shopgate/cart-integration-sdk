@@ -158,7 +158,6 @@ class ShopgateLibraryException extends Exception {
 	
 	const PLUGIN_API_NO_ORDER_NUMBER = 30;
 	const PLUGIN_API_NO_CART = 31;
-	const PLUGIN_API_NO_ITEMS = 32;
 	const PLUGIN_API_NO_AUTHORIZATION_CODE = 33;
 	const PLUGIN_API_NO_USER = 35;
 	const PLUGIN_API_NO_PASS = 36;
