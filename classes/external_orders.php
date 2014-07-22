@@ -1,18 +1,253 @@
 <?php
-class ShopgateExternalOrder extends ShopgateOrder { // Plugin API
-	/**
-	 * @var ShopgateExternalOrderTax[]
-	 */
+class ShopgateExternalOrder extends ShopgateContainer {
+	protected $order_number;
+	protected $external_order_number;
+	protected $external_order_id;
+
+	protected $created_time;
+	
+	protected $mail;
+	protected $phone;
+	protected $mobile;
+	
+	
+	protected $custom_fields;
+	protected $invoice_address;
+	protected $delivery_address;
+	
+	protected $currency;
+	protected $amount_complete;
+	protected $is_paid;
+	protected $payment_method;
+	protected $payment_time;
+	protected $payment_transaction_number;
+	
+	protected $is_shipping_completed;
+	protected $shipping_completed_time;
+
+	protected $delivery_notes;
+
 	protected $order_taxes;
-
-	/**
-	 * @var ShopgateExternalOrderExtraCost[]
-	 */
 	protected $extra_costs;
+	protected $external_coupons;
+	protected $items;
 
 	/**
-	 * ShopgateExternalOrderTax[]|array[string, mixed]
-	 * @param array $value
+	 * @param string $value
+	 */
+	public function setOrderNumber($value) {
+		$this->order_number = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setExternalOrderNumber($value) {
+		$this->external_order_number = $value;
+	}
+
+	/**
+	 * @param string $value
+	 */
+	public function setExternalOrderId($value) {
+		$this->external_order_id = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setCreatedTime($value) {
+		$this->created_time = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setMail($value) {
+		$this->mail = $value;
+	}
+
+	/**
+	 * @param string $value
+	 */
+	public function setPhone($value) {
+		$this->phone = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setMobile($value) {
+		$this->mobile = $value;
+	}
+	
+	/**
+	 * @param ShopgateOrderCustomField[] $value
+	 */
+	public function setCustomFields($value) {
+		if (!is_array($value)) {
+			$this->custom_fields = array();
+		}
+
+		foreach ($value as $index => &$element) {
+			if ((!is_object($element) || !($element instanceof ShopgateOrderCustomField)) && !is_array($element)) {
+				unset($value[$index]);
+				continue;
+			}
+
+			if (is_array($element)) {
+				$element = new ShopgateOrderCustomField($element);
+			}
+		}
+
+		$this->custom_fields = $value;
+	}
+
+	/**
+	 * @param string $value
+	 */
+	public function setCurrency($value) {
+		$this->currency = $value;
+	}
+	
+	/**
+	 * @param ShopgateAddress|mixed[] $value
+	 */
+	public function setInvoiceAddress($value) {
+		if (!is_object($value) && !($value instanceof ShopgateAddress) && !is_array($value)) {
+			$this->invoice_address = null;
+
+			return;
+		}
+
+		if (is_array($value)) {
+			$value = new ShopgateAddress($value);
+			$value->setIsDeliveryAddress(false);
+			$value->setIsInvoiceAddress(true);
+		}
+
+		$this->invoice_address = $value;
+	}
+
+	/**
+	 * @param ShopgateAddress|mixed[] $value
+	 */
+	public function setDeliveryAddress($value) {
+		if (!is_object($value) && !($value instanceof ShopgateAddress) && !is_array($value)) {
+			$this->delivery_address = null;
+
+			return;
+		}
+
+		if (is_array($value)) {
+			$value = new ShopgateAddress($value);
+			$value->setIsDeliveryAddress(true);
+			$value->setIsInvoiceAddress(false);
+		}
+
+		$this->delivery_address = $value;
+	}
+
+	/**
+	 * @param ShopgateExternalCoupon[] $value
+	 */
+	public function setExternalCoupons($value) {
+		if (!is_array($value)) {
+			$this->external_coupons = null;
+
+			return;
+		}
+
+		foreach ($value as $index => &$element) {
+			if ((!is_object($element) || !($element instanceof ShopgateExternalCoupon)) && !is_array($element)) {
+				unset($value[$index]);
+				continue;
+			}
+
+			if (is_array($element)) {
+				$element = new ShopgateExternalCoupon($element);
+			}
+		}
+
+		$this->external_coupons = $value;
+	}
+
+	/**
+	 * @param float $value
+	 */
+	public function setAmountComplete($value) {
+		$this->amount_complete = $value;
+	}
+	
+	/**
+	 * @param bool $value
+	 */
+	public function setIsShippingCompleted($value) {
+		$this->is_shipping_completed = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setShippingCompletedTime($value) {
+		$this->shipping_completed_time = $value;
+	}
+	
+	/**
+	 * @param bool $value
+	 */
+	public function setIsPaid($value) {
+		$this->is_paid = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setPaymentMethod($value) {
+		$this->payment_method = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setPaymentTime($value) {
+		$this->payment_time = $value;
+	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setPaymentTransactionNumber($value) {
+		$this->payment_transaction_number = $value;
+	}
+	
+	/**
+	 * @param ShopgateDeliveryNote[]|array[string, mixed] $value
+	 */
+	public function setDeliveryNotes($value) {
+		if (empty($value) || !is_array($value)) {
+			$this->delivery_notes = array();
+			return;
+		}
+
+		$deliveryNotes = array();
+		foreach ($value as $index => $element) {
+			if (!($element instanceof ShopgateDeliveryNote) && !is_array($element)) {
+				continue;
+			}
+
+			if (is_array($element)) {
+				$deliveryNotes[] = new ShopgateDeliveryNote($element);
+			} else {
+				$deliveryNotes[] = $element;
+			}
+		}
+
+		$this->delivery_notes = $deliveryNotes;
+	}
+
+	/**
+	 * @param ShopgateExternalOrderTax[]|array[string, mixed] $value
 	 */
 	public function setOrderTaxes($value) {
 		if (empty($value) || !is_array($value)) {
@@ -37,8 +272,7 @@ class ShopgateExternalOrder extends ShopgateOrder { // Plugin API
 	}
 
 	/**
-	 * ShopgateExternalOrderExtraCost[]|array[string, mixed]
-	 * @param array $value
+	 * @param ShopgateExternalOrderExtraCost[]|array[string, mixed] $value
 	 */
 	public function setExtraCosts($value) {
 		if (empty($value) || !is_array($value)) {
@@ -63,6 +297,173 @@ class ShopgateExternalOrder extends ShopgateOrder { // Plugin API
 	}
 
 	/**
+	 * @param ShopgateExternalOrderItem[]|array[string, mixed] $value
+	 */
+	public function setItems($value) {
+		if (!is_array($value)) {
+			$this->items = null;
+
+			return;
+		}
+
+		foreach ($value as $index => &$element) {
+			if ((!is_object($element) || !($element instanceof ShopgateExternalOrderItem)) && !is_array($element)) {
+				unset($value[$index]);
+				continue;
+			}
+
+			if (is_array($element)) {
+				$element = new ShopgateExternalOrderItem($element);
+			}
+		}
+
+		$this->items = $value;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getOrderNumber() {
+		return $this->order_number;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getExternalOrderNumber() {
+		return $this->external_order_number;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getExternalOrderId() {
+		return $this->external_order_id;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getCreatedTime() {
+		return $this->created_time;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getMail() {
+		return $this->mail;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getPhone() {
+		return $this->phone;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getMobile() {
+		return $this->mobile;
+	}
+	
+	/**
+	 * @return ShopgateOrderCustomField[]
+	 */
+	public function getCustomFields() {
+		if(!is_array($this->custom_fields)) {
+			$this->custom_fields = array();
+		}
+		return $this->custom_fields;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getCurrency() {
+		return $this->currency;
+	}
+	
+	/**
+	 * @return ShopgateAddress
+	 */
+	public function getInvoiceAddress() {
+		return $this->invoice_address;
+	}
+
+	/**
+	 * @return ShopgateAddress
+	 */
+	public function getDeliveryAddress() {
+		return $this->delivery_address;
+	}
+
+	/**
+	 * @return ShopgateExternalCoupon[]
+	 */
+	public function getExternalCoupons() {
+		return $this->external_coupons;
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getAmountComplete() {
+		return $this->amount_complete;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function getIsShippingCompleted() {
+		return $this->is_shipping_completed;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getShippingCompletedTime() {
+		return $this->shipping_completed_time;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function getIsPaid() {
+		return $this->is_paid;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getPaymentMethod() {
+		return $this->payment_method;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getPaymentTime() {
+		return $this->payment_time;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getPaymentTransactionNumber() {
+		return $this->payment_transaction_number;
+	}
+
+	/**
+	 * @return ShopgateDeliveryNote[]
+	 */
+	public function getDeliveryNotes() {
+		return $this->delivery_notes;
+	}
+
+	/**
 	 * @return ShopgateOrderTax[]
 	 */
 	public function getOrderTaxes() {
@@ -77,7 +478,13 @@ class ShopgateExternalOrder extends ShopgateOrder { // Plugin API
 	}
 
 	/**
-	 * @see ShopgateCartBase::getOrderItem()
+	 * @return ShopgateExternalOrderItem[]
+	 */
+	public function getItems() {
+		return $this->items;
+	}
+	
+	/**
 	 * @return ShopgateExternalOrderItem
 	 */
 	protected function getOrderItem(array $options) {
@@ -92,19 +499,231 @@ class ShopgateExternalOrder extends ShopgateOrder { // Plugin API
 	}
 }
 
-class ShopgateExternalOrderItem extends ShopgateOrderItem {
-	/**
-	 * @var string
-	 */
+class ShopgateExternalOrderItem extends ShopgateContainer {
+	protected $item_number;
+	protected $item_number_public;
+	protected $parent_item_number;
+	protected $order_item_id;
+
+	protected $quantity;
+
+	protected $name;
+
+	protected $unit_amount;
+	protected $unit_amount_with_tax;
+
+	protected $tax_percent;
+	protected $tax_class_key;
+	protected $tax_class_id;
+
+	protected $currency;
+
+	protected $internal_order_info;
+
+	protected $options = array();
+	protected $inputs = array();
+	protected $attributes = array();
+
 	protected $description;
 
 	/**
 	 * @param string $value
 	 */
+	public function setName($value) {
+		$this->name = $value;
+	}
+
+	/**
+	 * @param string $value
+	 */
+	public function setItemNumber($value) {
+		$this->item_number = $value;
+	}
+
+	/**
+	 * @param string $value
+	 */
+	public function setItemNumberPublic($value) {
+		$this->item_number_public = $value;
+	}
+	
+	public function setParentItemNumber($value) {
+		$this->parent_item_number = $value;
+	}
+	
 	public function setDescription($value) {
 		$this->description = $value;
 	}
 
+	/**
+	 * @param int $value
+	 */
+	public function setOrderItemId($value) {
+		$this->order_item_id = $value;
+	}
+
+	/**
+	 * @param float $value
+	 */
+	public function setUnitAmount($value) {
+		$this->unit_amount = $value;
+	}
+
+	/**
+	 * @param float $value
+	 */
+	public function setUnitAmountWithTax($value) {
+		$this->unit_amount_with_tax = $value;
+	}
+
+	/**
+	 * @param int $value
+	 */
+	public function setQuantity($value) {
+		$this->quantity = $value;
+	}
+
+	/**
+	 * @param float $value
+	 */
+	public function setTaxPercent($value) {
+		$this->tax_percent = $value;
+	}
+
+	/**
+	 * Sets the tax_class_key value
+	 *
+	 * @param string $value
+	 */
+	public function setTaxClassKey($value) {
+		$this->tax_class_key = $value;
+	}
+
+	/**
+	 * Sets the tax_class_id
+	 *
+	 * @param string $value
+	 */
+	public function setTaxClassId($value) {
+		$this->tax_class_id = $value;
+	}
+
+	/**
+	 * @param string $value
+	 */
+	public function setCurrency($value) {
+		$this->currency = $value;
+	}
+
+	/**
+	 * @param string $value
+	 */
+	public function setInternalOrderInfo($value) {
+		$this->internal_order_info = $value;
+	}
+
+	/**
+	 * @param ShopgateOrderItemOption []|mixed[][] $value
+	 */
+	public function setOptions($value) {
+		if (empty($value) || !is_array($value)) {
+			$this->options = array();
+
+			return;
+		}
+
+		$options = array();
+		foreach ($value as $index => $element) {
+			if (!($element instanceof ShopgateOrderItemOption) && !is_array($element)) {
+				continue;
+			}
+
+			if (is_array($element)) {
+				$options[] = new ShopgateOrderItemOption($element);
+			} else {
+				$options[] = $element;
+			}
+		}
+
+		$this->options = $options;
+	}
+
+	/**
+	 * @param ShopgateOrderItemInput []|mixed[][] $value
+	 */
+	public function setInputs($value) {
+		if (empty($value) || !is_array($value)) {
+			$this->inputs = array();
+
+			return;
+		}
+		
+		$inputs = array();
+		foreach ($value as $index => $element) {
+			if (!($element instanceof ShopgateOrderItemInput) && !is_array($element)) {
+				continue;
+			}
+
+			if (is_array(($element))) {
+				$inputs[] = new ShopgateOrderItemInput($element);
+			} else {
+				$inputs[] = $element;
+			}
+		}
+		
+		$this->inputs = $inputs;
+	}
+
+	/**
+	 * @param ShopgateOrderItemAttribute []|mixed[][] $value
+	 */
+	public function setAttributes($value) {
+		if (empty($value) || !is_array($value)) {
+			$this->attributes = array();
+
+			return;
+		}
+
+		// convert sub-arrays into ShopgateOrderItemInputs objects if necessary
+		foreach ($value as $index => &$element) {
+			if ((!is_object($element) || !($element instanceof ShopgateOrderItemAttribute)) && !is_array($element)) {
+				unset($value[$index]);
+				continue;
+			}
+
+			if (is_array(($element))) {
+				$element = new ShopgateOrderItemAttribute($element);
+			}
+		}
+
+		$this->attributes = $value;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getName() {
+		return $this->name;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getItemNumber() {
+		return $this->item_number;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getItemNumberPublic() {
+		return $this->item_number_public;
+	}
+	
+	public function getParentItemNumber() {
+		return $this->parent_item_number;
+	}
+	
 	/**
 	 * @return string
 	 */
@@ -113,9 +732,92 @@ class ShopgateExternalOrderItem extends ShopgateOrderItem {
 	}
 
 	/**
-	 * @see ShopgateContainer::accept()
+	 * @return int
 	 */
-	public function visit(ShopgateContainerVisitor $v) {
+	public function getOrderItemId() {
+		return $this->order_item_id;
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getUnitAmount() {
+		return $this->unit_amount;
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getUnitAmountWithTax() {
+		return $this->unit_amount_with_tax;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getQuantity() {
+		return $this->quantity;
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getTaxPercent() {
+		return $this->tax_percent;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getTaxClassKey() {
+		return $this->tax_class_key;
+	}
+
+	/**
+	 * Returns the tax_class_id
+	 *
+	 * @return string
+	 */
+	public function getTaxClassId() {
+		return $this->tax_class_id;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getCurrency() {
+		return $this->currency;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getInternalOrderInfo() {
+		return $this->internal_order_info;
+	}
+
+	/**
+	 * @return ShopgateOrderItemOption[]
+	 */
+	public function getOptions() {
+		return $this->options;
+	}
+
+	/**
+	 * @return ShopgateOrderItemInput[]
+	 */
+	public function getInputs() {
+		return $this->inputs;
+	}
+
+	/**
+	 * @return ShopgateOrderItemAttribute[]
+	 */
+	public function getAttributes() {
+		return $this->attributes;
+	}
+
+	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitExternalOrderItem($this);
 	}
 }
@@ -125,21 +827,9 @@ class ShopgateExternalOrderExtraCost extends ShopgateContainer {
 	const TYPE_PAYMENT = 'payment';
 	const TYPE_MISC = 'misc';
 
-	/**
-	 * @var string
-	 */
 	protected $type;
-
-	/**
-	 * @var float
-	 */
 	protected $tax_percent;
-
-	/**
-	 * @var float
-	 */
 	protected $amount;
-
 
 	/**
 	 * @param string $value
@@ -202,19 +892,8 @@ class ShopgateExternalOrderExtraCost extends ShopgateContainer {
 }
 
 class ShopgateExternalOrderTax extends ShopgateContainer {
-	/**
-	 * @var string
-	 */
 	protected $label;
-
-	/**
-	 * @var float
-	 */
 	protected $tax_percent;
-
-	/**
-	 * @var float
-	 */
 	protected $amount;
 
 	/**
