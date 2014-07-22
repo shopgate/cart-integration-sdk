@@ -502,8 +502,6 @@ class ShopgateExternalOrder extends ShopgateContainer {
 class ShopgateExternalOrderItem extends ShopgateContainer {
 	protected $item_number;
 	protected $item_number_public;
-	protected $parent_item_number;
-	protected $order_item_id;
 
 	protected $quantity;
 
@@ -513,16 +511,8 @@ class ShopgateExternalOrderItem extends ShopgateContainer {
 	protected $unit_amount_with_tax;
 
 	protected $tax_percent;
-	protected $tax_class_key;
-	protected $tax_class_id;
 
 	protected $currency;
-
-	protected $internal_order_info;
-
-	protected $options = array();
-	protected $inputs = array();
-	protected $attributes = array();
 
 	protected $description;
 
@@ -547,19 +537,8 @@ class ShopgateExternalOrderItem extends ShopgateContainer {
 		$this->item_number_public = $value;
 	}
 	
-	public function setParentItemNumber($value) {
-		$this->parent_item_number = $value;
-	}
-	
 	public function setDescription($value) {
 		$this->description = $value;
-	}
-
-	/**
-	 * @param int $value
-	 */
-	public function setOrderItemId($value) {
-		$this->order_item_id = $value;
 	}
 
 	/**
@@ -591,112 +570,10 @@ class ShopgateExternalOrderItem extends ShopgateContainer {
 	}
 
 	/**
-	 * Sets the tax_class_key value
-	 *
-	 * @param string $value
-	 */
-	public function setTaxClassKey($value) {
-		$this->tax_class_key = $value;
-	}
-
-	/**
-	 * Sets the tax_class_id
-	 *
-	 * @param string $value
-	 */
-	public function setTaxClassId($value) {
-		$this->tax_class_id = $value;
-	}
-
-	/**
 	 * @param string $value
 	 */
 	public function setCurrency($value) {
 		$this->currency = $value;
-	}
-
-	/**
-	 * @param string $value
-	 */
-	public function setInternalOrderInfo($value) {
-		$this->internal_order_info = $value;
-	}
-
-	/**
-	 * @param ShopgateOrderItemOption []|mixed[][] $value
-	 */
-	public function setOptions($value) {
-		if (empty($value) || !is_array($value)) {
-			$this->options = array();
-
-			return;
-		}
-
-		$options = array();
-		foreach ($value as $index => $element) {
-			if (!($element instanceof ShopgateOrderItemOption) && !is_array($element)) {
-				continue;
-			}
-
-			if (is_array($element)) {
-				$options[] = new ShopgateOrderItemOption($element);
-			} else {
-				$options[] = $element;
-			}
-		}
-
-		$this->options = $options;
-	}
-
-	/**
-	 * @param ShopgateOrderItemInput []|mixed[][] $value
-	 */
-	public function setInputs($value) {
-		if (empty($value) || !is_array($value)) {
-			$this->inputs = array();
-
-			return;
-		}
-		
-		$inputs = array();
-		foreach ($value as $index => $element) {
-			if (!($element instanceof ShopgateOrderItemInput) && !is_array($element)) {
-				continue;
-			}
-
-			if (is_array(($element))) {
-				$inputs[] = new ShopgateOrderItemInput($element);
-			} else {
-				$inputs[] = $element;
-			}
-		}
-		
-		$this->inputs = $inputs;
-	}
-
-	/**
-	 * @param ShopgateOrderItemAttribute []|mixed[][] $value
-	 */
-	public function setAttributes($value) {
-		if (empty($value) || !is_array($value)) {
-			$this->attributes = array();
-
-			return;
-		}
-
-		// convert sub-arrays into ShopgateOrderItemInputs objects if necessary
-		foreach ($value as $index => &$element) {
-			if ((!is_object($element) || !($element instanceof ShopgateOrderItemAttribute)) && !is_array($element)) {
-				unset($value[$index]);
-				continue;
-			}
-
-			if (is_array(($element))) {
-				$element = new ShopgateOrderItemAttribute($element);
-			}
-		}
-
-		$this->attributes = $value;
 	}
 
 	/**
@@ -720,22 +597,11 @@ class ShopgateExternalOrderItem extends ShopgateContainer {
 		return $this->item_number_public;
 	}
 	
-	public function getParentItemNumber() {
-		return $this->parent_item_number;
-	}
-	
 	/**
 	 * @return string
 	 */
 	public function getDescription() {
 		return $this->description;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getOrderItemId() {
-		return $this->order_item_id;
 	}
 
 	/**
@@ -769,52 +635,8 @@ class ShopgateExternalOrderItem extends ShopgateContainer {
 	/**
 	 * @return string
 	 */
-	public function getTaxClassKey() {
-		return $this->tax_class_key;
-	}
-
-	/**
-	 * Returns the tax_class_id
-	 *
-	 * @return string
-	 */
-	public function getTaxClassId() {
-		return $this->tax_class_id;
-	}
-
-	/**
-	 * @return string
-	 */
 	public function getCurrency() {
 		return $this->currency;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getInternalOrderInfo() {
-		return $this->internal_order_info;
-	}
-
-	/**
-	 * @return ShopgateOrderItemOption[]
-	 */
-	public function getOptions() {
-		return $this->options;
-	}
-
-	/**
-	 * @return ShopgateOrderItemInput[]
-	 */
-	public function getInputs() {
-		return $this->inputs;
-	}
-
-	/**
-	 * @return ShopgateOrderItemAttribute[]
-	 */
-	public function getAttributes() {
-		return $this->attributes;
 	}
 
 	public function accept(ShopgateContainerVisitor $v) {

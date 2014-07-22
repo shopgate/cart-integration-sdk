@@ -265,7 +265,6 @@ class ShopgateLibraryException extends Exception {
 		
 		self::PLUGIN_API_NO_ORDER_NUMBER => 'parameter "order_number" missing',
 		self::PLUGIN_API_NO_CART => 'parameter "cart" missing',
-		self::PLUGIN_API_NO_ITEMS => 'parameter "items" missing',
 		self::PLUGIN_API_NO_USER => 'parameter "user" missing',
 		self::PLUGIN_API_NO_PASS => 'parameter "pass" missing',
 		self::PLUGIN_API_NO_USER_DATA => 'parameter "user_data" missing',
@@ -3046,6 +3045,7 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 		// iterate lists of referred objects
 		$properties['custom_fields'] = $this->iterateObjectList($properties['custom_fields']);
 		$properties['external_coupons'] = $this->iterateObjectList($properties['external_coupons']);
+		$properties['shopgate_coupons'] = $this->iterateObjectList($properties['shopgate_coupons']);
 		$properties['items'] = $this->iterateObjectList($properties['items']);
 		$properties['delivery_notes'] = $this->iterateObjectList($properties['delivery_notes']);
 
@@ -3157,10 +3157,6 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 		// iterate the simple variables
 		$this->iterateSimpleProperties($properties);
 	
-		// iterate lists of referred objects
-		$properties['options'] = $this->iterateObjectList($properties['options']);
-		$properties['inputs'] = $this->iterateObjectList($properties['inputs']);
-		
 		// create new object with utf-8 en- / decoded data
 		try {
 			$this->object = new ShopgateExternalOrderItem($properties);
@@ -3595,6 +3591,7 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 		// visit the items and delivery notes arrays
 		$properties['custom_fields'] = $this->iterateObjectList($properties['custom_fields']);
 		$properties['external_coupons'] = $this->iterateObjectList($properties['external_coupons']);
+		$properties['shopgate_coupons'] = $this->iterateObjectList($properties['shopgate_coupons']);
 		$properties['items'] = $this->iterateObjectList($properties['items']);
 		$properties['delivery_notes'] = $this->iterateObjectList($properties['delivery_notes']);
 	
@@ -3669,10 +3666,6 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 	
 		// iterate the simple variables
 		$properties = $this->iterateSimpleProperties($properties);
-	
-		// iterate ShopgateAddress objects
-		$properties['options'] = $this->iterateObjectList($properties['options']);
-		$properties['inputs'] = $this->iterateObjectList($properties['inputs']);
 	
 		// set last value to converted array
 		$this->array = $properties;
