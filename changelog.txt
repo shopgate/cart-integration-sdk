@@ -1,5 +1,10 @@
 '''Deutsch'''
 
+'''Version 2.8.0'''
+* Unterstützung für das Synchronisieren einer Favoritenliste über die Shopgate Plugin API hinzugefügt
+* Unterstützung für den Abruf von Bestellungen aus dem Shopsystem über die Shopgate Plugin API hinzugefügt
+* Shopgate-Bestellungen enthalten jetzt das Feld "shipping_tax_percent" mit dem Steuersatz der Versandkosten
+
 '''Version 2.7.2'''
 * Bugfix für Inkonsistenz während Methodenumbenennung
 * Verschleiern des oauth_access_token bei der Ausgabe der Ping-Methode
@@ -301,6 +306,11 @@
 
 
 '''English'''
+
+'''Version 2.8.0'''
+* added support for synchronizing a favourite list via the Shopgate Plugin API
+* added support for retrievieng orders from the shopping cart solution via the Shopgate Plugin API
+* Shopgate orders now contain a field named "shipping_tax_percent" with the tax rate of shipping cost
 
 '''Version 2.7.2'''
 * obfuscation of the oauth_access_token on ping method output

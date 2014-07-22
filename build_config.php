@@ -1,11 +1,11 @@
 <?php
 $buildConfig = array (
 	'major' => 2,
-	'minor' => 7,
-	'build' => 2,
+	'minor' => 8,
+	'build' => -1,
 	'shopgate_library_path' => "",
 	'plugin_name' => "library",
-	'display_name' => "Shopgate Library 2.7.x",
+	'display_name' => "Shopgate Library 2.8.x",
 	'zip_filename' => "shopgate_library.zip",
 	'version_files' => array (
 		'0' => array (
