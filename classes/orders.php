@@ -684,6 +684,7 @@ class ShopgateOrder extends ShopgateCartBase {
 	protected $is_shipping_blocked;
 	protected $is_shipping_completed;
 	protected $shipping_completed_time;
+	protected $shipping_tax_percent;
 
 	protected $is_test;
 	protected $is_storno;
@@ -781,6 +782,13 @@ class ShopgateOrder extends ShopgateCartBase {
 	 */
 	public function setShippingCompletedTime($value) {
 		$this->shipping_completed_time = $value;
+	}
+	
+	/**
+	 * @param float $value
+	 */
+	public function setShippingTaxPercent($value) {
+		$this->shipping_tax_percent = $value;
 	}
 
 	/**
@@ -968,6 +976,13 @@ class ShopgateOrder extends ShopgateCartBase {
 		}
 
 		return $time;
+	}
+	
+	/**
+	 * @return float
+	 */
+	public function getShippingTaxPercent() {
+		return $this->shipping_tax_percent;
 	}
 
 	/**
