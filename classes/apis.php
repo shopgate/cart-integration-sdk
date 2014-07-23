@@ -1499,7 +1499,7 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 		return $response;
 	}
 	
-	public function addOrderDeliveryNote($orderNumber, $shippingServiceId, $trackingNumber, $markAsCompleted = false, $sendCustomerEmail = false) {
+	public function addOrderDeliveryNote($orderNumber, $shippingServiceId, $trackingNumber = '', $markAsCompleted = false, $sendCustomerEmail = false) {
 		$request = array(
 			'action' => 'add_order_delivery_note',
 			'order_number' => $orderNumber,
@@ -2412,7 +2412,7 @@ interface ShopgateMerchantApiInterface {
 	 *
 	 * @see http://wiki.shopgate.com/Merchant_API_add_order_delivery_note
 	 */
-	public function addOrderDeliveryNote($orderNumber, $shippingServiceId, $trackingNumber, $markAsCompleted = false, $sendCustomerMail = true);
+	public function addOrderDeliveryNote($orderNumber, $shippingServiceId, $trackingNumber = '', $markAsCompleted = false, $sendCustomerMail = true);
 	
 	/**
 	 * Represents the "set_order_shipping_completed" action.
