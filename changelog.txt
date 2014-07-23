@@ -4,6 +4,8 @@
 * Unterstützung für das Synchronisieren einer Favoritenliste über die Shopgate Plugin API hinzugefügt
 * Unterstützung für den Abruf von Bestellungen aus dem Shopsystem über die Shopgate Plugin API hinzugefügt
 * Shopgate-Bestellungen enthalten jetzt das Feld "shipping_tax_percent" mit dem Steuersatz der Versandkosten
+* der Parameter $trackingNumber der Methode ShopgateMerchantApi::addOrderDeliveryNote() ist jetzt optional (Standard: leerer String)
+* 'related_shop_items' zur Standard-Produkt-CSV-Zeile hinzugefügt
 
 '''Version 2.7.2'''
 * Bugfix für Inkonsistenz während Methodenumbenennung
@@ -311,6 +313,8 @@
 * added support for synchronizing a favourite list via the Shopgate Plugin API
 * added support for retrievieng orders from the shopping cart solution via the Shopgate Plugin API
 * Shopgate orders now contain a field named "shipping_tax_percent" with the tax rate of shipping cost
+* parameter $trackingNumber of ShopgateMerchantApi::addOrderDeliveryNote() is now optional (default: empty string)
+* added 'related_shop_items' to the default products CSV row
 
 '''Version 2.7.2'''
 * obfuscation of the oauth_access_token on ping method output
