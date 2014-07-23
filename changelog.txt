@@ -1,5 +1,9 @@
 '''Deutsch'''
 
+'''Version 2.8.1'''
+* neues Attribut ShopgateExternalOrderExtraCost::$label mit Getter und Setter hinzugefügt
+* bei check_cart wird jetzt die 'currency' des Warenkorbs in der API-Response mit dem Wert des Warenkorbs vom Request vorinitialisiert
+
 '''Version 2.8.0'''
 * Unterstützung für das Synchronisieren einer Favoritenliste über die Shopgate Plugin API hinzugefügt
 * Unterstützung für den Abruf von Bestellungen aus dem Shopsystem über die Shopgate Plugin API hinzugefügt
@@ -308,6 +312,10 @@
 
 
 '''English'''
+
+'''Version 2.8.1'''
+* added property ShopgateExternalOrderExtraCost::$label with getter and setter
+* on check_cart, the 'currency' of the cart in the response is pre-initialized with that of the cart in the request now
 
 '''Version 2.8.0'''
 * added support for synchronizing a favourite list via the Shopgate Plugin API
