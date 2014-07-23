@@ -492,8 +492,13 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			);
 		}
 		
+		$responseData['currency'] = '';
+		if ($cart->getCurrency()) {
+			$responseData['currency'] = $cart->getCurrency();
+		}
+		
 		if (!empty($cartData['currency'])) {
-			$responseData["currency"] = $cartData['currency'];
+			$responseData['currency'] = $cartData['currency'];
 		}
 		
 		if (!empty($cartData['customer']) && $cartCustomer = $cartData['customer']) {
