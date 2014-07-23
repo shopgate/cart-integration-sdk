@@ -1806,6 +1806,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 			'marketplace' 				=> "1",
 			'internal_order_info' 		=> "",
 			'related_shop_item_numbers' => "",
+			'related_shop_items'		=> "",
 			'age_rating' 				=> "",
 			'weight' 					=> "",
 			'block_pricing' 			=> "",
