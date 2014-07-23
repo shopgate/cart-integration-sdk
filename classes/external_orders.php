@@ -652,6 +652,7 @@ class ShopgateExternalOrderExtraCost extends ShopgateContainer {
 	protected $type;
 	protected $tax_percent;
 	protected $amount;
+	protected $label;
 
 	/**
 	 * @param string $value
@@ -681,6 +682,13 @@ class ShopgateExternalOrderExtraCost extends ShopgateContainer {
 	public function setAmount($value) {
 		$this->amount = $value;
 	}
+	
+	/**
+	 * @param string $value
+	 */
+	public function setLabel($value) {
+		$this->label = $value;
+	}
 
 
 	/**
@@ -703,6 +711,13 @@ class ShopgateExternalOrderExtraCost extends ShopgateContainer {
 	 */
 	public function getAmount() {
 		return $this->amount;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getLabel() {
+		return $this->label;
 	}
 
 	/**
