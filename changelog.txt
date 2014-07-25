@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.8.2'''
+* Fehler beim Konvertieren eines Encodings in UTF-8 behoben
+
 '''Version 2.8.1'''
 * neues Attribut ShopgateExternalOrderExtraCost::$label mit Getter und Setter hinzugefügt
 * bei check_cart wird jetzt die 'currency' des Warenkorbs in der API-Response mit dem Wert des Warenkorbs vom Request vorinitialisiert
@@ -312,6 +315,9 @@
 
 
 '''English'''
+
+'''Version 2.8.2'''
+* fixed a bug in converting encodings into UTF-8
 
 '''Version 2.8.1'''
 * added property ShopgateExternalOrderExtraCost::$label with getter and setter

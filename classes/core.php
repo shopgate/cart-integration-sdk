@@ -1164,11 +1164,8 @@ abstract class ShopgateObject {
 	 * @return string The UTF-8 decoded string.
 	 */
 	protected function convertEncoding($string, $destinationEncoding, $sourceEncoding, $useIconv = false) {
-
-		$string = $this->unicodeEscapeSequences($string);
-
 		if (function_exists('mb_convert_encoding') && !$useIconv) {
-			return mb_convert_encoding($string, $destinationEncoding, $sourceEncoding);
+			$convertedString = mb_convert_encoding($string, $destinationEncoding, $sourceEncoding);
 		} else {
 			// I have no excuse for the following. Please forgive me.
 			if (is_array($sourceEncoding)) {
@@ -1185,21 +1182,20 @@ abstract class ShopgateObject {
 				$sourceEncoding = $bestEncoding;
 			}
 			
-			return @iconv($sourceEncoding, $destinationEncoding.'//IGNORE', $string);
+			$convertedString = @iconv($sourceEncoding, $destinationEncoding.'//IGNORE', $string);
 		}
+		
+		return $this->unicodeEscapeSequences($convertedString);
 	}
 
 	/**
-	 * escape the unicode sequences
+	 * Escape the unicode sequences.
 	 *
-	 * @param $str
-	 *
-	 * @return mixed
+	 * @param string $string
+	 * @return string
 	 */
-	protected function unicodeEscapeSequences($str) {
-		$working = json_encode($str);
-		$working = preg_replace('/\\\u([0-9a-f]{4})/', '&#x$1;', $working);
-		return json_decode($working);
+	protected function unicodeEscapeSequences($string) {
+		return json_decode(preg_replace('/\\\u([0-9a-f]{4})/', '&#x$1;', json_encode($string)));
 	}
 
 	/**
