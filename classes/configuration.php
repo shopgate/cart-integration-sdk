@@ -127,7 +127,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	protected $server;
 
 	/**
-	 * @var string api url map for server and authentication service type
+	 * @var array<string, array<string, string>> api url map for server and authentication service type
 	 */
 	protected $api_urls = array(
 		'live' => array(
@@ -180,16 +180,21 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	protected $export_convert_encoding;
 	
 	/**
-	 * @var array<string> the list of fields supported by the plugin method check_cart
+	 * @var string[] the list of fields supported by the plugin method check_cart
 	 */
 	protected $supported_fields_check_cart;
 	
 	/**
-	 * @var array<string> the list of fields supported by the plugin method get_settings
+	 * @var string[] the list of fields supported by the plugin method get_settings
 	 */
 	protected $supported_fields_get_settings;
+	
+	/**
+	 * @var string[] the list of methods supported by the cron action
+	 */
+	protected $supported_methods_cron;
 
-    /**
+	/**
 	 * @var array<string, string[]> the list of response types supported by the plugin, indexed by actions
 	 */
 	protected $supported_response_types;
@@ -487,6 +492,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->export_convert_encoding = 1;
 		$this->supported_fields_check_cart = array();
 		$this->supported_fields_get_settings = array();
+		$this->supported_methods_cron = array();
 		$this->supported_response_types = array(
 				'get_items' => array('xml'),
 				'get_categories' => array('xml'),
@@ -1042,6 +1048,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	public function getSupportedFieldsGetSettings() {
 		return $this->supported_fields_get_settings;
 	}
+	
+	public function getSupportedMethodsCron() {
+		return $this->supported_methods_cron;
+	}
 
 	public function getSupportedResponseTypes() {
 		return $this->supported_response_types;
@@ -1388,6 +1398,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	
 	public function setSupportedFieldsGetSettings($value) {
 		$this->supported_fields_get_settings = $value;
+	}
+	
+	public function setSupportedMethodsCron($value) {
+		$this->supported_methods_cron = $value;
 	}
 
 	public function setSupportedResponseTypes($value) {
@@ -2478,6 +2492,11 @@ interface ShopgateConfigInterface {
 	public function getSupportedFieldsGetSettings();
 
 	/**
+	 * @return string[] the list of methods supported by the cron action
+	 */
+	public function getSupportedMethodsCron();
+	
+	/**
 	 * @return bool
 	 */
 	public function getEnablePing();
@@ -2896,7 +2915,13 @@ interface ShopgateConfigInterface {
 	 * @param array the list of fields supported by the plugin method get_settings
 	 */
 	public function setSupportedFieldsGetSettings($value);
-    /**
+	
+	/**
+	 * @param string[] $value the list of methods supported by the cron action
+	 */
+	public function setSupportedMethodsCron($value);
+	
+	/**
 	 * @param array<string, string[]> $value the list of response types supported by the plugin, indexed by exports
 	 */
 	public function setSupportedResponseTypes($value);
