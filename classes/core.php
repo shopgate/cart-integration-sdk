@@ -1185,17 +1185,7 @@ abstract class ShopgateObject {
 			$convertedString = @iconv($sourceEncoding, $destinationEncoding.'//IGNORE', $string);
 		}
 		
-		return $this->unicodeEscapeSequences($convertedString);
-	}
-
-	/**
-	 * Escape the unicode sequences.
-	 *
-	 * @param string $string
-	 * @return string
-	 */
-	protected function unicodeEscapeSequences($string) {
-		return json_decode(preg_replace('/\\\u([0-9a-f]{4})/', '&#x$1;', json_encode($string)));
+		return $convertedString;
 	}
 
 	/**
