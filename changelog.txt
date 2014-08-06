@@ -1,5 +1,9 @@
 '''Deutsch'''
 
+'''Version 2.8.3'''
+* ungültige UTF-8-Sequenzen für XML werden jetzt beim Export entfernt
+* Einstellung 'supported_methods_cron' hinzugefügt, mit der ein Plugin mitteilen kann, welche Methoden bei der cron-Action unterstützt werden
+
 '''Version 2.8.2'''
 * Fehler beim Konvertieren eines Encodings in UTF-8 behoben
 
@@ -315,6 +319,10 @@
 
 
 '''English'''
+
+'''Version 2.8.3'''
+* stripping invalid UTF-8 sequences now on XML export
+* added setting 'supported_methods_cron' for plugins to tell which methods are supported by their cron action
 
 '''Version 2.8.2'''
 * fixed a bug in converting encodings into UTF-8
