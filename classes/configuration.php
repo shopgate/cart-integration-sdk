@@ -54,7 +54,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		// exactly 20 hexadecimal digits
 		'alias' => '/^[0-9a-zA-Z]+(([\.]?|[\-]+)[0-9a-zA-Z]+)*$/',
 		// start and end with alpha-numerical characters, multiple dashes and single dots in between are ok
-		'cname' => '/^(http:\/\/\S+)?$/i',
+		'cname' => '/^((http|https):\/\/)?(([\w]+)[\.]?)*([\w]+)\.(\w){2,3}$/i',
 		// empty or a string beginning with "http://" followed by any number of non-whitespace characters
 		'server' => '/^(live|pg|sl|custom)$/',
 		// "live" or "pg" or "sl" or "custom"
