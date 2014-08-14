@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.8.x'''
+* Berichtigung von XML Kindprodukten
+
 '''Version 2.8.3'''
 * ungültige UTF-8-Sequenzen für XML werden jetzt beim Export entfernt
 * Einstellung 'supported_methods_cron' hinzugefügt, mit der ein Plugin mitteilen kann, welche Methoden bei der cron-Action unterstützt werden
@@ -319,6 +322,9 @@
 
 
 '''English'''
+
+'''Version 2.8.x'''
+* corrected child node creation for xml 
 
 '''Version 2.8.3'''
 * stripping invalid UTF-8 sequences now on XML export
