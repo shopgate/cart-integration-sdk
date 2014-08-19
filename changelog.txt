@@ -327,7 +327,6 @@
 '''Version 2.8.4'''
 * regex adjustment for cname validation
 * new child node for grouped products / different display types added to xml 
->>>>>>> Stashed changes
 
 '''Version 2.8.3'''
 * stripping invalid UTF-8 sequences now on XML export
