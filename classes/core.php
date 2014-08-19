@@ -2628,7 +2628,7 @@ class ShopgateFileBufferJson extends ShopgateFileBuffer {
 		
 		foreach ($this->buffer as $item) {
 			/* @var $item Shopgate_Model_AbstractExport */
-			$result[] = json_encode($item->asArray());
+			$result[] = $this->jsonEncode($item->asArray());
 		}
 		
 		if (!empty($result)) {

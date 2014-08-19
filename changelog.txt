@@ -2,6 +2,7 @@
 
 '''Version 2.8.5'''
 * Entfernen von git Konflikt markup
+* Ersetzen von json_encode Aufrufen durch die interne Methode jsonEncode
 
 '''Version 2.8.4'''
 * Regex Anpassung für cname Validierung
@@ -329,6 +330,7 @@
 
 '''Version 2.8.5'''
 * removed remaining git conflict markup
+* replaced json_encode calls through the internal method jsonEncode
 
 '''Version 2.8.4'''
 * regex adjustment for cname validation
