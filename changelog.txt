@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.8.5'''
+* Entfernen von git Konflikt markup
+
 '''Version 2.8.4'''
 * Regex Anpassung für cname Validierung
 * Neuer Kindknoten zur Unterstützung von Gruppenprodukten und Darstellungstypen für XML hinzugefügt
@@ -323,6 +326,9 @@
 
 
 '''English'''
+
+'''Version 2.8.5'''
+* removed remaining git conflict markup
 
 '''Version 2.8.4'''
 * regex adjustment for cname validation
