@@ -112,8 +112,9 @@
  *
  * @method                                      setChildren(array $value)
  *
- * @method                                      getDisplayType()
- * @method string                               setDisplayType(string $value)
+ * @method                                      setDisplayType(string $value)
+ * @method string                               getDisplayType()
+ *
  */
 class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
 {
@@ -352,10 +353,8 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
          * @var Shopgate_Model_Media_Image     $imageItem
          */
         $imagesNode = $itemNode->addChild('images');
-        if ($this->getImages()) {
-            foreach ($this->getImages() as $imageItem) {
-                $imageItem->asXml($imagesNode);
-            }
+        foreach ($this->getImages() as $imageItem) {
+            $imageItem->asXml($imagesNode);
         }
 
         /**
@@ -365,10 +364,8 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
          * @var Shopgate_Model_Catalog_CategoryPath $categoryPathItem
          */
         $categoryPathNode = $itemNode->addChild('categories');
-        if ($this->getCategoryPaths()) {
-            foreach ($this->getCategoryPaths() as $categoryPathItem) {
-                $categoryPathItem->asXml($categoryPathNode);
-            }
+        foreach ($this->getCategoryPaths() as $categoryPathItem) {
+            $categoryPathItem->asXml($categoryPathNode);
         }
 
         /**
@@ -393,10 +390,8 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
          * @var Shopgate_Model_Catalog_Property $propertyItem
          */
         $propertiesNode = $itemNode->addChild('properties');
-        if ($this->getProperties()) {
-            foreach ($this->getProperties() as $propertyItem) {
-                $propertyItem->asXml($propertiesNode);
-            }
+        foreach ($this->getProperties() as $propertyItem) {
+            $propertyItem->asXml($propertiesNode);
         }
 
         /**
@@ -422,10 +417,8 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
          * @var Shopgate_Model_Catalog_Tag     $tagItem
          */
         $tagsNode = $itemNode->addChild('tags');
-        if ($this->getTags()) {
-            foreach ($this->getTags() as $tagItem) {
-                $tagItem->asXml($tagsNode);
-            }
+        foreach ($this->getTags() as $tagItem) {
+            $tagItem->asXml($tagsNode);
         }
 
         /**
@@ -767,59 +760,35 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
     protected function cleanChildData($parentItem, $childItem)
     {
         foreach ($childItem->getData() as $key => $value) {
-            if ($parentValues = $parentItem->getData($key)) {
-                if (is_array($parentValues) && count($value) > 0 && count($parentValues) == count($value)) {
-                    $parents = array();
-                    foreach ($parentValues as $_parentValues) {
-                        array_push($parents, $_parentValues->getData());
+            if ($parentValue = $parentItem->getData($key)) {
+                if (is_array($parentValue) && count($value) > 0) {
+                    foreach ($parentValue as $parentItem) {
+                        /**
+                         * @var Shopgate_Model_Abstract $childItem
+                         * @var Shopgate_Model_Abstract $parentItem
+                         * @var array                   $value
+                         * @var int                     $parentUid
+                         */
+                        $parentUid = $parentItem->getData('uid');
+                        if ($parentUid && $childItem = $this->getItemByUid($value, $parentUid)) {
+                            $this->cleanChildData($parentItem, $childItem);
+                        }
                     }
-                    $children = array();
-                    foreach ($value as $_childValues) {
-                        array_push($children, $_childValues->getData());
-                    }
-                    $difference = $this->arrayDiffAssocDeep($parents, $children);
-                    if (empty($difference)) {
-                        $childItem->setData($key, null);
-                    }
-                    continue;
                 }
-
                 if ($value instanceof Shopgate_Model_Abstract) {
                     /**
                      * @var  Shopgate_Model_Abstract $value
-                     * @var  Shopgate_Model_Abstract $parentValues
+                     * @var  Shopgate_Model_Abstract $parentValue
                      */
-                    $this->cleanChildData($parentValues, $value);
-                    continue;
+                    $this->cleanChildData($parentValue, $value);
                 }
-                if (!is_array($parentValues) && !$value instanceof Shopgate_Model_Abstract) {
-                    if ($value === $parentValues && $key != self::DEFAULT_IDENTIFIER_UID) {
+                if (!is_array($parentValue) && !$value instanceof Shopgate_Model_Abstract) {
+                    if ($value === $parentValue && $key != self::DEFAULT_IDENTIFIER_UID) {
                         $childItem->setData($key, null);
                     }
                 }
             }
         }
-    }
-
-    /**
-     * @param $array1
-     * @param $array2
-     * @return array
-     */
-    protected function arrayDiffAssocDeep($array1, $array2)
-    {
-        $ret = array();
-        foreach ($array1 as $k => $v) {
-            if (array_key_exists($k, $array2) && is_array($v) && is_array($array2[$k])) {
-                $diff = $this->arrayDiffAssocDeep($v, $array2[$k]);
-                if (!empty($diff)) {
-                    $ret[$k] = $diff;
-                }
-            } else if (array_key_exists($k, $array2) && (string)$v != (string)$array2[$k]) {
-                $ret[$k] = $v;
-            }
-        }
-        return $ret;
     }
 
     /**

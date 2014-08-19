@@ -1,7 +1,8 @@
 '''Deutsch'''
 
-'''Version 2.8.x'''
-* Berichtigung von XML Kindprodukten
+'''Version 2.8.4'''
+* Regex Anpassung für cname Validierung
+* Neuer Kindknoten zur Unterstützung von Gruppenprodukten und Darstellungstypen für XML hinzugefügt
 
 '''Version 2.8.3'''
 * ungültige UTF-8-Sequenzen für XML werden jetzt beim Export entfernt
@@ -323,8 +324,10 @@
 
 '''English'''
 
-'''Version 2.8.x'''
-* corrected child node creation for xml 
+'''Version 2.8.4'''
+* regex adjustment for cname validation
+* new child node for grouped products / different display types added to xml 
+>>>>>>> Stashed changes
 
 '''Version 2.8.3'''
 * stripping invalid UTF-8 sequences now on XML export
