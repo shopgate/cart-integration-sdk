@@ -625,22 +625,25 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
         $this->setAttributes($attributes);
     }
 
-    /**
-     * @param Shopgate_Model_XmlResultObject $childItem
-     *
-     * @return SimpleXMLElement
-     */
-    public function removeEmptyNodes($childItem)
-    {
-        $output    = $childItem->asXML();
-        $outputRef = $output;
-        $output    = preg_replace('~<[^\\s>]+\\s*/>~si', null, $output);
-        if ($output === $outputRef) {
-            return new SimpleXMLElement($output);
-        }
+	/**
+	 * @param Shopgate_Model_XmlResultObject $childItem
+	 *
+	 * @return SimpleXMLElement
+	 */
+	public function removeEmptyNodes($childItem) {
 
-        return $this->removeEmptyNodes(new Shopgate_Model_XmlResultObject($output));
-    }
+		$doc = new DOMDocument;
+		$doc->preserveWhiteSpace = false;
+		$doc->loadXML($childItem->asXML());
+
+		$xpath = new DOMXPath($doc);
+
+		foreach($xpath->query('//*[not(node()) or normalize-space() = ""]') as $node) {
+			$node->parentNode->removeChild($node);
+		}
+
+		return simplexml_import_dom($doc);
+	}
 
     /**
      * generate json result object
@@ -753,43 +756,39 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
     {
     }
 
-    /**
-     * @param Shopgate_Model_Abstract $parentItem
-     * @param Shopgate_Model_Abstract $childItem
-     */
-    protected function cleanChildData($parentItem, $childItem)
-    {
-        foreach ($childItem->getData() as $key => $value) {
-            if ($parentValue = $parentItem->getData($key)) {
-                if (is_array($parentValue) && count($value) > 0) {
-                    foreach ($parentValue as $parentItem) {
-                        /**
-                         * @var Shopgate_Model_Abstract $childItem
-                         * @var Shopgate_Model_Abstract $parentItem
-                         * @var array                   $value
-                         * @var int                     $parentUid
-                         */
-                        $parentUid = $parentItem->getData('uid');
-                        if ($parentUid && $childItem = $this->getItemByUid($value, $parentUid)) {
-                            $this->cleanChildData($parentItem, $childItem);
-                        }
-                    }
-                }
-                if ($value instanceof Shopgate_Model_Abstract) {
-                    /**
-                     * @var  Shopgate_Model_Abstract $value
-                     * @var  Shopgate_Model_Abstract $parentValue
-                     */
-                    $this->cleanChildData($parentValue, $value);
-                }
-                if (!is_array($parentValue) && !$value instanceof Shopgate_Model_Abstract) {
-                    if ($value === $parentValue && $key != self::DEFAULT_IDENTIFIER_UID) {
-                        $childItem->setData($key, null);
-                    }
-                }
-            }
-        }
-    }
+	/**
+	 * @param Shopgate_Model_Abstract $parentItem
+	 * @param Shopgate_Model_Abstract $childItem
+	 */
+	protected function cleanChildData($parentItem, $childItem) {
+		foreach ($childItem->getData() as $childKey => $childValue) {
+			/**
+			 * array or object
+			 */
+			if (is_array($childValue) || $childValue instanceof Shopgate_Model_Abstract) {
+				/**
+				 * array
+				 */
+				if(is_array($childValue) && count($childValue) > 0) {
+					if($childValue == $parentItem->getData($childKey)) {
+						$childItem->setData($childKey, array());
+					}
+				} elseif ($childValue instanceof Shopgate_Model_Abstract) {
+					if($childValue == $parentItem->getData($childKey)) {
+						$class = get_class($childValue);
+						$childItem->setData($childKey, new $class);
+					}
+				}
+				/**
+				 * string
+				 */
+			} else {
+				if($childValue == $parentItem->getData($childKey)) {
+					$childItem->setData($childKey, null);
+				}
+			}
+		}
+	}
 
     /**
      * @param array $data

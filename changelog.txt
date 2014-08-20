@@ -1,5 +1,9 @@
 '''Deutsch'''
 
+'''Version 2.8.6'''
+* Optimierte Funktion für leere XML Knoten entfernen
+* Optimierte Funktion für Aufbereitung der XML Children
+
 '''Version 2.8.5'''
 * Entfernen von git Konflikt markup
 * Ersetzen von json_encode Aufrufen durch die interne Methode jsonEncode
@@ -327,6 +331,10 @@
 
 
 '''English'''
+
+'''Version 2.8.6'''
+* optimized function to remove empty XML nodes
+* optimized function to prepare XML children
 
 '''Version 2.8.5'''
 * removed remaining git conflict markup
