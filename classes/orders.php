@@ -130,6 +130,9 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	const SUE = "SUE";
 	const MSTPAY_SUE = "MSTPAY_SUE";
 	const SG_SUE = "SG_SUE";
+    
+    // const for amazon payment
+    const AMAZON_PAYMENT = "MWS";
 
 	protected $customer_number;
 
