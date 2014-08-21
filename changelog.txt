@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.8.7'''
+* Integration für Amazon Payments
+
 '''Version 2.8.6'''
 * Optimierte Funktion für leere XML Knoten entfernen
 * Optimierte Funktion für Aufbereitung der XML Children
@@ -331,6 +334,9 @@
 
 
 '''English'''
+
+'''Version 2.8.7'''
+* integration for amazon payments
 
 '''Version 2.8.6'''
 * optimized function to remove empty XML nodes
