@@ -465,6 +465,15 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 */
 	protected $redirectable_get_params = array();
 
+	/**
+	 * @var int execution time limit for file export in seconds
+	 */
+	protected $default_execution_time;
+	
+	/**
+	 * @var int memory limit in MB
+	 */
+	protected $default_memory_limit;
 
 	###################################################
 	### Initialization, loading, saving, validating ###
@@ -563,6 +572,9 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->is_shopgate_adapter = false;
 		$this->redirectable_get_params = array('gclid','utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content');
 
+		$this->default_memory_limit = ShopgateConfigInterface::DEFAULT_MEMORY_LIMIT;
+		$this->default_execution_time = ShopgateConfigInterface::DEFAULT_EXECUTION_TIME;
+		
 		// call possible sub class' startup()
 		if (!$this->startup()) {
 			$this->loadArray($data);
@@ -1317,6 +1329,34 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->redirectable_get_params;
 	}
 
+	/**
+	 * @param array $additionalSettings
+	 */
+	public function setAdditionalSettings($additionalSettings) {
+		$this->additionalSettings = $additionalSettings;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getAdditionalSettings() {
+		return $this->additionalSettings;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getDefaultExecutionTime() {
+		return $this->default_execution_time;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getDefaultMemoryLimit() {
+		return $this->default_memory_limit;
+	}
+
 	###############
 	### Setters ###
 	###############
@@ -1752,6 +1792,19 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->redirectable_get_params = $value;
 	}
 
+	/**
+	 * @param int $default_execution_time
+	 */
+	public function setDefaultExecutionTime($default_execution_time) {
+		$this->default_execution_time = $default_execution_time;
+	}
+	/**
+	 * @param int $default_memory_limit
+	 */
+	public function setDefaultMemoryLimit($default_memory_limit) {
+		$this->default_memory_limit = $default_memory_limit;
+	}
+	
 	###############
 	### Helpers ###
 	###############
@@ -2341,6 +2394,8 @@ interface ShopgateConfigInterface {
 	
 	const SHOPGATE_FILE_PREFIX = 'shopgate_';
 
+	const DEFAULT_MEMORY_LIMIT = -1;
+	const DEFAULT_EXECUTION_TIME = 0;
 	/**
 	 * Loads an array of key-value pairs or a permanent storage.
 	 *
@@ -2817,9 +2872,21 @@ interface ShopgateConfigInterface {
 	public function getIsShopgateAdapter();
 
 	/**
+	 * @return int maximum execution time in seconds
+	 */
+	public function getDefaultExecutionTime();
+
+	/**
+	 * @return int default memory limit in MB
+	 */
+	public function getDefaultMemoryLimit();
+	
+	/**
 	 * @param string $value The name of the plugin / shop system the plugin is for.
 	 */
 	public function setPluginName($value);
+
+
 
 	/**
 	 * @param bool $value true to activate the Shopgate error handler.
@@ -3246,6 +3313,16 @@ interface ShopgateConfigInterface {
 	 */
 	public function setIsShopgateAdapter($value);
 
+	/**
+	 * @param $default_execution_time int set value for maximum execution time in seconds
+	 */
+	public function setDefaultExecutionTime($default_execution_time);
+
+	/**
+	 * @param $default_memory_limit int set value for default memory limit in MB
+	 */
+	public function setDefaultMemoryLimit($default_memory_limit);
+	
 	/**
 	 * Returns an additional setting.
 	 *

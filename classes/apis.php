@@ -68,6 +68,11 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	protected $preventResponseOutput;
 
 	/**
+	 * this list is used for setting max_execution_time and memory_limt for the file export
+	 * @var array of string
+	 */
+	protected $exportActionList;
+	/**
 	 * @var string The trace ID of the incoming request.
 	 */
 	protected $trace_id;
@@ -119,12 +124,22 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			'get_orders',
 			'sync_favourite_list',
 		);
+		
+		$this->exportActionList = array(
+			'get_items',
+			'get_categories',
+			'get_settings',
+			'get_items_csv',
+			'get_categories_csv',
+			'get_reviews_csv',
+			'get_media_csv',
+		);
 	}
 
-	
-	
 	public function handleRequest(array $data = array()) {
 		$errortext = '';
+		
+		$this->setEnableErrorReporting();
 		
 		// log incoming request
 		$this->log(ShopgateLogger::getInstance()->cleanParamsForLog($data), ShopgateLogger::LOGTYPE_ACCESS);
@@ -144,7 +159,11 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			
 			// set error handler to Shopgate's handler if requested
 			if (!empty($this->params['use_errorhandler'])) {
+				if (isset($this->params['print_error_stack_trace'])) {
+					$printStackTrace = $this->params['print_stack_trace'];
+				}
 				set_error_handler('ShopgateErrorHandler');
+				$this->setEnablePrintErrorsToLog($this->config->getErrorLogPath().$this->config->getErrorLogFilename());
 			}
 			
 			if(!empty($this->params['use_shutdown_handler'])){
@@ -195,12 +214,31 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			if (empty($configArray['enable_'.$this->params['action']])) {
 				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_DISABLED_ACTION, "{$this->params['action']}");
 			}
-
+			
 			// response output is active by default and can be deactivated to allow actions to print a custom output
 			$this->preventResponseOutput = false;
 			
 			// call the action
 			$action = $this->camelize($this->params['action']);
+			
+			if(isset($this->exportActionList)){
+				foreach($this->exportActionList AS $expotAction){
+					if($expotAction == $this->params['action']){
+						if (isset($this->params['memory_limit'])) {
+							$this->plugin->setExportMemoryLimit($this->params['memory_limit']);
+						}else{
+							$this->plugin->setExportMemoryLimit($this->config->getDefaultMemoryLimit());
+						}
+						
+						if (isset($this->params['max_execution_time'])) {
+							$this->plugin->setExportTimeLimit($this->params['max_execution_time']);
+						}else{
+							$this->plugin->setExportTimeLimit($this->config->getDefaultExecutionTime());
+						}
+					}
+				}
+			}
+			
 			$this->{$action}();
 		} catch (ShopgateLibraryException $e) {
 			$error = $e->getCode();
@@ -928,7 +966,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			$this->plugin->setExportOffset((int) $this->params['offset']);
 			$this->plugin->setSplittedExport(true);
 		}
-
+		
 		// generate / update items csv file if requested
 		$this->plugin->startGetItemsCsv();
 
@@ -1353,6 +1391,26 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		}
 
 		return $meta;
+	}
+
+	/**
+	 * enable error reporting to show exeption on request
+	 */
+	private function setEnableErrorReporting(){
+		error_reporting(E_ALL ^ E_WARNING);
+		ini_set('display_errors', 1);
+	}
+
+	private function setEnablePrintErrorsToLog($errorFile){
+		chmod($errorFile,0755);
+		error_reporting(E_ALL ^ E_NOTICE);
+		ini_set('display_errors', 0);
+		ini_set('display_startup_errors', 0);
+		ini_set('log_errors', 1);
+		ini_set('error_log', $errorFile);
+		ini_set('ignore_repeated_errors', 1);
+		ini_set('html_errors', 0);
+
 	}
 }
 
@@ -2357,6 +2415,7 @@ interface ShopgatePluginApiInterface {
 	 * @return bool false if an error occured, otherwise true.
 	 */
 	public function handleRequest(array $data = array());
+
 }
 
 /**

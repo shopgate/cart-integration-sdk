@@ -88,10 +88,11 @@ function ShopgateShutdownHandler(){
  * @param string $errstr
  * @param string $errfile
  * @param int $errline
+ * @param array $errContext
  * @return boolean
  * @see http://php.net/manual/en/function.set-error-handler.php
  */
-function ShopgateErrorHandler($errno, $errstr, $errfile, $errline) {
+function ShopgateErrorHandler($errno, $errstr, $errfile, $errline, $errContext) {
 	
 	switch ($errno) {
 		case E_NOTICE:
@@ -113,7 +114,7 @@ function ShopgateErrorHandler($errno, $errstr, $errfile, $errline) {
 
 	$msg = "$severity [Nr. $errno : $errfile / $errline] ";
 	$msg .= "$errstr";
-	$msg .= "\n". print_r(debug_backtrace(false), true);
+	$msg .= (isset($errContext["printStackTrace"]) && $errContext["printStackTrace"]) ?  "\n". print_r(debug_backtrace(false), true) : "";
 	
 	ShopgateLogger::getInstance()->log($msg);
 
@@ -446,7 +447,7 @@ class ShopgateLibraryException extends Exception {
 			$class = (isset($btrace[$i+1]['class'])) ? $btrace[$i+1]['class'].'::' : 'Unknown class - ';
 			$function = (isset($btrace[$i+1]['function'])) ? $btrace[$i+1]['function'] : 'Unknown function';
 			$file = ' in '.((isset($btrace[$i]['file'])) ? basename($btrace[$i]['file']) : 'Unknown file');
-			$line = (isset($btrace[$i]['line'])) ? $btrace[$i]['line'] : 'Unkown line';
+			$line = (isset($btrace[$i]['line'])) ? $btrace[$i]['line'] : 'Unknown line';
 			$logMessage .= $class.$function.'()'.$file.':'.$line."\n\t";
 		}
 
@@ -1238,6 +1239,26 @@ abstract class ShopgateObject {
 			echo str_repeat(" ", ($depth - 1) * 4) . ")\n";
 		} else {
 			echo $subject . "\n";
+		}
+	}
+
+	/**
+	 * @param int $memoryLimit in MB
+	 */
+	public function setExportMemoryLimit($memoryLimit) {
+		if(!empty($memoryLimit) && is_int($memoryLimit)){
+			@ini_set('memory_limit', "{$memoryLimit}M");
+		}
+	}
+
+	/**
+	 * @param int $timeLimit in seconds
+	 */
+	public function setExportTimeLimit($timeLimit) {
+
+		if(!empty($timeLimit) && (is_int($timeLimit)||is_float($timeLimit))){
+			@set_time_limit($timeLimit);
+			@ini_set('max_execution_time', $timeLimit);
 		}
 	}
 }
