@@ -1,5 +1,10 @@
 '''Deutsch'''
 
+'''Version 2.8.x'''
+* Maximalwert des Speichers kann gesetzt werden
+* Maximale Ausführungszeit kann gesetzt werden
+* Der ShopgateErrorHandler gibt nun by default keinen stacktrace mehr aus
+
 '''Version 2.8.8'''
 * XML - Images neuer Flag für isCover
 
@@ -337,6 +342,11 @@
 
 
 '''English'''
+
+'''Version 2.8.x'''
+* maximum memory value for executing scripts can be set now
+* maximum execution time can be set now
+* by default the ShopgateErrorHandler doesn't print the stacktrace
 
 '''Version 2.8.8'''
 * XML - Images new flag for isCover

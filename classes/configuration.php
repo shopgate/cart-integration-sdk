@@ -1330,20 +1330,6 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	}
 
 	/**
-	 * @param array $additionalSettings
-	 */
-	public function setAdditionalSettings($additionalSettings) {
-		$this->additionalSettings = $additionalSettings;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getAdditionalSettings() {
-		return $this->additionalSettings;
-	}
-
-	/**
 	 * @return int
 	 */
 	public function getDefaultExecutionTime() {

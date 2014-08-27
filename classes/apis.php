@@ -68,7 +68,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	protected $preventResponseOutput;
 
 	/**
-	 * this list is used for setting max_execution_time and memory_limt for the file export
+	 * this list is used for setting max_execution_time and memory_limt
 	 * @var array of string
 	 */
 	protected $exportActionList;
@@ -128,7 +128,6 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$this->exportActionList = array(
 			'get_items',
 			'get_categories',
-			'get_settings',
 			'get_items_csv',
 			'get_categories_csv',
 			'get_reviews_csv',
@@ -159,11 +158,11 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			
 			// set error handler to Shopgate's handler if requested
 			if (!empty($this->params['use_errorhandler'])) {
-				if (isset($this->params['print_error_stack_trace'])) {
+				if (isset($this->params['print_stack_trace'])) {
 					$printStackTrace = $this->params['print_stack_trace'];
 				}
 				set_error_handler('ShopgateErrorHandler');
-				$this->setEnablePrintErrorsToLog($this->config->getErrorLogPath().$this->config->getErrorLogFilename());
+				$this->setEnablePrintErrorsToLog($this->config->getErrorLogPath());
 			}
 			
 			if(!empty($this->params['use_shutdown_handler'])){
@@ -1397,20 +1396,23 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 * enable error reporting to show exeption on request
 	 */
 	private function setEnableErrorReporting(){
-		error_reporting(E_ALL ^ E_WARNING);
-		ini_set('display_errors', 1);
+		@error_reporting(E_ERROR | E_CORE_ERROR | E_USER_ERROR);
+		@ini_set('display_errors', 1);
 	}
 
+	/**
+	 * @param $errorFile
+	 */
 	private function setEnablePrintErrorsToLog($errorFile){
-		chmod($errorFile,0755);
-		error_reporting(E_ALL ^ E_NOTICE);
-		ini_set('display_errors', 0);
-		ini_set('display_startup_errors', 0);
-		ini_set('log_errors', 1);
-		ini_set('error_log', $errorFile);
-		ini_set('ignore_repeated_errors', 1);
-		ini_set('html_errors', 0);
-
+		$logFileHandler = @fopen($errorFile, 'a');
+		@fclose($logFileHandler);
+		@chmod($errorFile,0777);
+		@chmod($errorFile,0755);
+		@error_reporting(E_ALL ^ E_DEPRECATED);
+		@ini_set('log_errors', 1);
+		@ini_set('error_log', $errorFile);
+		@ini_set('ignore_repeated_errors', 1);
+		@ini_set('html_errors', 0);
 	}
 }
 
