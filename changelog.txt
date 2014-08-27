@@ -1,6 +1,6 @@
 '''Deutsch'''
 
-'''Version 2.8.x'''
+'''Version 2.8.9'''
 * Maximalwert des Speichers kann gesetzt werden
 * Maximale Ausführungszeit kann gesetzt werden
 * Der ShopgateErrorHandler gibt nun by default keinen stacktrace mehr aus
@@ -343,7 +343,7 @@
 
 '''English'''
 
-'''Version 2.8.x'''
+'''Version 2.8.9'''
 * maximum memory value for executing scripts can be set now
 * maximum execution time can be set now
 * by default the ShopgateErrorHandler doesn't print the stacktrace
