@@ -328,7 +328,7 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
         $itemNode->addChild('tax_class', $this->getTaxClass());
         $itemNode->addChild('currency', $this->getCurrency());
         $itemNode->addChildWithCDATA('description', $this->getDescription());
-        $itemNode->addChild('deeplink', $this->getDeeplink());
+        $itemNode->addChildWithCDATA('deeplink', $this->getDeeplink());
         $itemNode->addChild('promotion')->addAttribute('sort_order', $this->getPromotionSortOrder());
         $itemNode->addChildWithCDATA('internal_order_info', $this->getInternalOrderInfo());
         $itemNode->addChild('age_rating', $this->getAgeRating());
