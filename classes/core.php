@@ -2557,7 +2557,7 @@ abstract class ShopgateFileBuffer extends ShopgateObject implements ShopgateFile
 	 */
 	protected function flush() {
 		if (empty($this->buffer) && ftell($this->fileHandle) == 0) {
-			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_EMPTY_BUFFER);
+			throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_EMPTY_BUFFER, null, false, false);
 		}
 		
 		// perform prerequisites on first call
