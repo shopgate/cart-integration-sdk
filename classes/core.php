@@ -3331,7 +3331,7 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 
 		// create new object with utf-8 en- / decoded data
 		try {
-			$this->object = new ShopgateOptionValue($properties);
+			$this->object = new ShopgateItemOptionValue($properties);
 		} catch (ShopgateLibraryException $e) {
 			$this->object = null;
 		}

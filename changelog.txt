@@ -1,5 +1,10 @@
 '''Deutsch'''
 
+'''Version 2.8.10'''
+* Linkexport für Produkte und Kategorien um CDATA erweitert (XML)  
+* CNAME Validierung erweitert
+* Ungenutzte Code Teile entfernt
+
 '''Version 2.8.9'''
 * Maximalwert des Speichers kann gesetzt werden
 * Maximale Ausführungszeit kann gesetzt werden
@@ -342,6 +347,11 @@
 
 
 '''English'''
+
+'''Version 2.8.10'''
+* added cdata for deep links in categories and products (xml) 
+* extended cname validation
+* removed legacy code
 
 '''Version 2.8.9'''
 * maximum memory value for executing scripts can be set now

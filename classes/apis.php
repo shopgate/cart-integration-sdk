@@ -1089,18 +1089,6 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseTextCsvExport($this->trace_id);
 		$this->responseData = $this->config->getReviewsCsvPath();
 	}
-
-	/**
-	 * Represents the "get_pages_csv" action.
-	 *
-	 * @todo
-	 * @throws ShopgateLibraryException
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_pages_csv
-	 */
-	protected function getPagesCsv() {
-		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseTextCsv($this->trace_id);
-		$this->responseData = $this->config->getPagesCsvPath();
-	}
 	
 	/**
 	 * Represents the "get_log_file" action.
