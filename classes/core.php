@@ -914,12 +914,12 @@ class ShopgateBuilder {
 		$pluginApi = new ShopgatePluginApi($this->config, $spaAuthService, $merchantApi, $plugin);
 		
 		// instantiate export file buffer
-		if (!empty($_REQUEST['action']) && (($_REQUEST['action'] == 'get_items') 
-            || ($_REQUEST['action'] == 'get_categories') || ($_REQUEST['action'] == 'get_reviews'))) {
+		if (!empty($_REQUEST['action']) && (($_REQUEST['action'] == 'get_items')
+			|| ($_REQUEST['action'] == 'get_categories') || ($_REQUEST['action'] == 'get_reviews'))) {
 			$xmlModelNames = array(
 					'get_items' => 'Shopgate_Model_Catalog_Product',
 					'get_categories' => 'Shopgate_Model_Catalog_Category',
-                    'get_reviews' => 'Shopgate_Model_Review'
+					'get_reviews' => 'Shopgate_Model_Review'
 			);
 			
 			$sourceEncoding = $this->config->getExportConvertEncoding();
@@ -1541,26 +1541,26 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		$this->buffer->finish();
 	}
 
-    /**
-     * Takes care of buffer and file handlers and calls ShopgatePlugin::createReviews().
-     *
-     * @throws ShopgateLibraryException
-     */
-    public final function startGetReviews($limit = null, $offset = null, array $uids = array(), $responseType = 'xml') {
-        switch ($responseType) {
-            default: case 'xml':
-            $this->buffer->setFile($this->config->getReviewsXmlPath());
-            break;
+	/**
+	 * Takes care of buffer and file handlers and calls ShopgatePlugin::createReviews().
+	 *
+	 * @throws ShopgateLibraryException
+	 */
+	public final function startGetReviews($limit = null, $offset = null, array $uids = array(), $responseType = 'xml') {
+		switch ($responseType) {
+			default:
+			case 'xml':
+				$this->buffer->setFile($this->config->getReviewsXmlPath());
+				break;
 
-            case 'json':
-                $this->buffer->setFile($this->config->getReviewsJsonPath());
-                break;
-        }
+			case 'json':
+				$this->buffer->setFile($this->config->getReviewsJsonPath());
+				break;
+		}
 
-        $this->createReviews($limit, $offset, $uids);
-        $this->buffer->finish();
-    }
-	
+		$this->createReviews($limit, $offset, $uids);
+		$this->buffer->finish();
+	}
 	
 	#############
 	## Helpers ##
@@ -1608,7 +1608,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		
 		$this->addRow( $item );
 	}
-    
+
 	/**
 	 * @param mixed[] $item
 	 */
@@ -1617,7 +1617,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		
 		$this->addRow( $item );
 	}
-    
+
 	/**
 	 * @param Shopgate_Model_Catalog_Category $category
 	 */
@@ -1634,13 +1634,13 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		$this->addRow($category);
 	}
 
-    /**
-     * @param Shopgate_Model_Review $review
-     */
-    protected final function addReviewModel(Shopgate_Model_Review $review) {
-        $this->addModel($review);
-    }
-    
+	/**
+	 * @param Shopgate_Model_Review $review
+	 */
+	protected final function addReviewModel(Shopgate_Model_Review $review) {
+		$this->addModel($review);
+	}
+
 	/**
 	 * @param mixed[] $review
 	 */
@@ -2386,18 +2386,18 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 */
 	protected abstract function createCategories($limit = null, $offset = null, array $uids = array());
 
-    /**
-     * Loads the product reviews of the shop system's database and passes them to the buffer.
-     *
-     * @param int $limit pagination limit; if not null, the number of exported reviews must be <= $limit
-     * @param int $offset pagination; if not null, start the export with the reviews at position $offset
-     * @param string[] $uids A list of products that should be fetched for the reviews.
-     *
-     * @see http://developer.shopgate.com/plugin_api/export/get_reviews
-     *
-     * @throws ShopgateLibraryException
-     */
-    protected abstract function createReviews($limit = null, $offset = null, array $uids = array());
+	/**
+	 * Loads the product reviews of the shop system's database and passes them to the buffer.
+	 *
+	 * @param int      $limit  pagination limit; if not null, the number of exported reviews must be <= $limit
+	 * @param int      $offset pagination; if not null, start the export with the reviews at position $offset
+	 * @param string[] $uids   A list of products that should be fetched for the reviews.
+	 *
+	 * @see http://developer.shopgate.com/plugin_api/export/get_reviews
+	 *
+	 * @throws ShopgateLibraryException
+	 */
+	protected abstract function createReviews($limit = null, $offset = null, array $uids = array());
 
 	/**
 	 * Takes an array of arrays that contain all elements which are taken to create a cross-product of all elements. The resulting array is an array-list with

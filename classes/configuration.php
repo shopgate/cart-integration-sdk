@@ -520,6 +520,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->supported_response_types = array(
 				'get_items' => array('xml'),
 				'get_categories' => array('xml'),
+                'get_reviews' => array('xml')
 		);
 		$this->enable_ping = 1;
 		$this->enable_add_order = 0;
@@ -1640,13 +1641,13 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->reviews_csv_filename = $value;
 	}
 
-    public function setReviewsXmlFilename($value) {
-        $this->reviews_xml_filename = $value;
-    }
+	public function setReviewsXmlFilename($value) {
+		$this->reviews_xml_filename = $value;
+	}
 
-    public function setReviewsJsonFilename($value) {
-        $this->reviews_json_filename = $value;
-    }
+	public function setReviewsJsonFilename($value) {
+		$this->reviews_json_filename = $value;
+	}
 
 	public function setAccessLogFilename($value) {
 		$this->access_log_filename = $value;
@@ -1752,25 +1753,25 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		}
 	}
 
-    public function setReviewsXmlPath($value) {
-        $dir = dirname($value);
-        $file = basename($value);
+	public function setReviewsXmlPath($value) {
+		$dir  = dirname($value);
+		$file = basename($value);
 
-        if (!empty($dir) && !empty($file)) {
-            $this->export_folder_path = $dir;
-            $this->reviews_xml_filename = $file;
-        }
-    }
+		if (!empty($dir) && !empty($file)) {
+			$this->export_folder_path   = $dir;
+			$this->reviews_xml_filename = $file;
+		}
+	}
 
-    public function setReviewsJsonPath($value) {
-        $dir = dirname($value);
-        $file = basename($value);
+	public function setReviewsJsonPath($value) {
+		$dir  = dirname($value);
+		$file = basename($value);
 
-        if (!empty($dir) && !empty($file)) {
-            $this->export_folder_path = $dir;
-            $this->reviews_json_filename = $file;
-        }
-    }
+		if (!empty($dir) && !empty($file)) {
+			$this->export_folder_path    = $dir;
+			$this->reviews_json_filename = $file;
+		}
+	}
 
 	public function setAccessLogPath($value) {
 		$dir = dirname($value);
@@ -1883,8 +1884,8 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$properties['categories_json_path'] = $this->getCategoriesJsonPath();
 		
 		$properties['reviews_csv_path'] = $this->getReviewsCsvPath();
-        $properties['reviews_xml_path'] = $this->getReviewsXmlPath();
-        $properties['reviews_json_path'] = $this->getReviewsJsonPath();
+		$properties['reviews_xml_path'] = $this->getReviewsXmlPath();
+		$properties['reviews_json_path'] = $this->getReviewsJsonPath();
         
 		$properties['access_log_path'] = $this->getAccessLogPath();
 		$properties['request_log_path'] = $this->getRequestLogPath();
@@ -2675,11 +2676,11 @@ interface ShopgateConfigInterface {
 	 * @return bool
 	 */
 	public function getEnableGetReviewsCsv();
-    
-    /**
-     * @return bool
-     */
-    public function getEnableGetReviews();
+
+	/**
+	 * @return bool
+	 */
+	public function getEnableGetReviews();
 
 	/**
 	 * @return bool
@@ -2886,15 +2887,15 @@ interface ShopgateConfigInterface {
 	 */
 	public function getReviewsCsvPath();
 
-    /**
-     * @return string The path to where the reviews XML file is stored and retrieved from.
-     */
-    public function getReviewsXmlPath();
+	/**
+	 * @return string The path to where the reviews XML file is stored and retrieved from.
+	 */
+	public function getReviewsXmlPath();
 
-    /**
-     * @return string The path to where the reviews JSON file is stored and retrieved from.
-     */
-    public function getReviewsJsonPath();
+	/**
+	 * @return string The path to where the reviews JSON file is stored and retrieved from.
+	 */
+	public function getReviewsJsonPath();
 
 	/**
 	 * @return string The path to where the media CSV file is stored and retrieved from.
@@ -3133,11 +3134,11 @@ interface ShopgateConfigInterface {
 	 */
 	public function setEnableGetReviewsCsv($value);
 
-    /**
-     * @param bool $value
-     */
-    public function setEnableGetReviews($value);
-	
+	/**
+	 * @param bool $value
+	 */
+	public function setEnableGetReviews($value);
+
 	/**
 	 * @param bool $value
 	 */
@@ -3209,7 +3210,7 @@ interface ShopgateConfigInterface {
 	public function setMobileHeaderParent($value);
 
 	/**
-	 * @return bool $value True to insert the Mobile Header as first child element, false to append it.
+	 * @param bool $value True to insert the Mobile Header as first child element, false to append it.
 	 */
 	public function setMobileHeaderPrepend($value);
 
@@ -3278,15 +3279,15 @@ interface ShopgateConfigInterface {
 	 */
 	public function setReviewsCsvFilename($value);
 
-    /**
-     * @param string $value The name of the reviews XML file.
-     */
-    public function setReviewsXmlFilename($value);
+	/**
+	 * @param string $value The name of the reviews XML file.
+	 */
+	public function setReviewsXmlFilename($value);
 
-    /**
-     * @param string $value The name of the reviews JSON file.
-     */
-    public function setReviewsJsonFilename($value);
+	/**
+	 * @param string $value The name of the reviews JSON file.
+	 */
+	public function setReviewsJsonFilename($value);
 
 	/**
 	 * @param string $value The name of the access log file.
@@ -3358,15 +3359,15 @@ interface ShopgateConfigInterface {
 	 */
 	public function setReviewsCsvPath($value);
 
-    /**
-     * @param string $value The path to where the reviews XML file is stored and retrieved from.
-     */
-    public function setReviewsXmlPath($value);
+	/**
+	 * @param string $value The path to where the reviews XML file is stored and retrieved from.
+	 */
+	public function setReviewsXmlPath($value);
 
-    /**
-     * @param string $value The path to where the reviews JSON file is stored and retrieved from.
-     */
-    public function setReviewsJsonPath($value);
+	/**
+	 * @param string $value The path to where the reviews JSON file is stored and retrieved from.
+	 */
+	public function setReviewsJsonPath($value);
 
 	/**
 	 * @param string $value The path to the access log file.
