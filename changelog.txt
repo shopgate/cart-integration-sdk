@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.9.0'''
+* Export der Kundenrezensionen als XML hinzugefügt
+
 '''Version 2.8.10'''
 * Linkexport für Produkte und Kategorien um CDATA erweitert (XML)  
 * CNAME Validierung erweitert
@@ -347,6 +350,9 @@
 
 
 '''English'''
+
+'''Version 2.9.0'''
+* export of reviews as xml added
 
 '''Version 2.8.10'''
 * added cdata for deep links in categories and products (xml) 
