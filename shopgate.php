@@ -42,7 +42,7 @@ require_once(dirname(__FILE__).DS.'classes'.DS.'redirect.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/Abstract.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/AbstractExport.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/XmlResultObject.php');
-
+require_once(dirname(__FILE__).DS.'classes'.DS.'models/Review.php');
 /**
  * catalog
  */

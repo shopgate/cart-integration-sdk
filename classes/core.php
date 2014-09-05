@@ -911,26 +911,15 @@ class ShopgateBuilder {
 		}
 		// -> PluginAPI auth service (currently the plugin API supports only one auth service)
 		$spaAuthService = new ShopgateAuthenticationServiceShopgate($this->config->getCustomerNumber(), $this->config->getApikey());
-//		switch($spaAuthServiceClassName = $this->config->getSpaAuthServiceClassName()) {
-//			case ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_SHOPGATE:
-//				$spaAuthService = new $spaAuthServiceClassName($this->config->getCustomerNumber(), $this->config->getApikey());
-//				$spaAuthService->setup($this->config);
-//				break;
-//			case ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_OAUTH:
-//				$spaAuthService = new $spaAuthServiceClassName($this->config->getOauthAccessToken());
-//				$spaAuthService->setup($this->config);
-//				break;
-//			default:
-//				// undefined auth service
-//				break;
-//		}
 		$pluginApi = new ShopgatePluginApi($this->config, $spaAuthService, $merchantApi, $plugin);
 		
 		// instantiate export file buffer
-		if (!empty($_REQUEST['action']) && (($_REQUEST['action'] == 'get_items') || ($_REQUEST['action'] == 'get_categories'))) {
+		if (!empty($_REQUEST['action']) && (($_REQUEST['action'] == 'get_items') 
+            || ($_REQUEST['action'] == 'get_categories') || ($_REQUEST['action'] == 'get_reviews'))) {
 			$xmlModelNames = array(
 					'get_items' => 'Shopgate_Model_Catalog_Product',
 					'get_categories' => 'Shopgate_Model_Catalog_Category',
+                    'get_reviews' => 'Shopgate_Model_Review'
 			);
 			
 			$sourceEncoding = $this->config->getExportConvertEncoding();
@@ -1551,6 +1540,26 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		$this->createCategories($limit, $offset, $uids);
 		$this->buffer->finish();
 	}
+
+    /**
+     * Takes care of buffer and file handlers and calls ShopgatePlugin::createReviews().
+     *
+     * @throws ShopgateLibraryException
+     */
+    public final function startGetReviews($limit = null, $offset = null, array $uids = array(), $responseType = 'xml') {
+        switch ($responseType) {
+            default: case 'xml':
+            $this->buffer->setFile($this->config->getReviewsXmlPath());
+            break;
+
+            case 'json':
+                $this->buffer->setFile($this->config->getReviewsJsonPath());
+                break;
+        }
+
+        $this->createReviews($limit, $offset, $uids);
+        $this->buffer->finish();
+    }
 	
 	
 	#############
@@ -1599,6 +1608,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		
 		$this->addRow( $item );
 	}
+    
 	/**
 	 * @param mixed[] $item
 	 */
@@ -1607,6 +1617,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		
 		$this->addRow( $item );
 	}
+    
 	/**
 	 * @param Shopgate_Model_Catalog_Category $category
 	 */
@@ -1622,6 +1633,14 @@ abstract class ShopgatePlugin extends ShopgateObject {
 		
 		$this->addRow($category);
 	}
+
+    /**
+     * @param Shopgate_Model_Review $review
+     */
+    protected final function addReviewModel(Shopgate_Model_Review $review) {
+        $this->addModel($review);
+    }
+    
 	/**
 	 * @param mixed[] $review
 	 */
@@ -2100,7 +2119,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 
 	/**
 	 * Callback function for the Shopgate Plugin API ping action.
-	 *
 	 * Override this to append additional information about shop system to the response of the ping action.
 	 *
 	 * @return mixed[] An array with additional information.
@@ -2109,7 +2127,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 
 	/**
 	 * Callback function for the Shopgate Plugin API ping action.
-	 *
 	 * Override this to append additional information about shop system to the response of the ping action.
 	 *
 	 * @return mixed[] An array with additional information.
@@ -2133,7 +2150,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 
 	/**
 	 * Callback function for the Shopgate Plugin API Debug action.
-	 *
 	 * Override this to append additional information about shop system to the response of the Debug action.
 	 *
 	 * @return mixed[] An string with additional information.
@@ -2142,10 +2158,9 @@ abstract class ShopgatePlugin extends ShopgateObject {
 
 	/**
 	 * This performs the necessary queries to build a ShopgateCustomer object for the given log in credentials.
-	 *
 	 * The method should not abort on soft errors like when the street or phone number of a customer can't be found.
 	 *
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_customer#API_Response
+	 * @see http://developer.shopgate.com/plugin_api/customers/get_customer
 	 *
 	 * @param string $user The user name the customer entered at Shopgate Connect.
 	 * @param string $pass The password the customer entered at Shopgate Connect.
@@ -2156,10 +2171,9 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	
 	/**
 	 * This method creates a new user account / user addresses for a customer in the shop system's database
-	 *
 	 * The method should not abort on soft errors like when the street or phone number of a customer is not set.
 	 *
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_register_customer#API_Response
+	 * @see http://developer.shopgate.com/plugin_api/customers/register_customer
 	 *
 	 * @param string $user The user name the customer entered at Shopgate.
 	 * @param string $pass The password the customer entered at Shopgate.
@@ -2171,8 +2185,8 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	/**
 	 * Performs the necessary queries to add an order to the shop system's database.
 	 *
-	 * @see http://wiki.shopgate.com/Merchant_API_get_orders#API_Response
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_add_order#API_Response
+	 * @see http://developer.shopgate.com/merchant_api/orders/get_orders
+	 * @see http://developer.shopgate.com/plugin_api/orders/add_order
 	 *
 	 * @param ShopgateOrder $order The ShopgateOrder object to be added to the shop system's database.
 	 * @return array(
@@ -2187,8 +2201,8 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	/**
 	 * Performs the necessary queries to update an order in the shop system's database.
 	 *
-	 * @see http://wiki.shopgate.com/Merchant_API_get_orders#API_Response
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_update_order#API_Response
+	 * @see http://developer.shopgate.com/merchant_api/orders/get_orders
+	 * @see http://developer.shopgate.com/plugin_api/orders/update_order
 	 *
 	 * @param ShopgateOrder $order The ShopgateOrder object to be updated in the shop system's database.
 	 * @return array(
@@ -2203,7 +2217,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	/**
 	 * Redeems coupons that are passed along with a ShopgateCart object.
 	 *
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_redeem_coupons#API_Response
+	 * @see http://developer.shopgate.com/plugin_api/coupons
 	 *
 	 * @param ShopgateCart $cart The ShopgateCart object containing the coupons that should be redeemed.
 	 * @return array('external_coupons' => ShopgateExternalCoupon[])
@@ -2215,7 +2229,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * Checks the content of a cart to be valid and returns necessary changes if applicable.
 	 *
 	 *
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_check_cart#API_Response
+	 * @see http://developer.shopgate.com/plugin_api/cart
 	 *
 	 * @param ShopgateCart $cart The ShopgateCart object to be checked and validated.
 	 * @return array(
@@ -2245,7 +2259,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	
 	/**
 	 * Returns an array of certain settings of the shop. (Currently mainly tax settings.)	 *
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_settings#API_Response
+	 * @see http://developer.shopgate.com/plugin_api/system_information/get_settings
 	 *
 	 * @return array(
 	 * 					<ul>
@@ -2270,8 +2284,8 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * Use ShopgatePlugin::buildDefaultItemRow() to get the correct indices for the field names in a Shopgate items csv and
 	 * use ShopgatePlugin::addItemRow() to add it to the output buffer.
 	 *
-	 * @see http://wiki.shopgate.com/CSV_File_Items
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_items_csv
+	 * @see http://developer.shopgate.com/file_formats/csv/products
+	 * @see http://developer.shopgate.com/plugin_api/export/get_items_csv
 	 *
 	 * @throws ShopgateLibraryException
 	 */
@@ -2284,7 +2298,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * use ShopgatePlugin::addMediaRow() to add it to the output buffer.
 	 *
 	 * @see http://wiki.shopgate.com/CSV_File_Media#Sample_Media_CSV_file
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_media_csv
+	 * @see http://developer.shopgate.com/plugin_api/export/get_media_csv
 	 *
 	 * @throws ShopgateLibraryException
 	 */
@@ -2296,8 +2310,8 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * Use ShopgatePlugin::buildDefaultCategoryRow() to get the correct indices for the field names in a Shopgate categories csv and
 	 * use ShopgatePlugin::addCategoryRow() to add it to the output buffer.
 	 *
-	 * @see http://wiki.shopgate.com/CSV_File_Categories
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_categories_csv
+	 * @see http://developer.shopgate.com/file_formats/csv/categories
+	 * @see http://developer.shopgate.com/plugin_api/export/get_categories_csv
 	 *
 	 * @throws ShopgateLibraryException
 	 */
@@ -2309,8 +2323,8 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * Use ShopgatePlugin::buildDefaultReviewRow() to get the correct indices for the field names in a Shopgate reviews csv and
 	 * use ShopgatePlugin::addReviewRow() to add it to the output buffer.
 	 *
-	 * @see http://wiki.shopgate.com/CSV_File_Reviews
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_reviews_csv
+	 * @see http://developer.shopgate.com/file_formats/csv/reviews
+	 * @see http://developer.shopgate.com/plugin_api/export/get_reviews_csv
 	 *
 	 * @throws ShopgateLibraryException
 	 */
@@ -2319,7 +2333,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	/**
 	 * Exports orders from the shop system's database to Shopgate.
 	 *
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_orders
+	 * @see http://developer.shopgate.com/plugin_api/orders/get_orders
 	 *
 	 * @param string $customerToken
 	 * @param string $customerLanguage
@@ -2337,7 +2351,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	/**
 	 * Updates and returns synchronization information for the favourite list of a customer.
 	 *
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_sync_favourite_list
+	 * @see http://developer.shopgate.com/plugin_api/customers/sync_favourite_list
 	 *
 	 * @param string $customerToken
 	 * @param ShopgateSyncItem[] $items A list of ShopgateSyncItem objects that need to be synchronized
@@ -2353,7 +2367,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @param int $offset pagination; if not null, start the export with the item at position $offset
 	 * @param string[] $uids a list of item UIDs that should be exported
 	 *
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_items
+	 * @see http://developer.shopgate.com/plugin_api/export/get_items
 	 *
 	 * @throws ShopgateLibraryException
 	 */
@@ -2366,11 +2380,24 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @param int $offset pagination; if not null, start the export with the categories at position $offset
 	 * @param string[] $uids a list of categories UIDs that should be exported
 	 *
-	 * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_categories
+	 * @see http://developer.shopgate.com/plugin_api/export/get_categories
 	 *
 	 * @throws ShopgateLibraryException
 	 */
 	protected abstract function createCategories($limit = null, $offset = null, array $uids = array());
+
+    /**
+     * Loads the product reviews of the shop system's database and passes them to the buffer.
+     *
+     * @param int $limit pagination limit; if not null, the number of exported reviews must be <= $limit
+     * @param int $offset pagination; if not null, start the export with the reviews at position $offset
+     * @param string[] $uids A list of products that should be fetched for the reviews.
+     *
+     * @see http://developer.shopgate.com/plugin_api/export/get_reviews
+     *
+     * @throws ShopgateLibraryException
+     */
+    protected abstract function createReviews($limit = null, $offset = null, array $uids = array());
 
 	/**
 	 * Takes an array of arrays that contain all elements which are taken to create a cross-product of all elements. The resulting array is an array-list with

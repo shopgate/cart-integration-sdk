@@ -99,37 +99,39 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		
 		// initialize action whitelist
 		$this->actionWhitelist = array(
-			'ping',
-			'cron',
 			'add_order',
-			'update_order',
-			'get_debug_info',
+            'check_cart',
+            'check_stock',
+            'clear_cache',
+            'clear_log_file',
+            'cron',
+            'get_categories',
+            'get_categories_csv',
+            'get_customer',
+            'get_debug_info',
+            'get_items',
 			'get_items_csv',
-			'get_categories_csv',
+            'get_log_file',
+            'get_media_csv',
+            'get_orders',
+            'get_reviews',
 			'get_reviews_csv',
-			'get_media_csv',
-			'get_log_file',
-			'clear_log_file',
-			'clear_cache',
-			'check_cart',
-			'check_stock',
-			'redeem_coupons',
-			'get_customer',
-			'register_customer',
-			'get_settings',
-			'set_settings',
-			'get_items',
-			'get_categories',
-			'receive_authorization',
-			'get_orders',
-			'sync_favourite_list',
+            'get_settings',
+            'ping',
+            'receive_authorization',
+            'redeem_coupons',
+            'register_customer',
+            'set_settings',
+            'sync_favourite_list',
+            'update_order',
 		);
 		
 		$this->exportActionList = array(
 			'get_items',
+            'get_items_csv',
 			'get_categories',
-			'get_items_csv',
 			'get_categories_csv',
+            'get_reviews',
 			'get_reviews_csv',
 			'get_media_csv',
 		);
@@ -1089,6 +1091,44 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		if (empty($this->response)) $this->response = new ShopgatePluginApiResponseTextCsvExport($this->trace_id);
 		$this->responseData = $this->config->getReviewsCsvPath();
 	}
+
+    /**
+     * Represents the "get_categories" action.
+     *
+     * @throws ShopgateLibraryException
+     * @see http://wiki.shopgate.com/Shopgate_Plugin_API_get_categories
+     */
+    protected function getReviews() {
+        $limit = isset($this->params['limit']) ? (int) $this->params['limit'] : null;
+        $offset = isset($this->params['offset']) ? (int) $this->params['offset'] : null;
+        $uids = isset($this->params['uids']) ? (array) $this->params['uids'] : array();
+        $responseType = isset($this->params['response_type']) ? $this->params['response_type'] : false;
+
+        $supportedResponseTypes = $this->config->getSupportedResponseTypes();
+        if (!empty($responseType) && !in_array($responseType, $supportedResponseTypes['get_reviews'])) {
+            throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_UNSUPPORTED_RESPONSE_TYPE, 'Requested type: "'.$responseType.'"');
+        }
+
+        $this->plugin->startGetReviews($limit, $offset, $uids, $responseType);
+
+        switch ($responseType) {
+            default: case 'xml':
+            $response = new ShopgatePluginApiResponseAppXmlExport($this->trace_id);
+            $responseData = $this->config->getReviewsXmlPath();
+            break;
+
+            case 'json':
+                $response = new ShopgatePluginApiResponseAppJsonExport($this->trace_id);
+                $responseData = $this->config->getReviewsJsonPath();
+                break;
+        }
+
+        if (empty($this->response)) {
+            $this->response = $response;
+        }
+
+        $this->responseData = $responseData;
+    }
 	
 	/**
 	 * Represents the "get_log_file" action.

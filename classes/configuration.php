@@ -277,6 +277,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 */
 	protected $enable_get_reviews_csv;
 
+    /**
+     * @var bool
+     */
+    protected $enable_get_reviews;
+
 	/**
 	 * @var bool
 	 */
@@ -420,6 +425,16 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 */
 	protected $reviews_csv_filename;
 
+    /**
+     * @var string The name of the reviews XML file.
+     */
+    protected $reviews_xml_filename;
+
+    /**
+     * @var string The name of the reviews JSON file.
+     */
+    protected $reviews_json_filename;
+
 	/**
 	 * @var string The name of the access log file.
 	 */
@@ -553,13 +568,16 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->items_csv_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'items.csv';
 		$this->items_xml_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'items.xml';
 		$this->items_json_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'items.json';
+		
+        $this->media_csv_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'media.csv';
 
-		$this->media_csv_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'media.csv';
 		$this->categories_csv_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'categories.csv';
 		$this->categories_xml_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'categories.xml';
 		$this->categories_json_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'categories.json';
 
 		$this->reviews_csv_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'reviews.csv';
+        $this->reviews_xml_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'reviews.xml';
+        $this->reviews_json_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'reviews.json';
 
 		$this->access_log_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'access.log';
 		$this->request_log_filename = ShopgateConfigInterface::SHOPGATE_FILE_PREFIX.'request.log';
@@ -1129,6 +1147,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->enable_get_reviews_csv;
 	}
 
+    public function getEnableGetReviews() {
+        return $this->enable_get_reviews;
+    }
+
 	public function getEnableGetMediaCsv(){
 		return $this->enable_get_media_csv;
 	}
@@ -1296,6 +1318,14 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	public function getReviewsCsvPath() {
 		return rtrim($this->export_folder_path.DS.$this->reviews_csv_filename, DS);
 	}
+    
+    public function getReviewsXmlPath() {
+        return rtrim($this->export_folder_path.DS.$this->reviews_xml_filename, DS);
+    }
+
+    public function getReviewsJsonPath() {
+        return rtrim($this->export_folder_path.DS.$this->reviews_json_filename, DS);
+    }
 
 	public function getAccessLogPath() {
 		return rtrim($this->log_folder_path.DS.$this->access_log_filename, DS);
@@ -1494,6 +1524,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_get_reviews_csv = $value;
 	}
 
+    public function setEnableGetReviews($value) {
+        $this->enable_get_reviews = $value;
+    }
+
 	public function setEnableGetMediaCsv($value){
 		$this->enable_get_media_csv = $value;
 	}
@@ -1606,6 +1640,14 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->reviews_csv_filename = $value;
 	}
 
+    public function setReviewsXmlFilename($value) {
+        $this->reviews_xml_filename = $value;
+    }
+
+    public function setReviewsJsonFilename($value) {
+        $this->reviews_json_filename = $value;
+    }
+
 	public function setAccessLogFilename($value) {
 		$this->access_log_filename = $value;
 	}
@@ -1709,6 +1751,26 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 			$this->reviews_csv_filename = $file;
 		}
 	}
+
+    public function setReviewsXmlPath($value) {
+        $dir = dirname($value);
+        $file = basename($value);
+
+        if (!empty($dir) && !empty($file)) {
+            $this->export_folder_path = $dir;
+            $this->reviews_xml_filename = $file;
+        }
+    }
+
+    public function setReviewsJsonPath($value) {
+        $dir = dirname($value);
+        $file = basename($value);
+
+        if (!empty($dir) && !empty($file)) {
+            $this->export_folder_path = $dir;
+            $this->reviews_json_filename = $file;
+        }
+    }
 
 	public function setAccessLogPath($value) {
 		$dir = dirname($value);
@@ -1821,7 +1883,9 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$properties['categories_json_path'] = $this->getCategoriesJsonPath();
 		
 		$properties['reviews_csv_path'] = $this->getReviewsCsvPath();
-
+        $properties['reviews_xml_path'] = $this->getReviewsXmlPath();
+        $properties['reviews_json_path'] = $this->getReviewsJsonPath();
+        
 		$properties['access_log_path'] = $this->getAccessLogPath();
 		$properties['request_log_path'] = $this->getRequestLogPath();
 		$properties['error_log_path'] = $this->getErrorLogPath();
@@ -2611,6 +2675,11 @@ interface ShopgateConfigInterface {
 	 * @return bool
 	 */
 	public function getEnableGetReviewsCsv();
+    
+    /**
+     * @return bool
+     */
+    public function getEnableGetReviews();
 
 	/**
 	 * @return bool
@@ -2816,6 +2885,16 @@ interface ShopgateConfigInterface {
 	 * @return string The path to where the reviews CSV file is stored and retrieved from.
 	 */
 	public function getReviewsCsvPath();
+
+    /**
+     * @return string The path to where the reviews XML file is stored and retrieved from.
+     */
+    public function getReviewsXmlPath();
+
+    /**
+     * @return string The path to where the reviews JSON file is stored and retrieved from.
+     */
+    public function getReviewsJsonPath();
 
 	/**
 	 * @return string The path to where the media CSV file is stored and retrieved from.
@@ -3053,6 +3132,11 @@ interface ShopgateConfigInterface {
 	 * @param bool $value
 	 */
 	public function setEnableGetReviewsCsv($value);
+
+    /**
+     * @param bool $value
+     */
+    public function setEnableGetReviews($value);
 	
 	/**
 	 * @param bool $value
@@ -3194,6 +3278,16 @@ interface ShopgateConfigInterface {
 	 */
 	public function setReviewsCsvFilename($value);
 
+    /**
+     * @param string $value The name of the reviews XML file.
+     */
+    public function setReviewsXmlFilename($value);
+
+    /**
+     * @param string $value The name of the reviews JSON file.
+     */
+    public function setReviewsJsonFilename($value);
+
 	/**
 	 * @param string $value The name of the access log file.
 	 */
@@ -3263,6 +3357,16 @@ interface ShopgateConfigInterface {
 	 * @param string $value The path to where the reviews CSV file is stored and retrieved from.
 	 */
 	public function setReviewsCsvPath($value);
+
+    /**
+     * @param string $value The path to where the reviews XML file is stored and retrieved from.
+     */
+    public function setReviewsXmlPath($value);
+
+    /**
+     * @param string $value The path to where the reviews JSON file is stored and retrieved from.
+     */
+    public function setReviewsJsonPath($value);
 
 	/**
 	 * @param string $value The path to the access log file.
