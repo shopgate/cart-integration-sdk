@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.9.1'''
+* CDATA für den Author der Rezensionen in der XML hinzugefügt
+
 '''Version 2.9.0'''
 * Export der Kundenrezensionen als XML hinzugefügt
 
@@ -350,6 +353,9 @@
 
 
 '''English'''
+
+'''Version 2.9.1'''
+* added CDATA for review author in xml
 
 '''Version 2.9.0'''
 * export of reviews as xml added

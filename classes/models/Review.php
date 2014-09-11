@@ -106,7 +106,7 @@ class Shopgate_Model_Review extends Shopgate_Model_AbstractExport
 		$reviewNode->addAttribute('uid', $this->getUid());
 		$reviewNode->addChild('item_uid', $this->getItemUid());
 		$reviewNode->addChild('score', $this->getScore());
-		$reviewNode->addChild('reviewer_name', $this->getReviewerName());
+		$reviewNode->addChildWithCDATA('reviewer_name', $this->getReviewerName());
 		$reviewNode->addChild('date', $this->getDate());
 		$reviewNode->addChildWithCDATA('title', $this->getTitle());
 		$reviewNode->addChildWithCDATA('text', $this->getText());
