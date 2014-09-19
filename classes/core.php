@@ -42,9 +42,9 @@ function shopgateGetErrorType($type) {
 			return 'E_CORE_ERROR';
 		case E_CORE_WARNING: // 32 //
 			return 'E_CORE_WARNING';
-		case E_CORE_ERROR: // 64 //
+		case E_COMPILE_ERROR: // 64 //
 			return 'E_COMPILE_ERROR';
-		case E_CORE_WARNING: // 128 //
+		case E_COMPILE_WARNING: // 128 //
 			return 'E_COMPILE_WARNING';
 		case E_USER_ERROR: // 256 //
 			return 'E_USER_ERROR';
@@ -2063,7 +2063,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	/**
 	 * Gets the used memory and real used memory and returns it as a string
 	 *
-	 * @param $sizeUnit (GB / MB / KB / BYTES)
 	 * @return string
 	 */
 	protected function getMemoryUsageString() {
@@ -2177,8 +2176,8 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @param string $user The user name the customer entered at Shopgate.
 	 * @param string $pass The password the customer entered at Shopgate.
-	 * @param ShopgateCustomer A ShopgateCustomer object to be added to the shop system's database.
-	 * @throws ShopgateLibraryException if an error occures
+	 * @param ShopgateCustomer $customer A ShopgateCustomer object to be added to the shop system's database.
+	 * @throws ShopgateLibraryException if an error occurs
 	 */
 	public abstract function registerCustomer($user, $pass, ShopgateCustomer $customer);
 	
