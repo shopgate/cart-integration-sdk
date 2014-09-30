@@ -300,6 +300,12 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 		return empty($_COOKIE[ShopgateMobileRedirectInterface::COOKIE_NAME]) ? true : false;
 	}
 
+	/**
+	 * @param string $url
+	 * @param bool $autoRedirect
+	 * @return string|void
+	 * @post ends script execution in case of http redirect
+	 */
 	public function redirect($url, $autoRedirect = true) {
 		if (!$this->config->getShopNumber()) {
 			return '';
