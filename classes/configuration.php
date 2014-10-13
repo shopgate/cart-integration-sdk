@@ -532,10 +532,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_get_customer = 0;
 		$this->enable_get_debug_info = 0;
 		$this->enable_get_items_csv = 0;
-		$this->enable_get_items = 1;
-		$this->enable_get_categories = 1;
+		$this->enable_get_items = 0;
+		$this->enable_get_categories = 0;
 		$this->enable_get_media_csv = 0;
 		$this->enable_get_categories_csv = 0;
+		$this->enable_get_reviews = 0;
 		$this->enable_get_reviews_csv = 0;
 		$this->enable_get_log_file = 1;
 		$this->enable_mobile_website = 0;
