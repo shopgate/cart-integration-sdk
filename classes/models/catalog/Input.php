@@ -38,7 +38,7 @@
  * @method                                      setRequired(bool $value)
  * @method bool                                 getRequired()
  *
- * @method                                      setAdditionalPrice(bool $value)
+ * @method                                      setAdditionalPrice(string $value)
  * @method string                               getAdditionalPrice()
  *
  * @method                                      setLabel(string $value)
