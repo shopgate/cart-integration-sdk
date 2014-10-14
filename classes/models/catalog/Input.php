@@ -38,6 +38,9 @@
  * @method                                      setRequired(bool $value)
  * @method bool                                 getRequired()
  *
+ * @method                                      setAdditionalPrice(string $value)
+ * @method string                               getAdditionalPrice()
+ *
  * @method                                      setLabel(string $value)
  * @method string                               getLabel()
  *
@@ -69,6 +72,7 @@ class Shopgate_Model_Catalog_Input extends Shopgate_Model_AbstractExport {
 		'Options',
 		'Validation',
 		'Required',
+		'AdditionalPrice',
 		'Label',
 		'InfoText');
 
@@ -96,6 +100,7 @@ class Shopgate_Model_Catalog_Input extends Shopgate_Model_AbstractExport {
 		$inputNode->addAttribute('uid', $this->getUid());
 		$inputNode->addAttribute('type', $this->getType());
 		$inputNode->addAttribute('required', $this->getRequired());
+		$inputNode->addAttribute('additional_price', $this->getAdditionalPrice());
 		$inputNode->addChildWithCDATA('label', $this->getLabel());
 		$inputNode->addChildWithCDATA('info_text', $this->getInfoText());
 		$optionsNode = $inputNode->addChild('options');
