@@ -464,14 +464,14 @@ class ShopgateExternalOrder extends ShopgateContainer {
 	}
 
 	/**
-	 * @return ShopgateOrderTax[]
+	 * @return ShopgateExternalOrderTax[]
 	 */
 	public function getOrderTaxes() {
 		return $this->order_taxes;
 	}
 
 	/**
-	 * @return ShopgateOrderExtraCost[]
+	 * @return ShopgateExternalOrderExtraCost[]
 	 */
 	public function getExtraCosts() {
 		return $this->extra_costs;
@@ -485,6 +485,7 @@ class ShopgateExternalOrder extends ShopgateContainer {
 	}
 	
 	/**
+	 * @param array $options
 	 * @return ShopgateExternalOrderItem
 	 */
 	protected function getOrderItem(array $options) {
@@ -492,6 +493,7 @@ class ShopgateExternalOrder extends ShopgateContainer {
 	}
 
 	/**
+	 * @param ShopgateContainerVisitor $v
 	 * @see ShopgateContainer::accept()
 	 */
 	public function accept(ShopgateContainerVisitor $v) {
@@ -721,6 +723,7 @@ class ShopgateExternalOrderExtraCost extends ShopgateContainer {
 	}
 
 	/**
+	 * @param ShopgateContainerVisitor $v
 	 * @see ShopgateContainer::accept()
 	 */
 	public function accept(ShopgateContainerVisitor $v) {
@@ -782,6 +785,7 @@ class ShopgateExternalOrderTax extends ShopgateContainer {
 	}
 
 	/**
+	 * @param ShopgateContainerVisitor $v
 	 * @see ShopgateContainer::accept()
 	 */
 	public function accept(ShopgateContainerVisitor $v) {
