@@ -44,6 +44,9 @@
  *  @method         setMinimumOrderAmount(int $value)
  *  @method int     getMinimumOrderAmount()
  *
+ *  @method         setBasePrice(string $value)
+ *  @method string  getBasePrice()
+ *
  */
 class Shopgate_Model_Catalog_Price extends Shopgate_Model_AbstractExport {
 	/**
@@ -70,7 +73,9 @@ class Shopgate_Model_Catalog_Price extends Shopgate_Model_AbstractExport {
 		'SalePrice',
 		'Msrp',
 		'TierPricesGroup',
-		'MinimumOrderAmount');
+		'MinimumOrderAmount',
+		'BasePrice'
+	);
 
 	/**
 	 * init default object
@@ -91,6 +96,7 @@ class Shopgate_Model_Catalog_Price extends Shopgate_Model_AbstractExport {
 		$pricesNode->addChild('sale_price', $this->getSalePrice());
 		$pricesNode->addChild('msrp', $this->getMsrp());
 		$pricesNode->addChild('minimum_order_amount', $this->getMinimumOrderAmount());
+		$pricesNode->addChildWithCDATA('base_price', $this->getBasePrice());
 
 		$tierPricesNode = $pricesNode->addChild('tier_prices');
 		foreach ($this->getTierPricesGroup() as $customerGroupItem) {
