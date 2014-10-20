@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.9.x'''
+* Preis Model um den Grundpreis erweitert
+
 '''Version 2.9.1'''
 * CDATA für den Author der Rezensionen in der XML hinzugefügt
 
@@ -353,6 +356,9 @@
 
 
 '''English'''
+
+'''Version 2.9.x'''
+* extended price model with base price
 
 '''Version 2.9.1'''
 * added CDATA for review author in xml
