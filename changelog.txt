@@ -1,6 +1,6 @@
 '''Deutsch'''
 
-'''Version 2.9.x'''
+'''Version 2.9.3'''
 * Preis Model um den Grundpreis erweitert
 
 '''Version 2.9.1'''
@@ -357,7 +357,7 @@
 
 '''English'''
 
-'''Version 2.9.x'''
+'''Version 2.9.3'''
 * extended price model with base price
 
 '''Version 2.9.1'''
