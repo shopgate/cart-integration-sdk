@@ -1986,7 +1986,9 @@ abstract class ShopgatePlugin extends ShopgateObject {
 					// pass through known Shopgate Library Exceptions
 					throw $e;
 				} catch (Exception $e) {
-					throw new ShopgateLibraryException("An unknown exception has been thrown in loader method \"{$method}\". Memory usage ".$this->getMemoryUsageString()." Exception '".get_class($e)."': [Code: {$e->getCode()}] {$e->getMessage()}");
+					$msg = "An unknown exception has been thrown in loader method \"{$method}\". Memory usage "
+						 . $this->getMemoryUsageString()." Exception '".get_class($e)."': [Code: {$e->getCode()}] {$e->getMessage()}";
+					throw new ShopgateLibraryException(ShopgateLibraryException::UNKNOWN_ERROR_CODE, $msg, true);
 				}
 
 				if ($result) {
