@@ -23,7 +23,7 @@
  */
 
 /**
- * @class Shopgate_Model_Catalog_TierPrice
+ * @class Shopgate_Model_Catalog_Category
  * @see http://developer.shopgate.com/file_formats/xml/categories
  *
  *  @method                             setUid(int $value)
