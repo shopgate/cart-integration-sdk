@@ -47,7 +47,7 @@
  * @method          setText(string $value)
  * @method string   getText()
  */
-class Shopgate_Model_Review extends Shopgate_Model_AbstractExport
+class Shopgate_Model_Catalog_Review extends Shopgate_Model_AbstractExport
 {
 	/**
 	 * @var string
@@ -130,3 +130,10 @@ class Shopgate_Model_Review extends Shopgate_Model_AbstractExport
 		return $reviewNode->getData();
 	}
 }
+
+/**
+ * Class Shopgate_Model_Review
+ *
+ * @deprecated use Shopgate_Model_Catalog_Review
+ */
+class Shopgate_Model_Review extends Shopgate_Model_Catalog_Review {}

@@ -42,10 +42,10 @@ require_once(dirname(__FILE__).DS.'classes'.DS.'redirect.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/Abstract.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/AbstractExport.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/XmlResultObject.php');
-require_once(dirname(__FILE__).DS.'classes'.DS.'models/Review.php');
 /**
  * catalog
  */
+require_once(dirname(__FILE__).DS.'classes'.DS.'models/catalog/Review.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/catalog/Product.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/catalog/Price.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/catalog/TierPrice.php');
