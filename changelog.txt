@@ -1,6 +1,6 @@
 '''Deutsch'''
 
-'''Version 2.9.x'''
+'''Version 2.9.4'''
 * PHPDoc überarbeitet
 * Konstanten für Fehlercodes der Shopgate Merchant API hinzugefügt
 
@@ -361,7 +361,7 @@
 
 '''English'''
 
-'''Version 2.9.x'''
+'''Version 2.9.4'''
 * revised PHPDoc
 * added constants for error codes of the Shopgate Merchant API
 
