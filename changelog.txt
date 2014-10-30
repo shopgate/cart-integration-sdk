@@ -3,6 +3,7 @@
 '''Version 2.9.x'''
 * PHPDoc überarbeitet
 * Konstanten für Fehlercodes der Shopgate Merchant API hinzugefügt
+* direkte Zugriffe auf $_REQUEST und $_GET entfernt
 
 '''Version 2.9.3'''
 * Preis Model um den Grundpreis erweitert
@@ -364,6 +365,7 @@
 '''Version 2.9.x'''
 * revised PHPDoc
 * added constants for error codes of the Shopgate Merchant API
+* removed direct access to $_REQUEST and $_GET
 
 '''Version 2.9.3'''
 * extended price model with base price
