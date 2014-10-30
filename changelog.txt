@@ -2,6 +2,7 @@
 
 '''Version 2.9.x'''
 * PHPDoc überarbeitet
+* Konstanten für Fehlercodes der Shopgate Merchant API hinzugefügt
 
 '''Version 2.9.3'''
 * Preis Model um den Grundpreis erweitert
@@ -362,6 +363,7 @@
 
 '''Version 2.9.x'''
 * revised PHPDoc
+* added constants for error codes of the Shopgate Merchant API
 
 '''Version 2.9.3'''
 * extended price model with base price
