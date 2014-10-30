@@ -901,15 +901,28 @@ class ShopgateBuilder {
 	protected $config;
 	
 	/**
+	 * @var array[string, mixed]
+	 */
+	protected $request;
+	
+	/**
 	 * Loads configuration and initializes the ShopgateLogger class.
 	 *
 	 * @param ShopgateConfigInterface $config
+	 * @param array[string, mixed] $request the contents of $_REQUEST
 	 */
-	public function __construct(ShopgateConfigInterface $config = null) {
+	public function __construct(ShopgateConfigInterface $config = null, array $request = array()) {
 		if (empty($config)) {
 			$this->config = new ShopgateConfig();
 		} else {
 			$this->config = $config;
+		}
+		
+		if (empty($request)) {
+			$varName = '_'.'REQUEST';
+			$this->request = ${$varName};
+		} else {
+			$this->request = $request;
 		}
 		
 		// set up logger
@@ -953,8 +966,8 @@ class ShopgateBuilder {
 		$pluginApi = new ShopgatePluginApi($this->config, $spaAuthService, $merchantApi, $plugin);
 		
 		// instantiate export file buffer
-		if (!empty($_REQUEST['action']) && (($_REQUEST['action'] == 'get_items')
-			|| ($_REQUEST['action'] == 'get_categories') || ($_REQUEST['action'] == 'get_reviews'))) {
+		if (!empty($this->request['action']) && (($this->request['action'] == 'get_items')
+			|| ($this->request['action'] == 'get_categories') || ($this->request['action'] == 'get_reviews'))) {
 			$xmlModelNames = array(
 					'get_items' => 'Shopgate_Model_Catalog_Product',
 					'get_categories' => 'Shopgate_Model_Catalog_Category',
@@ -966,11 +979,11 @@ class ShopgateBuilder {
 				array_splice(Shopgate_Model_AbstractExport::$allowedEncodings, 1, 0, $sourceEncoding);
 			}
 			
-			$format = (!empty($_REQUEST['response_type'])) ? $_REQUEST['response_type'] : '';
+			$format = (!empty($this->request['response_type'])) ? $this->request['response_type'] : '';
 			switch ($format) {
 				default: case 'xml':
 					/* @var $xmlModel Shopgate_Model_AbstractExport */
-					$xmlModel = new $xmlModelNames[$_REQUEST['action']]();
+					$xmlModel = new $xmlModelNames[$this->request['action']]();
 					$xmlNode = new Shopgate_Model_XmlResultObject($xmlModel->getItemNodeIdentifier());
 					$fileBuffer = new ShopgateFileBufferXml($xmlModel, $xmlNode, $this->config->getExportBufferCapacity(), $this->config->getExportConvertEncoding(), $this->config->getEncoding());
 				break;
@@ -979,7 +992,7 @@ class ShopgateBuilder {
 					$fileBuffer = new ShopgateFileBufferJson($this->config->getExportBufferCapacity(), $this->config->getExportConvertEncoding(), $this->config->getEncoding());
 				break;
 			}
-		} else if (!empty($_REQUEST['action']) && (($_REQUEST['action'] == 'get_items_csv') || ($_REQUEST['action'] == 'get_categories_csv') || ($_REQUEST['action'] == 'get_reviews_csv'))) {
+		} else if (!empty($this->request['action']) && (($this->request['action'] == 'get_items_csv') || ($this->request['action'] == 'get_categories_csv') || ($this->request['action'] == 'get_reviews_csv'))) {
 			$fileBuffer = new ShopgateFileBufferCsv($this->config->getExportBufferCapacity(), $this->config->getExportConvertEncoding(), $this->config->getEncoding());
 		} else {
 			$fileBuffer = new ShopgateFileBufferCsv($this->config->getExportBufferCapacity(), $this->config->getExportConvertEncoding(), $this->config->getEncoding());
