@@ -919,8 +919,9 @@ class ShopgateBuilder {
 		}
 		
 		if (empty($request)) {
-			$varName = '_'.'REQUEST';
-			$this->request = ${$varName};
+			$apiParams = '_'.'POST';
+			$queryParams = '_'.'GET';
+			$this->request = array_merge(${$queryParams}, ${$apiParams});
 		} else {
 			$this->request = $request;
 		}
