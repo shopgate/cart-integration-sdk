@@ -975,9 +975,9 @@ class ShopgateBuilder {
 					'get_reviews' => 'Shopgate_Model_Review'
 			);
 			
-			$sourceEncoding = $this->config->getExportConvertEncoding();
-			if (!empty($sourceEncoding)) {
-				array_splice(Shopgate_Model_AbstractExport::$allowedEncodings, 1, 0, $sourceEncoding);
+			if ($this->config->getExportConvertEncoding()) {
+				array_splice(Shopgate_Model_AbstractExport::$allowedEncodings, 1, 0, $this->config->getEncoding());
+				Shopgate_Model_AbstractExport::$allowedEncodings = array_unique(Shopgate_Model_AbstractExport::$allowedEncodings);
 			}
 			
 			$format = (!empty($this->request['response_type'])) ? $this->request['response_type'] : '';

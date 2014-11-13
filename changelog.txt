@@ -2,6 +2,7 @@
 
 '''Version 2.9.5'''
 * Fehler bei der Verarbeitung der Request-Parameter behoben
+* Fehler im XML-Export-Encoding behoben 
 
 '''Version 2.9.4'''
 * PHPDoc überarbeitet
@@ -367,6 +368,7 @@
 
 '''Version 2.9.5'''
 * fixed a bug in processing the request parameters of API requests
+* fixed XML export encoding issue
 
 '''Version 2.9.4'''
 * revised PHPDoc
