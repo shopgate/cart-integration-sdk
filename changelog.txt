@@ -1,6 +1,6 @@
 '''Deutsch'''
 
-'''Version 2.9.x'''
+'''Version 2.9.6'''
 * Zugriffe auf Request-Parameter überarbeitet
 
 '''Version 2.9.5'''
@@ -369,7 +369,7 @@
 
 '''English'''
 
-'''Version 2.9.x'''
+'''Version 2.9.6'''
 * reworked access of request parameters
 
 '''Version 2.9.5'''
