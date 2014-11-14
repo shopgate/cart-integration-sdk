@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.9.x'''
+* Zugriffe auf Request-Parameter überarbeitet
+
 '''Version 2.9.5'''
 * Fehler bei der Verarbeitung der Request-Parameter behoben
 * Fehler im XML-Export-Encoding behoben 
@@ -365,6 +368,9 @@
 
 
 '''English'''
+
+'''Version 2.9.x'''
+* reworked access of request parameters
 
 '''Version 2.9.5'''
 * fixed a bug in processing the request parameters of API requests
