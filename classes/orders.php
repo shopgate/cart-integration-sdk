@@ -33,7 +33,7 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	const PAYMRW_DBT = "PAYMRW_DBT";
 	const PAYONE_DBT = "PAYONE_DBT";
 	
-	const COD = "COD";
+	const COD        = "COD";
 	const COLL_STORE = "COLL_STORE";
 
 	const INVOICE    = "INVOICE";
