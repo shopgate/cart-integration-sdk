@@ -119,6 +119,7 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	const SKIPJCK_CC = "SKIPJCK_CC";
 	const SKRILL_CC  = "SKRILL_CC";
 	const STRIPE_CC  = "STRIPE_CC";
+	const TELECSH_CC = "TELECSH_CC";
 	const TRNSFST_CC = "TRNSFST_CC";
 	const TRUSTCM_CC = "TRUSTCM_CC";
 	const USAEPAY_CC = "USAEPAY_CC";
