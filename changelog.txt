@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.9.7'''
+* Unterstützung für Tracking-Parameter beim Bestellungsimport hinzugefügt
+
 '''Version 2.9.6'''
 * Zugriffe auf Request-Parameter überarbeitet
 
@@ -368,6 +371,9 @@
 
 
 '''English'''
+
+'''Version 2.9.7'''
+* added support for tracking parameters in the import of orders
 
 '''Version 2.9.6'''
 * reworked access of request parameters
