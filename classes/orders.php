@@ -713,6 +713,7 @@ class ShopgateOrder extends ShopgateCartBase {
 	protected $update_payment = false;
 
 	protected $delivery_notes = array();
+	protected $tracking_get_parameters = array();
 
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitOrder($this);
@@ -873,6 +874,13 @@ class ShopgateOrder extends ShopgateCartBase {
 		}
 
 		$this->delivery_notes = $value;
+	}
+	
+	/**
+	 * @param array $value
+	 */
+	public function setTrackingGetParameters($value) {
+		$this->tracking_get_parameters = (array) $value;
 	}
 
 
@@ -1045,6 +1053,13 @@ class ShopgateOrder extends ShopgateCartBase {
 	 */
 	public function getDeliveryNotes() {
 		return $this->delivery_notes;
+	}
+	
+	/**
+	 * @return array
+	 */
+	public function getTrackingGetParameters() {
+		return $this->tracking_get_parameters;
 	}
 }
 
