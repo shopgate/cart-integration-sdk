@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.9.x'''
+* setter und getter für external_customer_group_id hinzugefügt
+
 '''Version 2.9.7'''
 * Unterstützung für Tracking-Parameter beim Bestellungsimport hinzugefügt
 
@@ -371,6 +374,9 @@
 
 
 '''English'''
+
+'''Version 2.9.x'''
+* added setter and getter for external_customer_group_id
 
 '''Version 2.9.7'''
 * added support for tracking parameters in the import of orders

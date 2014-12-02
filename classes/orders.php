@@ -157,6 +157,7 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 
 	protected $external_customer_number;
 	protected $external_customer_id;
+	protected $external_customer_group_id;
 
 	protected $mail;
 	protected $phone;
@@ -245,6 +246,13 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	 */
 	public function setMobile($value) {
 		$this->mobile = $value;
+	}
+
+	/**
+	 * @param string $value
+	 */
+	public function setExternalCustomerGroupId($value) {
+		$this->external_customer_group_id = $value;
 	}
 
 	/**
@@ -527,6 +535,13 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	 */
 	public function getMobile() {
 		return $this->mobile;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getExternalCustomerGroupId() {
+		return $this->external_customer_group_id;
 	}
 
 	/**
