@@ -2191,9 +2191,6 @@ class ShopgateOrderCustomField extends ShopgateContainer {
 	}
 }
 
-/**
- * Class ShopgateShippingMethod
- */
 class ShopgateShippingMethod extends ShopgateContainer {
 	protected $id;
 	protected $title;
@@ -2459,9 +2456,6 @@ class ShopgatePaymentMethod extends ShopgateContainer {
 	}
 }
 
-/**
- * Class ShopgateQuoteItem
- */
 class ShopgateCartItem extends ShopgateContainer {
 	protected $item_number;
 	protected $is_buyable;
@@ -2703,9 +2697,6 @@ class ShopgateCartItem extends ShopgateContainer {
 	}
 }
 
-/**
- * Class ShopgateCartCustomer
- */
 class ShopgateCartCustomer extends ShopgateContainer {
 	protected $customer_tax_class_key;
 	protected $customer_groups;
@@ -2754,9 +2745,6 @@ class ShopgateCartCustomer extends ShopgateContainer {
 	}
 }
 
-/**
- * Class ShopgateCartCustomerGroup
- */
 class ShopgateCartCustomerGroup extends ShopgateContainer {
 	protected $id;
 
