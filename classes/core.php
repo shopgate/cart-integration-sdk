@@ -2275,8 +2275,8 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @return array(
 	 *          <ul>
 	 *          	<li>'external_coupons' => ShopgateExternalCoupon[], # list of all coupons</li>
-	 *          	<li>'items' => array(...), # list of item changes</li>
-	 *          	<li>'shippings' => array(...), # list of available shipping services for this cart</li>
+	 *          	<li>'items' => ShopgateCartItem[], # list of item changes</li>
+	 *          	<li>'shippings' => ShopgateShippingMethod[], # list of available shipping services for this cart</li>
 	 *          </ul>)
 	 * @throws ShopgateLibraryException if an error occurs.
 	 */
@@ -2290,15 +2290,15 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @param ShopgateCart $cart The ShopgateCart object to be checked and validated.
 	 *
-	 * @return array(
-	 *          'items' => array(...), # list of item changes
-	 * )
+	 * @return ShopgateCartItem[] list of item changes
 	 * @throws ShopgateLibraryException if an error occurs.
 	 */
 	public abstract function checkStock(ShopgateCart $cart);
 	
 	/**
-	 * Returns an array of certain settings of the shop. (Currently mainly tax settings.)	 *
+	 * Returns an array of certain settings of the shop. (Currently mainly tax settings.)
+	 * 
+	 * 
 	 * @see http://developer.shopgate.com/plugin_api/system_information/get_settings
 	 *
 	 * @return array(
