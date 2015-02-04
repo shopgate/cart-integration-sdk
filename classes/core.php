@@ -237,6 +237,9 @@ class ShopgateLibraryException extends Exception {
 	const CART_ITEM_REQUESTED_QUANTITY_UNDER_MINIMUM_QUANTITY = 304;
 	const CART_ITEM_REQUESTED_QUANTITY_OVER_MAXIMUM_QUANTITY = 305;
 	
+	//Helper class exception
+	const SHOPGATE_HELPER_FUNCTION_NOT_FOUND_EXCEPTION = 310;
+	
 	// extended error code format that contains information on multiple errors
 	const MULTIPLE_ERRORS = 998;
 	
@@ -1049,6 +1052,36 @@ abstract class ShopgateObject {
 	 * @var array cache already camelized strings
 	 */
 	protected $camelizeCache = array();
+
+
+	const SHOPGATE_HELPER_LIBRARY_DATA_STRUCTURE = "Shopgate_Helper_DataStructure";
+	const SHOPGATE_HELPER_LIBRARY_PRICING = "Shopgate_Helper_Pricing";
+	const SHOPGATE_HELPER_LIBRARY_STRING = "Shopgate_Helper_String";
+
+	private $helperClassInstances = array(
+		SHOPGATE_HELPER_LIBRARY_DATA_STRUCTURE => null,
+		SHOPGATE_HELPER_LIBRARY_PRICING => null,
+		SHOPGATE_HELPER_LIBRARY_STRING => null,
+	);
+
+	/**
+	 * 
+	 * 
+	 * @param $helperName
+	 *
+	 * @return null|Shopgate_Helper_DataStructure|Shopgate_Helper_Pricing|Shopgate_Helper_String
+	 */
+	protected function getHelper($helperName){
+		foreach ($this->helperClassInstances as $className => &$classInstance) {
+			if($helperName == $className) {
+				if (empty($classInstance) && class_exists($className)) {
+					$classInstance = new $className();
+				}
+				return $classInstance;
+			}
+		}
+		return null;
+	}
 	
 	/**
 	 * Convenience method for logging to the ShopgateLogger.
@@ -1937,21 +1970,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	}
 
 	/**
-	 * Rounds and formats a price.
-	 *
-	 * @param float $price The price of an item.
-	 * @param int $digits The number of digits after the decimal separator.
-	 * @param string $decimalPoint The decimal separator.
-	 * @param string $thousandPoints The thousands separator.
-	 * @return float|string
-	 */
-	protected function formatPriceNumber($price, $digits = 2, $decimalPoint = ".", $thousandPoints = "") {
-		$price = round($price, $digits);
-		$price = number_format($price, $digits, $decimalPoint, $thousandPoints);
-		return $price;
-	}
-
-	/**
 	 * Removes all disallowed HTML tags from a given string.
 	 *
 	 * By default the following are allowed:
@@ -1970,42 +1988,66 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @return string The sanititzed string.
 	 */
-	protected function removeTagsFromString($string, $removeTags = array(), $additionalAllowedTags = array()) {
-		// all tags available
-		$allowedTags = array("ADDRESS", "AREA", "A", "BASE", "BASEFONT", "BIG", "BLOCKQUOTE",
-			"BODY", "BR", "B", "CAPTION", "CENTER", "CITE", "CODE", "DD", "DFN", "DIR", "DIV", "DL", "DT",
-			"EM", "FONT", "FORM", "H1", "H2", "H3", "H4", "H5", "H6", "HEAD", "HR", "HTML", "IMG", "INPUT",
-			"ISINDEX", "I", "KBD", "LINK", "LI", "MAP", "MENU", "META", "OL", "OPTION", "PARAM", "PRE",
-			"P", "SAMP", "SELECT", "SMALL", "STRIKE", "STRONG", "STYLE", "SUB", "SUP",
-			"TABLE", "TD", "TEXTAREA", "TH", "TITLE", "TR", "TT", "UL", "U", "VAR"
-		);
-		
-		foreach ($allowedTags as &$t) $t = strtolower($t);
-		foreach ($removeTags as &$t) $t = strtolower($t);
-		foreach ($additionalAllowedTags as &$t) $t = strtolower($t);
-		
-		// some tags must be removed completely (including content)
-		$string = preg_replace('#<script([^>]*?)>(.*?)</script>#is', '', $string);
-		$string = preg_replace('#<style([^>]*?)>(.*?)</style>#is', '', $string);
-		$string = preg_replace('#<link([^>]*?)>(.*?)</link>#is', '', $string);
-		
-		$string = preg_replace('#<script([^>]*?)/>#is', '', $string);
-		$string = preg_replace('#<style([^>]*?)/>#is', '', $string);
-		$string = preg_replace('#<link([^>]*?)/>#is', '', $string);
-
-		// add the additional allowed tags to the list
-		$allowedTags = array_merge($allowedTags, $additionalAllowedTags);
-
-		// strip the disallowed tags from the list
-		$allowedTags = array_diff($allowedTags, $removeTags);
-
-		// add HTML brackets
-		foreach ($allowedTags as &$t) $t = "<$t>";
-
-		// let PHP sanitize the string and return it
-		return strip_tags($string, implode(",", $allowedTags));
+	public function removeTagsFromString($string, $removeTags = array(), $additionalAllowedTags = array())
+	{
+		$helper = $this->getHelper(self::SHOPGATE_HELPER_LIBRARY_PRICING);
+		return $helper->removeTagsFromString($string, $removeTags, $additionalAllowedTags);	
 	}
 
+	/**
+	 * Rounds and formats a price.
+	 *
+	 * @param float $price The price of an item.
+	 * @param int $digits The number of digits after the decimal separator.
+	 * @param string $decimalPoint The decimal separator.
+	 * @param string $thousandPoints The thousands separator.
+	 * @return float|string
+	 */
+	public function formatPriceNumber($price, $digits = 2, $decimalPoint = ".", $thousandPoints = "")
+	{
+		$helper = $this->getHelper(self::SHOPGATE_HELPER_LIBRARY_STRING);
+		return $helper->formatPriceNumber($price, $digits, $decimalPoint, $thousandPoints);
+	}
+
+	/**
+	 * Takes an array of arrays that contain all elements which are taken to create a cross-product of all elements. The resulting array is an array-list with
+	 * each possible combination as array. An Element itself can be anything (including a whole array that is not torn apart, but instead treated as a whole)
+	 * By setting the second parameter to true, the keys of the source array is added as an array at the front of the resulting array
+	 *
+	 * Sample input: array(
+	 * 		'group-1-key' => array('a', 'b'),
+	 * 		'group-2-key' => array('x'),
+	 * 		7 => array('l', 'm', 'n'),
+	 * );
+	 * Output of sample: Array (
+	 * 		[0] => Array (
+	 * 			[group-1-key] => a
+	 * 			[group-2-key] => x
+	 * 			[7] => l
+	 * 		)
+	 * 		[1] => Array (
+	 * 			[group-1-key] => b
+	 * 			[group-2-key] => x
+	 * 			[7] => l
+	 * 		)
+	 * 		[2] => Array (
+	 * 			[group-1-key] => a
+	 * 			[group-2-key] => x
+	 * 			[7] => m
+	 * 		)
+	 * 		[...] and so on ... (total of count(src[0])*count(src[1])*...*count(src[N]) elements) [=> 2*1*3 elements in this case]
+	 * 	)
+	 *
+	 * @param array $src: The (at least) double dimensioned array input
+	 * @param bool $enableFirstRow: Disabled by default
+	 * @return array[][]:
+	 */
+	public function arrayCross(array $src, $enableFirstRow = false)
+	{
+		$helper = $this->getHelper(self::SHOPGATE_HELPER_LIBRARY_DATA_STRUCTURE);
+		return $helper->arrayCross($src, $enableFirstRow);
+	}
+	
 	/**
 	 * @param array $loaders
 	 * @return mixed
@@ -2438,72 +2480,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @throws ShopgateLibraryException
 	 */
 	protected abstract function createReviews($limit = null, $offset = null, array $uids = array());
-
-	/**
-	 * Takes an array of arrays that contain all elements which are taken to create a cross-product of all elements. The resulting array is an array-list with
-	 * each possible combination as array. An Element itself can be anything (including a whole array that is not torn apart, but instead treated as a whole)
-	 * By setting the second parameter to true, the keys of the source array is added as an array at the front of the resulting array
-	 *
-	 * Sample input: array(
-	 * 		'group-1-key' => array('a', 'b'),
-	 * 		'group-2-key' => array('x'),
-	 * 		7 => array('l', 'm', 'n'),
-	 * );
-	 * Output of sample: Array (
-	 * 		[0] => Array (
-	 * 			[group-1-key] => a
-	 * 			[group-2-key] => x
-	 * 			[7] => l
-	 * 		)
-	 * 		[1] => Array (
-	 * 			[group-1-key] => b
-	 * 			[group-2-key] => x
-	 * 			[7] => l
-	 * 		)
-	 * 		[2] => Array (
-	 * 			[group-1-key] => a
-	 * 			[group-2-key] => x
-	 * 			[7] => m
-	 * 		)
-	 * 		[...] and so on ... (total of count(src[0])*count(src[1])*...*count(src[N]) elements) [=> 2*1*3 elements in this case]
-	 * 	)
-	 *
-	 * @param array $src: The (at least) double dimensioned array input
-	 * @param bool $enableFirstRow: Disabled by default
-	 * @return array[][]:
-	 */
-	protected function arrayCross(array $src, $enableFirstRow = false) {
-		$result = array();
-		$firstRow = array();
-		
-		if($enableFirstRow) {
-			$firstRow[0] = array_keys($src);
-		}
-		
-		foreach($src as $key => $valArr) {
-			// elements are copied for appending data, so the actual count is needed as the base-element-count
-			$copyCount = count($result);
-			
-			// start by using the first array as a resultset (in case of only one array the result of the cross-product is the first input-array)
-			if(empty($result)) {
-				foreach($valArr as $optionSelection) {
-					$result[] = array($key => $optionSelection);
-				}
-			} else {
-				$i = 0;
-				foreach($valArr as $optionSelection) {
-					for($j = 0; $j < $copyCount; $j++) {
-						// in case of $i==0 it copies itself, so it's correct in all cases if $i
-						$result[$i*$copyCount+$j] = $result[$j];
-						$result[$i*$copyCount+$j][$key] = $optionSelection;
-					}
-					$i++;
-				}
-			}
-		}
-		
-		return array_merge($firstRow, $result);
-	}
 }
 
 interface ShopgateFileBufferInterface {
