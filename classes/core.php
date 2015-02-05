@@ -1052,11 +1052,30 @@ abstract class ShopgateObject {
 	 * @var array cache already camelized strings
 	 */
 	protected $camelizeCache = array();
-	
+
+	/**
+	 * defines the name for the Shopgate datastructure helper
+	 * @const SHOPGATE_HELPER_LIBRARY_DATA_STRUCTURE
+	 */
 	const SHOPGATE_HELPER_LIBRARY_DATA_STRUCTURE 	= "Shopgate_Helper_DataStructure";
+
+	/**
+	 * defines the name for the Shopgate pricing helper
+	 * @const SHOPGATE_HELPER_LIBRARY_DATA_STRUCTURE
+	 */
 	const SHOPGATE_HELPER_LIBRARY_PRICING 			= "Shopgate_Helper_Pricing";
+
+	/**
+	 * defines the name for the Shopgate string helper
+	 * @const SHOPGATE_HELPER_LIBRARY_DATA_STRUCTURE
+	 */
 	const SHOPGATE_HELPER_LIBRARY_STRING 			= "Shopgate_Helper_String";
-	
+
+	/**
+	 * Save the already instantiated Helper Object to guarantee the only one instance is allocated
+	 * 
+	 * @var array of Shopgate_Helper_DataStructure|Shopgate_Helper_Pricing|Shopgate_Helper_String
+	 */
 	private $helperClassInstances = array(
 		self::SHOPGATE_HELPER_LIBRARY_DATA_STRUCTURE 	=> null,
 		self::SHOPGATE_HELPER_LIBRARY_PRICING 			=> null,
@@ -1064,11 +1083,11 @@ abstract class ShopgateObject {
 	);
 
 	/**
+	 * get a instance of an Shopgate helper class depending on the committed name
 	 * 
-	 * 
-	 * @param $helperName
+	 * @param $helperName string defined by constants in this class(ShopgateObject)
 	 *
-	 * @return null|Shopgate_Helper_DataStructure|Shopgate_Helper_Pricing|Shopgate_Helper_String
+	 * @return null|Shopgate_Helper_DataStructure|Shopgate_Helper_Pricing|Shopgate_Helper_String returns the requested helper instance or null  
 	 */
 	protected function getHelper($helperName){
 		foreach ($this->helperClassInstances as $className => &$classInstance) {
