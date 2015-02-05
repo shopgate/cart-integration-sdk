@@ -1052,16 +1052,15 @@ abstract class ShopgateObject {
 	 * @var array cache already camelized strings
 	 */
 	protected $camelizeCache = array();
-
-
-	const SHOPGATE_HELPER_LIBRARY_DATA_STRUCTURE = "Shopgate_Helper_DataStructure";
-	const SHOPGATE_HELPER_LIBRARY_PRICING = "Shopgate_Helper_Pricing";
-	const SHOPGATE_HELPER_LIBRARY_STRING = "Shopgate_Helper_String";
-
+	
+	const SHOPGATE_HELPER_LIBRARY_DATA_STRUCTURE 	= "Shopgate_Helper_DataStructure";
+	const SHOPGATE_HELPER_LIBRARY_PRICING 			= "Shopgate_Helper_Pricing";
+	const SHOPGATE_HELPER_LIBRARY_STRING 			= "Shopgate_Helper_String";
+	
 	private $helperClassInstances = array(
-		SHOPGATE_HELPER_LIBRARY_DATA_STRUCTURE => null,
-		SHOPGATE_HELPER_LIBRARY_PRICING => null,
-		SHOPGATE_HELPER_LIBRARY_STRING => null,
+		self::SHOPGATE_HELPER_LIBRARY_DATA_STRUCTURE 	=> null,
+		self::SHOPGATE_HELPER_LIBRARY_PRICING 			=> null,
+		self::SHOPGATE_HELPER_LIBRARY_STRING 			=> null,
 	);
 
 	/**
@@ -1988,9 +1987,9 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @return string The sanititzed string.
 	 */
-	public function removeTagsFromString($string, $removeTags = array(), $additionalAllowedTags = array())
+	protected function removeTagsFromString($string, $removeTags = array(), $additionalAllowedTags = array())
 	{
-		$helper = $this->getHelper(self::SHOPGATE_HELPER_LIBRARY_PRICING);
+		$helper = $this->getHelper(self::SHOPGATE_HELPER_LIBRARY_STRING);
 		return $helper->removeTagsFromString($string, $removeTags, $additionalAllowedTags);	
 	}
 
@@ -2003,9 +2002,9 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @param string $thousandPoints The thousands separator.
 	 * @return float|string
 	 */
-	public function formatPriceNumber($price, $digits = 2, $decimalPoint = ".", $thousandPoints = "")
+	protected function formatPriceNumber($price, $digits = 2, $decimalPoint = ".", $thousandPoints = "")
 	{
-		$helper = $this->getHelper(self::SHOPGATE_HELPER_LIBRARY_STRING);
+		$helper = $this->getHelper(self::SHOPGATE_HELPER_LIBRARY_PRICING);
 		return $helper->formatPriceNumber($price, $digits, $decimalPoint, $thousandPoints);
 	}
 
@@ -2042,7 +2041,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @param bool $enableFirstRow: Disabled by default
 	 * @return array[][]:
 	 */
-	public function arrayCross(array $src, $enableFirstRow = false)
+	protected function arrayCross(array $src, $enableFirstRow = false)
 	{
 		$helper = $this->getHelper(self::SHOPGATE_HELPER_LIBRARY_DATA_STRUCTURE);
 		return $helper->arrayCross($src, $enableFirstRow);

@@ -20,6 +20,7 @@
  *
  * @author Shopgate GmbH <interfaces@shopgate.com>
  */
+
 class Shopgate_Helper_Pricing {
 
 	/**
