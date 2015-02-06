@@ -1084,10 +1084,11 @@ abstract class ShopgateObject {
 
 	/**
 	 * get a instance of an Shopgate helper class depending on the committed name
-	 * 
+	 *
 	 * @param $helperName string defined by constants in this class(ShopgateObject)
 	 *
-	 * @return null|Shopgate_Helper_DataStructure|Shopgate_Helper_Pricing|Shopgate_Helper_String returns the requested helper instance or null  
+	 * @return null|Shopgate_Helper_DataStructure|Shopgate_Helper_Pricing|Shopgate_Helper_String returns the requested helper instance or null
+	 * @throws ShopgateLibraryException
 	 */
 	protected function getHelper($helperName){
 		if(array_key_exists($helperName,$this->helperClassInstances)) {
@@ -1097,7 +1098,7 @@ abstract class ShopgateObject {
 			}
 			return $this->helperClassInstances[$helperClassName];
 		}
-		return null;
+		throw new ShopgateLibraryException(ShopgateLibraryException::SHOPGATE_HELPER_FUNCTION_NOT_FOUND_EXCEPTION);
 	}
 	
 	/**
