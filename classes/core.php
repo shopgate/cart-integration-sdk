@@ -1098,7 +1098,7 @@ abstract class ShopgateObject {
 			}
 			return $this->helperClassInstances[$helperClassName];
 		}
-		throw new ShopgateLibraryException(ShopgateLibraryException::SHOPGATE_HELPER_FUNCTION_NOT_FOUND_EXCEPTION);
+		throw new ShopgateLibraryException("Helper function {$helperName} not found",ShopgateLibraryException::SHOPGATE_HELPER_FUNCTION_NOT_FOUND_EXCEPTION);
 	}
 	
 	/**
