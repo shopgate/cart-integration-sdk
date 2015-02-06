@@ -1055,21 +1055,21 @@ abstract class ShopgateObject {
 
 	/**
 	 * defines the name for the Shopgate datastructure helper
-	 * @const SHOPGATE_HELPER_LIBRARY_DATA_STRUCTURE
+	 * @const HELPER_DATA_STRUCTURE
 	 */
-	const SHOPGATE_HELPER_LIBRARY_DATA_STRUCTURE 	= "Shopgate_Helper_DataStructure";
+	const HELPER_DATASTRUCTURE = "DataStructure";
 
 	/**
 	 * defines the name for the Shopgate pricing helper
-	 * @const SHOPGATE_HELPER_LIBRARY_DATA_STRUCTURE
+	 * @const HELPER_PRICING
 	 */
-	const SHOPGATE_HELPER_LIBRARY_PRICING 			= "Shopgate_Helper_Pricing";
+	const HELPER_PRICING 		= "Pricing";
 
 	/**
 	 * defines the name for the Shopgate string helper
-	 * @const SHOPGATE_HELPER_LIBRARY_DATA_STRUCTURE
+	 * @const HELPER_STRING
 	 */
-	const SHOPGATE_HELPER_LIBRARY_STRING 			= "Shopgate_Helper_String";
+	const HELPER_STRING 		= "String";
 
 	/**
 	 * Save the already instantiated Helper Object to guarantee the only one instance is allocated
@@ -1077,9 +1077,9 @@ abstract class ShopgateObject {
 	 * @var array of Shopgate_Helper_DataStructure|Shopgate_Helper_Pricing|Shopgate_Helper_String
 	 */
 	private $helperClassInstances = array(
-		self::SHOPGATE_HELPER_LIBRARY_DATA_STRUCTURE 	=> null,
-		self::SHOPGATE_HELPER_LIBRARY_PRICING 			=> null,
-		self::SHOPGATE_HELPER_LIBRARY_STRING 			=> null,
+		self::HELPER_DATASTRUCTURE 	=> null,
+		self::HELPER_PRICING 		=> null,
+		self::HELPER_STRING 		=> null,
 	);
 
 	/**
@@ -1090,13 +1090,12 @@ abstract class ShopgateObject {
 	 * @return null|Shopgate_Helper_DataStructure|Shopgate_Helper_Pricing|Shopgate_Helper_String returns the requested helper instance or null  
 	 */
 	protected function getHelper($helperName){
-		foreach ($this->helperClassInstances as $className => &$classInstance) {
-			if($helperName == $className) {
-				if (empty($classInstance) && class_exists($className)) {
-					$classInstance = new $className();
-				}
-				return $classInstance;
+		if(array_key_exists($helperName,$this->helperClassInstances)) {
+			$helperClassName = "Shopgate_Helper_" . $helperName;
+			if (!isset($this->helperClassInstances[$helperClassName])) {
+				$this->helperClassInstances[$helperClassName] = new $helperClassName();
 			}
+			return $this->helperClassInstances[$helperClassName];
 		}
 		return null;
 	}
