@@ -1543,7 +1543,10 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	/**
 	 * Takes care of buffer and file handlers and calls ShopgatePlugin::createPagesCsv().
 	 *
-	 * @throws ShopgateLibraryException
+	 * @param int $limit
+	 * @param int $offset
+	 * @param array $uids
+	 * @param string $responseType
 	 */
 	public final function startGetItems($limit = null, $offset = null, array $uids = array(), $responseType = 'xml') {
 		switch ($responseType) {
@@ -1563,7 +1566,10 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	/**
 	 * Takes care of buffer and file handlers and calls ShopgatePlugin::createCategories().
 	 *
-	 * @throws ShopgateLibraryException
+	 * @param int $limit
+	 * @param int $offset
+	 * @param array $uids
+	 * @param string $responseType
 	 */
 	public final function startGetCategories($limit = null, $offset = null, array $uids = array(), $responseType = 'xml') {
 		switch ($responseType) {
@@ -1583,7 +1589,10 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	/**
 	 * Takes care of buffer and file handlers and calls ShopgatePlugin::createReviews().
 	 *
-	 * @throws ShopgateLibraryException
+	 * @param int $limit
+	 * @param int $offset
+	 * @param array $uids
+	 * @param string $responseType
 	 */
 	public final function startGetReviews($limit = null, $offset = null, array $uids = array(), $responseType = 'xml') {
 		switch ($responseType) {
