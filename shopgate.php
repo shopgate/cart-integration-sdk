@@ -68,6 +68,13 @@ require_once(dirname(__FILE__).DS.'classes'.DS.'models/catalog/AttributeGroup.ph
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/catalog/Attribute.php');
 
 /**
+ * helper
+ */
+require_once(dirname(__FILE__).DS.'classes'.DS.'helper/DataStructure.php');
+require_once(dirname(__FILE__).DS.'classes'.DS.'helper/Pricing.php');
+require_once(dirname(__FILE__).DS.'classes'.DS.'helper/String.php');
+
+/**
  * media
  */
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/media/Image.php');
