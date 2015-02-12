@@ -2017,7 +2017,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 */
 	protected function removeTagsFromString($string, $removeTags = array(), $additionalAllowedTags = array())
 	{
-		$helper = $this->getHelper(self::SHOPGATE_HELPER_LIBRARY_STRING);
+		$helper = $this->getHelper(self::HELPER_STRING);
 		return $helper->removeTagsFromString($string, $removeTags, $additionalAllowedTags);	
 	}
 
@@ -2032,7 +2032,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 */
 	protected function formatPriceNumber($price, $digits = 2, $decimalPoint = ".", $thousandPoints = "")
 	{
-		$helper = $this->getHelper(self::SHOPGATE_HELPER_LIBRARY_PRICING);
+		$helper = $this->getHelper(self::HELPER_PRICING);
 		return $helper->formatPriceNumber($price, $digits, $decimalPoint, $thousandPoints);
 	}
 
@@ -2071,7 +2071,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 */
 	protected function arrayCross(array $src, $enableFirstRow = false)
 	{
-		$helper = $this->getHelper(self::SHOPGATE_HELPER_LIBRARY_DATA_STRUCTURE);
+		$helper = $this->getHelper(self::HELPER_DATASTRUCTURE);
 		return $helper->arrayCross($src, $enableFirstRow);
 	}
 	

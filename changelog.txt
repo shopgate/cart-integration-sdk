@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.9.10'''
+* Fehlerhafte Benamung der Konstante behoben 
+
 '''Version 2.9.9'''
 * Es ist nun möglich, Instanzen von Shopgate-Hilfsklassen über einen Funktionsaufruf zu bekommen, um zu garantieren, dass die Hilfsfunktionen in jeder Ebene des Shopgate-Plugins zur Verfügung stehen
 
@@ -379,6 +382,9 @@
 
 
 '''English'''
+
+'''Version 2.9.10'''
+* corrected wrong constant names 
 
 '''Version 2.9.9'''
 * it is now possible to get instances of Shopgate helper classes via function call to ensure that the helper functionality is available on every level in the plugin
