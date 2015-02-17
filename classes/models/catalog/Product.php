@@ -627,9 +627,15 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport {
 		$doc->loadXML($childItem->asXML());
 
 		$xpath = new DOMXPath($doc);
-
-		foreach($xpath->query('//*[not(@forceEmpty) and (not(node()) or normalize-space() = "")]') as $node) {
+		$xpQuery = '//*[not(@forceEmpty) and not(descendant::*[@forceEmpty]) and normalize-space() = ""]';
+		
+		/** @var DOMElement $node */
+		foreach($xpath->query($xpQuery) as $node) {
 			$node->parentNode->removeChild($node);
+		}
+		
+		foreach($xpath->query('//*[@forceEmpty]') as $node) {
+			$node->removeAttribute('forceEmpty');
 		}
 
 		return simplexml_import_dom($doc);
