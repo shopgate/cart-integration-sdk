@@ -37,6 +37,11 @@ class Shopgate_Model_XmlResultObject extends SimpleXMLElement {
 	 * @return SimpleXMLElement
 	 */
 	public function addChildWithCDATA($name, $value = null) {
+		$forceEmpty = false;
+		if ($value == Shopgate_Model_AbstractExport::SET_EMPTY) {
+			$forceEmpty = true;
+			$value = '';
+		}
 		$new_child = $this->addChild($name);
 
 		if ($new_child !== null) {
@@ -47,7 +52,25 @@ class Shopgate_Model_XmlResultObject extends SimpleXMLElement {
 			}
 		}
 
+		if ($forceEmpty) {
+			$new_child->addAttribute('forceEmpty', '1');
+		}
 		return $new_child;
+	}
+
+	/**
+	 * @param string $name
+	 * @param mixed $value
+	 * @param string $namespace
+	 * @return null|SimpleXMLElement
+	 */
+	public function addChild($name, $value = null, $namespace = null) {		
+		if ($value != Shopgate_Model_AbstractExport::SET_EMPTY) {
+			return parent::addChild($name, $value, $namespace);
+		}
+		$child = parent::addChild($name, '', $namespace);
+		$child->addAttribute('forceEmpty', '1');
+		return $child;
 	}
 
 	/**

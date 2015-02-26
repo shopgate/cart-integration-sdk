@@ -46,6 +46,8 @@ abstract class Shopgate_Model_AbstractExport extends Shopgate_Model_Abstract {
 	 * @var array
 	 */
 	protected $fireMethods = array();
+	
+	const SET_EMPTY = '(empty)';
 
 	/** set the data by key or array
 	 *
