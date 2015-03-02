@@ -31,7 +31,7 @@ class Shopgate_Model_XmlResultObject extends SimpleXMLElement {
 	/**
 	 * pattern invalid chars
 	 */
-	const DEFAULT_PATTERN_INVALID_CHARS = '/[\x00-\x1F\x80-\xFF]/';
+	const DEFAULT_PATTERN_INVALID_CHARS = '/[\x00-\x1F\x80-\x9F]/u';
 
 	/**
 	 * Adds a child with $value inside CDATA
