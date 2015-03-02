@@ -29,6 +29,11 @@ class Shopgate_Model_XmlResultObject extends SimpleXMLElement {
 	const DEFAULT_MAIN_NODE = '<items></items>';
 
 	/**
+	 * pattern invalid chars
+	 */
+	const DEFAULT_PATTERN_INVALID_CHARS = '/[\x00-\x1F\x80-\x9F]/u';
+
+	/**
 	 * Adds a child with $value inside CDATA
 	 *
 	 * @param      $name
@@ -48,6 +53,7 @@ class Shopgate_Model_XmlResultObject extends SimpleXMLElement {
 			$node = dom_import_simplexml($new_child);
 			$no = $node->ownerDocument;
 			if ($value != '') {
+				$value = preg_replace(self::DEFAULT_PATTERN_INVALID_CHARS, '', $value);
 				$node->appendChild($no->createCDATASection($value));
 			}
 		}
