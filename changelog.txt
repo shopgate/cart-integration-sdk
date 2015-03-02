@@ -2,6 +2,7 @@
 
 '''Version 2.9.x'''
 * Produkt-XML-Export: leere Knoten in Kindprodukten sind jetzt möglich
+* Nicht unterstütze Zeichen aus CDATA entfernt
 
 '''Version 2.9.10'''
 * Fehlerhafte Benamung der Konstante behoben 
@@ -388,6 +389,7 @@
 
 '''Version 2.9.x'''
 * product XML export: empty nodes in child products are now possible
+* removed unsupported characters from CDATA
 
 '''Version 2.9.10'''
 * corrected wrong constant names 
