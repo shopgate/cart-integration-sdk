@@ -1,6 +1,6 @@
 '''Deutsch'''
 
-'''Version 2.9.x'''
+'''Version 2.9.11'''
 * Produkt-XML-Export: leere Knoten in Kindprodukten sind jetzt möglich
 * Nicht unterstütze Zeichen aus CDATA entfernt
 * Bugfix: nicht existente Funktion ShopgateContainerVisitor::visitCoupon() wurde aufgerufen
@@ -388,7 +388,7 @@
 
 '''English'''
 
-'''Version 2.9.x'''
+'''Version 2.9.11'''
 * product XML export: empty nodes in child products are now possible
 * removed unsupported characters from CDATA
 * bugfix: non-existent function ShopgateContainerVisitor::visitCoupon() was called
