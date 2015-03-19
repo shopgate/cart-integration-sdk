@@ -2088,7 +2088,7 @@ class ShopgateShopgateCoupon extends ShopgateCoupon {
 	protected $error_text;
 
 	public function accept(ShopgateContainerVisitor $v) {
-		$v->visitCoupon($this);
+		$v->visitShopgateCoupon($this);
 	}
 
 	##########
