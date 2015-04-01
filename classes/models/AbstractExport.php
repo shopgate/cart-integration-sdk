@@ -120,6 +120,7 @@ abstract class Shopgate_Model_AbstractExport extends Shopgate_Model_Abstract {
 	 */
 	public function generateData() {
 		foreach ($this->fireMethods as $method) {
+			$this->log("Calling function \"{$method}\": Actual memory usage before method: " . $this->getMemoryUsageString(), ShopgateLogger::LOGTYPE_DEBUG);
 			$this->{$method}();
 		}
 

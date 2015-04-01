@@ -1340,6 +1340,25 @@ abstract class ShopgateObject {
 			@ini_set('max_execution_time', $timeLimit);
 		}
 	}
+
+	/**
+	 * Gets the used memory and real used memory and returns it as a string
+	 *
+	 * @return string
+	 */
+	protected function getMemoryUsageString() {
+		switch(strtoupper(trim(ShopgateLogger::getInstance()->getMemoryAnalyserLoggingSizeUnit()))) {
+			case 'GB':
+				return (memory_get_usage()/(1024*1024*1024)) . " GB (real usage ".(memory_get_usage(true)/(1024*1024*1024))." GB)";
+			case 'MB':
+				return (memory_get_usage()/(1024*1024)) . " MB (real usage ".(memory_get_usage(true)/(1024*1024))." MB)";
+			case 'KB':
+				return (memory_get_usage()/1024) . " KB (real usage ".(memory_get_usage(true)/1024)." KB)";
+			default:
+				return memory_get_usage() . " Bytes (real usage ".memory_get_usage(true)." Bytes)";
+		}
+	}
+
 }
 
 /**
@@ -2168,24 +2187,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 */
 	protected function getCreateReviewsCsvLoaders() {
 		return $this->getCreateCsvLoaders("review");
-	}
-
-	/**
-	 * Gets the used memory and real used memory and returns it as a string
-	 *
-	 * @return string
-	 */
-	protected function getMemoryUsageString() {
-		switch(strtoupper(trim(ShopgateLogger::getInstance()->getMemoryAnalyserLoggingSizeUnit()))) {
-			case 'GB':
-				return (memory_get_usage()/(1024*1024*1024)) . " GB (real usage ".(memory_get_usage(true)/(1024*1024*1024))." GB)";
-			case 'MB':
-				return (memory_get_usage()/(1024*1024)) . " MB (real usage ".(memory_get_usage(true)/(1024*1024))." MB)";
-			case 'KB':
-				return (memory_get_usage()/1024) . " KB (real usage ".(memory_get_usage(true)/1024)." KB)";
-			default:
-				return memory_get_usage() . " Bytes (real usage ".memory_get_usage(true)." Bytes)";
-		}
 	}
 	
 	#################################################################################
