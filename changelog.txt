@@ -1,5 +1,9 @@
 '''Deutsch'''
 
+'''Version 2.9.12'''
+* ShopgateCustomer::getRegistrationDate() liefert jetzt das Registrierungsdatum bei Aufrufen von ShopgatePlugin::registerCustomer()
+* ShopgateExternalOrder::setStatusName() und ::setStatusColor() erlaubt das Setzen eines individuellen Bestellstatus bei Aufrufen von ShopgatePlugin::getOrders()
+
 '''Version 2.9.11'''
 * Produkt-XML-Export: leere Knoten in Kindprodukten sind jetzt möglich
 * Nicht unterstütze Zeichen aus CDATA entfernt
@@ -387,6 +391,10 @@
 
 
 '''English'''
+
+'''Version 2.9.12'''
+* ShopgateCustomer::getRegistrationDate() will now return the point in time a customer registered during ShopgatePlugin::registerCustomer()
+* new methods ShopgateExternalOrder::setStatusName() and ::setStatusColor() to set an individual order status during ShopgatePlugin::getOrders()
 
 '''Version 2.9.11'''
 * product XML export: empty nodes in child products are now possible
