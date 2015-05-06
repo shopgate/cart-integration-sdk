@@ -362,9 +362,8 @@ class ShopgateLibraryException extends Exception {
 	 * @param bool $appendAdditionalInformationToMessage Set true to output the additional information to the response. Set false to log it silently.
 	 * @param bool $writeLog true to create a log entry in the error log, false otherwise.
 	 */
-	public function __construct($code, $additionalInformation = null, $appendAdditionalInformationToMessage = false, $writeLog = true) {
+	public function __construct($code, $additionalInformation = null, $appendAdditionalInformationToMessage = false, $writeLog = true, Exception $previous = null) {
 		// Set code and message
-		$logMessage = self::buildLogMessageFor($code, $additionalInformation);
 		if (isset(self::$errorMessages[$code])) {
 			$message = self::$errorMessages[$code];
 		} else {
@@ -379,14 +378,6 @@ class ShopgateLibraryException extends Exception {
 		// Save additional information
 		$this->additionalInformation = $additionalInformation;
 
-		// Log the error
-		if (empty($writeLog)) {
-			$message .= ' (logging disabled for this message)';
-		} else {
-			if (ShopgateLogger::getInstance()->log($code.' - '.$logMessage) === false) {
-				$message .= ' (unable to log)';
-			}
-		}
 
 		// in case of multiple errors the message should not have any other text attached to it
 		if ($code == self::MULTIPLE_ERRORS) {
@@ -394,7 +385,17 @@ class ShopgateLibraryException extends Exception {
 		}
 
 		// Call default Exception class constructor
-		parent::__construct($message, $code);
+		parent::__construct($message, $code, $previous);
+		
+		// Log the error
+		$logMessage = $this->buildLogMessage($additionalInformation);
+		if (empty($writeLog)) {
+			$this->message .= ' (logging disabled for this message)';
+		} else {
+			if (ShopgateLogger::getInstance()->log($code.' - '.$logMessage) === false) {
+				$this->message .= ' (unable to log)';
+			}
+		}
 	}
 	
 	/**
@@ -431,6 +432,7 @@ class ShopgateLibraryException extends Exception {
 	 * @param int $code One of the constants defined in ShopgateLibraryException.
 	 * @param string $additionalInformation More detailed information on what exactly went wrong.
 	 * @return string
+	 * @deprecated
 	 */
 	public static function buildLogMessageFor($code, $additionalInformation) {
 		$logMessage = self::getMessageFor($code);
@@ -454,6 +456,40 @@ class ShopgateLibraryException extends Exception {
 			$logMessage .= $class.$function.'()'.$file.':'.$line."\n\t";
 		}
 
+		return $logMessage;
+	}
+	
+	/**
+	 * Builds the message that would be logged if a ShopgateLibraryException was thrown with the same parameters and returns it.
+	 *
+	 * This is a convenience method for cases where logging is desired but the script should not abort. By using this function an empty
+	 * try-catch-statement can be avoided. Just pass the returned string to ShopgateLogger::log().
+	 *
+	 * @param string $additionalInformation More detailed information on what exactly went wrong.
+	 * @return string
+	 */
+	public function buildLogMessage($additionalInformation) {
+		$logMessage = self::getMessageFor($this->getCode());
+		
+		// Set additional information
+		if (!empty($additionalInformation)) {
+			$logMessage .= ' - Additional information: "'.$additionalInformation.'"';
+		}
+		
+		$logMessage .= "\n";
+		
+		// Add tracing information to the message
+		$trace = $this->getPrevious() ? $this->getPrevious()->getTraceAsString() : $this->getTraceAsString();
+		$lines = explode("\n", $trace);
+		$i     = 0;
+		foreach ($lines as $line) {
+			$i++;
+			if ($i > 20) {
+				$logMessage .= "\t(...)";
+				break;
+			}
+			$logMessage .= "\t$line\n";
+		}
 		return $logMessage;
 	}
 }
@@ -2115,7 +2151,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 				} catch (Exception $e) {
 					$msg = "An unknown exception has been thrown in loader method \"{$method}\". Memory usage "
 						 . $this->getMemoryUsageString()." Exception '".get_class($e)."': [Code: {$e->getCode()}] {$e->getMessage()}";
-					throw new ShopgateLibraryException(ShopgateLibraryException::UNKNOWN_ERROR_CODE, $msg, true);
+					throw new ShopgateLibraryException(ShopgateLibraryException::UNKNOWN_ERROR_CODE, $msg, true, true, $e);
 				}
 
 				if ($result) {

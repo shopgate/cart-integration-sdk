@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.9.x'''
+* ShopgateLibraryException: neuer Konstruktor-Parameter für vorherige Exception; verbessertes Logging von Stacktraces
+
 '''Version 2.9.12'''
 * ShopgateCustomer::getRegistrationDate() liefert jetzt das Registrierungsdatum bei Aufrufen von ShopgatePlugin::registerCustomer()
 * ShopgateExternalOrder::setStatusName() und ::setStatusColor() erlaubt das Setzen eines individuellen Bestellstatus bei Aufrufen von ShopgatePlugin::getOrders()
@@ -391,6 +394,9 @@
 
 
 '''English'''
+
+'''Version 2.9.x'''
+* ShopgateLibraryException: new constructor argument for previous Exception; improved stack trace logging
 
 '''Version 2.9.12'''
 * ShopgateCustomer::getRegistrationDate() will now return the point in time a customer registered during ShopgatePlugin::registerCustomer()

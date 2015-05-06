@@ -248,7 +248,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			$message .= 'and message: \''.$e->getMessage()."'\n";
 			
 			// new ShopgateLibraryException to build proper error message and perform logging
-			$se = new ShopgateLibraryException($message);
+			$se = new ShopgateLibraryException($message, null, false, true, $e);
 			$error = $se->getCode();
 			$errortext = $se->getMessage();
 		}
