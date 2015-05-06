@@ -1,7 +1,7 @@
 '''Deutsch'''
 
 '''Version 2.9.x'''
-* ShopgateLibraryException: neeuer Konstruktor-Parameter vor vorherige Exception; verbessertes Logging von Stacktraces
+* ShopgateLibraryException: neuer Konstruktor-Parameter für vorherige Exception; verbessertes Logging von Stacktraces
 
 '''Version 2.9.12'''
 * ShopgateCustomer::getRegistrationDate() liefert jetzt das Registrierungsdatum bei Aufrufen von ShopgatePlugin::registerCustomer()
