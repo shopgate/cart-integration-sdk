@@ -468,7 +468,7 @@ class ShopgateLibraryException extends Exception {
 	 * @param string $additionalInformation More detailed information on what exactly went wrong.
 	 * @return string
 	 */
-	protected function buildLogMessage($additionalInformation) {
+	public function buildLogMessage($additionalInformation) {
 		$logMessage = self::getMessageFor($this->getCode());
 		
 		// Set additional information
