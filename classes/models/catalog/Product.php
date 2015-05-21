@@ -326,8 +326,12 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport {
 		$itemNode->addAttribute('uid', $this->getUid());
 		$itemNode->addAttribute('last_update', $this->getLastUpdate());
 		$itemNode->addChildWithCDATA('name', $this->getName());
-		$itemNode->addChild('tax_percent', $this->getTaxPercent());
-		$itemNode->addChild('tax_class', $this->getTaxClass());
+		if ($this->getTaxPercent() !== null) {
+			$itemNode->addChild('tax_percent', $this->getTaxPercent());
+		}
+		if ($this->getTaxClass() !== null) {
+			$itemNode->addChild('tax_class', $this->getTaxClass());
+		}
 		$itemNode->addChild('currency', $this->getCurrency());
 		$itemNode->addChildWithCDATA('description', $this->getDescription());
 		$itemNode->addChildWithCDATA('deeplink', $this->getDeeplink());
