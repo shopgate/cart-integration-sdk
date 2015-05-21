@@ -2,6 +2,7 @@
 
 '''Version 2.9.x'''
 * ShopgateLibraryException: neuer Konstruktor-Parameter für vorherige Exception; verbessertes Logging von Stacktraces
+* XML-Export: alle ungültigen Zeichen werden nun herausgefiltert (entsprechend den Regeln von www.w3.org)
 
 '''Version 2.9.12'''
 * ShopgateCustomer::getRegistrationDate() liefert jetzt das Registrierungsdatum bei Aufrufen von ShopgatePlugin::registerCustomer()
@@ -397,6 +398,7 @@
 
 '''Version 2.9.x'''
 * ShopgateLibraryException: new constructor argument for previous Exception; improved stack trace logging
+* product XML export: all invalid characters are filtered out now (according to the rules from www.w3.org)
 
 '''Version 2.9.12'''
 * ShopgateCustomer::getRegistrationDate() will now return the point in time a customer registered during ShopgatePlugin::registerCustomer()
