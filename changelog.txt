@@ -2,6 +2,8 @@
 
 '''Version 2.9.x'''
 * ShopgateLibraryException: neuer Konstruktor-Parameter für vorherige Exception; verbessertes Logging von Stacktraces
+* Produkt-XML-Export: Bei <category> die Subnode <paths> entfernt 
+* Produkt-XML-Export: Node <tax_percent> wird nur noch exportiert, wenn explizit ein Wert gesetzt wurde
 
 '''Version 2.9.12'''
 * ShopgateCustomer::getRegistrationDate() liefert jetzt das Registrierungsdatum bei Aufrufen von ShopgatePlugin::registerCustomer()
@@ -397,6 +399,8 @@
 
 '''Version 2.9.x'''
 * ShopgateLibraryException: new constructor argument for previous Exception; improved stack trace logging
+* product XML export: removed the subnode <paths> of <category> 
+* product XML export: The node <tax_percent> will only be xported if a value was explicitly set
 
 '''Version 2.9.12'''
 * ShopgateCustomer::getRegistrationDate() will now return the point in time a customer registered during ShopgatePlugin::registerCustomer()
