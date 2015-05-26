@@ -5,6 +5,7 @@
 * Produkt-XML-Export: Bei <category> die Subnode <paths> entfernt 
 * Produkt-XML-Export: Nodes <tax_percent> + <tax_class> wird nur noch exportiert, wenn explizit ein Wert gesetzt wurde
 * XML-Export: alle ungültigen Zeichen werden nun herausgefiltert (entsprechend den Regeln von www.w3.org)
+* Neue visibility Konstante für unsichtbare Produkte hinzugefügt
 
 '''Version 2.9.12'''
 * ShopgateCustomer::getRegistrationDate() liefert jetzt das Registrierungsdatum bei Aufrufen von ShopgatePlugin::registerCustomer()
@@ -403,6 +404,7 @@
 * product XML export: removed the subnode <paths> of <category> 
 * product XML export: The nodes <tax_percent> + <tax_class> will only be exported if a value was explicitly set
 * XML export: all invalid characters are filtered out now (according to the rules from www.w3.org)
+* Added a new constant for product invisibility
 
 '''Version 2.9.12'''
 * ShopgateCustomer::getRegistrationDate() will now return the point in time a customer registered during ShopgatePlugin::registerCustomer()
