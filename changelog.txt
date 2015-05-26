@@ -1,6 +1,6 @@
 '''Deutsch'''
 
-'''Version 2.9.x'''
+'''Version 2.9.13'''
 * ShopgateLibraryException: neuer Konstruktor-Parameter für vorherige Exception; verbessertes Logging von Stacktraces
 * Produkt-XML-Export: Bei <category> die Subnode <paths> entfernt 
 * Produkt-XML-Export: Nodes <tax_percent> + <tax_class> wird nur noch exportiert, wenn explizit ein Wert gesetzt wurde
@@ -399,7 +399,7 @@
 
 '''English'''
 
-'''Version 2.9.x'''
+'''Version 2.9.13'''
 * ShopgateLibraryException: new constructor argument for previous Exception; improved stack trace logging
 * product XML export: removed the subnode <paths> of <category> 
 * product XML export: The nodes <tax_percent> + <tax_class> will only be exported if a value was explicitly set
