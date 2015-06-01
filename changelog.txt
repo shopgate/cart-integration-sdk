@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.9.14'''
+* Exporte: Fehler beim Setzen des Speicher- und Zeitlimits für Export-Funktionen behoben
+
 '''Version 2.9.13'''
 * ShopgateLibraryException: neuer Konstruktor-Parameter für vorherige Exception; verbessertes Logging von Stacktraces
 * Produkt-XML-Export: Bei <category> die Subnode <paths> entfernt 
@@ -398,6 +401,9 @@
 
 
 '''English'''
+
+'''Version 2.9.14'''
+* exports: fixed a bug in setting memory limit and maximum execution time on export functions
 
 '''Version 2.9.13'''
 * ShopgateLibraryException: new constructor argument for previous Exception; improved stack trace logging
