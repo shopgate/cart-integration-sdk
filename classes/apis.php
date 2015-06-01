@@ -223,7 +223,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			
 			if (in_array($this->params['action'], $this->exportActionList)) {
 				if (isset($this->params['memory_limit'])) {
-					$this->plugin->setExportMemoryLimit($this->params['memory_limit']);
+					$this->plugin->setExportMemoryLimit((int) $this->params['memory_limit']);
 				} else {
 					$this->plugin->setExportMemoryLimit($this->config->getDefaultMemoryLimit());
 				}

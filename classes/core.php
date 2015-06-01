@@ -1360,10 +1360,13 @@ abstract class ShopgateObject {
 	/**
 	 * @param int $memoryLimit in MB
 	 */
-	public function setExportMemoryLimit($memoryLimit) {
-		if(!empty($memoryLimit) && is_int($memoryLimit)){
-			@ini_set('memory_limit', "{$memoryLimit}M");
-		}
+	public function setExportMemoryLimit($memoryLimit = ShopgateConfig::DEFAULT_MEMORY_LIMIT) {
+		$limit = ($memoryLimit >= 0)
+				? $memoryLimit.'M'
+				: (string) $memoryLimit
+		;
+		
+		@ini_set('memory_limit', $limit);
 	}
 
 	/**
