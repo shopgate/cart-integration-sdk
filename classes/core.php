@@ -1361,20 +1361,20 @@ abstract class ShopgateObject {
 	 * @param int $memoryLimit in MB
 	 */
 	public function setExportMemoryLimit($memoryLimit) {
-		if(!empty($memoryLimit) && is_int($memoryLimit)){
-			@ini_set('memory_limit', "{$memoryLimit}M");
-		}
+		$limit = ($memoryLimit >= 0)
+				? $memoryLimit.'M'
+				: (string) $memoryLimit
+		;
+		
+		@ini_set('memory_limit', $limit);
 	}
 
 	/**
 	 * @param int $timeLimit in seconds
 	 */
 	public function setExportTimeLimit($timeLimit) {
-
-		if(!empty($timeLimit) && (is_int($timeLimit)||is_float($timeLimit))){
-			@set_time_limit($timeLimit);
-			@ini_set('max_execution_time', $timeLimit);
-		}
+		@set_time_limit($timeLimit);
+		@ini_set('max_execution_time', $timeLimit);
 	}
 
 	/**
