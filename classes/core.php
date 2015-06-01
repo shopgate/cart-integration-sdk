@@ -1360,7 +1360,7 @@ abstract class ShopgateObject {
 	/**
 	 * @param int $memoryLimit in MB
 	 */
-	public function setExportMemoryLimit($memoryLimit = ShopgateConfig::DEFAULT_MEMORY_LIMIT) {
+	public function setExportMemoryLimit($memoryLimit) {
 		$limit = ($memoryLimit >= 0)
 				? $memoryLimit.'M'
 				: (string) $memoryLimit
