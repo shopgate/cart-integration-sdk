@@ -229,7 +229,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				}
 				
 				if (isset($this->params['max_execution_time'])) {
-					$this->plugin->setExportTimeLimit($this->params['max_execution_time']);
+					$this->plugin->setExportTimeLimit((int) $this->params['max_execution_time']);
 				} else {
 					$this->plugin->setExportTimeLimit($this->config->getDefaultExecutionTime());
 				}

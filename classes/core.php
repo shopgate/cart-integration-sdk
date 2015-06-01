@@ -1373,11 +1373,8 @@ abstract class ShopgateObject {
 	 * @param int $timeLimit in seconds
 	 */
 	public function setExportTimeLimit($timeLimit) {
-
-		if(!empty($timeLimit) && (is_int($timeLimit)||is_float($timeLimit))){
-			@set_time_limit($timeLimit);
-			@ini_set('max_execution_time', $timeLimit);
-		}
+		@set_time_limit($timeLimit);
+		@ini_set('max_execution_time', $timeLimit);
 	}
 
 	/**
