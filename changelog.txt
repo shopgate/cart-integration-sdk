@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.9.x'''
+* XML: Fehler beim cast eines Objekttyp behoben
+
 '''Version 2.9.14'''
 * Exporte: Fehler beim Setzen des Speicher- und Zeitlimits für Export-Funktionen behoben
 
@@ -401,6 +404,9 @@
 
 
 '''English'''
+
+'''Version 2.9.x'''
+* XML: Fixed bug when cast an object type
 
 '''Version 2.9.14'''
 * exports: fixed a bug in setting memory limit and maximum execution time on export functions
