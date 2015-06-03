@@ -1789,9 +1789,9 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	}
 
 	/**
-	 * @param Shopgate_Model_Review $review
+	 * @param Shopgate_Model_Catalog_Review $review
 	 */
-	protected final function addReviewModel(Shopgate_Model_Review $review) {
+	protected final function addReviewModel(Shopgate_Model_Catalog_Review $review) {
 		$this->addModel($review);
 	}
 
