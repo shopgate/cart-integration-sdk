@@ -990,7 +990,16 @@ class ShopgateBuilder {
 		// -> PluginAPI auth service (currently the plugin API supports only one auth service)
 		$spaAuthService = new ShopgateAuthenticationServiceShopgate($this->config->getCustomerNumber(), $this->config->getApikey());
 		$pluginApi = new ShopgatePluginApi($this->config, $spaAuthService, $merchantApi, $plugin);
-		
+
+		if ($this->config->getExportConvertEncoding()) {
+			array_splice(ShopgateObject::$sourceEncodings, 1, 0, $this->config->getEncoding());
+			ShopgateObject::$sourceEncodings = array_unique(ShopgateObject::$sourceEncodings);
+		}
+
+		if ($this->config->getForceSourceEncoding()) {
+			ShopgateObject::$sourceEncodings = array($this->config->getEncoding());
+		}
+
 		// instantiate export file buffer
 		if (!empty($_REQUEST['action']) && (($_REQUEST['action'] == 'get_items')
 				|| ($_REQUEST['action'] == 'get_categories') || ($_REQUEST['action'] == 'get_reviews'))) {
@@ -999,11 +1008,6 @@ class ShopgateBuilder {
 					'get_categories' => 'Shopgate_Model_Catalog_Category',
 					'get_reviews' => 'Shopgate_Model_Review'
 			);
-			
-			if ($this->config->getExportConvertEncoding()) {
-				array_splice(Shopgate_Model_AbstractExport::$allowedEncodings, 1, 0, $this->config->getEncoding());
-				Shopgate_Model_AbstractExport::$allowedEncodings = array_unique(Shopgate_Model_AbstractExport::$allowedEncodings);
-			}
 
 			$format = (!empty($_REQUEST['response_type'])) ? $_REQUEST['response_type'] : '';
 			switch ($format) {
@@ -1011,17 +1015,17 @@ class ShopgateBuilder {
 					/* @var $xmlModel Shopgate_Model_AbstractExport */
 					$xmlModel = new $xmlModelNames[$_REQUEST['action']]();
 					$xmlNode = new Shopgate_Model_XmlResultObject($xmlModel->getItemNodeIdentifier());
-					$fileBuffer = new ShopgateFileBufferXml($xmlModel, $xmlNode, $this->config->getExportBufferCapacity(), $this->config->getExportConvertEncoding(), $this->config->getEncoding());
+					$fileBuffer = new ShopgateFileBufferXml($xmlModel, $xmlNode, $this->config->getExportBufferCapacity(), $this->config->getExportConvertEncoding(), ShopgateObject::$sourceEncodings);
 				break;
 				
 				case 'json':
-					$fileBuffer = new ShopgateFileBufferJson($this->config->getExportBufferCapacity(), $this->config->getExportConvertEncoding(), $this->config->getEncoding());
+					$fileBuffer = new ShopgateFileBufferJson($this->config->getExportBufferCapacity(), $this->config->getExportConvertEncoding(), ShopgateObject::$sourceEncodings);
 				break;
 			}
 		} else if (!empty($_REQUEST['action']) && (($_REQUEST['action'] == 'get_items_csv') || ($_REQUEST['action'] == 'get_categories_csv') || ($_REQUEST['action'] == 'get_reviews_csv'))) {
-			$fileBuffer = new ShopgateFileBufferCsv($this->config->getExportBufferCapacity(), $this->config->getExportConvertEncoding(), $this->config->getEncoding());
+			$fileBuffer = new ShopgateFileBufferCsv($this->config->getExportBufferCapacity(), $this->config->getExportConvertEncoding(), ShopgateObject::$sourceEncodings);
 		} else {
-			$fileBuffer = new ShopgateFileBufferCsv($this->config->getExportBufferCapacity(), $this->config->getExportConvertEncoding(), $this->config->getEncoding());
+			$fileBuffer = new ShopgateFileBufferCsv($this->config->getExportBufferCapacity(), $this->config->getExportConvertEncoding(), ShopgateObject::$sourceEncodings);
 		}
 		
 		// inject apis into plugin
@@ -1084,6 +1088,9 @@ class ShopgateBuilder {
  * @author Shopgate GmbH, 35510 Butzbach, DE
  */
 abstract class ShopgateObject {
+
+	public static $sourceEncodings = array(SHOPGATE_LIBRARY_ENCODING, 'ASCII', 'CP1252', 'ISO-8859-15', 'UTF-16LE', 'ISO-8859-1');
+
 	/**
 	 * @var array cache already camelized strings
 	 */
@@ -2613,21 +2620,14 @@ abstract class ShopgateFileBuffer extends ShopgateObject implements ShopgateFile
 	 *
 	 * @param int $capacity
 	 * @param bool $convertEncoding true to enable automatic encoding conversion to utf-8
-	 * @param string $sourceEncoding
+	 * @param array $sourceEncodings
 	 */
-	public function __construct($capacity, $convertEncoding = true, $sourceEncoding = null) {
+	public function __construct($capacity, $convertEncoding = true, array $sourceEncodings = array()) {
 		$this->timeStart = time();
 		$this->buffer = array();
 		$this->capacity = $capacity;
 		$this->convertEncoding = $convertEncoding;
-		
-		$this->allowedEncodings = array(
-			SHOPGATE_LIBRARY_ENCODING, 'ASCII', 'CP1252', 'ISO-8859-15', 'UTF-16LE', 'ISO-8859-1'
-		);
-		
-		if (!empty($sourceEncoding)) {
-			array_splice($this->allowedEncodings, 1, 0, $sourceEncoding);
-		}
+		$this->allowedEncodings = $sourceEncodings;
 	}
 
 	public function setFile($filePath) {
@@ -2786,10 +2786,10 @@ class ShopgateFileBufferXml extends ShopgateFileBuffer {
 	 * @param Shopgate_Model_XmlResultObject $xmlNode
 	 * @param null|string $capacity
 	 * @param bool $convertEncoding
-	 * @param null $sourceEncoding
+	 * @param array $sourceEncodings
 	 */
-	public function __construct(Shopgate_Model_Abstract $xmlModel, Shopgate_Model_XmlResultObject $xmlNode, $capacity, $convertEncoding = true, $sourceEncoding = null) {
-		parent::__construct($capacity, $convertEncoding, $sourceEncoding);
+	public function __construct(Shopgate_Model_Abstract $xmlModel, Shopgate_Model_XmlResultObject $xmlNode, $capacity, $convertEncoding = true, array $sourceEncodings = array()) {
+		parent::__construct($capacity, $convertEncoding, $sourceEncodings);
 		
 		$this->xmlNode = $xmlNode;
 		$this->xmlModel = $xmlModel;

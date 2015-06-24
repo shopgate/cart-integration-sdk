@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.9.16'''
+* Shopgate Konfiguration um Parameter force_source_encoding erweitert
+
 '''Version 2.9.15'''
 * Review-XML-Export: Falschen Type-Hint auf Shopgate_Model_Review korrigiert
 
@@ -404,6 +407,9 @@
 
 
 '''English'''
+
+'''Version 2.9.16'''
+* Shopgate configuration extended with parameter force_source_encoding
 
 '''Version 2.9.15'''
 * review XML export: fixed outdated type hint to Shopgate_Model_Review
