@@ -2620,9 +2620,9 @@ abstract class ShopgateFileBuffer extends ShopgateObject implements ShopgateFile
 	 *
 	 * @param int $capacity
 	 * @param bool $convertEncoding true to enable automatic encoding conversion to utf-8
-	 * @param null|array $sourceEncodings
+	 * @param array $sourceEncodings
 	 */
-	public function __construct($capacity, $convertEncoding = true, $sourceEncodings = null) {
+	public function __construct($capacity, $convertEncoding = true, array $sourceEncodings = array()) {
 		$this->timeStart = time();
 		$this->buffer = array();
 		$this->capacity = $capacity;
@@ -2786,9 +2786,9 @@ class ShopgateFileBufferXml extends ShopgateFileBuffer {
 	 * @param Shopgate_Model_XmlResultObject $xmlNode
 	 * @param null|string $capacity
 	 * @param bool $convertEncoding
-	 * @param null|array $sourceEncodings
+	 * @param array $sourceEncodings
 	 */
-	public function __construct(Shopgate_Model_Abstract $xmlModel, Shopgate_Model_XmlResultObject $xmlNode, $capacity, $convertEncoding = true, $sourceEncodings = null) {
+	public function __construct(Shopgate_Model_Abstract $xmlModel, Shopgate_Model_XmlResultObject $xmlNode, $capacity, $convertEncoding = true, array $sourceEncodings = array()) {
 		parent::__construct($capacity, $convertEncoding, $sourceEncodings);
 		
 		$this->xmlNode = $xmlNode;
