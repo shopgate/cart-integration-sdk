@@ -178,7 +178,12 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @var bool true to enable automatic encoding conversion to utf-8 during export
 	 */
 	protected $export_convert_encoding;
-	
+
+	/**
+	 * @var bool if true forces the $encoding to be the only one source encoding for all encoding operations
+	 */
+	protected $force_source_encoding;
+
 	/**
 	 * @var string[] the list of fields supported by the plugin method check_cart
 	 */
@@ -514,6 +519,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->enable_default_redirect = 0;
 		$this->encoding = 'UTF-8';
 		$this->export_convert_encoding = 1;
+		$this->force_source_encoding = false;
 		$this->supported_fields_check_cart = array();
 		$this->supported_fields_get_settings = array();
 		$this->supported_methods_cron = array();
@@ -1073,6 +1079,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->export_convert_encoding;
 	}
 
+	public function getForceSourceEncoding() {
+		return $this->force_source_encoding;
+	}
+
 	public function getSupportedFieldsCheckCart() {
 		return $this->supported_fields_check_cart;
 	}
@@ -1448,6 +1458,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 
 	public function setExportConvertEncoding($value) {
 		$this->export_convert_encoding = $value;
+	}
+
+	public function setForceSourceEncoding($value) {
+		$this->force_source_encoding = $value;
 	}
 
 	public function setSupportedFieldsCheckCart($value) {
@@ -2582,6 +2596,11 @@ interface ShopgateConfigInterface {
 	 * @return bool true to enable automatic encoding conversion to utf-8 during export
 	 */
 	public function getExportConvertEncoding();
+
+	/**
+	 * @return bool if true forces the $encoding to be the only one source encoding for all encoding operations
+	 */
+	public function getForceSourceEncoding();
 	
 	/**
 	 * @return array<string, string[]> the list of response types supported by the plugin, indexed by exports
@@ -3039,6 +3058,11 @@ interface ShopgateConfigInterface {
 	 * @param bool $value true to enable automatic encoding conversion to utf-8 during export
 	 */
 	public function setExportConvertEncoding($value);
+
+	/**
+	 * @param bool $value if true forces the $encoding to be the only one source encoding for all encoding operations
+	 */
+	public function setForceSourceEncoding($value);
 	
 	/**
 	 * @param array the list of fields supported by the plugin method check_cart
