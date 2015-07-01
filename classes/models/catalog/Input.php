@@ -102,7 +102,7 @@ class Shopgate_Model_Catalog_Input extends Shopgate_Model_AbstractExport {
 		$inputNode = $itemNode->addChild('input');
 		$inputNode->addAttribute('uid', $this->getUid());
 		$inputNode->addAttribute('type', $this->getType());
-		$inputNode->addAttribute('required', $this->getRequired());
+		$inputNode->addAttribute('required', (int)$this->getRequired());
 		$inputNode->addAttribute('additional_price', $this->getAdditionalPrice());
 		$inputNode->addChildWithCDATA('label', $this->getLabel());
 		$inputNode->addChildWithCDATA('info_text', $this->getInfoText());
