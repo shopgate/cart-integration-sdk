@@ -75,7 +75,7 @@ class Shopgate_Model_Catalog_Stock extends Shopgate_Model_AbstractExport {
 		 */
 		$stockNode = $itemNode->addChild('stock');
 		$stockNode->addChild('is_saleable', (int)$this->getIsSaleable());
-		$stockNode->addChild('backorders', $this->getBackorders());
+		$stockNode->addChild('backorders', (int)$this->getBackorders());
 		$stockNode->addChild('use_stock', (int)$this->getUseStock());
 		$stockNode->addChild('stock_quantity', $this->getStockQuantity());
 		$stockNode->addChild('minimum_order_quantity', $this->getMinimumOrderQuantity());
