@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.9.17'''
+* Problem beim XML Export mit Validierung von boolschen Werten behoben
+
 '''Version 2.9.16'''
 * Shopgate Konfiguration um Parameter force_source_encoding erweitert
 
@@ -407,6 +410,9 @@
 
 
 '''English'''
+
+'''Version 2.9.17'''
+* fixed validation issue in XML export with boolean values
 
 '''Version 2.9.16'''
 * Shopgate configuration extended with parameter force_source_encoding
