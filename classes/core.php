@@ -385,7 +385,12 @@ class ShopgateLibraryException extends Exception {
 		}
 
 		// Call default Exception class constructor
-		parent::__construct($message, $code, $previous);
+		if (method_exists($this, 'getPrevious')) {
+			// The "previous" argument was introduced 5.3
+			parent::__construct($message, $code, $previous);
+		} else {
+			parent::__construct($message, $code);
+		}
 		
 		// Log the error
 		$logMessage = $this->buildLogMessage($additionalInformation);
@@ -479,7 +484,11 @@ class ShopgateLibraryException extends Exception {
 		$logMessage .= "\n";
 		
 		// Add tracing information to the message
-		$trace = $this->getPrevious() ? $this->getPrevious()->getTraceAsString() : $this->getTraceAsString();
+		if (method_exists($this, 'getPrevious') && $this->getPrevious()) {
+			$trace = $this->getPrevious()->getTraceAsString();
+		} else {
+			$trace = $this->getTraceAsString();
+		}
 		$lines = explode("\n", $trace);
 		$i     = 0;
 		foreach ($lines as $line) {
