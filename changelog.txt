@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.9.18'''
+* Einen Bug behoben, der die Kompatibilität mit PHP < 5.3 gebrochen hat
+
 '''Version 2.9.17'''
 * Problem beim XML Export mit Validierung von boolschen Werten behoben
 
@@ -410,6 +413,9 @@
 
 
 '''English'''
+
+'''Version 2.9.18'''
+* Fixed a bug that broke compatibility with PHP < 5.3
 
 '''Version 2.9.17'''
 * fixed validation issue in XML export with boolean values
