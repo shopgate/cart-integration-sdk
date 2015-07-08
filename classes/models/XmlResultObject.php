@@ -44,7 +44,7 @@ class Shopgate_Model_XmlResultObject extends SimpleXMLElement {
 	 */
 	public function addChildWithCDATA($name, $value = null) {
 		$forceEmpty = false;
-		if ($value == Shopgate_Model_AbstractExport::SET_EMPTY) {
+		if ($value === Shopgate_Model_AbstractExport::SET_EMPTY) {
 			$forceEmpty = true;
 			$value = '';
 		}
@@ -75,7 +75,7 @@ class Shopgate_Model_XmlResultObject extends SimpleXMLElement {
 		if (!empty($value)) {
 			$value = preg_replace(self::PATTERN_INVALID_CHARS, '', $value);
 		}
-		if ($value != Shopgate_Model_AbstractExport::SET_EMPTY) {
+		if ($value !== Shopgate_Model_AbstractExport::SET_EMPTY) {
 			return parent::addChild($name, $value, $namespace);
 		}
 		$child = parent::addChild($name, '', $namespace);
