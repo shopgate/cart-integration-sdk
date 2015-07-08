@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.9.19'''
+* Produkt-XML-Export: manche XML-Knoten wurden fälschlicherweise mit "forceEmpty"-Attribute exportiert
+
 '''Version 2.9.18'''
 * Einen Bug behoben, der die Kompatibilität mit PHP < 5.3 gebrochen hat
 
@@ -413,6 +416,9 @@
 
 
 '''English'''
+
+'''Version 2.9.19'''
+* product XML export: some XML nodes were exported with a "forceEmpty" attribute by mistake
 
 '''Version 2.9.18'''
 * Fixed a bug that broke compatibility with PHP < 5.3
