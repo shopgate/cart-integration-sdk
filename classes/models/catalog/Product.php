@@ -760,27 +760,29 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport {
 	 */
 	protected function cleanChildData($parentItem, $childItem) {
 		foreach ($childItem->getData() as $childKey => $childValue) {
-			/**
-			 * array or object
-			 */
 			if (is_array($childValue) || $childValue instanceof Shopgate_Model_Abstract) {
 				/**
-				 * array
+				 * array or object
 				 */
 				if(is_array($childValue) && count($childValue) > 0) {
+					/**
+					 * array
+					 */
 					if($childValue == $parentItem->getData($childKey)) {
 						$childItem->setData($childKey, array());
 					}
 				} elseif ($childValue instanceof Shopgate_Model_Abstract) {
+					/**
+					 * object
+					 */
 					if($childValue == $parentItem->getData($childKey)) {
-						$class = get_class($childValue);
-						$childItem->setData($childKey, new $class);
+						$childItem->setData($childKey, new Shopgate_Model_Catalog_XmlEmptyObject());
 					}
 				}
+			} else {
 				/**
 				 * string
 				 */
-			} else {
 				if($childValue == $parentItem->getData($childKey)) {
 					$childItem->setData($childKey, null);
 				}
