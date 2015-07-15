@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.9.20'''
+* XML-Export: Es werden nun keine XML-Tags mehr leer hinzugefügt, wenn diese eigentlich entfernt werden sollten
+
 '''Version 2.9.19'''
 * Produkt-XML-Export: manche XML-Knoten wurden fälschlicherweise mit "forceEmpty"-Attribute exportiert
 
@@ -416,6 +419,9 @@
 
 
 '''English'''
+
+'''Version 2.9.20'''
+* xml export does not include empty xml elements when they should actually be removed instead
 
 '''Version 2.9.19'''
 * product XML export: some XML nodes were exported with a "forceEmpty" attribute by mistake
