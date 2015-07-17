@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.9.x'''
+* Konstanten für weitere Zahlungsarten in Klasse ShopgateCartBase hinzugefügt
+
 '''Version 2.9.20'''
 * XML-Export: Es werden nun keine XML-Tags mehr leer hinzugefügt, wenn diese eigentlich entfernt werden sollten
 
@@ -419,6 +422,9 @@
 
 
 '''English'''
+
+'''Version 2.9.x'''
+* added constants for more payment types in class ShopgateCartBase
 
 '''Version 2.9.20'''
 * xml export does not include empty xml elements when they should actually be removed instead
