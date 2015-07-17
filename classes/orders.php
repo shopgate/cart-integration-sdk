@@ -44,6 +44,7 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	const PAYONE_INV = "PAYONE_INV";
 	const SG_INVOICE = "SG_INVOICE";
 	const WCARD_INV  = "WCARD_INV";
+	const PAYONE_KLV = 'PAYONE_KLV';
 
 	const PAYPAL     = "PAYPAL";
 	const CMPTOP_PP  = "CMPTOP_PP";
@@ -145,8 +146,11 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	const MSTPAY_SUE = "MSTPAY_SUE";
 	const SG_SUE     = "SG_SUE";
 	const WCARD_SUE  = "WCARD_SUE";
+	const PAYONE_GP  = "PAYONE_GP";
+	const PAYONE_SUE = "PAYONE_SUE";
 
 	const SIX_IDEAL  = "SIX_IDEAL";
+	const PAYONE_IDL = "PAYONE_IDL";
     
     const AMAZON_PAYMENT = "MWS";
 
