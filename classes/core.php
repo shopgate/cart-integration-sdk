@@ -1125,7 +1125,7 @@ abstract class ShopgateObject {
 
 	/**
 	 * Save the already instantiated Helper Object to guarantee the only one instance is allocated
-	 * 
+	 *
 	 * @var array of Shopgate_Helper_DataStructure|Shopgate_Helper_Pricing|Shopgate_Helper_String
 	 */
 	private $helperClassInstances = array(
@@ -2089,7 +2089,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	protected function removeTagsFromString($string, $removeTags = array(), $additionalAllowedTags = array())
 	{
 		$helper = $this->getHelper(self::HELPER_STRING);
-		return $helper->removeTagsFromString($string, $removeTags, $additionalAllowedTags);	
+		return $helper->removeTagsFromString($string, $removeTags, $additionalAllowedTags);
 	}
 
 	/**
@@ -2419,8 +2419,8 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	
 	/**
 	 * Returns an array of certain settings of the shop. (Currently mainly tax settings.)
-	 * 
-	 * 
+	 *
+	 *
 	 * @see http://developer.shopgate.com/plugin_api/system_information/get_settings
 	 *
 	 * @return array(
