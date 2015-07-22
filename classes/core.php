@@ -2450,8 +2450,17 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @see http://developer.shopgate.com/plugin_api/export/get_items_csv
 	 *
 	 * @throws ShopgateLibraryException
+	 *
+	 * @deprecated Use createItems().
 	 */
-	protected abstract function createItemsCsv();
+	protected function createItemsCsv(){
+		throw new ShopgateLibraryException(
+				ShopgateLibraryException::PLUGIN_API_DISABLED_ACTION,
+				'The requested action is not disabled but has not been implemented in this plugin.',
+				true,
+				false
+		);
+	}
 	
 	/**
 	 * Loads the Media file information to the products of the shop system's database and passes them to the buffer.
@@ -2476,9 +2485,18 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @see http://developer.shopgate.com/plugin_api/export/get_categories_csv
 	 *
 	 * @throws ShopgateLibraryException
+	 *
+	 * @deprecated Use createCategories().
 	 */
-	protected abstract function createCategoriesCsv();
-
+	protected function createCategoriesCsv() {
+		throw new ShopgateLibraryException(
+				ShopgateLibraryException::PLUGIN_API_DISABLED_ACTION,
+				'The requested action is not disabled but has not been implemented in this plugin.',
+				true,
+				false
+		);
+	}
+	
 	/**
 	 * Loads the product reviews of the shop system's database and passes them to the buffer.
 	 *
@@ -2489,9 +2507,18 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @see http://developer.shopgate.com/plugin_api/export/get_reviews_csv
 	 *
 	 * @throws ShopgateLibraryException
+	 *
+	 * @deprecated Use createReviews().
 	 */
-	protected abstract function createReviewsCsv();
-
+	protected function createReviewsCsv() {
+		throw new ShopgateLibraryException(
+				ShopgateLibraryException::PLUGIN_API_DISABLED_ACTION,
+				'The requested action is not disabled but has not been implemented in this plugin.',
+				true,
+				false
+		);
+	}
+	
 	/**
 	 * Exports orders from the shop system's database to Shopgate.
 	 *
