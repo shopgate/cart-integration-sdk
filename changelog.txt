@@ -1,5 +1,8 @@
 '''Deutsch'''
 
+'''Version 2.9.22'''
+* CSV-Exporte: Die Methoden ShopgatePlugin::createCategoriesCsv(), ::createItemsCsv() und ::createReviewsCsv() sind jetzt deprecated und nicht mehr abstrakt
+
 '''Version 2.9.21'''
 * Konstanten für weitere Zahlungsarten in Klasse ShopgateCartBase hinzugefügt
 
@@ -422,6 +425,9 @@
 
 
 '''English'''
+
+'''Version 2.9.22'''
+* CSV exports: the methods ShopgatePlugin::createCategoriesCsv(), ::createItemsCsv() und ::createReviewsCsv() are now deprecated and not abstract anymore
 
 '''Version 2.9.21'''
 * added constants for more payment types in class ShopgateCartBase
