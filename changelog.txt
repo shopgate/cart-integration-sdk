@@ -1,6 +1,6 @@
 '''Deutsch'''
 
-'''Version 2.9.x'''
+'''Version 2.9.21'''
 * Konstanten für weitere Zahlungsarten in Klasse ShopgateCartBase hinzugefügt
 
 '''Version 2.9.20'''
@@ -423,7 +423,7 @@
 
 '''English'''
 
-'''Version 2.9.x'''
+'''Version 2.9.21'''
 * added constants for more payment types in class ShopgateCartBase
 
 '''Version 2.9.20'''
