@@ -2150,9 +2150,11 @@ abstract class ShopgatePluginApiResponse extends ShopgateObject {
 		$this->version = $version;
 		$this->pluginVersion = (empty($pluginVersion) && defined('SHOPGATE_PLUGIN_VERSION')) ? SHOPGATE_PLUGIN_VERSION : $pluginVersion;
 	}
-	
+
 	/**
 	 * Marks the response as error.
+	 * @param $code
+	 * @param $message
 	 */
 	public function markError($code, $message) {
 		$this->error = $code;

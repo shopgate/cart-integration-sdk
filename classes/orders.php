@@ -2788,7 +2788,7 @@ class ShopgateCartCustomerGroup extends ShopgateContainer {
 	##########
 	
 	/**
-	 * @param string $value
+	 * @return string
 	 */
 	public function getId() {
 		return $this->id;

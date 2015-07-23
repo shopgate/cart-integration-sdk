@@ -2169,6 +2169,8 @@ class ShopgateConfigOld extends ShopgateObject {
 	 * @deprecated
 	 *
 	 * @param array $newConfig
+	 * @param bool $validate
+	 * @throws ShopgateLibraryException
 	 */
 	public static final function setConfig(array $newConfig, $validate = true) {
 		self::deprecated(__METHOD__);

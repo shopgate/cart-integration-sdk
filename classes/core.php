@@ -361,6 +361,7 @@ class ShopgateLibraryException extends Exception {
 	 * @param string $additionalInformation More detailed information on what exactly went wrong.
 	 * @param bool $appendAdditionalInformationToMessage Set true to output the additional information to the response. Set false to log it silently.
 	 * @param bool $writeLog true to create a log entry in the error log, false otherwise.
+	 * @param Exception $previous
 	 */
 	public function __construct($code, $additionalInformation = null, $appendAdditionalInformationToMessage = false, $writeLog = true, Exception $previous = null) {
 		// Set code and message
