@@ -50,6 +50,7 @@ class ShopgateCustomer extends ShopgateContainer {
 	
 	protected $newsletter_subscription;
 	
+	/** @var ShopgateAddress[] */
 	protected $addresses;
 	
 	/**

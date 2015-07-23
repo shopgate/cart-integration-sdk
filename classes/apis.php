@@ -750,8 +750,8 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		
 		$this->config->load($shopgateSettingsNew);
 		$this->config->save(array_keys($shopgateSettingsNew), true);
-		
-		$shopgateSettingsDiff = array();
+
+		$diff = array();
 		foreach ($shopgateSettingsNew as $setting => $value) {
 			$diff[] = array('name' => $setting, 'old' => $shopgateSettingsOld[$setting], 'new' => $value);
 		}
@@ -2150,9 +2150,11 @@ abstract class ShopgatePluginApiResponse extends ShopgateObject {
 		$this->version = $version;
 		$this->pluginVersion = (empty($pluginVersion) && defined('SHOPGATE_PLUGIN_VERSION')) ? SHOPGATE_PLUGIN_VERSION : $pluginVersion;
 	}
-	
+
 	/**
 	 * Marks the response as error.
+	 * @param $code
+	 * @param $message
 	 */
 	public function markError($code, $message) {
 		$this->error = $code;
