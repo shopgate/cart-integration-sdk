@@ -1981,7 +1981,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
 	 */
 	public static function setConfig(array $newConfig, $validate = true) {
-		return ShopgateConfigOld::setConfig($newConfig, $validate);
+		ShopgateConfigOld::setConfig($newConfig, $validate);
 	}
 
 	/**
@@ -2021,7 +2021,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
 	 */
 	public static function getLogFilePath($type = ShopgateLogger::LOGTYPE_ERROR) {
-		return ShopgateConfigOld::getLogFilePath($type = ShopgateLogger::LOGTYPE_ERROR);
+		return ShopgateConfigOld::getLogFilePath($type);
 	}
 
 	/**
@@ -2091,7 +2091,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @throws ShopgateLibraryException whenever a ShopgateLibraryException is thrown by ShopgateConfigOld's method.
 	 */
 	public static function saveConfig() {
-		return ShopgateConfigOld::saveConfig();
+		ShopgateConfigOld::saveConfig();
 	}
 }
 
@@ -2239,7 +2239,6 @@ class ShopgateConfigOld extends ShopgateObject {
 				$type = 'error';
 			case "access":
 			case "request":
-			case "request":
 			case "debug":
 		}
 
@@ -2312,7 +2311,7 @@ class ShopgateConfigOld extends ShopgateObject {
 	}
 
 	/**
-	 * @return the absolute Path for the Redirect-Keywords-Caching-File
+	 * @return string the absolute Path for the Redirect-Keywords-Caching-File
 	 * @deprecated
 	 */
 	public static final function getRedirectKeywordsFilePath() {
@@ -2326,7 +2325,7 @@ class ShopgateConfigOld extends ShopgateObject {
 	}
 
 	/**
-	 * @return the absolute Path for the Skip-Redirect-Keywords-Caching-File
+	 * @return string the absolute Path for the Skip-Redirect-Keywords-Caching-File
 	 * @deprecated
 	 */
 	public static final function getSkipRedirectKeywordsFilePath() {
@@ -2414,11 +2413,9 @@ class ShopgateConfigOld extends ShopgateObject {
 			}
 		}
 
-		$message = "";
 		$handle = @fopen(dirname(__FILE__).'/../config/myconfig.php', 'w+');
 		if ($handle == false) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR);
-			fclose($handle);
 		} else {
 			if (!fwrite($handle, $returnString)) {
 				throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR);
@@ -3065,12 +3062,12 @@ interface ShopgateConfigInterface {
 	public function setForceSourceEncoding($value);
 	
 	/**
-	 * @param array the list of fields supported by the plugin method check_cart
+	 * @param array $value the list of fields supported by the plugin method check_cart
 	 */
 	public function setSupportedFieldsCheckCart($value);
 	
 	/**
-	 * @param array the list of fields supported by the plugin method get_settings
+	 * @param array $value the list of fields supported by the plugin method get_settings
 	 */
 	public function setSupportedFieldsGetSettings($value);
 	
@@ -3215,7 +3212,7 @@ interface ShopgateConfigInterface {
 	public function setEnableReceiveAuthorization($value);
 	
 	/**
-	 * @param string The ISO 3166 ALPHA-2 code of the country the plugin uses for export.
+	 * @param string $value The ISO 3166 ALPHA-2 code of the country the plugin uses for export.
 	 */
 	public function setCountry($value);
 

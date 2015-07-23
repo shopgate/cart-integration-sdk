@@ -993,8 +993,7 @@ class ShopgateBuilder {
 				break;
 			default:
 				// undefined auth service
-				trigger_error('Invalid SMA-Auth-Service defined - this should not happen with valid plugin code', E_USER_ERROR);
-				break;
+				return trigger_error('Invalid SMA-Auth-Service defined - this should not happen with valid plugin code', E_USER_ERROR);
 		}
 		// -> PluginAPI auth service (currently the plugin API supports only one auth service)
 		$spaAuthService = new ShopgateAuthenticationServiceShopgate($this->config->getCustomerNumber(), $this->config->getApikey());
@@ -1903,7 +1902,6 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	
 	/**
 	 *
-	 * @param boolean tax classes will be used
 	 * @see http://wiki.shopgate.com/CSV_File_Items/
 	 */
 	protected function useTaxClasses(){

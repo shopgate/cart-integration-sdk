@@ -750,8 +750,8 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		
 		$this->config->load($shopgateSettingsNew);
 		$this->config->save(array_keys($shopgateSettingsNew), true);
-		
-		$shopgateSettingsDiff = array();
+
+		$diff = array();
 		foreach ($shopgateSettingsNew as $setting => $value) {
 			$diff[] = array('name' => $setting, 'old' => $shopgateSettingsOld[$setting], 'new' => $value);
 		}
