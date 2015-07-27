@@ -1614,7 +1614,7 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 		return $this->sendRequest($request);
 	}
 	
-	public function cancelOrder($orderNumber, $cancelCompleteOrder = false, $cancellationItems = array(), $cancelShipping = false, $cancellationNote = '') {
+	public function cancelOrder($orderNumber, $cancelCompleteOrder = true, $cancellationItems = array(), $cancelShipping = false, $cancellationNote = '') {
 		$request = array(
 			'action' => 'cancel_order',
 			'order_number' => $orderNumber,
