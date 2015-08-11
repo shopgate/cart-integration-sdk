@@ -38,6 +38,9 @@
  *  @method        setAdditionalPrice(float $value)
  *  @method float  getAdditionalPrice()
  *
+ *  @method        setSortOrder(float $value)
+ *  @method int    getSortOrder()
+ *
  */
 class Shopgate_Model_Catalog_Option extends Shopgate_Model_AbstractExport {
 
@@ -50,6 +53,7 @@ class Shopgate_Model_Catalog_Option extends Shopgate_Model_AbstractExport {
 		'Uid',
 		'Label',
 		'Value',
+		'SortOrder',
 		'AdditionalPrice');
 
 	/**
@@ -64,6 +68,7 @@ class Shopgate_Model_Catalog_Option extends Shopgate_Model_AbstractExport {
 		$optionNode = $itemNode->addChild('option');
 		$optionNode->addAttribute('additional_price', $this->getAdditionalPrice());
 		$optionNode->addAttribute('uid', $this->getUid());
+		$optionNode->addAttribute('sort_order', $this->getSortOrder());
 		$optionNode->addChildWithCDATA('label', $this->getLabel());
 		$optionNode->addChildWithCDATA('value', $this->getValue());
 
