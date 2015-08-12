@@ -26,20 +26,20 @@
  * @class Shopgate_Model_Catalog_Option
  * @see http://developer.shopgate.com/file_formats/xml/products
  *
- *  @method         setUid(int $value)
- *  @method int     getUid()
+ * @method        	setUid(int $value)
+ * @method int    	getUid()
  *
- *  @method         setLabel(string $value)
- *  @method string  getLabel()
+ * @method        	setLabel(string $value)
+ * @method string 	getLabel()
  *
- *  @method         setValue(string $value)
- *  @method string  getValue()
+ * @method        	setValue(string $value)
+ * @method string 	getValue()
  *
- *  @method        setAdditionalPrice(float $value)
- *  @method float  getAdditionalPrice()
+ * @method        	setAdditionalPrice(float $value)
+ * @method float  	getAdditionalPrice()
  *
- *  @method        setSortOrder(float $value)
- *  @method int    getSortOrder()
+ * @method        	setSortOrder(int $value)
+ * @method int    	getSortOrder()
  *
  */
 class Shopgate_Model_Catalog_Option extends Shopgate_Model_AbstractExport {

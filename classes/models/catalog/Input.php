@@ -45,7 +45,7 @@
  * @method string                               getAdditionalPrice()
  *
  * @method                                      setSortOrder(int $value)
- * @method string                               getSortOrder()
+ * @method int                               	getSortOrder()
  *
  * @method                                      setLabel(string $value)
  * @method string                               getLabel()
