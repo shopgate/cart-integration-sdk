@@ -1,3 +1,5 @@
+'''Version 2.9.23'''
+* added sort order for options and option values
 
 '''Version 2.9.22'''
 * CSV exports: the methods ShopgatePlugin::createCategoriesCsv(), ::createItemsCsv() und ::createReviewsCsv() are now deprecated and not abstract anymore
