@@ -74,6 +74,7 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	const BRAINTR_CC = "BRAINTR_CC";
 	const CHASE_CC   = "CHASE_CC";
 	const CMPTOP_CC  = "CMPTOP_CC";
+	const CONCAR_CC  = "CONCAR_CC";
 	const CRDSTRM_CC = "CRDSTRM_CC";
 	const CREDITCARD = "CREDITCARD";
 	const CYBRSRC_CC = "CYBRSRC_CC";
@@ -89,6 +90,7 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	const GAMEDAY_CC = "GAMEDAY_CC";
 	const GARANTI_CC = "GARANTI_CC";
 	const GESTPAY_CC = "GESTPAY_CC";
+	const HDLPAY_CC  = "HDLPAY_CC";
 	const HIPAY      = "HIPAY";
 	const HITRUST_CC = "HITRUST_CC";
 	const INSPIRE_CC = "INSPIRE_CC";
@@ -108,12 +110,14 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	const NOCHEX_CC  = "NOCHEX_CC";
 	const OGONE_CC   = "OGONE_CC";
 	const OPTIMAL_CC = "OPTIMAL_CC";
+	const PAY4ONE_CC = "PAY4ONE_CC";
 	const PAYBOX_CC  = "PAYBOX_CC";
 	const PAYEXPR_CC = "PAYEXPR_CC";
 	const PAYFAST_CC = "PAYFAST_CC";
 	const PAYFLOW_CC = "PAYFLOW_CC";
 	const PAYJUNC_CC = "PAYJUNC_CC";
 	const PAYONE_CC  = "PAYONE_CC";
+	const PAYZEN_CC  = "PAYZEN_CC";
 	const PLUGNPL_CC = "PLUGNPL_CC";
 	const PP_WSPP_CC = "PP_WSPP_CC";
 	const PSIGATE_CC = "PSIGATE_CC";
@@ -139,6 +143,7 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	const VALITOR_CC = "VALITOR_CC";
 	const VERIFI_CC  = "VERIFI_CC";
 	const VIAKLIX_CC = "VIAKLIX_CC";
+	const WCARDS_CC  = "WCARDS_CC";
 	const WIRECRD_CC = "WIRECRD_CC";
 	const WLDPDIR_CC = "WLDPDIR_CC";
 	const WLDPOFF_CC = "WLDPOFF_CC";
