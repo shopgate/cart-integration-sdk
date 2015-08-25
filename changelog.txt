@@ -1,3 +1,6 @@
+'''Version 2.9.25'''
+* added and changed error messages for method checkCart and checkStock
+
 '''Version 2.9.24'''
 * added constants for some payment methods
 

@@ -339,7 +339,9 @@ class ShopgateLibraryException extends Exception {
 		self::CART_ITEM_OUT_OF_STOCK => 'product is not in stock',
 		self::CART_ITEM_PRODUCT_NOT_FOUND => 'product not found',
 		self::CART_ITEM_REQUESTED_QUANTITY_NOT_AVAILABLE => 'less stock available than requested',
-		self::CART_ITEM_INPUT_VALIDATION_FAILED => 'cart item input validation failed',
+		self::CART_ITEM_INPUT_VALIDATION_FAILED => 'product input validation failed',
+		self::CART_ITEM_REQUESTED_QUANTITY_UNDER_MINIMUM_QUANTITY => 'requested quantity is lower than required minimum quantity',
+		self::CART_ITEM_REQUESTED_QUANTITY_OVER_MAXIMUM_QUANTITY => 'requested quantity is higher than allowed maximum quantity',
 		
 		// Authentication errors
 		self::AUTHENTICATION_FAILED => 'authentication failed',
