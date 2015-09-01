@@ -773,9 +773,13 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport {
 					}
 				} elseif ($childValue instanceof Shopgate_Model_Abstract) {
 					/**
-					 * object
+					 * object - but we check only data array
 					 */
-					if($childValue == $parentItem->getData($childKey)) {
+					$parentAttribute = $parentItem->getData($childKey);
+					
+					if ($parentAttribute instanceof Shopgate_Model_Abstract
+						&& $childValue->getData() == $parentAttribute->getData()
+					) {
 						$childItem->setData($childKey, new Shopgate_Model_Catalog_XmlEmptyObject());
 					}
 				}
