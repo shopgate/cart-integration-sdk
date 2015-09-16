@@ -1822,6 +1822,7 @@ class ShopgateDeliveryNote extends ShopgateContainer {
 	const UPS_API_V1 = "UPS_API_V1";
 
 	protected $shipping_service_id = ShopgateDeliveryNote::DHL;
+	protected $shipping_service_name = "";
 	protected $tracking_number = "";
 	protected $shipping_time = null;
 
@@ -1834,6 +1835,13 @@ class ShopgateDeliveryNote extends ShopgateContainer {
 	 */
 	public function setShippingServiceId($value) {
 		$this->shipping_service_id = $value;
+	}
+
+	/**
+	 * @param string $value
+	 */
+	public function setShippingServiceName($value) {
+		$this->shipping_service_name = $value;
 	}
 
 	/**
@@ -1860,6 +1868,13 @@ class ShopgateDeliveryNote extends ShopgateContainer {
 	 */
 	public function getShippingServiceId() {
 		return $this->shipping_service_id;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getShippingServiceName() {
+		return $this->shipping_service_name;
 	}
 
 	/**
