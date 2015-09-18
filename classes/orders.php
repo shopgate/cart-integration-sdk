@@ -1112,7 +1112,7 @@ class ShopgateOrderItem extends ShopgateContainer {
 	protected $item_number_public;
 	protected $parent_item_number;
 	protected $order_item_id;
-    protected $type;
+	protected $type;
 
 	protected $quantity;
 
@@ -1172,12 +1172,12 @@ class ShopgateOrderItem extends ShopgateContainer {
 		$this->order_item_id = $value;
 	}
 
-    /**
-     * @param string $value
-     */
-    public function setType($value) {
-        $this->type = $value;
-    }
+	/**
+	 * @param string $value
+	 */
+	public function setType($value) {
+		$this->type = $value;
+	}
 
 	/**
 	 * @param float $value
@@ -1353,12 +1353,12 @@ class ShopgateOrderItem extends ShopgateContainer {
 		return $this->order_item_id;
 	}
 
-    /**
-     * @return string
-     */
-    public function getType() {
-        return $this->type;
-    }
+	/**
+	 * @return string
+	 */
+	public function getType() {
+		return $this->type;
+	}
 
 	/**
 	 * @return float
