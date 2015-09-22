@@ -1448,6 +1448,27 @@ class ShopgateOrderItem extends ShopgateContainer {
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitOrderItem($this);
 	}
+
+	/**
+	 * @return bool
+	 */
+	public function isItem() {
+		return ($this->type == self::TYPE_ITEM);
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isSgCoupon() {
+		return ($this->type == self::TYPE_SG_COUPON);
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isPayment() {
+		return ($this->type == self::TYPE_PAYMENT);
+	}
 }
 
 class ShopgateOrderItemOption extends ShopgateContainer {
