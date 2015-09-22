@@ -1108,6 +1108,11 @@ class ShopgateOrder extends ShopgateCartBase {
 }
 
 class ShopgateOrderItem extends ShopgateContainer {
+
+	const TYPE_ITEM      = "item";
+	const TYPE_SG_COUPON = "sg_coupon";
+	const TYPE_PAYMENT   = "payment";
+
 	protected $item_number;
 	protected $item_number_public;
 	protected $parent_item_number;
