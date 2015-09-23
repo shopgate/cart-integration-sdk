@@ -1108,30 +1108,52 @@ class ShopgateOrder extends ShopgateCartBase {
 }
 
 class ShopgateOrderItem extends ShopgateContainer {
-
-	const TYPE_ITEM      = "item";
-	const TYPE_SG_COUPON = "sg_coupon";
-	const TYPE_PAYMENT   = "payment";
-
+	
+	const TYPE_ITEM            = 'item';
+	const TYPE_PRODUCT         = 'item';
+	const TYPE_PAYMENT         = 'payment';
+	const TYPE_SHOPGATE_COUPON = 'sg_coupon';
+	
+	/** @var string */
 	protected $item_number;
+	
+	/** @var string */
 	protected $item_number_public;
+	
+	/** @var string */
 	protected $parent_item_number;
+	
+	/** @var int */
 	protected $order_item_id;
+	
+	/** @var string */
 	protected $type;
-
+	
+	/** @var int */
 	protected $quantity;
-
+	
+	/** @var string */
 	protected $name;
-
+	
+	/** @var float */
 	protected $unit_amount;
+	
+	/** @var float */
 	protected $unit_amount_with_tax;
-
+	
+	/** @var float */
 	protected $tax_percent;
+	
+	/** @var string */
 	protected $tax_class_key;
+	
+	/** @var string */
 	protected $tax_class_id;
-
+	
+	/** @var string */
 	protected $currency;
-
+	
+	/** @var string */
 	protected $internal_order_info;
 
 	protected $options = array();
