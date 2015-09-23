@@ -216,7 +216,7 @@ class ShopgateExternalOrder extends ShopgateContainer {
 	}
 
 	/**
-	 * @deprecated deprecated since version 2.9.26; use setAmountCompleteGross
+	 * @deprecated since version 2.9.26; use setAmountCompleteGross
 	 *
 	 * @param float $value
 	 */
@@ -495,7 +495,7 @@ class ShopgateExternalOrder extends ShopgateContainer {
 	}
 
 	/**
-	 * @deprecated deprecated since version 2.9.26; use getAmountCompleteGross
+	 * @deprecated since version 2.9.26; use getAmountCompleteGross
 	 *
 	 * @return float
 	 */
