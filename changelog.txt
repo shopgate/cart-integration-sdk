@@ -1,6 +1,7 @@
 
 '''Version 2.9.26'''
 * added constants for order item types
+* added external order items parameter: amount_items_gross; amount_items_net; amount_complete_net; amount_complete_gross
 
 '''Version 2.9.25'''
 * added and changed error messages for method checkCart and checkStock
