@@ -1482,7 +1482,7 @@ class ShopgateOrderItem extends ShopgateContainer {
 	 * @return bool
 	 */
 	public function isSgCoupon() {
-		return ($this->type == self::TYPE_SG_COUPON);
+		return ($this->type == self::TYPE_SHOPGATE_COUPON);
 	}
 
 	/**
