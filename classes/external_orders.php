@@ -227,13 +227,6 @@ class ShopgateExternalOrder extends ShopgateContainer {
 	/**
 	 * @param float $value
 	 */
-	public function setAmountCompleteGross($value) {
-		$this->amount_complete_gross = $value;
-	}
-
-	/**
-	 * @param float $value
-	 */
 	public function setAmountItemsGross($value) {
 		$this->amount_items_gross = $value;
 	}
@@ -243,6 +236,13 @@ class ShopgateExternalOrder extends ShopgateContainer {
 	 */
 	public function setAmountItemsNet($value) {
 		$this->amount_items_net = $value;
+	}
+
+	/**
+	 * @param float $value
+	 */
+	public function setAmountCompleteGross($value) {
+		$this->amount_complete_gross = $value;
 	}
 
 	/**
@@ -506,13 +506,6 @@ class ShopgateExternalOrder extends ShopgateContainer {
 	/**
 	 * @return float
 	 */
-	public function getAmountCompleteGross() {
-		return $this->amount_complete_gross;
-	}
-
-	/**
-	 * @return float
-	 */
 	public function getAmountItemsGross() {
 		return $this->amount_items_gross;
 	}
@@ -520,15 +513,22 @@ class ShopgateExternalOrder extends ShopgateContainer {
 	/**
 	 * @return float
 	 */
-	public function getAmountCompleteNet() {
-		return $this->amount_complete_net;
+	public function getAmountItemsNet() {
+		return $this->amount_items_net;
 	}
 
 	/**
 	 * @return float
 	 */
-	public function getAmountItemsNet() {
-		return $this->amount_items_net;
+	public function getAmountCompleteGross() {
+		return $this->amount_complete_gross;
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getAmountCompleteNet() {
+		return $this->amount_complete_net;
 	}
 	
 	/**
