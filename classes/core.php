@@ -24,7 +24,7 @@
 ###################################################################################
 # define constants
 ###################################################################################
-define('SHOPGATE_LIBRARY_VERSION', '2.9.25');
+define('SHOPGATE_LIBRARY_VERSION', '2.9.26');
 define('SHOPGATE_LIBRARY_ENCODING' , 'UTF-8');
 define('SHOPGATE_BASE_DIR', realpath(dirname(__FILE__).'/../'));
 
