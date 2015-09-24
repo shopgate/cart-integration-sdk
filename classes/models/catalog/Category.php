@@ -99,17 +99,6 @@ class Shopgate_Model_Catalog_Category extends Shopgate_Model_AbstractExport {
 		'IsAnchor');
 
 	/**
-	 * init default object
-	 */
-	public function __construct() {
-		$this->setData(
-			array(
-				'image' => new Shopgate_Model_Media_Image()
-			)
-		);
-	}
-
-	/**
 	 * @param Shopgate_Model_XmlResultObject $itemNode
 	 *
 	 * @return Shopgate_Model_XmlResultObject
@@ -126,11 +115,10 @@ class Shopgate_Model_Catalog_Category extends Shopgate_Model_AbstractExport {
 		$categoryNode->addAttribute('is_anchor', (int)$this->getIsAnchor());
 		$categoryNode->addChildWithCDATA('name', $this->getName());
 		$categoryNode->addChildWithCDATA('deeplink', $this->getDeeplink());
-
-		/**
-		 * image
-		 */
-		$this->getImage()->asXml($categoryNode);
+		
+		if ($this->getImage()) {
+			$this->getImage()->asXml($categoryNode);
+		}
 
 		return $itemNode;
 	}

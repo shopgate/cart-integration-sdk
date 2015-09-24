@@ -1,4 +1,7 @@
 
+'''Version 2.9.27'''
+* category XML export: <image> node is now omitted if the category has no image
+
 '''Version 2.9.26'''
 * added constants for order item types
 * added external order items parameter: amount_items_gross; amount_items_net; amount_complete_net; amount_complete_gross
