@@ -75,8 +75,12 @@ class Shopgate_Model_Media_Image extends Shopgate_Model_AbstractExport {
 		$imageNode->addAttribute('sort_order', $this->getSortOrder());
 		$imageNode->addAttribute('is_cover', $this->getIsCover());
 		$imageNode->addChildWithCDATA('url', $this->getUrl());
-		$imageNode->addChildWithCDATA('title', $this->getTitle());
-		$imageNode->addChildWithCDATA('alt', $this->getAlt());
+		if ($this->getTitle()) {
+			$imageNode->addChildWithCDATA('title', $this->getTitle());
+		}
+		if ($this->getAlt()) {
+			$imageNode->addChildWithCDATA('alt', $this->getAlt());
+		}
 
 		return $itemNode;
 	}

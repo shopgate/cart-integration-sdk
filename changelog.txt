@@ -1,6 +1,7 @@
 
 '''Version 2.9.27'''
 * category XML export: <image> node is now omitted if the category has no image
+* XML export: <image>'s subnodes <title> and <alt> are now omitted if empty
 
 '''Version 2.9.26'''
 * added constants for order item types
