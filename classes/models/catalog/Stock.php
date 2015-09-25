@@ -78,9 +78,15 @@ class Shopgate_Model_Catalog_Stock extends Shopgate_Model_AbstractExport {
 		$stockNode->addChild('backorders', (int)$this->getBackorders());
 		$stockNode->addChild('use_stock', (int)$this->getUseStock());
 		$stockNode->addChild('stock_quantity', $this->getStockQuantity());
-		$stockNode->addChild('minimum_order_quantity', $this->getMinimumOrderQuantity());
-		$stockNode->addChild('maximum_order_quantity', $this->getMaximumOrderQuantity());
-		$stockNode->addChildWithCDATA('availability_text', $this->getAvailabilityText());
+		if ($this->getMinimumOrderQuantity() !== null) {
+			$stockNode->addChild('minimum_order_quantity', $this->getMinimumOrderQuantity());
+		}
+		if ($this->getMaximumOrderQuantity() !== null) {
+			$stockNode->addChild('maximum_order_quantity', $this->getMaximumOrderQuantity());
+		}
+		if ($this->getAvailabilityText() !== null) {
+			$stockNode->addChildWithCDATA('availability_text', $this->getAvailabilityText());
+		}
 
 		return $itemNode;
 	}

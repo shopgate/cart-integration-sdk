@@ -335,9 +335,13 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport {
 		$itemNode->addChild('currency', $this->getCurrency());
 		$itemNode->addChildWithCDATA('description', $this->getDescription());
 		$itemNode->addChildWithCDATA('deeplink', $this->getDeeplink());
-		$itemNode->addChild('promotion')->addAttribute('sort_order', $this->getPromotionSortOrder());
+		if ($this->getPromotionSortOrder() !== null) {
+			$itemNode->addChild('promotion')->addAttribute('sort_order', $this->getPromotionSortOrder());
+		}
 		$itemNode->addChildWithCDATA('internal_order_info', $this->getInternalOrderInfo());
-		$itemNode->addChild('age_rating', $this->getAgeRating());
+		if ($this->getAgeRating() !== null) {
+			$itemNode->addChild('age_rating', $this->getAgeRating());
+		}
 		$itemNode->addChild('weight', $this->getWeight())->addAttribute('unit', $this->getWeightUnit());
 	
 		/**

@@ -89,21 +89,37 @@ class Shopgate_Model_Catalog_Price extends Shopgate_Model_AbstractExport {
 
 	public function asXml(Shopgate_Model_XmlResultObject $itemNode) {
 		/**
+		 * @var Shopgate_Model_XmlResultObject $pricesNode
 		 * @var Shopgate_Model_XmlResultObject $tierPricesNode
-		 * @var Shopgate_Model_Catalog_TierPrice  $customerGroupItem
 		 */
 		$pricesNode = $itemNode->addChild('prices');
 		$pricesNode->addAttribute('type', $this->getType());
-		$pricesNode->addChild('price', $this->getPrice());
-		$pricesNode->addChild('cost', $this->getCost());
-		$pricesNode->addChild('sale_price', $this->getSalePrice());
-		$pricesNode->addChild('msrp', $this->getMsrp());
-		$pricesNode->addChild('minimum_order_amount', $this->getMinimumOrderAmount());
-		$pricesNode->addChildWithCDATA('base_price', $this->getBasePrice());
+		
+		if ($this->getPrice() !== null) {
+			$pricesNode->addChild('price', $this->getPrice());
+		}
+		if ($this->getCost() !== null) {
+			$pricesNode->addChild('cost', $this->getCost());
+		}
+		if ($this->getSalePrice() !== null) {
+			$pricesNode->addChild('sale_price', $this->getSalePrice());
+		}
+		if ($this->getMsrp() !== null) {
+			$pricesNode->addChild('msrp', $this->getMsrp());
+		}
+		if ($this->getMinimumOrderAmount() !== null) {
+			$pricesNode->addChild('minimum_order_amount', $this->getMinimumOrderAmount());
+		}
+		if ($this->getBasePrice() !== null) {
+			$pricesNode->addChildWithCDATA('base_price', $this->getBasePrice());
+		}
 
-		$tierPricesNode = $pricesNode->addChild('tier_prices');
-		foreach ($this->getTierPricesGroup() as $customerGroupItem) {
-			$customerGroupItem->asXml($tierPricesNode);
+		$tierPrices = $this->getTierPricesGroup();
+		if (!empty($tierPrices)) {
+			$tierPricesNode = $pricesNode->addChild('tier_prices');
+			foreach ($tierPrices as $customerGroupItem) {
+				$customerGroupItem->asXml($tierPricesNode);
+			}
 		}
 
 		return $itemNode;
