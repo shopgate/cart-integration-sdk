@@ -59,12 +59,8 @@ class Shopgate_Model_Catalog_Manufacturer extends Shopgate_Model_AbstractExport 
 		 */
 		$manufacturerNode = $itemNode->addChild('manufacturer');
 		$manufacturerNode->addAttribute('uid', $this->getUid());
-		if ($this->getTitle() !== null) {
-			$manufacturerNode->addChildWithCDATA('title', $this->getTitle());
-		}
-		if ($this->getItemNumber() !== null) {
-			$manufacturerNode->addChild('item_number', $this->getItemNumber());
-		}
+		$manufacturerNode->addChildWithCDATA('title', $this->getTitle(), false);
+		$manufacturerNode->addChild('item_number', $this->getItemNumber(), false);
 
 		return $itemNode;
 	}

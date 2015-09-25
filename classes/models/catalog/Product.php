@@ -326,22 +326,14 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport {
 		$itemNode->addAttribute('uid', $this->getUid());
 		$itemNode->addAttribute('last_update', $this->getLastUpdate());
 		$itemNode->addChildWithCDATA('name', $this->getName());
-		if ($this->getTaxPercent() !== null) {
-			$itemNode->addChild('tax_percent', $this->getTaxPercent());
-		}
-		if ($this->getTaxClass() !== null) {
-			$itemNode->addChild('tax_class', $this->getTaxClass());
-		}
+		$itemNode->addChild('tax_percent', $this->getTaxPercent(), false);
+		$itemNode->addChild('tax_class', $this->getTaxClass(), false);
 		$itemNode->addChild('currency', $this->getCurrency());
 		$itemNode->addChildWithCDATA('description', $this->getDescription());
 		$itemNode->addChildWithCDATA('deeplink', $this->getDeeplink());
-		if ($this->getPromotionSortOrder() !== null) {
-			$itemNode->addChild('promotion')->addAttribute('sort_order', $this->getPromotionSortOrder());
-		}
+		$itemNode->addChild('promotion')->addAttribute('sort_order', $this->getPromotionSortOrder(), false);
 		$itemNode->addChildWithCDATA('internal_order_info', $this->getInternalOrderInfo());
-		if ($this->getAgeRating() !== null) {
-			$itemNode->addChild('age_rating', $this->getAgeRating());
-		}
+		$itemNode->addChild('age_rating', $this->getAgeRating(), false);
 		$itemNode->addChild('weight', $this->getWeight())->addAttribute('unit', $this->getWeightUnit());
 	
 		/**

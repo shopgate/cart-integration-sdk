@@ -95,24 +95,12 @@ class Shopgate_Model_Catalog_Price extends Shopgate_Model_AbstractExport {
 		$pricesNode = $itemNode->addChild('prices');
 		$pricesNode->addAttribute('type', $this->getType());
 		
-		if ($this->getPrice() !== null) {
-			$pricesNode->addChild('price', $this->getPrice());
-		}
-		if ($this->getCost() !== null) {
-			$pricesNode->addChild('cost', $this->getCost());
-		}
-		if ($this->getSalePrice() !== null) {
-			$pricesNode->addChild('sale_price', $this->getSalePrice());
-		}
-		if ($this->getMsrp() !== null) {
-			$pricesNode->addChild('msrp', $this->getMsrp());
-		}
-		if ($this->getMinimumOrderAmount() !== null) {
-			$pricesNode->addChild('minimum_order_amount', $this->getMinimumOrderAmount());
-		}
-		if ($this->getBasePrice() !== null) {
-			$pricesNode->addChildWithCDATA('base_price', $this->getBasePrice());
-		}
+		$pricesNode->addChild('price', $this->getPrice(), false);
+		$pricesNode->addChild('cost', $this->getCost(), false);
+		$pricesNode->addChild('sale_price', $this->getSalePrice(), false);
+		$pricesNode->addChild('msrp', $this->getMsrp(), false);
+		$pricesNode->addChild('minimum_order_amount', $this->getMinimumOrderAmount(), false);
+		$pricesNode->addChildWithCDATA('base_price', $this->getBasePrice(), false);
 
 		$tierPrices = $this->getTierPricesGroup();
 		if (!empty($tierPrices)) {
