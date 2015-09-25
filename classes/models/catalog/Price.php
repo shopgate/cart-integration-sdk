@@ -95,11 +95,11 @@ class Shopgate_Model_Catalog_Price extends Shopgate_Model_AbstractExport {
 		$pricesNode = $itemNode->addChild('prices');
 		$pricesNode->addAttribute('type', $this->getType());
 		
-		$pricesNode->addChild('price', $this->getPrice(), false);
-		$pricesNode->addChild('cost', $this->getCost(), false);
-		$pricesNode->addChild('sale_price', $this->getSalePrice(), false);
-		$pricesNode->addChild('msrp', $this->getMsrp(), false);
-		$pricesNode->addChild('minimum_order_amount', $this->getMinimumOrderAmount(), false);
+		$pricesNode->addChild('price', $this->getPrice(), null, false);
+		$pricesNode->addChild('cost', $this->getCost(), null, false);
+		$pricesNode->addChild('sale_price', $this->getSalePrice(), null, false);
+		$pricesNode->addChild('msrp', $this->getMsrp(), null, false);
+		$pricesNode->addChild('minimum_order_amount', $this->getMinimumOrderAmount(), null, false);
 		$pricesNode->addChildWithCDATA('base_price', $this->getBasePrice(), false);
 
 		$tierPrices = $this->getTierPricesGroup();

@@ -1,4 +1,7 @@
 
+'''Version 2.9.28'''
+* XML export: fixed a bug that lead to unwanted occurrences of 'xmlns=""' in the XML
+
 '''Version 2.9.27'''
 * XML export: omit empty subnodes if they are defined as optional by the XSD
 

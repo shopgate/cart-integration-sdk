@@ -58,8 +58,8 @@ class Shopgate_Model_Catalog_Shipping extends Shopgate_Model_AbstractExport {
 		 * @var Shopgate_Model_XmlResultObject $shippingNode
 		 */
 		$shippingNode = $itemNode->addChild('shipping');
-		$shippingNode->addChild('costs_per_order', $this->getCostsPerOrder(), false);
-		$shippingNode->addChild('additional_costs_per_unit', $this->getAdditionalCostsPerUnit(), false);
+		$shippingNode->addChild('costs_per_order', $this->getCostsPerOrder(), null, false);
+		$shippingNode->addChild('additional_costs_per_unit', $this->getAdditionalCostsPerUnit(), null, false);
 		$shippingNode->addChild('is_free', (int)$this->getIsFree());
 
 		return $itemNode;

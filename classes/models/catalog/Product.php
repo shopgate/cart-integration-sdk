@@ -326,14 +326,14 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport {
 		$itemNode->addAttribute('uid', $this->getUid());
 		$itemNode->addAttribute('last_update', $this->getLastUpdate());
 		$itemNode->addChildWithCDATA('name', $this->getName());
-		$itemNode->addChild('tax_percent', $this->getTaxPercent(), false);
-		$itemNode->addChild('tax_class', $this->getTaxClass(), false);
+		$itemNode->addChild('tax_percent', $this->getTaxPercent(), null, false);
+		$itemNode->addChild('tax_class', $this->getTaxClass(), null, false);
 		$itemNode->addChild('currency', $this->getCurrency());
 		$itemNode->addChildWithCDATA('description', $this->getDescription());
 		$itemNode->addChildWithCDATA('deeplink', $this->getDeeplink());
-		$itemNode->addChild('promotion')->addAttribute('sort_order', $this->getPromotionSortOrder(), false);
+		$itemNode->addChild('promotion')->addAttribute('sort_order', $this->getPromotionSortOrder());
 		$itemNode->addChildWithCDATA('internal_order_info', $this->getInternalOrderInfo());
-		$itemNode->addChild('age_rating', $this->getAgeRating(), false);
+		$itemNode->addChild('age_rating', $this->getAgeRating(), null, false);
 		$itemNode->addChild('weight', $this->getWeight())->addAttribute('unit', $this->getWeightUnit());
 	
 		/**
