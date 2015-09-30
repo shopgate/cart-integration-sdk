@@ -81,7 +81,8 @@ class Shopgate_Model_Catalog_Category extends Shopgate_Model_AbstractExport {
 		'setDeeplink',
 		'setIsAnchor',
 		'setImage',
-		'setIsActive');
+		'setIsActive',
+	);
 
 	/**
 	 * define allowed methods
@@ -96,7 +97,14 @@ class Shopgate_Model_Catalog_Category extends Shopgate_Model_AbstractExport {
 		'Image',
 		'IsActive',
 		'Deeplink',
-		'IsAnchor');
+		'IsAnchor',
+	);
+
+	/**
+	 * nothing to do here
+	 */
+	public function __construct() {
+	}
 
 	/**
 	 * @param Shopgate_Model_XmlResultObject $itemNode
