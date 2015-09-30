@@ -1,3 +1,5 @@
+'''Version 2.9.29'''
+* added a constructor to the category export model, so it can be called without any harm
 
 '''Version 2.9.28'''
 * XML export: fixed a bug that lead to unwanted occurrences of 'xmlns=""' in the XML
