@@ -1,4 +1,4 @@
-'''Version 2.9.28'''
+'''Version 2.9.29'''
 * added a constructor to the category export model, so it can be called without any harm
 
 '''Version 2.9.28'''
