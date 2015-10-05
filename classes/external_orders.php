@@ -221,7 +221,7 @@ class ShopgateExternalOrder extends ShopgateContainer {
 	 * @param float $value
 	 */
 	public function setAmountComplete($value) {
-		$this->amount_complete_gross = $value;
+		$this->amount_complete = $value;
 	}
 
 	/**
