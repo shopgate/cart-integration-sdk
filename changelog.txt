@@ -1,3 +1,7 @@
+'''Version 2.9.31'''
+* added ShopgateShippingInfo:$amount_net and $amount_gross properties, getters and setters
+* ShopgateShippingInfo:$amount, getter and setter are now deprecated
+
 '''Version 2.9.30'''
 * amount_complete is now being set correctly for get_orders
 
