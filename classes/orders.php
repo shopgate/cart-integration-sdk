@@ -1745,10 +1745,6 @@ class ShopgateShippingInfo extends ShopgateContainer {
 	protected $name;
 	protected $display_name;
 	protected $description;
-	/**
-	 * @deprecated use amount_net or amount_gross
-	 */
-	protected $amount;
 	protected $amount_net;
 	protected $amount_gross;
 	protected $weight;
@@ -1813,17 +1809,17 @@ class ShopgateShippingInfo extends ShopgateContainer {
 	 * @deprecated use getAmountNet or getAmountGross
 	 */
 	public function getAmount() {
-		return $this->amount;
+		return $this->amount_gross;
 	}
 
 	/**
 	 *
 	 * @param float $value
 	 *
-	 * @deprecated
+	 * @deprecated use setAmountNet or setAmountGross
 	 */
 	public function setAmount($value) {
-		$this->amount = $value;
+		$this->amount_gross = $value;
 	}
 
 	/**
