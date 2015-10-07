@@ -1817,7 +1817,7 @@ class ShopgateShippingInfo extends ShopgateContainer {
 	 *
 	 * @param float $value
 	 *
-	 * @deprecated
+	 * @deprecated use setAmountNet or setAmountGross
 	 */
 	public function setAmount($value) {
 		$this->amount = $value;
