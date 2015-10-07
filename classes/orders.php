@@ -1745,9 +1745,6 @@ class ShopgateShippingInfo extends ShopgateContainer {
 	protected $name;
 	protected $display_name;
 	protected $description;
-	/**
-	 * @deprecated use amount_net or amount_gross
-	 */
 	protected $amount;
 	protected $amount_net;
 	protected $amount_gross;
