@@ -46,6 +46,8 @@ class ShopgateExternalOrder extends ShopgateContainer {
 	protected $amount_complete_gross;
 	protected $amount_complete_net;
 
+    protected $amount_complete;
+    
 	protected $is_paid;
 	protected $payment_method;
 	protected $payment_time;
@@ -500,7 +502,7 @@ class ShopgateExternalOrder extends ShopgateContainer {
 	 * @return float
 	 */
 	public function getAmountComplete() {
-		return $this->amount_complete_gross;
+		return $this->amount_complete;
 	}
 
 	/**
