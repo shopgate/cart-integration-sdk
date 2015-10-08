@@ -1,4 +1,7 @@
 '''Version 2.9.32'''
+* changed the pre initialisation of the shipping entry "DHL" to null
+
+'''Version 2.9.32'''
 * amount_complete getter is now returning the correct field
 
 '''Version 2.9.31'''
