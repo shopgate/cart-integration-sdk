@@ -1,4 +1,7 @@
 '''Version 2.9.32'''
+* changed the initial value of the ShopgateDeliveryNote::$shipping_service_id entry to null
+
+'''Version 2.9.32'''
 * amount_complete getter is now returning the correct field
 
 '''Version 2.9.31'''
@@ -15,7 +18,7 @@
 * XML export: fixed a bug that lead to unwanted occurrences of 'xmlns=""' in the XML
 
 '''Version 2.9.27'''
-* XML export: omit empty subnodes if they are defined as optional by the XSD
+* XML export: omit empty sub nodes if they are defined as optional by the XSD
 
 '''Version 2.9.26'''
 * added constants for order item types

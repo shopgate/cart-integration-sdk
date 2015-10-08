@@ -1904,28 +1904,28 @@ class ShopgateShippingInfo extends ShopgateContainer {
 
 class ShopgateDeliveryNote extends ShopgateContainer {
 	// shipping groups
-	const DHL = "DHL"; // DHL
+	const DHL        = "DHL";        // DHL
 	const DHLEXPRESS = "DHLEXPRESS"; // DHLEXPRESS
-	const DP = "DP"; // Deutsche Post
-	const DPD = "DPD"; // Deutscher Paket Dienst
-	const FEDEX = "FEDEX"; // FedEx
-	const GLS = "GLS"; // GLS
-	const HLG = "HLG"; // Hermes
-	const OTHER = "OTHER"; // Anderer Lieferant
-	const TNT = "TNT"; // TNT
-	const TOF = "TOF"; // Trnas-o-Flex
-	const UPS = "UPS"; // UPS
-	const USPS = "USPS"; // USPS
+	const DP         = "DP";         // Deutsche Post
+	const DPD        = "DPD";        // Deutscher Paket Dienst
+	const FEDEX      = "FEDEX";      // FedEx
+	const GLS        = "GLS";        // GLS
+	const HLG        = "HLG";        // Hermes
+	const OTHER      = "OTHER";      // Anderer Lieferant
+	const TNT        = "TNT";        // TNT
+	const TOF        = "TOF";        // Trnas-o-Flex
+	const UPS        = "UPS";        // UPS
+	const USPS       = "USPS";       // USPS
 
 	// shipping types
-	const MANUAL = "MANUAL";
+	const MANUAL      = "MANUAL";
 	const USPS_API_V1 = "USPS_API_V1";
-	const UPS_API_V1 = "UPS_API_V1";
+	const UPS_API_V1  = "UPS_API_V1";
 
-	protected $shipping_service_id = ShopgateDeliveryNote::DHL;
+	protected $shipping_service_id   = null;
 	protected $shipping_service_name = "";
-	protected $tracking_number = "";
-	protected $shipping_time = null;
+	protected $tracking_number       = "";
+	protected $shipping_time         = null;
 
 	##########
 	# Setter #
