@@ -1904,7 +1904,7 @@ class ShopgateShippingInfo extends ShopgateContainer {
 
 class ShopgateDeliveryNote extends ShopgateContainer {
 	// shipping groups
-	const DHL        = null;         // DHL
+	const DHL        = "DHL";        // DHL
 	const DHLEXPRESS = "DHLEXPRESS"; // DHLEXPRESS
 	const DP         = "DP";         // Deutsche Post
 	const DPD        = "DPD";        // Deutscher Paket Dienst
@@ -1922,7 +1922,7 @@ class ShopgateDeliveryNote extends ShopgateContainer {
 	const USPS_API_V1 = "USPS_API_V1";
 	const UPS_API_V1  = "UPS_API_V1";
 
-	protected $shipping_service_id   = ShopgateDeliveryNote::DHL;
+	protected $shipping_service_id   = null;
 	protected $shipping_service_name = "";
 	protected $tracking_number       = "";
 	protected $shipping_time         = null;
