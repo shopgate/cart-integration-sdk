@@ -1,5 +1,5 @@
 '''Version 2.9.32'''
-* changed the pre initialisation of the ShopgateDeliveryNote::$shipping_service_id entry to null
+* changed the initial value of the ShopgateDeliveryNote::$shipping_service_id entry to null
 
 '''Version 2.9.32'''
 * amount_complete getter is now returning the correct field
