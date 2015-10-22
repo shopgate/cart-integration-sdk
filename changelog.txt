@@ -1,4 +1,4 @@
-'''Version 2.9.32'''
+'''Version 2.9.33'''
 * changed the initial value of the ShopgateDeliveryNote::$shipping_service_id entry to null
 
 '''Version 2.9.32'''
