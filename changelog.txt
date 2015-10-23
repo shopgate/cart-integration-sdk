@@ -1,5 +1,6 @@
 '''Version 2.9.33'''
 * changed the initial value of the ShopgateDeliveryNote::$shipping_service_id entry to null
+* added payment method constant for Paypal Plus
 
 '''Version 2.9.32'''
 * amount_complete getter is now returning the correct field
