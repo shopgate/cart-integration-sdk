@@ -2385,8 +2385,17 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @param ShopgateCart $cart The ShopgateCart object containing the coupons that should be redeemed.
 	 * @return array('external_coupons' => ShopgateExternalCoupon[])
 	 * @throws ShopgateLibraryException if an error occurs.
+	 *
+	 * @deprecated no longer supported. 
 	 */
-	public abstract function redeemCoupons(ShopgateCart $cart);
+	public function redeemCoupons(ShopgateCart $cart){
+		throw new ShopgateLibraryException(
+			ShopgateLibraryException::PLUGIN_API_DISABLED_ACTION,
+			'The requested action is disabled and no longer supported.',
+			true,
+			false
+		);
+	}
 	
 	/**
 	 * Checks the content of a cart to be valid and returns necessary changes if applicable.
