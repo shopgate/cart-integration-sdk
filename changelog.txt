@@ -1,3 +1,6 @@
+'''Version 2.9.34'''
+* the method ShopgatePlugin::redeemCoupons() is now deprecated and not abstract anymore
+
 '''Version 2.9.33'''
 * changed the initial value of the ShopgateDeliveryNote::$shipping_service_id entry to null
 * added payment method constant for Paypal Plus
@@ -37,7 +40,7 @@
 * added sort order for options and option values
 
 '''Version 2.9.22'''
-* CSV exports: the methods ShopgatePlugin::createCategoriesCsv(), ::createItemsCsv() und ::createReviewsCsv() are now deprecated and not abstract anymore
+* CSV exports: the methods ShopgatePlugin::createCategoriesCsv(), ::createItemsCsv() and ::createReviewsCsv() are now deprecated and not abstract anymore
 * removed German changelog
 * ShopgateMerchantApi::cancelOrder(): changed default value of parameter "$cancelCompleteOrder" from false to true
 
