@@ -2241,6 +2241,15 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	protected function getCreateReviewsCsvLoaders() {
 		return $this->getCreateCsvLoaders("review");
 	}
+
+	/**
+	 * disables an API method in the local config
+	 */
+	public function disableAction($actionName){
+		$shopgateSettingsNew = array('enable_' . $actionName => 0);
+		$this->config->load($shopgateSettingsNew);
+		$this->config->save(array_keys($shopgateSettingsNew), true);
+	}
 	
 	#################################################################################
 	## Following methods are the callbacks that need to be implemented by plugins. ##
@@ -2389,6 +2398,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @deprecated no longer supported. 
 	 */
 	public function redeemCoupons(ShopgateCart $cart){
+		$this->disableAction('redeem_coupons');
 		throw new ShopgateLibraryException(
 			ShopgateLibraryException::PLUGIN_API_DISABLED_ACTION,
 			'The requested action is disabled and no longer supported.',
@@ -2464,6 +2474,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @deprecated Use createItems().
 	 */
 	protected function createItemsCsv(){
+		$this->disableAction('get_items_csv');
 		throw new ShopgateLibraryException(
 				ShopgateLibraryException::PLUGIN_API_DISABLED_ACTION,
 				'The requested action is not disabled but has not been implemented in this plugin.',
@@ -2499,6 +2510,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @deprecated Use createCategories().
 	 */
 	protected function createCategoriesCsv() {
+		$this->disableAction('get_categories_csv');
 		throw new ShopgateLibraryException(
 				ShopgateLibraryException::PLUGIN_API_DISABLED_ACTION,
 				'The requested action is not disabled but has not been implemented in this plugin.',
@@ -2521,6 +2533,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @deprecated Use createReviews().
 	 */
 	protected function createReviewsCsv() {
+		$this->disableAction('get_reviews_csv');
 		throw new ShopgateLibraryException(
 				ShopgateLibraryException::PLUGIN_API_DISABLED_ACTION,
 				'The requested action is not disabled but has not been implemented in this plugin.',
