@@ -1,3 +1,6 @@
+'''Version 2.9.35'''
+* improved logging of Exception messages
+
 '''Version 2.9.34'''
 * the method ShopgatePlugin::redeemCoupons() is now deprecated and not abstract anymore
 
