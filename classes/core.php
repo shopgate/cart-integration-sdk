@@ -2244,8 +2244,10 @@ abstract class ShopgatePlugin extends ShopgateObject {
 
 	/**
 	 * disables an API method in the local config
+	 * 
+	 * @param string $actionName
 	 */
-	public function disableAction($actionName){
+	public function disableAction($actionName) {
 		$shopgateSettingsNew = array('enable_' . $actionName => 0);
 		$this->config->load($shopgateSettingsNew);
 		$this->config->save(array_keys($shopgateSettingsNew), true);
