@@ -380,10 +380,15 @@ class ShopgateLibraryException extends Exception {
 		if ($appendAdditionalInformationToMessage) {
 			$message .= ': ' . $this->additionalInformation;
 		}
+		
+		// We ALWAYS want to append the additional information for logging. So if it has already been appended here,
+		// it doesn't have to be appended again later.
+		$appendAdditionalInformationToLog = !$appendAdditionalInformationToMessage;
 
 		// in case of multiple errors the message should not have any other text attached to it
 		if ($code == self::MULTIPLE_ERRORS) {
 			$message = $this->additionalInformation;
+			$appendAdditionalInformationToLog = false;
 		}
 
 		// Call default Exception class constructor
@@ -395,8 +400,7 @@ class ShopgateLibraryException extends Exception {
 		}
 		
 		// Log the error
-		// (since $additionalInformation should ALWAYS be appended for logging, we have to negate the flag here)
-		$logMessage = $this->buildLogMessage(!$appendAdditionalInformationToMessage);
+		$logMessage = $this->buildLogMessage($appendAdditionalInformationToLog);
 		if (empty($writeLog)) {
 			$this->message .= ' (logging disabled for this message)';
 		} else {
