@@ -1201,7 +1201,7 @@ abstract class ShopgateObject {
 		// if json_encode exists use that
 		if (extension_loaded('json') && function_exists('json_encode')) {
 			$encodedValue = json_encode($value);
-			if ($encodedValue != false) {
+			if (!empty($encodedValue)) {
 				return $encodedValue;
 			}
 		}
