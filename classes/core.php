@@ -1200,12 +1200,15 @@ abstract class ShopgateObject {
 	public function jsonEncode($value) {
 		// if json_encode exists use that
 		if (extension_loaded('json') && function_exists('json_encode')) {
-			return json_encode($value);
+			$encodedValue = json_encode($value);
+			if ($encodedValue != false) {
+				return $encodedValue;
+			}
 		}
 
 		// if not check if external class is loaded
 		if (!class_exists('sgServicesJSON')) {
-			require_once dirname(__FILE__).'/../vendors/JSON.php';
+			require_once dirname(__FILE__) . '/../vendors/JSON.php';
 		}
 
 		// encode via external class
