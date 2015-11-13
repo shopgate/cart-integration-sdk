@@ -1228,7 +1228,10 @@ abstract class ShopgateObject {
 	public function jsonDecode($json, $assoc = false) {
 		// if json_decode exists use that
 		if (extension_loaded('json') && function_exists('json_decode')) {
-			return json_decode($json, $assoc);
+			$decodedValue = json_decode($json, $assoc);
+			if (!empty($decodedValue)) {
+				return $decodedValue;
+			}
 		}
 
 		// if not check if external class is loaded
