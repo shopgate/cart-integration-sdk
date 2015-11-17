@@ -236,7 +236,8 @@ class ShopgateLibraryException extends Exception {
 	const CART_ITEM_INPUT_VALIDATION_FAILED = 303;
 	const CART_ITEM_REQUESTED_QUANTITY_UNDER_MINIMUM_QUANTITY = 304;
 	const CART_ITEM_REQUESTED_QUANTITY_OVER_MAXIMUM_QUANTITY = 305;
-	
+    const CART_ITEM_INVALID_PRODUCT_COMBINATION = 306;
+
 	//Helper class exception
 	const SHOPGATE_HELPER_FUNCTION_NOT_FOUND_EXCEPTION = 310;
 	
@@ -342,6 +343,7 @@ class ShopgateLibraryException extends Exception {
 		self::CART_ITEM_INPUT_VALIDATION_FAILED => 'product input validation failed',
 		self::CART_ITEM_REQUESTED_QUANTITY_UNDER_MINIMUM_QUANTITY => 'requested quantity is lower than required minimum quantity',
 		self::CART_ITEM_REQUESTED_QUANTITY_OVER_MAXIMUM_QUANTITY => 'requested quantity is higher than allowed maximum quantity',
+        self::CART_ITEM_INVALID_PRODUCT_COMBINATION => 'products can not be ordered together',
 		
 		// Authentication errors
 		self::AUTHENTICATION_FAILED => 'authentication failed',
