@@ -1,6 +1,6 @@
 '''Version 2.9.36'''
 * added a fallback in case that json_encode returns false (failure)
-* added new constant CART_ITEM_INVALID_PRODUCT_COMBINATION
+* added new constant ShopgateLibraryException::CART_ITEM_INVALID_PRODUCT_COMBINATION
 
 '''Version 2.9.35'''
 * improved logging of Exception messages
