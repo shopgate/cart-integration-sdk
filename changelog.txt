@@ -2,6 +2,7 @@
 * added a fallback in case that json_encode returns false (failure)
 * added new constant ShopgateLibraryException::CART_ITEM_INVALID_PRODUCT_COMBINATION
 * added a fallback in case that json_encode or json_decode return false (failure)
+* added escaping to the mobile redirect of search queries
 
 '''Version 2.9.35'''
 * improved logging of Exception messages
