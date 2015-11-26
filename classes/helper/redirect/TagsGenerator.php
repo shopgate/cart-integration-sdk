@@ -78,11 +78,7 @@ class Shopgate_Helper_Redirect_TagsGenerator
 			try {
 				$attributes = $this->getAttributes($pageType, $tag->getAttributes(), $parameters);
 			} catch (ShopgateLibraryException $e) {
-				if ($e->getCode() == ShopgateLibraryException::CONFIG_INVALID_VALUE) {
-					continue; // skip tags with missing/unset variables
-				} else {
-					throw $e;
-				}
+				continue; // skip tags with missing/unset variables
 			}
 			
 			$html .= "<{$tag->getName()}{$attributes} />\n";
@@ -248,6 +244,12 @@ class Shopgate_Helper_Redirect_TagsGenerator
 			}
 		}
 		
-		return $this->linkBuilder->getUrlFor($pageType, $value->getVariables(), $parameters, $value->getValue());
+		$url = $this->linkBuilder->getUrlFor($pageType, $value->getVariables(), $parameters, $value->getValue());
+		
+		if (empty($url)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_INVALID_VALUE, '', false, false);
+		}
+		
+		return $url;
 	}
 }

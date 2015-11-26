@@ -91,7 +91,6 @@ interface Shopgate_Helper_Redirect_LinkBuilderInterface
 	 * @param string                                    $overrideTemplate Set to null to not override the default template
 	 *
 	 * @return string
-	 * @throws ShopgateLibraryException
 	 */
 	public function getUrlFor($pageType, array $variables, array $parameters = array(), $overrideTemplate = null);
 }

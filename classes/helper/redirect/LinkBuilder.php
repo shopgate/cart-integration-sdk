@@ -100,8 +100,7 @@ class Shopgate_Helper_Redirect_LinkBuilder implements Shopgate_Helper_Redirect_L
 		
 		foreach ($variables as $variable) {
 			if (!isset($parameters[$variable->getName()])) {
-				// don't log, this is caught internally
-				throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_INVALID_VALUE, false, false);
+				return '';
 			}
 			
 			$parameter = !isset($parameters[$variable->getName()])
@@ -139,7 +138,6 @@ class Shopgate_Helper_Redirect_LinkBuilder implements Shopgate_Helper_Redirect_L
 	 * @param string $variableValue
 	 *
 	 * @return string
-	 * @throws ShopgateLibraryException
 	 */
 	protected function buildScriptFor($pageType, $variableName, $variableValue)
 	{

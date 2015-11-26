@@ -61,7 +61,6 @@ interface Shopgate_Helper_Redirect_TagsGeneratorInterface
 	 * @param array  $parameters [string, string]
 	 *
 	 * @return string
-	 * @throws ShopgateLibraryException
 	 */
 	public function getTagsFor($pageType, array $parameters = array());
 }
