@@ -10,6 +10,21 @@ interface Shopgate_Helper_Redirect_TagsGeneratorInterface
 	const PAGE_TYPE_BRAND    = Shopgate_Helper_Redirect_LinkBuilderInterface::LINK_TYPE_BRAND;
 	const PAGE_TYPE_SEARCH   = Shopgate_Helper_Redirect_LinkBuilderInterface::LINK_TYPE_SEARCH;
 	
+	const SITE_PARAMETER_SITENAME                  = 'sitename';
+	const SITE_PARAMETER_DESKTOP_URL               = 'desktop_url';
+	const SITE_PARAMETER_MOBILE_WEB_URL            = 'mobile_web_url';
+	const SITE_PARAMETER_TITLE                     = 'title';
+	const SITE_PARAMETER_PRODUCT_IMAGE             = 'product_image';
+	const SITE_PARAMETER_PRODUCT_NAME              = 'product_name';
+	const SITE_PARAMETER_PRODUCT_DESCRIPTION_SHORT = 'product_description_short';
+	const SITE_PARAMETER_PRODUCT_EAN               = 'product_ean';
+	const SITE_PARAMETER_PRODUCT_AVAILABILITY      = 'product_availability';
+	const SITE_PARAMETER_PRODUCT_CATEGORY          = 'product_category';
+	const SITE_PARAMETER_PRODUCT_PRICE             = 'product_price';
+	const SITE_PARAMETER_PRODUCT_CURRENCY          = 'product_currency';
+	const SITE_PARAMETER_PRODUCT_PRETAX_PRICE      = 'product_pretax_price';
+	const SITE_PARAMETER_PRODUCT_PRETAX_CURRENCY   = 'product_pretax_currency';
+	
 	/**
 	 * @param Shopgate_Model_Redirect_HtmlTag[] $htmlTags
 	 */

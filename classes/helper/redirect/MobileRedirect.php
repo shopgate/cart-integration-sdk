@@ -23,6 +23,11 @@ class Shopgate_Helper_Redirect_HelperRedirect_MobileRedirect
 	protected $shopNumber;
 	
 	/**
+	 * @var array [string, mixed] Parameters that should be replaced in the HTML tags, indexed by their name.
+	 */
+	
+	protected $siteParameters;
+	/**
 	 * @var array [string, string] An array with the page names as indices and the "old" JS redirect types as values, if different.
 	 */
 	protected $pageTypeToRedirectMapping;
@@ -52,6 +57,8 @@ class Shopgate_Helper_Redirect_HelperRedirect_MobileRedirect
 		$this->jsTemplateFilePath = $jsTemplateFilePath;
 		$this->shopNumber         = $shopNumber;
 		
+		$this->siteParameters = array();
+		
 		$this->pageTypeToRedirectMapping = array(
 			Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_HOME    => 'start',
 			Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_PRODUCT => 'item',
@@ -63,6 +70,11 @@ class Shopgate_Helper_Redirect_HelperRedirect_MobileRedirect
 		} catch (ShopgateLibraryException $e) {
 			$this->tagsGenerator->setHtmlTagsFromJson($this->getFallBackTags());
 		}
+	}
+	
+	public function addSiteParameter($name, $value)
+	{
+		$this->siteParameters[$name] = $value;
 	}
 	
 	public function redirect($url, $autoRedirect = true, $sendVary = true)
@@ -165,6 +177,8 @@ class Shopgate_Helper_Redirect_HelperRedirect_MobileRedirect
 	 */
 	protected function buildTags($pageType, $parameters = array())
 	{
+		$parameters = $this->siteParameters + $parameters;
+		
 		$parameters['link_tags']     = $this->tagsGenerator->getTagsFor($pageType, $parameters);
 		$parameters['redirect_code'] = $this->getRedirectCode($pageType);
 		$parameters['shop_number']   = $this->shopNumber;

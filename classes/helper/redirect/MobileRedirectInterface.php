@@ -24,6 +24,12 @@
 interface Shopgate_Helper_Redirect_MobileRedirectInterface
 {
 	/**
+	 * @param string $name One of the Shopgate_Helper_Redirect_TagsGeneratorInterface::SITE_PARAMETER_* constants.
+	 * @param string $value
+	 */
+	public function addSiteParameter($name, $value);
+	
+	/**
 	 * @param string $url
 	 * @param bool   $autoRedirect
 	 * @param bool   $sendVary
