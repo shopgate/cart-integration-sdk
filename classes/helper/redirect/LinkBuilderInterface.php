@@ -41,12 +41,12 @@ interface Shopgate_Helper_Redirect_LinkBuilderInterface
 	public function buildCategory($uid, array $parameters = array());
 	
 	/**
-	 * @param string                                   $pageName
+	 * @param string                                   $pageUid
 	 * @param Shopgate_Model_Redirect_DeeplinkSuffix[] $parameters
 	 *
 	 * @return string
 	 */
-	public function buildCms($pageName, array $parameters = array());
+	public function buildCms($pageUid, array $parameters = array());
 	
 	/**
 	 * @param string $brandName

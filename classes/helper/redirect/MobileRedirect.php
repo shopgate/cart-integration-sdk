@@ -129,7 +129,7 @@ class Shopgate_Helper_Redirect_HelperRedirect_MobileRedirect
 		
 		return $this->buildTags(
 			Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_CMS,
-			array('page_name' => $cmsPage)
+			array('page_uid' => $cmsPage)
 		);
 	}
 	

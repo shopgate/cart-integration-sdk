@@ -57,9 +57,9 @@ class Shopgate_Helper_Redirect_Redirector implements Shopgate_Helper_Redirect_Re
 		$this->redirect($this->linkBuilder->buildProduct($uid));
 	}
 	
-	public function redirectCms($pageName)
+	public function redirectCms($pageUid)
 	{
-		$this->redirect($this->linkBuilder->buildCms($pageName));
+		$this->redirect($this->linkBuilder->buildCms($pageUid));
 	}
 	
 	public function redirectBrand($brandName)

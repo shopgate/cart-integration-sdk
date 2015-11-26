@@ -30,11 +30,11 @@ interface Shopgate_Helper_Redirect_RedirectorInterface
 	public function redirectProduct($uid);
 	
 	/**
-	 * @param string $pageName
+	 * @param string $pageUid
 	 *
 	 * @post A location header to the mobile CMS page is sent to the requesting entity.
 	 */
-	public function redirectCms($pageName);
+	public function redirectCms($pageUid);
 	
 	/**
 	 * @param string $brandName
