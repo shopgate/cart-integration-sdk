@@ -47,9 +47,6 @@ class Shopgate_Helper_Redirect_TagsGenerator
 		$this->htmlTags       = array();
 	}
 	
-	/**
-	 * @param Shopgate_Model_Redirect_HtmlTag[] $htmlTags
-	 */
 	public function setHtmlTags(array $htmlTags)
 	{
 		$this->htmlTags = $htmlTags;

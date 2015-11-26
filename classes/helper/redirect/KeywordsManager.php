@@ -187,6 +187,11 @@ class Shopgate_Helper_Redirect_KeywordsManager implements Shopgate_Helper_Redire
 			);
 	}
 	
+	/**
+	 * Saves the internal black and white lists to files.
+	 *
+	 * @param int $lastUpdate The timestamp to use or null to use time().
+	 */
 	protected function saveAllKeywordsToFiles($lastUpdate = null)
 	{
 		if ($lastUpdate === null) {

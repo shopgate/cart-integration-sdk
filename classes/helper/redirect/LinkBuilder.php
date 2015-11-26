@@ -47,11 +47,6 @@ class Shopgate_Helper_Redirect_LinkBuilder implements Shopgate_Helper_Redirect_L
 		$this->defaultTemplatesByPageType = $this->settingsManager->getDefaultTemplatesByPageType();
 	}
 	
-	public function getDefaultTemplateFor($pageType)
-	{
-		return $this->defaultTemplatesByPageType[$pageType];
-	}
-	
 	public function buildDefault(array $parameters = array())
 	{
 		return $this->appendRedirectableGetParameters($this->getUrlFor(self::LINK_TYPE_DEFAULT, $parameters));

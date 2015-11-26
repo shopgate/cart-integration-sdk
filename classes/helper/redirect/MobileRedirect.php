@@ -258,6 +258,11 @@ class Shopgate_Helper_Redirect_MobileRedirect
 		);
 	}
 	
+	/**
+	 * @param string $pageType
+	 *
+	 * @return string
+	 */
 	protected function getAdditionalParameters($pageType)
 	{
 		$defaultRedirect      = ($this->settingsManager->isDefaultRedirectDisabled() ? 'false' : 'true');
@@ -288,6 +293,11 @@ class Shopgate_Helper_Redirect_MobileRedirect
 		return $additionalParameters . "\n";
 	}
 	
+	/**
+	 * @param string $pageType
+	 *
+	 * @return bool
+	 */
 	protected function getRedirectCode($pageType)
 	{
 		return isset($this->pageTypeToRedirectMapping[$pageType])

@@ -30,7 +30,7 @@
  * @method                                        setDeeplinkSuffix(Shopgate_Model_Redirect_DeeplinkSuffix $value)
  * @method Shopgate_Model_Redirect_DeeplinkSuffix getDeeplinkSuffix()
  *
- * @method                                           setVariables($value)
+ * @method                                           setVariables(array $value)
  * @method Shopgate_Model_Redirect_HtmlTagVariable[] getVariables()
  */
 class Shopgate_Model_Redirect_HtmlTagAttribute extends Shopgate_Model_Abstract

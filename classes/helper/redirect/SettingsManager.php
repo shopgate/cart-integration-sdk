@@ -126,6 +126,21 @@ class Shopgate_Helper_Redirect_SettingsManager implements Shopgate_Helper_Redire
 		return $htmlTags;
 	}
 	
+	public function getDefaultTemplatesByPageType()
+	{
+		$templatePageDefault = $this->isDefaultRedirectDisabled() ? false : '{baseUrl}';
+		
+		return array(
+			Shopgate_Helper_Redirect_LinkBuilderInterface::LINK_TYPE_DEFAULT  => $templatePageDefault,
+			Shopgate_Helper_Redirect_LinkBuilderInterface::LINK_TYPE_HOME     => '{baseUrl}',
+			Shopgate_Helper_Redirect_LinkBuilderInterface::LINK_TYPE_PRODUCT  => '{baseUrl}/item/{product_uid:hex}',
+			Shopgate_Helper_Redirect_LinkBuilderInterface::LINK_TYPE_CATEGORY => '{baseUrl}/category/{category_uid:hex}',
+			Shopgate_Helper_Redirect_LinkBuilderInterface::LINK_TYPE_CMS      => '{baseUrl}/cms/{page_uid}',
+			Shopgate_Helper_Redirect_LinkBuilderInterface::LINK_TYPE_BRAND    => '{baseUrl}/brand?q={brand_name:urlencoded}',
+			Shopgate_Helper_Redirect_LinkBuilderInterface::LINK_TYPE_SEARCH   => '{baseUrl}/search?s={search_query:urlencoded}',
+		);
+	}
+	
 	public function getShopgateStaticUrl()
 	{
 		$result = array();
@@ -190,23 +205,5 @@ class Shopgate_Helper_Redirect_SettingsManager implements Shopgate_Helper_Redire
 		}
 		
 		return $cname;
-	}
-	
-	/**
-	 * @return array [string, string]
-	 */
-	public function getDefaultTemplatesByPageType()
-	{
-		$templatePageDefault = $this->isDefaultRedirectDisabled() ? false : '{baseUrl}';
-		
-		return array(
-			Shopgate_Helper_Redirect_LinkBuilderInterface::LINK_TYPE_DEFAULT  => $templatePageDefault,
-			Shopgate_Helper_Redirect_LinkBuilderInterface::LINK_TYPE_HOME     => '{baseUrl}',
-			Shopgate_Helper_Redirect_LinkBuilderInterface::LINK_TYPE_PRODUCT  => '{baseUrl}/item/{product_uid:hex}',
-			Shopgate_Helper_Redirect_LinkBuilderInterface::LINK_TYPE_CATEGORY => '{baseUrl}/category/{category_uid:hex}',
-			Shopgate_Helper_Redirect_LinkBuilderInterface::LINK_TYPE_CMS      => '{baseUrl}/cms/{page_uid}',
-			Shopgate_Helper_Redirect_LinkBuilderInterface::LINK_TYPE_BRAND    => '{baseUrl}/brand?q={brand_name:urlencoded}',
-			Shopgate_Helper_Redirect_LinkBuilderInterface::LINK_TYPE_SEARCH   => '{baseUrl}/search?s={search_query:urlencoded}',
-		);
 	}
 }

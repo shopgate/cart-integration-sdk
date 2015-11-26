@@ -30,7 +30,7 @@
  * @method      setDisabled(bool $value)
  * @method bool getDisabled()
  *
- * @method                                           setVariables($value)
+ * @method                                           setVariables(array $value)
  * @method Shopgate_Model_Redirect_HtmlTagVariable[] getVariables()
  */
 class Shopgate_Model_Redirect_DeeplinkSuffixValueDisabled extends Shopgate_Model_Redirect_DeeplinkSuffixValue
