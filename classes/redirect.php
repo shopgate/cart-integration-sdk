@@ -172,7 +172,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	public function __construct(
 		ShopgateConfigInterface $shopgateConfig,
 		ShopgateMerchantApiInterface $merchantApi = null,
-		Shopgate_Helper_Redirect_TagsGeneratorInterface $tagsGenerator
+		Shopgate_Helper_Redirect_TagsGeneratorInterface $tagsGenerator = null
 	) {
 		$this->tagsGenerator = $tagsGenerator;
 		$this->merchantApi   = $merchantApi;
@@ -371,7 +371,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 			$linkTag = $this->loadTemplate($this->linkTagTemplatePath);
 			
 			$htmlTags = $this->config->getHtmlTags();
-			if (!empty($htmlTags)) {
+			if (!empty($htmlTags) && !empty($this->tagsGenerator)) {
 				$this->tagsGenerator->setHtmlTagsFromJson($htmlTags);
 				$types = array(
 					'item'       => array(
