@@ -133,20 +133,20 @@ class Shopgate_Helper_Redirect_SettingsManager implements Shopgate_Helper_Redire
 		switch ($this->config->getServer()) {
 			default: // fall through to 'live'
 			case 'live':
-				$result['ssl_url']     = ShopgateMobileRedirectInterfaceOld::SHOPGATE_STATIC_SSL;
-				$result['non_ssl_url'] = ShopgateMobileRedirectInterfaceOld::SHOPGATE_STATIC;
+				$result['ssl_url']     = self::SHOPGATE_STATIC_SSL;
+				$result['non_ssl_url'] = self::SHOPGATE_STATIC;
 				break;
 			case 'sl':
-				$result['ssl_url']     = ShopgateMobileRedirectInterfaceOld::SHOPGATE_SL_STATIC_SSL;
-				$result['non_ssl_url'] = ShopgateMobileRedirectInterfaceOld::SHOPGATE_SL_STATIC;
+				$result['ssl_url']     = self::SHOPGATE_SL_STATIC_SSL;
+				$result['non_ssl_url'] = self::SHOPGATE_SL_STATIC;
 				break;
 			case 'pg':
-				$result['ssl_url']     = ShopgateMobileRedirectInterfaceOld::SHOPGATE_PG_STATIC_SSL;
-				$result['non_ssl_url'] = ShopgateMobileRedirectInterfaceOld::SHOPGATE_PG_STATIC;
+				$result['ssl_url']     = self::SHOPGATE_PG_STATIC_SSL;
+				$result['non_ssl_url'] = self::SHOPGATE_PG_STATIC;
 				break;
 			case 'custom':
-				$result['ssl_url']     = 'https://shopgatedev-public.s3.amazonaws.com';
-				$result['non_ssl_url'] = 'http://shopgatedev-public.s3.amazonaws.com';
+				$result['ssl_url']     = self::SHOPGATE_DEV_STATIC_SSL;
+				$result['non_ssl_url'] = self::SHOPGATE_DEV_STATIC;
 				break;
 		}
 		
@@ -172,7 +172,7 @@ class Shopgate_Helper_Redirect_SettingsManager implements Shopgate_Helper_Redire
 			case 'pg':
 				return self::SHOPGATE_PG_ALIAS;
 			case 'custom':
-				return '.localdev.cc/php/shopgate/index.php'; // for Shopgate development & testing
+				return self::SHOPGATE_DEV_ALIAS; // for Shopgate development & testing
 		}
 	}
 	

@@ -798,7 +798,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
  * browser.
  *
  * @author Shopgate GmbH, 35510 Butzbach, DE
- *
+ * @deprecated Will be removed in 3.0.0. Use Shopgate_Helper_Redirect_MobileRedirect instead.
  */
 interface ShopgateMobileRedirectInterface {
 	const SHOPGATE_STATIC = 'http://static.shopgate.com';

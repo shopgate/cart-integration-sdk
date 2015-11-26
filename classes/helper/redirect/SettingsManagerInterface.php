@@ -37,9 +37,13 @@ interface Shopgate_Helper_Redirect_SettingsManagerInterface
 	const SHOPGATE_SL_STATIC     = 'http://static.shopgatesl.com';
 	const SHOPGATE_SL_STATIC_SSL = 'https://static-ssl.shopgatesl.com';
 	
+	const SHOPGATE_DEV_STATIC     = 'http://shopgatedev-public.s3.amazonaws.com';
+	const SHOPGATE_DEV_STATIC_SSL = 'https://shopgatedev-public.s3.amazonaws.com';
+	
 	const SHOPGATE_LIVE_ALIAS = '.shopgate.com';
 	const SHOPGATE_SL_ALIAS   = '.shopgatesl.com';
 	const SHOPGATE_PG_ALIAS   = '.shopgatepg.com';
+	const SHOPGATE_DEV_ALIAS  = '.localdev.cc/php/shopgate/index.php';
 	
 	/**
 	 * @return bool
