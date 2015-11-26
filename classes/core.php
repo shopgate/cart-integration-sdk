@@ -1074,9 +1074,28 @@ class ShopgateBuilder {
 	 */
 	public function buildRedirect() {
 		$merchantApi = $this->buildMerchantApi();
+		$settingsManager = new Shopgate_Helper_Redirect_SettingsManager(
+				$this->config,
+				$_GET,
+				$_COOKIE
+		);
+		
+		$templateParser = new Shopgate_Helper_Redirect_TemplateParser();
+		
+		$linkBuilder = new Shopgate_Helper_Redirect_LinkBuilder(
+				$settingsManager,
+				$templateParser
+		);
+		
+		$tagsGenerator = new Shopgate_Helper_Redirect_TagsGenerator(
+				$linkBuilder,
+				$templateParser
+		);
+		
 		$redirect = new ShopgateMobileRedirect(
 				$this->config,
-				$merchantApi
+				$merchantApi,
+				$tagsGenerator
 		);
 		
 		return $redirect;

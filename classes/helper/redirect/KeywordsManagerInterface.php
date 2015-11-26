@@ -23,4 +23,11 @@ interface Shopgate_Helper_Redirect_KeywordsManagerInterface
 	 * @return string[] A list keywords that identify a smartphone user but should be ignored in the redirect.
 	 */
 	public function getBlacklist();
+	
+	/**
+	 * Updates the keyword cache from the merchant API regardless of expiry etc.
+	 *
+	 * @throws ShopgateLibraryException in case the request to the Shopgate Merchant API fails.
+	 */
+	public function update();
 }

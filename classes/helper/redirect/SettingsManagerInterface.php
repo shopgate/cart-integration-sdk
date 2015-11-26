@@ -53,4 +53,20 @@ interface Shopgate_Helper_Redirect_SettingsManagerInterface
 	 * @return string
 	 */
 	public function getRedirectableGetParameters();
+	
+	/**
+	 * @return string
+	 * @throws ShopgateLibraryException in case the configuration value is null.
+	 */
+	public function getHtmlTags();
+	
+	/**
+	 * @return array [string, string]
+	 */
+	public function getDefaultTemplatesByPageType();
+	
+	/**
+	 * @return array [string, string] An array with indices 'ssl_url' and 'non_ssl_url' and the corresponding URLs.
+	 */
+	public function getShopgateStaticUrl();
 }

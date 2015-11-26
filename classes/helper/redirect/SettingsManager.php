@@ -94,6 +94,44 @@ class Shopgate_Helper_Redirect_SettingsManager implements Shopgate_Helper_Redire
 		return http_build_query(array_intersect_key($this->get, array_flip($this->config->getRedirectableGetParams())));
 	}
 	
+	public function getHtmlTags()
+	{
+		$htmlTags = $this->config->getHtmlTags();
+		
+		if (empty($htmlTags)) {
+			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_INVALID_VALUE, '', false, false);
+		}
+		
+		return $htmlTags;
+	}
+	
+	public function getShopgateStaticUrl()
+	{
+		$result = array();
+		
+		switch ($this->config->getServer()) {
+			default: // fall through to 'live'
+			case 'live':
+				$result['ssl_url']     = ShopgateMobileRedirectInterfaceOld::SHOPGATE_STATIC_SSL;
+				$result['non_ssl_url'] = ShopgateMobileRedirectInterfaceOld::SHOPGATE_STATIC;
+				break;
+			case 'sl':
+				$result['ssl_url']     = ShopgateMobileRedirectInterfaceOld::SHOPGATE_SL_STATIC_SSL;
+				$result['non_ssl_url'] = ShopgateMobileRedirectInterfaceOld::SHOPGATE_SL_STATIC;
+				break;
+			case 'pg':
+				$result['ssl_url']     = ShopgateMobileRedirectInterfaceOld::SHOPGATE_PG_STATIC_SSL;
+				$result['non_ssl_url'] = ShopgateMobileRedirectInterfaceOld::SHOPGATE_PG_STATIC;
+				break;
+			case 'custom':
+				$result['ssl_url']     = 'https://shopgatedev-public.s3.amazonaws.com';
+				$result['non_ssl_url'] = 'http://shopgatedev-public.s3.amazonaws.com';
+				break;
+		}
+		
+		return $result;
+	}
+	
 	/**
 	 * Returns the URL to be appended to the alias of a shop.
 	 *
@@ -131,5 +169,23 @@ class Shopgate_Helper_Redirect_SettingsManager implements Shopgate_Helper_Redire
 		}
 		
 		return $cname;
+	}
+	
+	/**
+	 * @return array [string, string]
+	 */
+	public function getDefaultTemplatesByPageType()
+	{
+		$templatePageDefault = $this->isDefaultRedirectDisabled() ? false : '{baseUrl}';
+		
+		return array(
+			Shopgate_Helper_Redirect_LinkBuilderInterface::LINK_TYPE_DEFAULT  => $templatePageDefault,
+			Shopgate_Helper_Redirect_LinkBuilderInterface::LINK_TYPE_HOME     => '{baseUrl}',
+			Shopgate_Helper_Redirect_LinkBuilderInterface::LINK_TYPE_PRODUCT  => '{baseUrl}/item/{product_uid:hex}',
+			Shopgate_Helper_Redirect_LinkBuilderInterface::LINK_TYPE_CATEGORY => '{baseUrl}/category/{category_uid:hex}',
+			Shopgate_Helper_Redirect_LinkBuilderInterface::LINK_TYPE_CMS      => '{baseUrl}/cms/{page_uid}',
+			Shopgate_Helper_Redirect_LinkBuilderInterface::LINK_TYPE_BRAND    => '{baseUrl}/brand?q={brand_name:urlencoded}',
+			Shopgate_Helper_Redirect_LinkBuilderInterface::LINK_TYPE_SEARCH   => '{baseUrl}/search?s={search_query:urlencoded}',
+		);
 	}
 }

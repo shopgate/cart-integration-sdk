@@ -49,4 +49,10 @@ interface Shopgate_Helper_Redirect_RedirectorInterface
 	 * @post A location header to the mobile searchpage is sent to the requesting entity.
 	 */
 	public function redirectSearch($searchString);
+	
+	/**
+	 * @param string $url      The URL to redirect to.
+	 * @param bool   $sendVary True to send the "Vary: User-Agent" header.
+	 */
+	public function redirect($url, $sendVary = true);
 }

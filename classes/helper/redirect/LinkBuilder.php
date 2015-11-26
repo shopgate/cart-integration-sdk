@@ -2,135 +2,157 @@
 
 class Shopgate_Helper_Redirect_LinkBuilder implements Shopgate_Helper_Redirect_LinkBuilderInterface
 {
-	const LINK_TYPE_DEFAULT  = 'default';
-	const LINK_TYPE_HOME     = 'home';
-	const LINK_TYPE_PRODUCT  = 'product';
-	const LINK_TYPE_CATEGORY = 'category';
-	const LINK_TYPE_CMS      = 'cms';
-	const LINK_TYPE_BRAND    = 'brand';
-	const LINK_TYPE_SEARCH   = 'search';
-	
-	/** @var string[] [string, string] A list of paths indexed by their type. */
-	protected $paths;
+	/** @var string[] [string, string] A list of templates indexed by their page type. */
+	protected $defaultTemplatesByPageType;
 	
 	/** @var Shopgate_Helper_Redirect_SettingsManagerInterface */
 	protected $settingsManager;
 	
+	/** @var Shopgate_Helper_Redirect_TemplateParserInterface */
+	protected $templateParser;
+	
 	/**
 	 * @param Shopgate_Helper_Redirect_SettingsManagerInterface $settingsManager
+	 * @param Shopgate_Helper_Redirect_TemplateParserInterface  $templateParser
 	 */
-	public function __construct(Shopgate_Helper_Redirect_SettingsManagerInterface $settingsManager)
-	{
+	public function __construct(
+		Shopgate_Helper_Redirect_SettingsManagerInterface $settingsManager,
+		Shopgate_Helper_Redirect_TemplateParserInterface $templateParser
+	) {
 		$this->settingsManager = $settingsManager;
+		$this->templateParser  = $templateParser;
 		
-		$this->paths = array(
-			self::LINK_TYPE_PRODUCT  => 'item',
-			self::LINK_TYPE_CATEGORY => 'category',
-			self::LINK_TYPE_CMS      => 'cms',
-			self::LINK_TYPE_BRAND    => 'brand',
-			self::LINK_TYPE_SEARCH   => 'search',
-		);
+		// default templates
+		$this->defaultTemplatesByPageType = $this->settingsManager->getDefaultTemplatesByPageType();
 	}
 	
-	public function buildDefault()
+	public function getDefaultTemplateFor($pageType)
 	{
-		return $this->appendRedirectableGetParameters($this->getBaseUrlFor(self::LINK_TYPE_DEFAULT) . '/');
+		return $this->defaultTemplatesByPageType[$pageType];
 	}
 	
-	public function buildHome()
+	public function buildDefault(array $parameters = array())
 	{
-		return $this->appendRedirectableGetParameters($this->getBaseUrlFor(self::LINK_TYPE_HOME) . '/');
+		return $this->appendRedirectableGetParameters($this->getUrlFor(self::LINK_TYPE_DEFAULT, $parameters));
 	}
 	
-	public function buildProduct($uid)
+	public function buildHome(array $parameters = array())
 	{
-		return
-			$this->appendRedirectableGetParameters(
-				$this->getBaseUrlFor(self::LINK_TYPE_PRODUCT) . '/' . $this->bin2hex($uid)
-			);
+		return $this->appendRedirectableGetParameters($this->getUrlFor(self::LINK_TYPE_HOME, $parameters));
 	}
 	
-	public function buildCategory($uid)
+	public function buildProduct($uid, array $parameters = array())
 	{
-		return
-			$this->appendRedirectableGetParameters(
-				$this->getBaseUrlFor(self::LINK_TYPE_CATEGORY) . '/' . $this->bin2hex($uid)
-			);
+		return $this->buildScriptFor(self::LINK_TYPE_PRODUCT, 'product_uid', $uid);
 	}
 	
-	public function buildCms($pageName)
+	public function buildCategory($uid, array $parameters = array())
 	{
-		return
-			$this->appendRedirectableGetParameters(
-				$this->getBaseUrlFor(self::LINK_TYPE_CMS) . '/' . $pageName
-			);
+		return $this->buildScriptFor(self::LINK_TYPE_CATEGORY, 'category_uid', $uid);
+	}
+	
+	public function buildCms($pageUid, array $parameters = array())
+	{
+		return $this->buildScriptFor(self::LINK_TYPE_CMS, 'page_uid', $pageUid);
 	}
 	
 	public function buildBrand($brandName)
 	{
-		return
-			$this->appendRedirectableGetParameters(
-				$this->getBaseUrlFor(self::LINK_TYPE_BRAND) . '?q=' . $this->urlencode($brandName),
-				'&'
-			);
+		return $this->buildScriptFor(self::LINK_TYPE_BRAND, 'brand_name', $brandName);
 	}
 	
-	public function buildSearch($searchString)
+	public function buildSearch($searchQuery, array $parameters = array())
 	{
-		return
-			$this->appendRedirectableGetParameters(
-				$this->getBaseUrlFor(self::LINK_TYPE_SEARCH) . '?s=' . $this->urlencode($searchString),
-				'&'
-			);
+		return $this->buildScriptFor(self::LINK_TYPE_SEARCH, 'search_query', $searchQuery);
 	}
 	
-	/**
-	 * @param string $type
-	 *
-	 * @return string
-	 */
-	protected function getBaseUrlFor($type)
+	public function getUrlFor($pageType, array $variables, array $parameters = array(), $overrideTemplate = null)
 	{
-		$path = empty($this->paths[$type])
-			? ''
-			: $this->paths[$type];
+		/** @var Shopgate_Model_Redirect_HtmlTagVariable[] $variables */
 		
-		return $this->settingsManager->getMobileUrl() . '/' . $path;
+		$template = empty($this->defaultTemplatesByPageType[$pageType])
+			? ''
+			: $this->defaultTemplatesByPageType[$pageType];
+		
+		if ($overrideTemplate !== null) {
+			$template = $overrideTemplate;
+		}
+		
+		if (strstr($template, '{baseUrl}') !== false) {
+			$parameters['baseUrl'] = $this->settingsManager->getMobileUrl();
+		}
+		
+		foreach ($variables as $variable) {
+			if (!isset($parameters[$variable->getName()])) {
+				// don't log, this is caught internally
+				throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_INVALID_VALUE, false, false);
+			}
+			
+			$parameter = !isset($parameters[$variable->getName()])
+				? ''
+				: $parameters[$variable->getName()];
+			
+			$template = $this->templateParser->process($template, $variable, $parameter);
+		}
+		
+		return $template;
 	}
 	
 	/**
 	 * @param string $url
-	 * @param string $concat
 	 *
 	 * @return string
 	 */
-	protected function appendRedirectableGetParameters($url, $concat = '?')
+	protected function appendRedirectableGetParameters($url)
 	{
+		$concat = (parse_url($url, PHP_URL_QUERY) === null)
+			? '?'
+			: '&';
+		
 		return
 			$url . (
-			($this->settingsManager->getRedirectableGetParameters())
+			$this->settingsManager->getRedirectableGetParameters()
 				? $concat . $this->settingsManager->getRedirectableGetParameters()
 				: ''
 			);
 	}
 	
 	/**
-	 * @param string $string
+	 * @param string $value
+	 * @param string $functionName
 	 *
 	 * @return string
 	 */
-	protected function bin2hex($string)
+	protected function filterParameter($value, $functionName = '')
 	{
-		return bin2hex($string);
+		switch ($functionName) {
+			case self::FUNCTION_NAME_HEX:
+				return bin2hex($value);
+			case self::FUNCTION_NAME_URLENCODED:
+				return urlencode($value);
+		}
+		
+		return $value;
 	}
 	
 	/**
-	 * @param string $string
+	 * @param string $pageType
+	 * @param string $variableName
+	 * @param string $variableValue
 	 *
 	 * @return string
+	 * @throws ShopgateLibraryException
 	 */
-	protected function urlencode($string)
+	protected function buildScriptFor($pageType, $variableName, $variableValue)
 	{
-		return urlencode($string);
+		$variables = $this->templateParser->getVariables($this->defaultTemplatesByPageType[$pageType]);
+		
+		return $this->appendRedirectableGetParameters(
+			$this->getUrlFor(
+				$pageType,
+				$variables,
+				array($variableName => $variableValue)
+			)
+		);
 	}
 }

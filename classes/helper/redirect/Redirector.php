@@ -72,13 +72,15 @@ class Shopgate_Helper_Redirect_Redirector implements Shopgate_Helper_Redirect_Re
 		$this->redirect($this->linkBuilder->buildSearch($searchString));
 	}
 	
-	/**
-	 * @param string $url      The URL to redirect to.
-	 * @param bool   $sendVary True to send the "Vary: User-Agent" header.
-	 */
-	protected function redirect($url, $sendVary = true)
+	public function redirect($url, $sendVary = true)
 	{
-		if (!$this->settingsManager->isRedirectDisabled() || !$this->isMobile()) {
+		if ($this->settingsManager->isRedirectDisabled() && !$this->settingsManager->isMobileHeaderDisabled()) {
+			$this->settingsManager->setCookie();
+			
+			return;
+		}
+		
+		if (!$this->isMobile()) {
 			return;
 		}
 		

@@ -55,10 +55,10 @@ class Shopgate_Helper_Redirect_KeywordsManager implements Shopgate_Helper_Redire
 			'/' .
 			
 			// positive lookahead for the whitelist
-			'(?=' . preg_quote(implode('|', array_filter($this->whitelist, 'strtolower')), '/') . ')' .
+			'(?=' . implode('|', array_map(array($this, 'prepareKeyword'), $this->whitelist)) . ')' .
 			
 			// negative lookahead for the blacklist
-			'(?!' . preg_quote(implode('|', array_filter($this->blacklist, 'strtolower')), '/') . ')' .
+			'(?!' . implode('|', array_map(array($this, 'prepareKeyword'), $this->blacklist)) . ')' .
 			
 			// modfiers: case-insensitive
 			'/i';
@@ -72,6 +72,15 @@ class Shopgate_Helper_Redirect_KeywordsManager implements Shopgate_Helper_Redire
 	public function getBlacklist()
 	{
 		return $this->blacklist;
+	}
+	
+	public function update()
+	{
+		$this->initFromApi();
+		$newUpdateTimestamp = time();
+		
+		// update the cache files
+		$this->saveAllKeywordsToFiles($newUpdateTimestamp);
 	}
 	
 	/**
@@ -93,16 +102,11 @@ class Shopgate_Helper_Redirect_KeywordsManager implements Shopgate_Helper_Redire
 		}
 		
 		try {
-			$this->initFromApi();
-			$newUpdateTimestamp = time();
+			$this->update();
 		} catch (Exception $e) {
 			// if fetching from API fails, try again in 5 minutes; meanwhile use the cached keywords
-			$newUpdateTimestamp = (time() - ($this->cacheTimeout * 3600)) + 300;
+			$this->saveAllKeywordsToFiles($newUpdateTimestamp = (time() - ($this->cacheTimeout * 3600)) + 300);
 		}
-		
-		// update the cache files
-		$this->saveKeywordsToFile($this->whitelist, $this->whitelistCacheFilePath, $newUpdateTimestamp);
-		$this->saveKeywordsToFile($this->blacklist, $this->blacklistCacheFilePath, $newUpdateTimestamp);
 	}
 	
 	/**
@@ -114,7 +118,7 @@ class Shopgate_Helper_Redirect_KeywordsManager implements Shopgate_Helper_Redire
 	{
 		
 		$whitelistMeta = $this->loadKeywordsFromFile($this->whitelistCacheFilePath);
-		$blacklistMeta = $this->loadKeywordsFromFile($this->whitelistCacheFilePath);
+		$blacklistMeta = $this->loadKeywordsFromFile($this->blacklistCacheFilePath);
 		
 		$this->whitelist = $whitelistMeta['keywords'];
 		$this->blacklist = $blacklistMeta['keywords'];
@@ -163,6 +167,16 @@ class Shopgate_Helper_Redirect_KeywordsManager implements Shopgate_Helper_Redire
 			);
 	}
 	
+	protected function saveAllKeywordsToFiles($lastUpdate = null)
+	{
+		if ($lastUpdate === null) {
+			$lastUpdate = time();
+		}
+		
+		$this->saveKeywordsToFile($this->whitelist, $this->whitelistCacheFilePath, $lastUpdate);
+		$this->saveKeywordsToFile($this->blacklist, $this->blacklistCacheFilePath, $lastUpdate);
+	}
+	
 	/**
 	 * Saves redirect keywords to file.
 	 *
@@ -196,5 +210,19 @@ class Shopgate_Helper_Redirect_KeywordsManager implements Shopgate_Helper_Redire
 		}
 		
 		return ($now - ($lastUpdate + ($this->cacheTimeout * 3600)) > 0);
+	}
+	
+	/**
+	 * A callback for array_map that prepares keywords for the regex.
+	 *
+	 * Currently this means the keyword is made lower-case and preg_quote()'ed with a slash (/) as escape character.
+	 *
+	 * @param string $keyword
+	 *
+	 * @return string
+	 */
+	protected function prepareKeyword($keyword)
+	{
+		return preg_quote(strtolower($keyword), '/');
 	}
 }
