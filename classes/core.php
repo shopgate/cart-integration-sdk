@@ -1142,7 +1142,7 @@ class ShopgateBuilder {
 			$tagsGenerator,
 			$settingsManager,
 			$templateParser,
-			dirname(__FILE__) . '/../library/assets/js_header.html',
+			dirname(__FILE__) . '/../assets/js_header.html',
 			$this->config->getShopNumber()
 		);
 	}
