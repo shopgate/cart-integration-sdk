@@ -137,7 +137,6 @@ class Shopgate_Helper_Redirect_KeywordsManager implements Shopgate_Helper_Redire
 	 */
 	protected function initFromFiles()
 	{
-		
 		$whitelistMeta = $this->loadKeywordsFromFile($this->whitelistCacheFilePath);
 		$blacklistMeta = $this->loadKeywordsFromFile($this->blacklistCacheFilePath);
 		

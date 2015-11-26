@@ -2975,7 +2975,6 @@ interface ShopgateConfigInterface {
 	 */
 	public function getHtmlTags();
 	
-	
 	/**
 	 * @return int maximum execution time in seconds
 	 */

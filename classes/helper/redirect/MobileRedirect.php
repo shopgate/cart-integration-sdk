@@ -46,8 +46,8 @@ class Shopgate_Helper_Redirect_HelperRedirect_MobileRedirect
 	/**
 	 * @var array [string, mixed] Parameters that should be replaced in the HTML tags, indexed by their name.
 	 */
-	
 	protected $siteParameters;
+	
 	/**
 	 * @var array [string, string] An array with the page names as indices and the "old" JS redirect types as values, if different.
 	 */

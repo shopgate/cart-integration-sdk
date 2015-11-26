@@ -415,7 +415,6 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 			}
 		}
 		
-		
 		if (!$this->config->getShopNumber()) {
 			return '';
 		}
