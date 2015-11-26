@@ -1110,7 +1110,7 @@ class ShopgateBuilder {
 	 * @param array  $get    [string, mixed] A copy of $_GET or the query string in the form of $_GET.
 	 * @param array  $cookie [string, mixed] A copy of $_COOKIE or the request cookies in the form of $_COOKIE.
 	 *
-	 * @return Shopgate_Helper_Redirect_HelperRedirect_MobileRedirect
+	 * @return Shopgate_Helper_Redirect_MobileRedirect
 	 */
 	public function buildMobileRedirect($userAgent, array $get, array $cookie) {
 		$settingsManager = new Shopgate_Helper_Redirect_SettingsManager($this->config, $get, $cookie);
@@ -1137,7 +1137,7 @@ class ShopgateBuilder {
 			$templateParser
 		);
 		
-		return new Shopgate_Helper_Redirect_HelperRedirect_MobileRedirect(
+		return new Shopgate_Helper_Redirect_MobileRedirect(
 			$redirector,
 			$tagsGenerator,
 			$settingsManager,

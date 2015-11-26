@@ -21,7 +21,7 @@
  *
  * @author Shopgate GmbH <interfaces@shopgate.com>
  */
-class Shopgate_Helper_Redirect_HelperRedirect_MobileRedirect
+class Shopgate_Helper_Redirect_MobileRedirect
 	extends ShopgateObject
 	implements Shopgate_Helper_Redirect_MobileRedirectInterface
 {
