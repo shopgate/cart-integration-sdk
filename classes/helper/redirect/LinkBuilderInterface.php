@@ -10,9 +10,6 @@ interface Shopgate_Helper_Redirect_LinkBuilderInterface
 	const LINK_TYPE_BRAND    = 'brand';
 	const LINK_TYPE_SEARCH   = 'search';
 	
-	const FUNCTION_NAME_HEX        = Shopgate_Helper_Redirect_TemplateParserInterface::FUNCTION_NAME_HEX;
-	const FUNCTION_NAME_URLENCODED = Shopgate_Helper_Redirect_TemplateParserInterface::FUNCTION_NAME_URLENCODED;
-	
 	/**
 	 * @param Shopgate_Model_Redirect_DeeplinkSuffix[] $parameters
 	 *

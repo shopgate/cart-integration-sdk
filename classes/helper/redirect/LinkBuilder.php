@@ -118,24 +118,6 @@ class Shopgate_Helper_Redirect_LinkBuilder implements Shopgate_Helper_Redirect_L
 	}
 	
 	/**
-	 * @param string $value
-	 * @param string $functionName
-	 *
-	 * @return string
-	 */
-	protected function filterParameter($value, $functionName = '')
-	{
-		switch ($functionName) {
-			case self::FUNCTION_NAME_HEX:
-				return bin2hex($value);
-			case self::FUNCTION_NAME_URLENCODED:
-				return urlencode($value);
-		}
-		
-		return $value;
-	}
-	
-	/**
 	 * @param string $pageType
 	 * @param string $variableName
 	 * @param string $variableValue
