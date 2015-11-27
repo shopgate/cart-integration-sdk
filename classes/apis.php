@@ -1628,7 +1628,7 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 	######################################################################
 	## Mobile Redirect                                                  ##
 	######################################################################
-	/*
+	/**
 	 * This method is deprecated, please use getMobileRedirectUserAgents().
 	 * @deprecated
 	 */

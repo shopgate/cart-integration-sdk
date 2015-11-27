@@ -1073,15 +1073,80 @@ class ShopgateBuilder {
 	 * Builds the Shopgate Library object graph for Shopgate mobile redirect and returns the instance.
 	 *
 	 * @return ShopgateMobileRedirect
+	 * 
+	 * @deprecated Will be removed in 3.0.0. Use SopgateBuilder::buildMobileRedirect() instead.
 	 */
 	public function buildRedirect() {
 		$merchantApi = $this->buildMerchantApi();
+		$settingsManager = new Shopgate_Helper_Redirect_SettingsManager(
+				$this->config,
+				$_GET,
+				$_COOKIE
+		);
+		
+		$templateParser = new Shopgate_Helper_Redirect_TemplateParser();
+		
+		$linkBuilder = new Shopgate_Helper_Redirect_LinkBuilder(
+				$settingsManager,
+				$templateParser
+		);
+		
+		$tagsGenerator = new Shopgate_Helper_Redirect_TagsGenerator(
+				$linkBuilder,
+				$templateParser
+		);
+		
 		$redirect = new ShopgateMobileRedirect(
 				$this->config,
-				$merchantApi
+				$merchantApi,
+				$tagsGenerator
 		);
 		
 		return $redirect;
+	}
+	
+	/**
+	 * Builds the Shopgate Library object graph for Shopgate mobile redirect and returns the instance.
+	 *
+	 * @param string $userAgent              The requesting entity's user agent, e.g. $_SERVER['HTTP_USER_AGENT']
+	 * @param array  $get    [string, mixed] A copy of $_GET or the query string in the form of $_GET.
+	 * @param array  $cookie [string, mixed] A copy of $_COOKIE or the request cookies in the form of $_COOKIE.
+	 *
+	 * @return Shopgate_Helper_Redirect_MobileRedirect
+	 */
+	public function buildMobileRedirect($userAgent, array $get, array $cookie) {
+		$settingsManager = new Shopgate_Helper_Redirect_SettingsManager($this->config, $get, $cookie);
+		$templateParser = new Shopgate_Helper_Redirect_TemplateParser();
+		
+		$linkBuilder = new Shopgate_Helper_Redirect_LinkBuilder(
+			$settingsManager,
+			$templateParser
+		);
+		
+		$redirector = new Shopgate_Helper_Redirect_Redirector(
+			$settingsManager,
+			new Shopgate_Helper_Redirect_KeywordsManager(
+				$this->buildMerchantApi(),
+				$this->config->getRedirectKeywordCachePath(),
+				$this->config->getRedirectSkipKeywordCachePath()
+			),
+			$linkBuilder,
+			$userAgent
+		);
+		
+		$tagsGenerator = new Shopgate_Helper_Redirect_TagsGenerator(
+			$linkBuilder,
+			$templateParser
+		);
+		
+		return new Shopgate_Helper_Redirect_MobileRedirect(
+			$redirector,
+			$tagsGenerator,
+			$settingsManager,
+			$templateParser,
+			dirname(__FILE__) . '/../assets/js_header.html',
+			$this->config->getShopNumber()
+		);
 	}
 }
 

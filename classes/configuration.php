@@ -484,6 +484,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @var array<int, string> an array with a list of get params which are allowed to passthrough to the mobile device on redirect
 	 */
 	protected $redirectable_get_params = array();
+	
+	/**
+	 * @var string A JSON encoded string containing the HTML tags to be placed on the desktop website.
+	 */
+	protected $html_tags;
 
 	/**
 	 * @var int execution time limit for file export in seconds
@@ -598,6 +603,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 
 		$this->is_shopgate_adapter = false;
 		$this->redirectable_get_params = array('gclid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content');
+		$this->html_tags = '';
 
 		$this->default_memory_limit = ShopgateConfigInterface::DEFAULT_MEMORY_LIMIT;
 		$this->default_execution_time = ShopgateConfigInterface::DEFAULT_EXECUTION_TIME;
@@ -1371,17 +1377,15 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	public function getRedirectableGetParams() {
 		return $this->redirectable_get_params;
 	}
+	
+	public function getHtmlTags() {
+		return $this->html_tags;
+	}
 
-	/**
-	 * @return int
-	 */
 	public function getDefaultExecutionTime() {
 		return $this->default_execution_time;
 	}
 
-	/**
-	 * @return int
-	 */
 	public function getDefaultMemoryLimit() {
 		return $this->default_memory_limit;
 	}
@@ -1854,7 +1858,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	}
 
 	public function setRedirectableGetParams($value) {
-		return $this->redirectable_get_params = $value;
+		$this->redirectable_get_params = $value;
+	}
+	
+	public function setHtmlTags($value) {
+		$this->html_tags = $value;
 	}
 
 	/**
@@ -2956,7 +2964,17 @@ interface ShopgateConfigInterface {
 	 * @return bool True if the plugin is an adapter between Shopgate's and a third-party-API and servers multiple shops on both ends.
 	 */
 	public function getIsShopgateAdapter();
-
+	
+	/**
+	 * @return array<int, string> an array with a list of get params which are allowed to passthrough to the mobile device on redirect
+	 */
+	public function getRedirectableGetParams();
+	
+	/**
+	 * @return string A JSON encoded string containing the HTML tags to be placed on the desktop website.
+	 */
+	public function getHtmlTags();
+	
 	/**
 	 * @return int maximum execution time in seconds
 	 */
@@ -3428,6 +3446,16 @@ interface ShopgateConfigInterface {
 	 * @param bool $value True if the plugin is an adapter between Shopgate's and a third-party-API and servers multiple shops on both ends.
 	 */
 	public function setIsShopgateAdapter($value);
+	
+	/**
+	 * @param array<int, string> $value an array with a list of get params which are allowed to passthrough to the mobile device on redirect
+	 */
+	public function setRedirectableGetParams($value);
+	
+	/**
+	 * @param string $value A JSON encoded string containing the HTML tags to be placed on the desktop website.
+	 */
+	public function setHtmlTags($value);
 
 	/**
 	 * @param $default_execution_time int set value for maximum execution time in seconds
