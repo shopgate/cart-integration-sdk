@@ -1,3 +1,8 @@
+''''Version 2.9.37'''
+* added outputting open graph and other tags with the mobile redirect if activated in the configuration
+* added a replacement class tree for ShopgateMobileRedirect
+* ShopgateMobileRedirect is now deprecated
+
 '''Version 2.9.36'''
 * added a fallback in case that json_encode returns false (failure)
 * added new constant ShopgateLibraryException::CART_ITEM_INVALID_PRODUCT_COMBINATION
