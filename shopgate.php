@@ -71,6 +71,7 @@ require_once(dirname(__FILE__).DS.'classes'.DS.'models/media/Image.php');
 // models (redirect)
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/redirect/DeeplinkSuffix.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/redirect/DeeplinkSuffixValue.php');
+require_once(dirname(__FILE__).DS.'classes'.DS.'models/redirect/DeeplinkSuffixValueUnset.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/redirect/DeeplinkSuffixValueDisabled.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/redirect/HtmlTag.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'models/redirect/HtmlTagAttribute.php');

@@ -27,6 +27,9 @@
  * @method        setValue(string $value)
  * @method string getValue()
  *
+ * @method      setUnset(bool $value)
+ * @method bool getUnset()
+ *
  * @method      setDisabled(bool $value)
  * @method bool getDisabled()
  *
@@ -40,6 +43,7 @@ class Shopgate_Model_Redirect_DeeplinkSuffixValue extends Shopgate_Model_Abstrac
 		$this->allowedMethods = array(
 			'Name',
 			'Value',
+			'Unset',
 			'Disabled',
 			'Variables',
 		);

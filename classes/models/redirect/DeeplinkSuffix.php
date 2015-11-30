@@ -42,8 +42,14 @@ class Shopgate_Model_Redirect_DeeplinkSuffix extends Shopgate_Model_Abstract
 	 */
 	public function getValue($type)
 	{
-		return empty($this->valuesByType[$type])
-			? new Shopgate_Model_Redirect_DeeplinkSuffixValueDisabled()
-			: $this->valuesByType[$type];
+		if (!isset($this->valuesByType[$type]) || ($this->valuesByType[$type] === null)) {
+			return new Shopgate_Model_Redirect_DeeplinkSuffixValueUnset();
+		}
+		
+		if ($this->valuesByType[$type] === false) {
+			return new Shopgate_Model_Redirect_DeeplinkSuffixValueDisabled();
+		}
+		
+		return $this->valuesByType[$type];
 	}
 }

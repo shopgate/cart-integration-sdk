@@ -21,12 +21,12 @@
  *
  * @author Shopgate GmbH <interfaces@shopgate.com>
  */
-class Shopgate_Model_Redirect_DeeplinkSuffixValueDisabled extends Shopgate_Model_Redirect_DeeplinkSuffixValue
+class Shopgate_Model_Redirect_DeeplinkSuffixValueUnset extends Shopgate_Model_Redirect_DeeplinkSuffixValue
 {
 	public function __construct()
 	{
 		parent::__construct();
 		
-		$this->setDisabled(true);
+		$this->setUnset(true);
 	}
 }
