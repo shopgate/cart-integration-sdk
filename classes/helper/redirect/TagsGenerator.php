@@ -236,20 +236,14 @@ class Shopgate_Helper_Redirect_TagsGenerator
 	) {
 		$value = $deeplinkSuffix->getValue($pageType);
 		
-		if ($value->getDisabled()) {
+		if ($value->getUnset()) {
 			$value = $deeplinkSuffix->getValue(Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_DEFAULT);
-			
-			if ($value->getDisabled()) {
-				throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_INVALID_VALUE, '', false, false);
-			}
 		}
 		
-		$url = $this->linkBuilder->getUrlFor($pageType, $value->getVariables(), $parameters, $value->getValue());
-		
-		if (empty($url)) {
+		if ($value->getDisabled()) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_INVALID_VALUE, '', false, false);
 		}
 		
-		return $url;
+		return $this->linkBuilder->getUrlFor($pageType, $value->getVariables(), $parameters, $value->getValue());
 	}
 }
