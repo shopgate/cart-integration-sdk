@@ -24,6 +24,12 @@
 interface Shopgate_Helper_Redirect_MobileRedirectInterface
 {
 	/**
+	 * @param bool $http
+	 * @param bool $javascript
+	 */
+	public function supressRedirectTechniques($http = false, $javascript = false);
+	
+	/**
 	 * @param string $name One of the Shopgate_Helper_Redirect_TagsGeneratorInterface::SITE_PARAMETER_* constants.
 	 * @param string $value
 	 */
@@ -31,73 +37,61 @@ interface Shopgate_Helper_Redirect_MobileRedirectInterface
 	
 	/**
 	 * @param string $url
-	 * @param bool   $autoRedirect
 	 * @param bool   $sendVary
 	 *
-	 * @return
 	 * @post ends script execution in case of http redirect
 	 */
-	public function redirect($url, $autoRedirect = true, $sendVary = true);
+	public function redirect($url, $sendVary = true);
 	
 	/**
-	 * @param bool $autoRedirect
-	 *
 	 * @return string
 	 */
-	public function buildScriptDefault($autoRedirect = true);
+	public function buildScriptDefault();
 	
 	/**
-	 * @param bool $autoRedirect
-	 *
 	 * @return string
 	 */
-	public function buildScriptShop($autoRedirect = true);
+	public function buildScriptShop();
 	
 	/**
 	 * @param string $itemNumber
-	 * @param bool   $autoRedirect
 	 *
 	 * @return string
 	 */
-	public function buildScriptItem($itemNumber, $autoRedirect = true);
+	public function buildScriptItem($itemNumber);
 	
 	/**
 	 * @param string $itemNumberPublic
-	 * @param bool   $autoRedirect
 	 *
 	 * @return string
 	 */
-	public function buildScriptItemPublic($itemNumberPublic, $autoRedirect = true);
+	public function buildScriptItemPublic($itemNumberPublic);
 	
 	/**
 	 * @param string $categoryNumber
-	 * @param bool   $autoRedirect
 	 *
 	 * @return string
 	 */
-	public function buildScriptCategory($categoryNumber, $autoRedirect = true);
+	public function buildScriptCategory($categoryNumber);
 	
 	/**
 	 * @param string $cmsPage
-	 * @param bool   $autoRedirect
 	 *
 	 * @return string
 	 */
-	public function buildScriptCms($cmsPage, $autoRedirect = true);
+	public function buildScriptCms($cmsPage);
 	
 	/**
 	 * @param string $manufacturerName
-	 * @param bool   $autoRedirect
 	 *
 	 * @return mixed
 	 */
-	public function buildScriptBrand($manufacturerName, $autoRedirect = true);
+	public function buildScriptBrand($manufacturerName);
 	
 	/**
 	 * @param string $searchQuery
-	 * @param bool   $autoRedirect
 	 *
 	 * @return string
 	 */
-	public function buildScriptSearch($searchQuery, $autoRedirect = true);
+	public function buildScriptSearch($searchQuery);
 }
