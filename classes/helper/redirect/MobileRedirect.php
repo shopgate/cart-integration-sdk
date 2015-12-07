@@ -190,11 +190,9 @@ class Shopgate_Helper_Redirect_MobileRedirect
 		);
 	}
 	
-	public function buildScriptSearch($searchQuery, $overrideSupressHttpRedirect = true)
+	public function buildScriptSearch($searchQuery)
 	{
-		if ($overrideSupressHttpRedirect) {
-			$this->redirector->redirectSearch($searchQuery);
-		}
+		$this->redirector->redirectSearch($searchQuery);
 		
 		return $this->buildTags(
 			Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_SEARCH,
