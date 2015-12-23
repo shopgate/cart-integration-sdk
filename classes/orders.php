@@ -754,8 +754,8 @@ class ShopgateOrder extends ShopgateCartBase {
 	protected $is_storno;
 	protected $is_customer_invoice_blocked;
 
-	protected $update_shipping = false;
-	protected $update_payment = false;
+	protected $update_shipping = 0;
+	protected $update_payment = 0;
 
 	protected $delivery_notes = array();
 	protected $tracking_get_parameters = array();
@@ -793,7 +793,7 @@ class ShopgateOrder extends ShopgateCartBase {
 	}
 
 	/**
-	 * @param bool $value
+	 * @param int $value
 	 */
 	public function setIsPaid($value) {
 		$this->is_paid = $value;
@@ -826,14 +826,14 @@ class ShopgateOrder extends ShopgateCartBase {
 	}
 
 	/**
-	 * @param bool $value
+	 * @param int $value
 	 */
 	public function setIsShippingBlocked($value) {
 		$this->is_shipping_blocked = $value;
 	}
 
 	/**
-	 * @param bool $value
+	 * @param int $value
 	 */
 	public function setIsShippingCompleted($value) {
 		$this->is_shipping_completed = $value;
@@ -857,35 +857,35 @@ class ShopgateOrder extends ShopgateCartBase {
 	}
 
 	/**
-	 * @param bool $value
+	 * @param int $value
 	 */
 	public function setIsTest($value) {
 		$this->is_test = $value;
 	}
 
 	/**
-	 * @param bool $value
+	 * @param int $value
 	 */
 	public function setIsStorno($value) {
 		$this->is_storno = $value;
 	}
 
 	/**
-	 * @param bool $value
+	 * @param int $value
 	 */
 	public function setIsCustomerInvoiceBlocked($value) {
 		$this->is_customer_invoice_blocked = $value;
 	}
 
 	/**
-	 * @param bool $value
+	 * @param int $value
 	 */
 	public function setUpdatePayment($value) {
 		$this->update_payment = $value;
 	}
 
 	/**
-	 * @param bool $value
+	 * @param int $value
 	 */
 	public function setUpdateShipping($value) {
 		$this->update_shipping = $value;
@@ -980,10 +980,10 @@ class ShopgateOrder extends ShopgateCartBase {
 	}
 
 	/**
-	 * @return bool
+	 * @return int
 	 */
 	public function getIsPaid() {
-		return (bool)$this->is_paid;
+		return (int)$this->is_paid;
 	}
 
 	/**
@@ -1019,17 +1019,17 @@ class ShopgateOrder extends ShopgateCartBase {
 	}
 
 	/**
-	 * @return bool
+	 * @return int
 	 */
 	public function getIsShippingBlocked() {
-		return (bool)$this->is_shipping_blocked;
+		return (int)$this->is_shipping_blocked;
 	}
 
 	/**
-	 * @return bool
+	 * @return int
 	 */
 	public function getIsShippingCompleted() {
-		return (bool)$this->is_shipping_completed;
+		return (int)$this->is_shipping_completed;
 	}
 
 	/**
@@ -1058,39 +1058,39 @@ class ShopgateOrder extends ShopgateCartBase {
 	}
 
 	/**
-	 * @return bool
+	 * @return int
 	 */
 	public function getIsTest() {
-		return (bool)$this->is_test;
+		return (int)$this->is_test;
 	}
 
 
 	/**
-	 * @return bool
+	 * @return int
 	 */
 	public function getIsStorno() {
-		return (bool)$this->is_storno;
+		return (int)$this->is_storno;
 	}
 
 	/**
-	 * @return bool
+	 * @return int
 	 */
 	public function getIsCustomerInvoiceBlocked() {
-		return (bool)$this->is_customer_invoice_blocked;
+		return (int)$this->is_customer_invoice_blocked;
 	}
 
 	/**
-	 * @return bool
+	 * @return int
 	 */
 	public function getUpdatePayment() {
-		return (bool)$this->update_payment;
+		return (int)$this->update_payment;
 	}
 
 	/**
-	 * @return bool
+	 * @return int
 	 */
 	public function getUpdateShipping() {
-		return (bool)$this->update_shipping;
+		return (int)$this->update_shipping;
 	}
 
 	/**
@@ -2085,7 +2085,7 @@ abstract class ShopgateCoupon extends ShopgateContainer {
 	}
 
 	/**
-	 * @param bool $value
+	 * @param int $value
 	 */
 	public function setIsFreeShipping($value) {
 		$this->is_free_shipping = $value;
@@ -2168,7 +2168,7 @@ abstract class ShopgateCoupon extends ShopgateContainer {
 	}
 
 	/**
-	 * @return bool
+	 * @return int
 	 */
 	public function getIsFreeShipping() {
 		return $this->is_free_shipping;
@@ -2627,7 +2627,7 @@ class ShopgateCartItem extends ShopgateContainer {
 	}
 
 	/**
-	 * @param bool $value
+	 * @param int $value
 	 */
 	public function setIsBuyable($value) {
 		$this->is_buyable = $value;
@@ -2765,10 +2765,10 @@ class ShopgateCartItem extends ShopgateContainer {
 	}
 
 	/**
-	 * @return bool
+	 * @return int
 	 */
 	public function getIsBuyable() {
-		return $this->is_buyable;
+		return (int)$this->is_buyable;
 	}
 
 	/**
