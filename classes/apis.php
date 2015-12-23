@@ -437,10 +437,10 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		$shipping = 0;
 
 		if (isset($this->params['payment'])) {
-			$payment = (bool) $this->params['payment'];
+			$payment = (int) $this->params['payment'];
 		}
 		if (isset($this->params['shipping'])) {
-			$shipping = (bool) $this->params['shipping'];
+			$shipping = (int) $this->params['shipping'];
 		}
 
 		$orders[0]->setUpdatePayment($payment);

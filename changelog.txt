@@ -1,3 +1,9 @@
+'''Version 2.9.39'''
+* adjusted type-hints to API documentations
+
+'''Version 2.9.38'''
+* minor bug fixes
+
 '''Version 2.9.37'''
 * added outputting open graph and other tags with the mobile redirect if activated in the configuration
 * added a replacement class tree for ShopgateMobileRedirect
