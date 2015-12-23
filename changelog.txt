@@ -1,5 +1,5 @@
 '''Version 2.9.39'''
-* changed many bool types hints to int
+* adjusted type-hints to API documentations
 
 '''Version 2.9.38'''
 * minor bug fixes

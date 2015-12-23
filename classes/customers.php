@@ -517,8 +517,8 @@ class ShopgateAddress extends ShopgateContainer {
 	 * @param int $value ShopgateAddress::BOTH or ShopgateAddress::INVOICE or ShopgateAddress::DELIVERY
 	 */
 	public function setAddressType($value) {
-		$this->is_invoice_address  = (int) ($value & self::INVOICE);
-		$this->is_delivery_address = (int) ($value & self::DELIVERY);
+		$this->is_invoice_address  = (int) (bool) ($value & self::INVOICE);
+		$this->is_delivery_address = (int) (bool) ($value & self::DELIVERY);
 	}
 
 	/**
