@@ -1,3 +1,7 @@
+'''Version 2.9.40'''
+* fixed issue with curly brace regex for jsHeader template
+* started unit test structure
+
 '''Version 2.9.39'''
 * adjusted type-hints to API documentations
 
