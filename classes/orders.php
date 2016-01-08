@@ -181,6 +181,7 @@ abstract class ShopgateCartBase extends ShopgateContainer {
     const AMAZON_PAYMENT = "MWS";
 
 	protected $customer_number;
+	protected $customer_ip;
 
 	protected $external_order_number;
 	protected $external_order_id;
@@ -227,6 +228,13 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	 */
 	public function setCustomerNumber($value) {
 		$this->customer_number = $value;
+	}
+
+	/**
+	 * @param $ip - ip of the customer
+	 */
+	public function setCustomerIp($ip) {
+		$this->customer_ip = $ip;
 	}
 
 	/**
@@ -530,6 +538,13 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	 */
 	public function getCustomerNumber() {
 		return $this->customer_number;
+	}
+
+	/**
+	 * @return string|null
+	 */
+	public function getCustomerIp() {
+		return $this->customer_ip;
 	}
 
 	/**
