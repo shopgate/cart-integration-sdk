@@ -396,7 +396,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 					),
 					'search'     => array(
 						'pageType'   => Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_SEARCH,
-						'parameters' => array('search_query' => addslashes($this->searchQuery)),
+						'parameters' => array('search_query' => $this->searchQuery),
 					),
 					'start'      => array(
 						'pageType'   => Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_HOME,
@@ -752,7 +752,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 	}
 	
 	public function buildScriptSearch($searchQuery, $autoRedirect = true){
-		$this->searchQuery = addslashes($searchQuery);
+		$this->searchQuery = addslashes(htmlentities($searchQuery));
 		$this->redirectType = 'search';
 
 		$this->setAdditionalHttpHeaders();

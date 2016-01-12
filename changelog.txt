@@ -1,7 +1,6 @@
-'''Version 2.9.41'''
-* added customer ip address getter/setter in order object
-
 '''Version 2.9.40'''
+* added better escaping for the mobile redirect of search queries
+* added customer ip address getter/setter in order object
 * fixed issue with curly brace regex for jsHeader template
 * started unit test structure
 
