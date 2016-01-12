@@ -3,6 +3,7 @@
 * added customer ip address getter/setter in order object
 * fixed issue with curly brace regex for jsHeader template
 * started unit test structure
+* removed PHP 4 style constructors from vendor classes as of http://php.net/manual/de/migration70.deprecated.php
 
 '''Version 2.9.39'''
 * adjusted type-hints to API documentations
