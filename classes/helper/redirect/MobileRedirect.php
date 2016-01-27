@@ -208,6 +208,10 @@ class Shopgate_Helper_Redirect_MobileRedirect
 	 */
 	protected function buildTags($pageType, $parameters = array())
 	{
+		if ($this->settingsManager->isMobileHeaderDisabled()) {
+			return '';
+		}
+		
 		$parameters = $this->siteParameters + $parameters;
 		
 		$parameters['link_tags']     = $this->tagsGenerator->getTagsFor($pageType, $parameters);
