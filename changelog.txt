@@ -1,3 +1,6 @@
+'''Version 2.9.41'''
+* meta tags and mobile header script won't be displayed anymore for inactive shops when using Shopgate_Helper_Redirect_MobileRedirect
+
 '''Version 2.9.40'''
 * added better escaping for the mobile redirect of search queries
 * added customer ip address getter/setter in order object
