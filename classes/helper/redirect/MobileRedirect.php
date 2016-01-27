@@ -104,7 +104,7 @@ class Shopgate_Helper_Redirect_MobileRedirect
 	/**
 	 * Suppresses the redirect via JavaScript without disabling the mobile header.
 	 *
-	 * @deprecated Use suppressRedirectTypes() instead.
+	 * @deprecated Use supressRedirectTechniques() instead.
 	 */
 	public function suppressRedirect()
 	{
