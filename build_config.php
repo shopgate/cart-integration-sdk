@@ -10,8 +10,8 @@ $buildConfig = array (
 	'version_files' => array (
 		'0' => array (
 			'path' => "/classes/core.php",
-			'match' => "/define\(\'SHOPGATE_LIBRARY_VERSION\',(.+)\)/",
-			'replace' => "define(\'SHOPGATE_LIBRARY_VERSION\', \'{PLUGIN_VERSION}\')",
+			'match' => '/define\("SHOPGATE_LIBRARY_VERSION",(.+)\)/',
+			'replace' => 'define("SHOPGATE_LIBRARY_VERSION", "{PLUGIN_VERSION}")',
 		),
 	),
 	'wiki' => array (
