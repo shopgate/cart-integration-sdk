@@ -217,8 +217,9 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	protected $external_coupons = array();
 	protected $shopgate_coupons = array();
 
-	protected $items = array();
-
+	protected $items                   = array();
+	protected $tracking_get_parameters = array();
+	
 	##########
 	# Setter #
 	##########
@@ -527,8 +528,16 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 
 		$this->items = $value;
 	}
-
-
+	
+	/**
+	 * @param array $value
+	 */
+	public function setTrackingGetParameters($value)
+	{
+		$this->tracking_get_parameters = (array)$value;
+	}
+	
+	
 	##########
 	# Getter #
 	##########
@@ -723,6 +732,14 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	public function getItems() {
 		return $this->items;
 	}
+	
+	/**
+	 * @return array
+	 */
+	public function getTrackingGetParameters()
+	{
+		return $this->tracking_get_parameters;
+	}
 }
 
 class ShopgateCart extends ShopgateCartBase {
@@ -773,8 +790,7 @@ class ShopgateOrder extends ShopgateCartBase {
 	protected $update_payment = 0;
 
 	protected $delivery_notes = array();
-	protected $tracking_get_parameters = array();
-
+	
 	public function accept(ShopgateContainerVisitor $v) {
 		$v->visitOrder($this);
 	}
@@ -935,15 +951,10 @@ class ShopgateOrder extends ShopgateCartBase {
 
 		$this->delivery_notes = $value;
 	}
-
-	/**
-	 * @param array $value
-	 */
-	public function setTrackingGetParameters($value) {
-		$this->tracking_get_parameters = (array) $value;
-	}
-
-
+	
+	
+	
+	
 	##########
 	# Getter #
 	##########
@@ -1114,13 +1125,8 @@ class ShopgateOrder extends ShopgateCartBase {
 	public function getDeliveryNotes() {
 		return $this->delivery_notes;
 	}
-
-	/**
-	 * @return array
-	 */
-	public function getTrackingGetParameters() {
-		return $this->tracking_get_parameters;
-	}
+	
+	
 }
 
 class ShopgateOrderItem extends ShopgateContainer {
