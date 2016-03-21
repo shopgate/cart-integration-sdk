@@ -54,7 +54,7 @@ class Shopgate_Helper_Redirect_LinkBuilder implements Shopgate_Helper_Redirect_L
 	
 	public function buildHome(array $parameters = array())
 	{
-		return $this->appendRedirectableGetParameters($this->getUrlFor(self::LINK_TYPE_HOME, $parameters));
+		return $this->buildScriptFor(self::LINK_TYPE_HOME, '', '');
 	}
 	
 	public function buildProduct($uid, array $parameters = array())
