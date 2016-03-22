@@ -1,3 +1,6 @@
+'''Version 2.9.43'''
+* fixed an issue with home page infinite redirect loop in magento
+
 '''Version 2.9.42'''
 * moved ShopgateOrder::$tracking_get_parameters and its getter & setter to ShopgateCartBase
 
