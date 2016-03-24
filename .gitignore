@@ -6,3 +6,5 @@
 /.settings
 /.IDEA
 /.idea
+/composer.*
+/vendor

@@ -45,14 +45,14 @@ class Shopgate_Helper_Redirect_KeywordsManager implements Shopgate_Helper_Redire
 	protected $disableUpdate;
 	
 	/**
-	 * @param ShopgateMerchantApi $merchantApi
-	 * @param string              $whitelistCacheFilePath
-	 * @param string              $blacklistCacheFilePath
-	 * @param int                 $cacheTimeout
-	 * @param bool                $disableUpdate
+	 * @param ShopgateMerchantApiInterface $merchantApi
+	 * @param string                       $whitelistCacheFilePath
+	 * @param string                       $blacklistCacheFilePath
+	 * @param int                          $cacheTimeout
+	 * @param bool                         $disableUpdate
 	 */
 	public function __construct(
-		ShopgateMerchantApi $merchantApi,
+		ShopgateMerchantApiInterface $merchantApi,
 		$whitelistCacheFilePath,
 		$blacklistCacheFilePath,
 		$cacheTimeout = self::DEFAULT_CACHE_TIME,
@@ -73,16 +73,19 @@ class Shopgate_Helper_Redirect_KeywordsManager implements Shopgate_Helper_Redire
 	public function toRegEx()
 	{
 		return
-			'/' .
+			'/^' .
+			
+			// negative lookahead for the blacklist
+			'((?!' . implode('|', array_map(array($this, 'prepareKeyword'), $this->blacklist)) . ').)*' .
 			
 			// positive lookahead for the whitelist
 			'(?=' . implode('|', array_map(array($this, 'prepareKeyword'), $this->whitelist)) . ')' .
 			
 			// negative lookahead for the blacklist
-			'(?!' . implode('|', array_map(array($this, 'prepareKeyword'), $this->blacklist)) . ')' .
+			'((?!' . implode('|', array_map(array($this, 'prepareKeyword'), $this->blacklist)) . ').)*' .
 			
 			// modfiers: case-insensitive
-			'/i';
+			'$/i';
 	}
 	
 	public function getWhitelist()

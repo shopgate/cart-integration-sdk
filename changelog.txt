@@ -1,7 +1,6 @@
-'''Version 2.9.43'''
-* fixed an issue with home page infinite redirect loop
-
 '''Version 2.9.42'''
+* fixed an issue with home page infinite redirect loop
+* fixed a bug in processing the user agent blacklist used for mobile redirect
 * moved ShopgateOrder::$tracking_get_parameters and its getter & setter to ShopgateCartBase
 
 '''Version 2.9.41'''
