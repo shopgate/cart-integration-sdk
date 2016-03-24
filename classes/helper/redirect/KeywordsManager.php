@@ -45,14 +45,14 @@ class Shopgate_Helper_Redirect_KeywordsManager implements Shopgate_Helper_Redire
 	protected $disableUpdate;
 	
 	/**
-	 * @param ShopgateMerchantApi $merchantApi
-	 * @param string              $whitelistCacheFilePath
-	 * @param string              $blacklistCacheFilePath
-	 * @param int                 $cacheTimeout
-	 * @param bool                $disableUpdate
+	 * @param ShopgateMerchantApiInterface $merchantApi
+	 * @param string                       $whitelistCacheFilePath
+	 * @param string                       $blacklistCacheFilePath
+	 * @param int                          $cacheTimeout
+	 * @param bool                         $disableUpdate
 	 */
 	public function __construct(
-		ShopgateMerchantApi $merchantApi,
+		ShopgateMerchantApiInterface $merchantApi,
 		$whitelistCacheFilePath,
 		$blacklistCacheFilePath,
 		$cacheTimeout = self::DEFAULT_CACHE_TIME,
