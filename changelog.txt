@@ -1,3 +1,6 @@
+'''Version 2.9.43'''
+* changed error reporting settings for development environments
+
 '''Version 2.9.42'''
 * fixed an issue with home page infinite redirect loop
 * fixed a bug in processing the user agent blacklist used for mobile redirect

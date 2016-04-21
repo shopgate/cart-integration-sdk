@@ -176,8 +176,14 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				ShopgateLogger::getInstance()->keepDebugLog(!empty($this->params['keep_debug_log']));
 			}
 			
-			// enable error reporting if requested
-			if (!empty($this->params['error_reporting'])) {
+			// enable error reporting if requested or running on development environment
+			if (
+				!empty($this->params['error_reporting'])
+				|| in_array($this->config->getServer(), array('custom', 'pg'))
+			) {
+				if (!isset($this->params['error_reporting'])) {
+					$this->params['error_reporting'] = 32767; // equivalent to E_ALL before PHP 5.4
+				}
 				error_reporting($this->params['error_reporting']);
 				ini_set('display_errors', (version_compare(PHP_VERSION, '5.2.4', '>=')) ? 'stdout' : true);
 			}
@@ -192,9 +198,9 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			
 			// check if the request is for the correct shop number or an adapter-plugin
 			if (
-					!$this->config->getIsShopgateAdapter() &&
-					!empty($this->params['shop_number']) &&
-					($this->params['shop_number'] != $this->config->getShopNumber())
+				!$this->config->getIsShopgateAdapter() &&
+				!empty($this->params['shop_number']) &&
+				($this->params['shop_number'] != $this->config->getShopNumber())
 			) {
 				throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_UNKNOWN_SHOP_NUMBER, "{$this->params['shop_number']}");
 			}
