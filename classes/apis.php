@@ -182,7 +182,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				|| in_array($this->config->getServer(), array('custom', 'pg'))
 			) {
 				if (!isset($this->params['error_reporting'])) {
-					$this->params['error_reporting'] = E_ALL;
+					$this->params['error_reporting'] = 32767; // equivalent to E_ALL before PHP 5.4
 				}
 				error_reporting($this->params['error_reporting']);
 				ini_set('display_errors', (version_compare(PHP_VERSION, '5.2.4', '>=')) ? 'stdout' : true);
