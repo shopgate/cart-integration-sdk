@@ -1,5 +1,6 @@
 '''Version 2.9.43'''
 * changed error reporting settings for development environments
+* fixed encoding issue with non-object responses
 
 '''Version 2.9.42'''
 * fixed an issue with home page infinite redirect loop
