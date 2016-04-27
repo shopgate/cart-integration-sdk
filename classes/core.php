@@ -1347,7 +1347,7 @@ abstract class ShopgateObject {
 	}
 
 	/**
-	 * Encodes an array from a given encoding to UTF-8.
+	 * Encodes the values inside an array from a given encoding to UTF-8 recursively.
 	 *
 	 * @param array|string $array The array to encode.
 	 * @param string|string[] $sourceEncoding The (possible) encoding(s) of $string.
@@ -1367,7 +1367,7 @@ abstract class ShopgateObject {
 	}
 
 	/**
-	 * Decodes an array from a given encoding to UTF-8.
+	 * Decodes the values inside an array from UTF-8 to a given encoding recursively.
 	 *
 	 * @param array|string $utf8Array The array to decode.
 	 * @param string $destinationEncoding The desired encoding of the return value.
