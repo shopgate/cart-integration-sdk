@@ -1,8 +1,6 @@
-'''Version 2.9.44'''
-* fixes redirect when a shop is not active & full view mode 
-
 '''Version 2.9.43'''
 * changed error reporting settings for development environments
+* fixes redirect when a shop is not active & full view mode 
 
 '''Version 2.9.42'''
 * fixed an issue with home page infinite redirect loop
