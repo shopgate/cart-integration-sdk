@@ -1581,7 +1581,7 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 		
 		// check and reorganize the data of the SMA response
 		$data = $response->getData();
-		if (isset($data['orders']) || !is_array($data['orders'])) {
+		if (!isset($data['orders']) || !is_array($data['orders'])) {
 			throw new ShopgateLibraryException(ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE, '"orders" is not set or not an array. Response: '.var_export($data, true));
 		}
 		
