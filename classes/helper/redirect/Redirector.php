@@ -95,7 +95,7 @@ class Shopgate_Helper_Redirect_Redirector implements Shopgate_Helper_Redirect_Re
 	
 	public function redirect($url, $sendVary = true)
 	{
-		if ($this->settingsManager->isRedirectDisabled() && !$this->settingsManager->isMobileHeaderDisabled()) {
+		if ($this->settingsManager->isRedirectDisabled()) {
 			$this->settingsManager->setCookie();
 			
 			return;

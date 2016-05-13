@@ -1,6 +1,10 @@
+'''Version 2.9.44'''
+* won't crash anymore when an array of objects expected from the Shopgate Merchant API is set, but empty
+* fixed encoding issue with non-object responses
+
 '''Version 2.9.43'''
 * changed error reporting settings for development environments
-* fixed encoding issue with non-object responses
+* fixes redirect when a shop is not active & full view mode 
 
 '''Version 2.9.42'''
 * fixed an issue with home page infinite redirect loop
