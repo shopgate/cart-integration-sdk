@@ -1345,6 +1345,46 @@ abstract class ShopgateObject {
 				? $string
 				: $this->convertEncoding($string, $destinationEncoding, SHOPGATE_LIBRARY_ENCODING, $useIconv);
 	}
+
+	/**
+	 * Encodes the values inside an array from a given encoding to UTF-8 recursively.
+	 *
+	 * @param array|string $array The array to encode.
+	 * @param string|string[] $sourceEncoding The (possible) encoding(s) of $string.
+	 * @param bool $force Set this true to enforce encoding even if the source encoding is already UTF-8.
+	 * @param bool $useIconv True to use iconv instead of mb_convert_encoding even if the mb library is present.
+	 * @return array|string $utf8Array The UTF-8 encoded array.
+	 */
+	public function arrayToUtf8($array, $sourceEncoding = 'ISO-8859-15', $force = false, $useIconv = false) {
+		if (is_array($array)) {
+			$utf8Array = array();
+			foreach ($array as $key => $value) {
+				$utf8Array[$key] = $this->arrayToUtf8($value, $sourceEncoding, $force, $useIconv);
+			}
+			return $utf8Array;
+		}
+		return $this->stringToUtf8($array, $sourceEncoding, $force, $useIconv);
+	}
+
+	/**
+	 * Decodes the values inside an array from UTF-8 to a given encoding recursively.
+	 *
+	 * @param array|string $utf8Array The array to decode.
+	 * @param string $destinationEncoding The desired encoding of the return value.
+	 * @param bool $force Set this true to enforce encoding even if the destination encoding is set to UTF-8.
+	 * @param bool $useIconv True to use iconv instead of mb_convert_encoding even if the mb library is present.
+	 * @return array|string $array The UTF-8 decoded array.
+	 */
+	public function arrayFromUtf8($utf8Array, $destinationEncoding = 'ISO-8859-15', $force = false, $useIconv = false) {
+		if (is_array($utf8Array)) {
+			$array = array();
+			foreach ($utf8Array as $key => $value) {
+				$array[$key] = $this->arrayFromUtf8($value, $destinationEncoding, $force, $useIconv);
+			}
+			return $array;
+		}
+		return $this->stringFromUtf8($utf8Array, $destinationEncoding, $force, $useIconv);
+	}
 	
 	/**
 	 * Converts a string's encoding to another.
