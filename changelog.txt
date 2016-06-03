@@ -1,3 +1,6 @@
+'''Version 2.9.45'''
+* fixed product export issue related to invalid data in field tax_class
+
 '''Version 2.9.44'''
 * won't crash anymore when an array of objects expected from the Shopgate Merchant API is set, but empty
 * fixed encoding issue with non-object responses
