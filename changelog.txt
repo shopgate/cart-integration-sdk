@@ -1,3 +1,6 @@
+'''Version 2.9.46'''
+* made isMobile() check public in the redirector class
+
 '''Version 2.9.45'''
 * fixed product export issue related to invalid data in field tax_class
 
