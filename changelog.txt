@@ -2,7 +2,7 @@
 * made isMobile() check public in the redirector class
 
 '''Version 2.9.45'''
-* fixed product export issue related to invalid data in field tax_class
+* "tax_class" in the XML export of products is now CDATA, allowing for a correct handling of Umlauts and special characters
 
 '''Version 2.9.44'''
 * won't crash anymore when an array of objects expected from the Shopgate Merchant API is set, but empty
