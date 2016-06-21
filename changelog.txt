@@ -1,3 +1,6 @@
+'''Version 2.9.47'''
+* "manufacturer_item_number" in the XML export of products is now CDATA, allowing for a correct handling of Umlauts and special characters
+
 '''Version 2.9.46'''
 * made isMobile() check public in the redirector class
 
