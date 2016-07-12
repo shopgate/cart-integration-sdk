@@ -1,4 +1,5 @@
 '''Version 2.9.48'''
+* added process ID of incoming requests to access log
 * added new constant for checkCart error "CART_ITEM_PRODUCT_NOT_ALLOWED"
 
 '''Version 2.9.47'''
