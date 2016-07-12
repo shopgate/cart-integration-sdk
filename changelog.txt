@@ -1,3 +1,6 @@
+'''Version 2.9.48'''
+* added process ID of incoming requests to access log
+
 '''Version 2.9.47'''
 * "manufacturer_item_number" in the XML export of products is now CDATA, allowing for a correct handling of Umlauts and special characters
 
