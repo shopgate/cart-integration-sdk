@@ -1351,7 +1351,12 @@ abstract class ShopgateObject {
 	}
 	
 	/**
-	 * Encodes the values of an mixed $subject from a given encoding to UTF-8 recursively.
+	 * Encodes the values of an array, object or string from a given encoding to UTF-8 recursively.
+	 *
+	 * If the subject is an array, the values will be encoded, keys will be preserved.
+	 * If the subject is an object, all accessible properties' values will be encoded.
+	 * If the subject is a string, it will simply be encoded.
+	 * If the subject is anything else, it will be returned as is.
 	 *
 	 * @param mixed           $subject        The subject to encode
 	 * @param string|string[] $sourceEncoding The (possible) encoding(s) of $string
@@ -1385,7 +1390,12 @@ abstract class ShopgateObject {
 	}
 	
 	/**
-	 * Decodes the values of an mixed $subject from UTF-8 to a given encoding recursively
+	 * Decodes the values of a mixed $subject from UTF-8 to a given encoding recursively
+	 *
+         * If the subject is an array, the values will be encoded, keys will be preserved.
+         * If the subject is an object, all accessible properties' values will be encoded.
+         * If the subject is a string, it will simply be encoded.
+         * If the subject is anything else, it will be returned as is.
 	 *
 	 * @param mixed  $subject             The subject to decode
 	 * @param string $destinationEncoding The desired encoding of the return value

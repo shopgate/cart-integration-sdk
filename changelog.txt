@@ -1,5 +1,5 @@
 '''Version 2.9.49'''
-* fixed encoding issue related to objects in method ping
+* fixed encoding issue related to objects in Plugin API responses that are in JSON
 
 '''Version 2.9.48'''
 * added process ID of incoming requests to access log
