@@ -1,3 +1,6 @@
+'''Version 2.9.48'''
+* added new constant for checkCart error "CART_ITEM_PRODUCT_NOT_ALLOWED"
+
 '''Version 2.9.47'''
 * "manufacturer_item_number" in the XML export of products is now CDATA, allowing for a correct handling of Umlauts and special characters
 
