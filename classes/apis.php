@@ -151,7 +151,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		
 		// log incoming request
 		$this->log(
-			'ProzessId: '. $processId . ' Parameter: ' 
+			'process ID: '. $processId . ' parameters: ' 
 			. ShopgateLogger::getInstance()->cleanParamsForLog($data), ShopgateLogger::LOGTYPE_ACCESS
 		);
 		
