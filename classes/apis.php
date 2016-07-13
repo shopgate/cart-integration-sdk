@@ -2183,7 +2183,7 @@ abstract class ShopgatePluginApiResponse extends ShopgateObject {
 	}
 	
 	public function setData($data) {
-		$this->data = $this->arrayToUtf8($data, ShopgateObject::$sourceEncodings);
+		$this->data = $this->recursiveToUtf8($data, ShopgateObject::$sourceEncodings);
 	}
 	
 	abstract public function send();
