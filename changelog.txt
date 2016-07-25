@@ -1,5 +1,6 @@
 '''Version 2.9.50'''
 * added constant for new error code 222 (missing fields in register_customer)
+* updated deprecated status of product visibility statuses
 
 '''Version 2.9.49'''
 * fixed encoding issue related to objects in Plugin API responses that are in JSON
