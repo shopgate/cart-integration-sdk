@@ -228,6 +228,7 @@ class ShopgateLibraryException extends Exception {
 	
 	const REGISTER_FAILED_TO_ADD_USER = 220;
 	const REGISTER_USER_ALREADY_EXISTS = 221;
+	const REGISTER_MISSING_FIELDS = 222;
 	
 	// Cart Item Errors
 	const CART_ITEM_OUT_OF_STOCK = 300;
@@ -336,6 +337,7 @@ class ShopgateLibraryException extends Exception {
 		
 		self::REGISTER_FAILED_TO_ADD_USER => 'failed to add user',
 		self::REGISTER_USER_ALREADY_EXISTS => 'the given username already exists',
+		self::REGISTER_MISSING_FIELDS => 'data fields are missing',
 
 		// Cart Item Errors
 		self::CART_ITEM_OUT_OF_STOCK => 'product is not in stock',
