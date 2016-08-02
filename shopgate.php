@@ -95,6 +95,11 @@ require_once(dirname(__FILE__).DS.'classes'.DS.'helper/redirect/TagsGeneratorInt
 require_once(dirname(__FILE__).DS.'classes'.DS.'helper/redirect/TagsGenerator.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'helper/redirect/TemplateParserInterface.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'helper/redirect/TemplateParser.php');
+require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper/redirect/JsScriptBuilder.php');
+require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper/redirect/Forwarder.php');
+require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper/redirect/type/TypeInterface.php');
+require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper/redirect/type/Js.php');
+require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper/redirect/type/Http.php');
 
 // vendors
 require_once(dirname(__FILE__).DS.'vendors'.DS.'2d_is.php');
