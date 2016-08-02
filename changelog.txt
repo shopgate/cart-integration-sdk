@@ -1,3 +1,6 @@
+'''Version 2.9.51'''
+* http/js redirect split via new forwarder class
+
 '''Version 2.9.50'''
 * added constant for new error code 222 (missing fields in register_customer)
 * updated deprecated status of product visibility statuses
@@ -24,7 +27,7 @@
 
 '''Version 2.9.43'''
 * changed error reporting settings for development environments
-* fixes redirect when a shop is not active & full view mode 
+* fixes redirect when a shop is not active & full view mode
 
 '''Version 2.9.42'''
 * fixed an issue with home page infinite redirect loop
@@ -134,7 +137,7 @@
 
 '''Version 2.9.13'''
 * ShopgateLibraryException: new constructor argument for previous Exception; improved stack trace logging
-* product XML export: removed the subnode <paths> of <category> 
+* product XML export: removed the subnode <paths> of <category>
 * product XML export: The nodes <tax_percent> + <tax_class> will only be exported if a value was explicitly set
 * XML export: all invalid characters are filtered out now (according to the rules from www.w3.org)
 * added a new constant for product invisibility
@@ -149,7 +152,7 @@
 * bugfix: non-existent function ShopgateContainerVisitor::visitCoupon() was called
 
 '''Version 2.9.10'''
-* corrected wrong constant names 
+* corrected wrong constant names
 
 '''Version 2.9.9'''
 * it is now possible to get instances of Shopgate helper classes via function call to ensure that the helper functionality is available on every level in the plugin
@@ -184,7 +187,7 @@
 * export of reviews as xml added
 
 '''Version 2.8.10'''
-* added cdata for deep links in categories and products (xml) 
+* added cdata for deep links in categories and products (xml)
 * extended cname validation
 * removed legacy code
 
@@ -209,7 +212,7 @@
 
 '''Version 2.8.4'''
 * regex adjustment for cname validation
-* new child node for grouped products / different display types added to xml 
+* new child node for grouped products / different display types added to xml
 
 '''Version 2.8.3'''
 * stripping invalid UTF-8 sequences now on XML export
@@ -407,7 +410,7 @@
 
 '''Version 2.3.1'''
 * if shop number is missing the js redirect script is not rendered
-* ping returns size and ownership of files from now on 
+* ping returns size and ownership of files from now on
 
 '''Version 2.3.0'''
 * New function get_settings() for exporting the shop's tax rates, tax rules and tax classes (and other settings in the future)
