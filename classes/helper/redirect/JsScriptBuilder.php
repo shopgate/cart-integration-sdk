@@ -79,12 +79,12 @@ class Shopgate_Helper_Redirect_JsScriptBuilder extends ShopgateObject
 
         $this->suppressRedirectHttp       = false;
         $this->suppressRedirectJavascript = false;
-        $this->siteParameters             = [];
+        $this->siteParameters             = array();
 
-        $this->pageTypeToRedirectMapping = [
+        $this->pageTypeToRedirectMapping = array(
             Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_HOME    => 'start',
             Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_PRODUCT => 'item',
-        ];
+        );
 
         try {
             $htmlTags = $this->settingsManager->getHtmlTags();
@@ -100,28 +100,28 @@ class Shopgate_Helper_Redirect_JsScriptBuilder extends ShopgateObject
     protected function getFallBackTags()
     {
         return $this->jsonEncode(
-            [
-                'html_tags' => [
-                    [
+            array(
+                'html_tags' => array(
+                    array(
                         'name'       => 'link',
-                        'attributes' => [
-                            [
+                        'attributes' => array(
+                            array(
                                 'name'  => 'rel',
                                 'value' => 'alternate',
-                            ],
-                            [
+                            ),
+                            array(
                                 'name'  => 'media',
                                 'value' => 'only screen and (max-width: 640px)',
-                            ],
-                            [
+                            ),
+                            array(
                                 'name'            => 'href',
                                 'value'           => '{deeplink_suffix}',
                                 'deeplink_suffix' => $this->settingsManager->getDefaultTemplatesByPageType(),
-                            ],
-                        ],
-                    ],
-                ],
-            ]
+                            ),
+                        ),
+                    ),
+                ),
+            )
         );
     }
 
@@ -133,7 +133,7 @@ class Shopgate_Helper_Redirect_JsScriptBuilder extends ShopgateObject
      */
     public function buildTags(
         $pageType,
-        $parameters = []
+        $parameters = array()
     ) {
         if ($this->settingsManager->isMobileHeaderDisabled()) {
             return '';

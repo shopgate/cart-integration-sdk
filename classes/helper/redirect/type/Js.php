@@ -42,7 +42,7 @@ class Shopgate_Helper_Redirect_Type_Js implements Shopgate_Helper_Redirect_Type_
     {
         return $this->jsBuilder->buildTags(
             Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_BRAND,
-            ['brand_name' => $manufacturer]
+            array('brand_name' => $manufacturer)
         );
     }
 
@@ -53,7 +53,7 @@ class Shopgate_Helper_Redirect_Type_Js implements Shopgate_Helper_Redirect_Type_
     {
         return $this->jsBuilder->buildTags(
             Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_CMS,
-            ['page_uid' => $cmsPage]
+            array('page_uid' => $cmsPage)
         );
     }
 
@@ -64,7 +64,7 @@ class Shopgate_Helper_Redirect_Type_Js implements Shopgate_Helper_Redirect_Type_
     {
         return $this->jsBuilder->buildTags(
             Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_CATEGORY,
-            ['category_uid' => $categoryId]
+            array('category_uid' => $categoryId)
         );
     }
 
@@ -91,7 +91,7 @@ class Shopgate_Helper_Redirect_Type_Js implements Shopgate_Helper_Redirect_Type_
     {
         return $this->jsBuilder->buildTags(
             Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_PRODUCT,
-            ['product_uid' => $productId]
+            array('product_uid' => $productId)
         );
     }
 
@@ -102,7 +102,7 @@ class Shopgate_Helper_Redirect_Type_Js implements Shopgate_Helper_Redirect_Type_
     {
         return $this->jsBuilder->buildTags(
             Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_SEARCH,
-            ['search_query' => $query]
+            array('search_query' => $query)
         );
     }
 }
