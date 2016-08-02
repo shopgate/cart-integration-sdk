@@ -43,16 +43,16 @@ class Shopgate_Helper_Redirect_JsScriptBuilder extends ShopgateObject
     protected $shopNumber;
 
     /** @var bool */
-    protected $suppressRedirectHttp;
-
-    /** @var bool */
-    protected $suppressRedirectJavascript;
+    protected $suppressRedirectJavascript = false;
 
     /** @var array [string, mixed] Parameters that should be replaced in the HTML tags, indexed by their name. */
-    protected $siteParameters;
+    protected $siteParameters = array();
 
     /** @var array [string, string] An array with the page names as indices and the "old" JS redirect types as values, if different. */
-    protected $pageTypeToRedirectMapping;
+    protected $pageTypeToRedirectMapping = array(
+        Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_HOME    => 'start',
+        Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_PRODUCT => 'item',
+    );
 
     /**
      * @param Shopgate_Helper_Redirect_RedirectorInterface      $redirector
@@ -76,15 +76,6 @@ class Shopgate_Helper_Redirect_JsScriptBuilder extends ShopgateObject
         $this->templateParser     = $templateParser;
         $this->jsTemplateFilePath = $jsTemplateFilePath;
         $this->shopNumber         = $shopNumber;
-
-        $this->suppressRedirectHttp       = false;
-        $this->suppressRedirectJavascript = false;
-        $this->siteParameters             = array();
-
-        $this->pageTypeToRedirectMapping = array(
-            Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_HOME    => 'start',
-            Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_PRODUCT => 'item',
-        );
 
         try {
             $htmlTags = $this->settingsManager->getHtmlTags();
@@ -272,6 +263,21 @@ class Shopgate_Helper_Redirect_JsScriptBuilder extends ShopgateObject
     public function setTemplateFile($file)
     {
         $this->jsTemplateFilePath = $file;
+
+        return $this;
+    }
+
+    /**
+     * Prints a value to JS script to prevent
+     * web app redirect
+     *
+     * @param bool $param
+     *
+     * @return Shopgate_Helper_Redirect_JsScriptBuilder
+     */
+    public function suppressWebAppRedirect($param)
+    {
+        $this->suppressRedirectJavascript = $param;
 
         return $this;
     }
