@@ -95,6 +95,7 @@ require_once(dirname(__FILE__).DS.'classes'.DS.'helper/redirect/TagsGeneratorInt
 require_once(dirname(__FILE__).DS.'classes'.DS.'helper/redirect/TagsGenerator.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'helper/redirect/TemplateParserInterface.php');
 require_once(dirname(__FILE__).DS.'classes'.DS.'helper/redirect/TemplateParser.php');
+require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper/redirect/JsScriptBuilderInterface.php');
 require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper/redirect/JsScriptBuilder.php');
 require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper/redirect/type/TypeInterface.php');
 require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper/redirect/type/Js.php');
