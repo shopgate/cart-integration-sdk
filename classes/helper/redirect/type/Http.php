@@ -25,19 +25,19 @@
 class Shopgate_Helper_Redirect_Type_Http implements Shopgate_Helper_Redirect_Type_TypeInterface
 {
 
-	/** @var Shopgate_Helper_Redirect_Redirector */
+	/** @var Shopgate_Helper_Redirect_RedirectorInterface */
 	private $redirector;
 
 	/**
-	 * @param Shopgate_Helper_Redirect_Redirector $redirector
+	 * @param Shopgate_Helper_Redirect_RedirectorInterface $redirector
 	 */
-	public function __construct(Shopgate_Helper_Redirect_Redirector $redirector)
+	public function __construct(Shopgate_Helper_Redirect_RedirectorInterface $redirector)
 	{
 		$this->redirector = $redirector;
 	}
 
 	/**
-	 * @return Shopgate_Helper_Redirect_Redirector
+	 * @return Shopgate_Helper_Redirect_RedirectorInterface
 	 */
 	public function getBuilder()
 	{
