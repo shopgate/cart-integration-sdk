@@ -25,9 +25,7 @@
 class Shopgate_Helper_Redirect_Type_Http implements Shopgate_Helper_Redirect_Type_TypeInterface
 {
 
-    /**
-     * @var Shopgate_Helper_Redirect_Redirector
-     */
+    /** @var Shopgate_Helper_Redirect_Redirector */
     private $redirector;
 
     /**
@@ -38,59 +36,43 @@ class Shopgate_Helper_Redirect_Type_Http implements Shopgate_Helper_Redirect_Typ
         $this->redirector = $redirector;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function runBrandScript($manufacturer)
     {
         $this->redirector->redirectBrand($manufacturer);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function runCmsScript($cmsPage)
     {
         $this->redirector->redirectCms($cmsPage);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function runCategoryScript($categoryId)
     {
         $this->redirector->redirectCategory($categoryId);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function runDefaultScript()
     {
         $this->redirector->redirectDefault();
     }
 
-    /**
-     * @inheritdoc
-     */
     public function runHomeScript()
     {
         $this->redirector->redirectHome();
     }
 
-    /**
-     * @inheritdoc
-     */
     public function runProductScript($productId)
     {
         $this->redirector->redirectProduct($productId);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function runSearchScript($query)
     {
         $this->redirector->redirectSearch($query);
+    }
+
+    public function getBuilder()
+    {
+       return $this->redirector;
     }
 }

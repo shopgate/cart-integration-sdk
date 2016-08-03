@@ -24,9 +24,6 @@
  */
 class Shopgate_Helper_Redirect_JsScriptBuilder extends ShopgateObject
 {
-    /** @var Shopgate_Helper_Redirect_RedirectorInterface */
-    protected $redirector;
-
     /** @var Shopgate_Helper_Redirect_TagsGeneratorInterface */
     protected $tagsGenerator;
 
@@ -63,14 +60,12 @@ class Shopgate_Helper_Redirect_JsScriptBuilder extends ShopgateObject
      * @param string                                            $shopNumber
      */
     public function __construct(
-        Shopgate_Helper_Redirect_RedirectorInterface $redirector,
         Shopgate_Helper_Redirect_TagsGeneratorInterface $tagsGenerator,
         Shopgate_Helper_Redirect_SettingsManagerInterface $settingsManager,
         Shopgate_Helper_Redirect_TemplateParserInterface $templateParser,
         $jsTemplateFilePath,
         $shopNumber
     ) {
-        $this->redirector         = $redirector;
         $this->tagsGenerator      = $tagsGenerator;
         $this->settingsManager    = $settingsManager;
         $this->templateParser     = $templateParser;

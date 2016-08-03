@@ -72,4 +72,9 @@ interface Shopgate_Helper_Redirect_Type_TypeInterface
      * @return mixed
      */
     public function runSearchScript($query);
+
+    /**
+     * @return Shopgate_Helper_Redirect_JsScriptBuilder | Shopgate_Helper_Redirect_Redirector
+     */
+    public function getBuilder();
 }

@@ -35,9 +35,6 @@ class Shopgate_Helper_Redirect_Type_Js implements Shopgate_Helper_Redirect_Type_
         $this->jsBuilder = $jsBuilder;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function runBrandScript($manufacturer)
     {
         return $this->jsBuilder->buildTags(
@@ -46,9 +43,6 @@ class Shopgate_Helper_Redirect_Type_Js implements Shopgate_Helper_Redirect_Type_
         );
     }
 
-    /**
-     * @inheritdoc
-     */
     public function runCmsScript($cmsPage)
     {
         return $this->jsBuilder->buildTags(
@@ -57,9 +51,6 @@ class Shopgate_Helper_Redirect_Type_Js implements Shopgate_Helper_Redirect_Type_
         );
     }
 
-    /**
-     * @inheritdoc
-     */
     public function runCategoryScript($categoryId)
     {
         return $this->jsBuilder->buildTags(
@@ -68,25 +59,16 @@ class Shopgate_Helper_Redirect_Type_Js implements Shopgate_Helper_Redirect_Type_
         );
     }
 
-    /**
-     * @inheritdoc
-     */
     public function runDefaultScript()
     {
         return $this->jsBuilder->buildTags(Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_DEFAULT);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function runHomeScript()
     {
         return $this->jsBuilder->buildTags(Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_HOME);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function runProductScript($productId)
     {
         return $this->jsBuilder->buildTags(
@@ -95,14 +77,16 @@ class Shopgate_Helper_Redirect_Type_Js implements Shopgate_Helper_Redirect_Type_
         );
     }
 
-    /**
-     * @inheritdoc
-     */
     public function runSearchScript($query)
     {
         return $this->jsBuilder->buildTags(
             Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_SEARCH,
             array('search_query' => $query)
         );
+    }
+
+    public function getBuilder()
+    {
+        return $this->jsBuilder;
     }
 }

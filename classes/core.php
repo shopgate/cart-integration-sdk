@@ -1288,7 +1288,6 @@ class ShopgateBuilder {
         );
 
         $jsBuilder = new Shopgate_Helper_Redirect_JsScriptBuilder(
-            $redirector,
             $tagsGenerator,
             $settingsManager,
             $templateParser,
@@ -1296,9 +1295,12 @@ class ShopgateBuilder {
             $this->config->getShopNumber()
         );
 
+        $jsType   = new Shopgate_Helper_Redirect_Type_Js($jsBuilder);
+        $httpType = new Shopgate_Helper_Redirect_Type_Http($redirector);
+
         return new Shopgate_Helper_Redirect_Forwarder(
-            $redirector,
-            $jsBuilder
+            $httpType,
+            $jsType
         );
     }
 }

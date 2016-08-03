@@ -24,10 +24,6 @@
  */
 class Shopgate_Helper_Redirect_Forwarder extends ShopgateObject
 {
-    /** @var Shopgate_Helper_Redirect_Redirector */
-    private $redirector;
-    /** @var Shopgate_Helper_Redirect_JsScriptBuilder */
-    private $jsScriptBuilder;
     /** @var Shopgate_Helper_Redirect_Type_TypeInterface */
     private $currentType;
     /** @var Shopgate_Helper_Redirect_Type_Http */
@@ -40,11 +36,11 @@ class Shopgate_Helper_Redirect_Forwarder extends ShopgateObject
      * @param Shopgate_Helper_Redirect_JsScriptBuilder $jsScriptBuilder
      */
     public function __construct(
-        Shopgate_Helper_Redirect_Redirector $redirector,
-        Shopgate_Helper_Redirect_JsScriptBuilder $jsScriptBuilder
+        Shopgate_Helper_Redirect_Type_Http $httpType,
+        Shopgate_Helper_Redirect_Type_Js $jsType
     ) {
-        $this->redirector      = $redirector;
-        $this->jsScriptBuilder = $jsScriptBuilder;
+        $this->http = $httpType;
+        $this->js   = $jsType;
     }
 
     /**
@@ -52,9 +48,6 @@ class Shopgate_Helper_Redirect_Forwarder extends ShopgateObject
      */
     public function setTypeHttp()
     {
-        if (!$this->http) {
-            $this->http = new Shopgate_Helper_Redirect_Type_Http($this->redirector);
-        }
         $this->currentType = $this->http;
 
         return $this;
@@ -65,22 +58,9 @@ class Shopgate_Helper_Redirect_Forwarder extends ShopgateObject
      */
     public function setTypeJs()
     {
-        if (!$this->js) {
-            $this->js = new Shopgate_Helper_Redirect_Type_Js($this->jsScriptBuilder);
-        }
         $this->currentType = $this->js;
 
         return $this;
-    }
-
-    /**
-     * @param string | int $id
-     *
-     * @return mixed
-     */
-    public function loadCms($id)
-    {
-        return $this->getType()->runCmsScript($id);
     }
 
     /**
@@ -94,6 +74,16 @@ class Shopgate_Helper_Redirect_Forwarder extends ShopgateObject
         }
 
         return $this->currentType;
+    }
+
+    /**
+     * @param string | int $id
+     *
+     * @return mixed
+     */
+    public function loadCms($id)
+    {
+        return $this->getType()->runCmsScript($id);
     }
 
     /**
@@ -153,18 +143,10 @@ class Shopgate_Helper_Redirect_Forwarder extends ShopgateObject
     }
 
     /**
-     * @return Shopgate_Helper_Redirect_JsScriptBuilder
+     * @return Shopgate_Helper_Redirect_JsScriptBuilder | Shopgate_Helper_Redirect_Redirector
      */
-    public function getJsBuilder()
+    public function getBuilder()
     {
-        return $this->jsScriptBuilder;
-    }
-
-    /**
-     * @return Shopgate_Helper_Redirect_Redirector
-     */
-    public function getHttpBuilder()
-    {
-        return $this->redirector;
+        $this->getType()->getBuilder();
     }
 }
