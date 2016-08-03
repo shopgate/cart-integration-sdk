@@ -24,8 +24,6 @@
  */
 class Shopgate_Helper_Redirect_Forwarder extends ShopgateObject
 {
-    /** @var Shopgate_Helper_Redirect_Type_TypeInterface */
-    private $currentType;
     /** @var Shopgate_Helper_Redirect_Type_Http */
     private $http;
     /** @var Shopgate_Helper_Redirect_Type_Js */
@@ -44,109 +42,18 @@ class Shopgate_Helper_Redirect_Forwarder extends ShopgateObject
     }
 
     /**
-     * @return Shopgate_Helper_Redirect_Forwarder
+     * @return Shopgate_Helper_Redirect_Type_Http
      */
-    public function setTypeHttp()
+    public function getHttpType()
     {
-        $this->currentType = $this->http;
-
-        return $this;
+        return $this->http;
     }
 
     /**
-     * @return Shopgate_Helper_Redirect_Forwarder
+     * @return Shopgate_Helper_Redirect_Type_Js
      */
-    public function setTypeJs()
+    public function getJsType()
     {
-        $this->currentType = $this->js;
-
-        return $this;
-    }
-
-    /**
-     * @return Shopgate_Helper_Redirect_Type_TypeInterface
-     * @throws Exception
-     */
-    public function getType()
-    {
-        if (!$this->currentType) {
-            throw new Exception('Type was not set before calling the script');
-        }
-
-        return $this->currentType;
-    }
-
-    /**
-     * @param string | int $id
-     *
-     * @return mixed
-     */
-    public function loadCms($id)
-    {
-        return $this->getType()->runCmsScript($id);
-    }
-
-    /**
-     * @param string $manufacturer
-     *
-     * @return mixed
-     */
-    public function loadBrands($manufacturer)
-    {
-        return $this->getType()->runBrandScript($manufacturer);
-    }
-
-    /**
-     * @param string $query
-     *
-     * @return mixed
-     */
-    public function loadSearch($query)
-    {
-        return $this->getType()->runSearchScript($query);
-    }
-
-    /**
-     * @param string | int $productId
-     *
-     * @return mixed
-     */
-    public function loadProduct($productId)
-    {
-        return $this->getType()->runProductScript($productId);
-    }
-
-    /**
-     * @param string | int $categoryId
-     *
-     * @return mixed
-     */
-    public function loadCategory($categoryId)
-    {
-        return $this->getType()->runCategoryScript($categoryId);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function loadHome()
-    {
-        return $this->getType()->runHomeScript();
-    }
-
-    /**
-     * @return mixed
-     */
-    public function loadDefault()
-    {
-        return $this->getType()->runDefaultScript();
-    }
-
-    /**
-     * @return Shopgate_Helper_Redirect_JsScriptBuilder | Shopgate_Helper_Redirect_Redirector
-     */
-    public function getBuilder()
-    {
-        $this->getType()->getBuilder();
+        return $this->js;
     }
 }

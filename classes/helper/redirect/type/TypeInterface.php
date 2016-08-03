@@ -33,45 +33,45 @@ interface Shopgate_Helper_Redirect_Type_TypeInterface
      *
      * @return mixed
      */
-    public function runBrandScript($manufacturer);
-
-    /**
-     * @param string $cmsPage
-     *
-     * @return mixed
-     */
-    public function runCmsScript($cmsPage);
+    public function loadBrand($manufacturer);
 
     /**
      * @param string | int $categoryId
      *
      * @return mixed
      */
-    public function runCategoryScript($categoryId);
+    public function loadCategory($categoryId);
+
+    /**
+     * @param string $cmsPage
+     *
+     * @return mixed
+     */
+    public function loadCms($cmsPage);
 
     /**
      * @return mixed
      */
-    public function runDefaultScript();
+    public function loadDefault();
 
     /**
      * @return mixed
      */
-    public function runHomeScript();
+    public function loadHome();
 
     /**
      * @param string | int $productId
      *
      * @return mixed
      */
-    public function runProductScript($productId);
+    public function loadProduct($productId);
 
     /**
      * @param string $query
      *
      * @return mixed
      */
-    public function runSearchScript($query);
+    public function loadSearch($query);
 
     /**
      * @return Shopgate_Helper_Redirect_JsScriptBuilder | Shopgate_Helper_Redirect_Redirector

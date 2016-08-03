@@ -35,7 +35,7 @@ class Shopgate_Helper_Redirect_Type_Js implements Shopgate_Helper_Redirect_Type_
         $this->jsBuilder = $jsBuilder;
     }
 
-    public function runBrandScript($manufacturer)
+    public function loadBrand($manufacturer)
     {
         return $this->jsBuilder->buildTags(
             Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_BRAND,
@@ -43,15 +43,7 @@ class Shopgate_Helper_Redirect_Type_Js implements Shopgate_Helper_Redirect_Type_
         );
     }
 
-    public function runCmsScript($cmsPage)
-    {
-        return $this->jsBuilder->buildTags(
-            Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_CMS,
-            array('page_uid' => $cmsPage)
-        );
-    }
-
-    public function runCategoryScript($categoryId)
+    public function loadCategory($categoryId)
     {
         return $this->jsBuilder->buildTags(
             Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_CATEGORY,
@@ -59,17 +51,25 @@ class Shopgate_Helper_Redirect_Type_Js implements Shopgate_Helper_Redirect_Type_
         );
     }
 
-    public function runDefaultScript()
+    public function loadCms($cmsPage)
+    {
+        return $this->jsBuilder->buildTags(
+            Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_CMS,
+            array('page_uid' => $cmsPage)
+        );
+    }
+
+    public function loadDefault()
     {
         return $this->jsBuilder->buildTags(Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_DEFAULT);
     }
 
-    public function runHomeScript()
+    public function loadHome()
     {
         return $this->jsBuilder->buildTags(Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_HOME);
     }
 
-    public function runProductScript($productId)
+    public function loadProduct($productId)
     {
         return $this->jsBuilder->buildTags(
             Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_PRODUCT,
@@ -77,7 +77,7 @@ class Shopgate_Helper_Redirect_Type_Js implements Shopgate_Helper_Redirect_Type_
         );
     }
 
-    public function runSearchScript($query)
+    public function loadSearch($query)
     {
         return $this->jsBuilder->buildTags(
             Shopgate_Helper_Redirect_TagsGeneratorInterface::PAGE_TYPE_SEARCH,

@@ -36,43 +36,43 @@ class Shopgate_Helper_Redirect_Type_Http implements Shopgate_Helper_Redirect_Typ
         $this->redirector = $redirector;
     }
 
-    public function runBrandScript($manufacturer)
+    public function loadBrand($manufacturer)
     {
         $this->redirector->redirectBrand($manufacturer);
     }
 
-    public function runCmsScript($cmsPage)
-    {
-        $this->redirector->redirectCms($cmsPage);
-    }
-
-    public function runCategoryScript($categoryId)
+    public function loadCategory($categoryId)
     {
         $this->redirector->redirectCategory($categoryId);
     }
 
-    public function runDefaultScript()
+    public function loadCms($cmsPage)
+    {
+        $this->redirector->redirectCms($cmsPage);
+    }
+
+    public function loadDefault()
     {
         $this->redirector->redirectDefault();
     }
 
-    public function runHomeScript()
+    public function loadHome()
     {
         $this->redirector->redirectHome();
     }
 
-    public function runProductScript($productId)
+    public function loadProduct($productId)
     {
         $this->redirector->redirectProduct($productId);
     }
 
-    public function runSearchScript($query)
+    public function loadSearch($query)
     {
         $this->redirector->redirectSearch($query);
     }
 
     public function getBuilder()
     {
-       return $this->redirector;
+        return $this->redirector;
     }
 }
