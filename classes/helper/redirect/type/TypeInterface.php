@@ -29,52 +29,52 @@ interface Shopgate_Helper_Redirect_Type_TypeInterface
     const JS   = 'js';
 
     /**
+     * @return Shopgate_Helper_Redirect_JsScriptBuilder | Shopgate_Helper_Redirect_Redirector
+     */
+    public function getBuilder();
+
+    /**
      * @param string $manufacturer
      *
-     * @return mixed
+     * @return string | void
      */
     public function loadBrand($manufacturer);
 
     /**
      * @param string | int $categoryId
      *
-     * @return mixed
+     * @return string | void
      */
     public function loadCategory($categoryId);
 
     /**
      * @param string $cmsPage
      *
-     * @return mixed
+     * @return string | void
      */
     public function loadCms($cmsPage);
 
     /**
-     * @return mixed
+     * @return string | void
      */
     public function loadDefault();
 
     /**
-     * @return mixed
+     * @return string | void
      */
     public function loadHome();
 
     /**
      * @param string | int $productId
      *
-     * @return mixed
+     * @return string | void
      */
     public function loadProduct($productId);
 
     /**
      * @param string $query
      *
-     * @return mixed
+     * @return string | void
      */
     public function loadSearch($query);
-
-    /**
-     * @return Shopgate_Helper_Redirect_JsScriptBuilder | Shopgate_Helper_Redirect_Redirector
-     */
-    public function getBuilder();
 }

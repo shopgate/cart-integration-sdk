@@ -1119,6 +1119,10 @@ class ShopgateBuilder {
 	 * @param array  $cookie [string, mixed] A copy of $_COOKIE or the request cookies in the form of $_COOKIE.
 	 *
 	 * @return Shopgate_Helper_Redirect_MobileRedirect
+     *
+     * @deprecated 3.0.0 - deprecated as of 2.9.51
+     * @see buildJsRedirect()
+     * @see buildHttpRedirect()
 	 */
 	public function buildMobileRedirect($userAgent, array $get, array $cookie) {
 		$settingsManager = new Shopgate_Helper_Redirect_SettingsManager($this->config, $get, $cookie);
@@ -1156,15 +1160,52 @@ class ShopgateBuilder {
 	}
 
     /**
-     * Helps creating the HTTP/JS forwarder
+     * Generates JavaScript code to redirect the
+     * current page Shopgate mobile site
+     *
+     * @param array $get
+     * @param array $cookie
+     *
+     * @return Shopgate_Helper_Redirect_Type_Js
+     */
+    public function buildJsRedirect(array $get, array $cookie)
+    {
+        $settingsManager = new Shopgate_Helper_Redirect_SettingsManager($this->config, $get, $cookie);
+        $templateParser  = new Shopgate_Helper_Redirect_TemplateParser();
+
+        $linkBuilder   = new Shopgate_Helper_Redirect_LinkBuilder(
+            $settingsManager,
+            $templateParser
+        );
+        $tagsGenerator = new Shopgate_Helper_Redirect_TagsGenerator(
+            $linkBuilder,
+            $templateParser
+        );
+
+        $jsBuilder = new Shopgate_Helper_Redirect_JsScriptBuilder(
+            $tagsGenerator,
+            $settingsManager,
+            $templateParser,
+            dirname(__FILE__) . '/../assets/js_header.html',
+            $this->config->getShopNumber()
+        );
+
+        $jsType = new Shopgate_Helper_Redirect_Type_Js($jsBuilder);
+
+        return $jsType;
+    }
+
+    /**
+     * Attempts to redirect via an HTTP header call
+     * before the page is loaded
      *
      * @param string $userAgent - browser agent string
      * @param array  $get
      * @param array  $cookie
      *
-     * @return Shopgate_Helper_Redirect_Forwarder
+     * @return Shopgate_Helper_Redirect_Type_Http
      */
-    public function buildRedirectForwarder($userAgent, array $get, array $cookie)
+    public function buildHttpRedirect($userAgent, array $get, array $cookie)
     {
         $settingsManager = new Shopgate_Helper_Redirect_SettingsManager($this->config, $get, $cookie);
         $templateParser  = new Shopgate_Helper_Redirect_TemplateParser();
@@ -1185,26 +1226,7 @@ class ShopgateBuilder {
             $userAgent
         );
 
-        $tagsGenerator = new Shopgate_Helper_Redirect_TagsGenerator(
-            $linkBuilder,
-            $templateParser
-        );
-
-        $jsBuilder = new Shopgate_Helper_Redirect_JsScriptBuilder(
-            $tagsGenerator,
-            $settingsManager,
-            $templateParser,
-            dirname(__FILE__) . '/../assets/js_header.html',
-            $this->config->getShopNumber()
-        );
-
-        $jsType   = new Shopgate_Helper_Redirect_Type_Js($jsBuilder);
-        $httpType = new Shopgate_Helper_Redirect_Type_Http($redirector);
-
-        return new Shopgate_Helper_Redirect_Forwarder(
-            $httpType,
-            $jsType
-        );
+        return new Shopgate_Helper_Redirect_Type_Http($redirector);
     }
 }
 
