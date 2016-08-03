@@ -22,59 +22,57 @@
  *
  * @author Shopgate GmbH <interfaces@shopgate.com>
  */
-interface Shopgate_Helper_Redirect_Type_TypeInterface
+interface Shopgate_Helper_Redirect_JsScriptBuilderInterface
 {
-
-	const HTTP = 'http';
-	const JS   = 'js';
-
 	/**
-	 * @return Shopgate_Helper_Redirect_JsScriptBuilder | Shopgate_Helper_Redirect_Redirector
-	 */
-	public function getBuilder();
-
-	/**
-	 * @param string $manufacturer
+	 * @param string $pageType
+	 * @param array  $parameters [string, string]
 	 *
-	 * @return string | void
+	 * @return string
 	 */
-	public function loadBrand($manufacturer);
+	public function buildTags($pageType, $parameters = array());
 
 	/**
-	 * @param string | int $categoryId
+	 * Sets the file path of javascript template
+	 * to use
 	 *
-	 * @return string | void
-	 */
-	public function loadCategory($categoryId);
-
-	/**
-	 * @param string $cmsPage
+	 * @param string $filePath
 	 *
-	 * @return string | void
+	 * @return Shopgate_Helper_Redirect_JsScriptBuilder
 	 */
-	public function loadCms($cmsPage);
+	public function setJsTemplateFilePath($filePath);
 
 	/**
-	 * @return string | void
-	 */
-	public function loadDefault();
-
-	/**
-	 * @return string | void
-	 */
-	public function loadHome();
-
-	/**
-	 * @param string | int $productId
+	 * Helps set all parameters at once
 	 *
-	 * @return string | void
+	 * @param array $params - array(key => value)
+	 *
+	 * @return Shopgate_Helper_Redirect_JsScriptBuilder
 	 */
-	public function loadProduct($productId);
+	public function setSiteParameters($params);
 
 	/**
-	 * @param string $query
+	 * @param string $key
+	 * @param string $value
 	 *
-	 * @return string | void
+	 * @return Shopgate_Helper_Redirect_JsScriptBuilder
 	 */
-	public function loadSearch($query);
+	public function setSiteParameter($key, $value);
+
+	/**
+	 * @param string $file
+	 *
+	 * @return Shopgate_Helper_Redirect_JsScriptBuilder
+	 */
+	public function setTemplateFile($file);
+
+	/**
+	 * Prints a value to JS script to prevent
+	 * web app redirect
+	 *
+	 * @param bool $param
+	 *
+	 * @return Shopgate_Helper_Redirect_JsScriptBuilder
+	 */
+	public function suppressWebAppRedirect($param);
 }
