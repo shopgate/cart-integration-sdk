@@ -29,7 +29,7 @@ interface Shopgate_Helper_Redirect_Type_TypeInterface
 	const JS   = 'js';
 
 	/**
-	 * @return Shopgate_Helper_Redirect_JsScriptBuilder | Shopgate_Helper_Redirect_Redirector
+	 * @return Shopgate_Helper_Redirect_JsScriptBuilderInterface | Shopgate_Helper_Redirect_Redirector
 	 */
 	public function getBuilder();
 

@@ -38,7 +38,7 @@ interface Shopgate_Helper_Redirect_JsScriptBuilderInterface
 	 *
 	 * @param string $filePath
 	 *
-	 * @return Shopgate_Helper_Redirect_JsScriptBuilder
+	 * @return Shopgate_Helper_Redirect_JsScriptBuilderInterface
 	 */
 	public function setJsTemplateFilePath($filePath);
 
@@ -47,7 +47,7 @@ interface Shopgate_Helper_Redirect_JsScriptBuilderInterface
 	 *
 	 * @param array $params - array(key => value)
 	 *
-	 * @return Shopgate_Helper_Redirect_JsScriptBuilder
+	 * @return Shopgate_Helper_Redirect_JsScriptBuilderInterface
 	 */
 	public function setSiteParameters($params);
 
@@ -55,14 +55,14 @@ interface Shopgate_Helper_Redirect_JsScriptBuilderInterface
 	 * @param string $key
 	 * @param string $value
 	 *
-	 * @return Shopgate_Helper_Redirect_JsScriptBuilder
+	 * @return Shopgate_Helper_Redirect_JsScriptBuilderInterface
 	 */
 	public function setSiteParameter($key, $value);
 
 	/**
 	 * @param string $file
 	 *
-	 * @return Shopgate_Helper_Redirect_JsScriptBuilder
+	 * @return Shopgate_Helper_Redirect_JsScriptBuilderInterface
 	 */
 	public function setTemplateFile($file);
 
@@ -72,7 +72,7 @@ interface Shopgate_Helper_Redirect_JsScriptBuilderInterface
 	 *
 	 * @param bool $param
 	 *
-	 * @return Shopgate_Helper_Redirect_JsScriptBuilder
+	 * @return Shopgate_Helper_Redirect_JsScriptBuilderInterface
 	 */
 	public function suppressWebAppRedirect($param);
 }

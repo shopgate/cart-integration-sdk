@@ -24,19 +24,19 @@
  */
 class Shopgate_Helper_Redirect_Type_Js implements Shopgate_Helper_Redirect_Type_TypeInterface
 {
-	/** @var Shopgate_Helper_Redirect_JsScriptBuilder */
+	/** @var Shopgate_Helper_Redirect_JsScriptBuilderInterface */
 	private $jsBuilder;
 
 	/**
-	 * @param Shopgate_Helper_Redirect_JsScriptBuilder $jsBuilder
+	 * @param Shopgate_Helper_Redirect_JsScriptBuilderInterface $jsBuilder
 	 */
-	public function __construct(Shopgate_Helper_Redirect_JsScriptBuilder $jsBuilder)
+	public function __construct(Shopgate_Helper_Redirect_JsScriptBuilderInterface $jsBuilder)
 	{
 		$this->jsBuilder = $jsBuilder;
 	}
 
 	/**
-	 * @return Shopgate_Helper_Redirect_JsScriptBuilder
+	 * @return Shopgate_Helper_Redirect_JsScriptBuilderInterface
 	 */
 	public function getBuilder()
 	{
