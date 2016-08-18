@@ -2783,7 +2783,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @param string $orderDateFrom
 	 * @param string $sortOrder
 	 *
-	 * @return ShopgateExternalOrder[] A list of ShopgateExternalOrder objects
+	 * @return ShopgateExternalOrder[] A list of ShopgateExternalOrder objects.
 	 *
 	 * @throws ShopgateLibraryException
 	 */
@@ -2797,7 +2797,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @param string $customerToken
 	 * @param ShopgateSyncItem[] $items A list of ShopgateSyncItem objects that need to be synchronized
 	 *
-	 * @return ShopgateSyncItem[] The updated list of ShopgateSyncItem objects
+	 * @return ShopgateSyncItem[] The updated list of ShopgateSyncItem objects.
 	 */
 	public abstract function syncFavouriteList($customerToken, $items);
 
@@ -2839,6 +2839,17 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 * @throws ShopgateLibraryException
 	 */
 	protected abstract function createReviews($limit = null, $offset = null, array $uids = array());
+
+	/**
+	 * Returns an array of cache files that should be deleted.
+	 *
+	 * @return string[] A list of cache files.
+	 *
+	 * @see http://developer.shopgate.com/plugin_api/system_information/clear_cache
+	 */
+	protected function clearCache() {
+		return array();
+	}
 }
 
 interface ShopgateFileBufferInterface {
