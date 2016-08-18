@@ -1210,8 +1210,11 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 */
 	/** @noinspection PhpUnusedPrivateMethodInspection */
 	private function clearCache() {
-	
-		$files = array();
+		$files = $this->plugin->clearCache();
+		if (!is_array($files)) {
+			$files = array();
+		}
+
 		$files[] = $this->config->getRedirectKeywordCachePath();
 		$files[] = $this->config->getRedirectSkipKeywordCachePath();
 	
