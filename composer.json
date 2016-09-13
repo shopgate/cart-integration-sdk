@@ -16,5 +16,8 @@
     "require-dev": {
         "phpunit/phpunit": "4.8.*"
     },
+    "autoload": {
+        "files": ["./shopgate.php"]
+    },
     "minimum-stability": "dev"
 }
