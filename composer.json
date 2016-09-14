@@ -3,7 +3,6 @@
     "description": "A PHP framework supporting the implementation of the Shopgate Plugin API and abstracts access to the Shopgate Merchant API.",
     "website": "http://developers.shopgate.com/",
     "license": "proprietary",
-    "version": "2.9.52",
     "authors": [
         {
             "name": "Shopgate",
@@ -18,6 +17,5 @@
     },
     "autoload": {
         "files": ["./shopgate.php"]
-    },
-    "minimum-stability": "dev"
+    }
 }
