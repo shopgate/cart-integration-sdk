@@ -1,3 +1,6 @@
+'''Version 2.9.54'''
+* adjusting CartCustomer object properties to contain an empty group array
+
 '''Version 2.9.53'''
 * added missing entries to composer.json
 * fix for category asArray method when image is missing
