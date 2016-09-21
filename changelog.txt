@@ -1,9 +1,9 @@
 '''Version 2.9.53'''
 * added missing entries to composer.json
+* fix for category asArray method when image is missing
 
 '''Version 2.9.52'''
 * extended method clear_cache so plugin related cache files can be deleted as well
-* fix for category asArray method when image is missing
 
 '''Version 2.9.51'''
 * http/js redirect split via new forwarder class
