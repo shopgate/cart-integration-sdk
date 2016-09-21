@@ -1,4 +1,5 @@
 '''Version 2.9.53'''
+* added missing entries to composer.json
 * fix for category asArray method when image is missing
 
 '''Version 2.9.52'''

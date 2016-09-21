@@ -1,0 +1,21 @@
+{
+    "name": "shopgate/library",
+    "description": "A PHP framework supporting the implementation of the Shopgate Plugin API and abstracts access to the Shopgate Merchant API.",
+    "website": "http://developers.shopgate.com/",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Shopgate",
+            "email": "interfaces@shopgate.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.8.*"
+    },
+    "autoload": {
+        "files": ["./shopgate.php"]
+    }
+}
