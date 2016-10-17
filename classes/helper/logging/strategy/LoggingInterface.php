@@ -23,8 +23,6 @@
 
 interface LoggingInterface
 {
-    public function __construct();
-    
     /**
      * Enables logging messages to debug log file.
      */
