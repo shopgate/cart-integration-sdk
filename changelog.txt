@@ -1,3 +1,6 @@
+'''Version 2.9.55'''
+* refactored ShopgateLogger to be able to pass a strategy for logging
+
 '''Version 2.9.54'''
 * adjusting CartCustomer object properties to contain an empty group array
 
