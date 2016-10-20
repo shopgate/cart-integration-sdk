@@ -28,10 +28,13 @@
  */
 class ShopgateLogger implements LoggingInterface
 {
-    const LOGTYPE_ACCESS = 'access';
+    const OBFUSCATION_STRING = Obfuscator::OBFUSCATION_STRING;
+    const REMOVED_STRING     = Obfuscator::REMOVED_STRING;
+    
+    const LOGTYPE_ACCESS  = 'access';
     const LOGTYPE_REQUEST = 'request';
-    const LOGTYPE_ERROR = 'error';
-    const LOGTYPE_DEBUG = 'debug';
+    const LOGTYPE_ERROR   = 'error';
+    const LOGTYPE_DEBUG   = 'debug';
     
     /** @var string */
     private $memoryAnalyserLoggingSizeUnit;
@@ -73,7 +76,6 @@ class ShopgateLogger implements LoggingInterface
         
         return self::$singleton;
     }
-    
     
     public function __construct()
     {
@@ -186,6 +188,4 @@ class ShopgateLogger implements LoggingInterface
     {
         return $this->obfuscator->cleanParamsForLog($data);
     }
-    
-    
 }
