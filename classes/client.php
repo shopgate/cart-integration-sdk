@@ -29,6 +29,7 @@ class ShopgateClient extends ShopgateContainer {
 	const TYPE_ANDROIDPHONEAPP  = 'androidphoneapp';
 	const TYPE_ANDROIDTABLETAPP = 'androidtabletapp';
 
+	/** @var string */
 	protected $type;
 
 	/**
