@@ -20,8 +20,7 @@
  *
  * @author Shopgate GmbH <interfaces@shopgate.com>
  */
-
-interface LoggingInterface
+interface Shopgate_Helper_Logging_Strategy_LoggingInterface
 {
     /**
      * Enables logging messages to debug log file.

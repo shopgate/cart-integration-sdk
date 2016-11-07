@@ -21,7 +21,7 @@
  *
  * @author Shopgate GmbH <interfaces@shopgate.com>
  */
-class DefaultLogging implements LoggingInterface
+class Shopgate_Helper_Logging_Strategy_DefaultLogging implements Shopgate_Helper_Logging_Strategy_LoggingInterface
 {
     /** @var bool */
     private $debug;

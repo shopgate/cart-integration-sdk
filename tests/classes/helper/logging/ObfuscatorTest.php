@@ -21,14 +21,14 @@
  *
  * @author Shopgate GmbH <interfaces@shopgate.com>
  */
-class ObfuscatorTest extends PHPUnit_Framework_TestCase
+class Shopgate_Helper_Logging_ObfuscatorTest extends PHPUnit_Framework_TestCase
 {
-    /** @var Obfuscator */
+    /** @var Shopgate_Helper_Logging_Obfuscator */
     private $obfuscator;
     
     public function setUp()
     {
-        $this->obfuscator = new Obfuscator();
+        $this->obfuscator = new Shopgate_Helper_Logging_Obfuscator();
     }
     
     public function testAddObfuscationFields()

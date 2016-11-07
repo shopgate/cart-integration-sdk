@@ -26,10 +26,10 @@
  *
  * @author Shopgate GmbH, 35510 Butzbach, DE
  */
-class ShopgateLogger implements LoggingInterface
+class ShopgateLogger implements Shopgate_Helper_Logging_Strategy_LoggingInterface
 {
-    const OBFUSCATION_STRING = Obfuscator::OBFUSCATION_STRING;
-    const REMOVED_STRING     = Obfuscator::REMOVED_STRING;
+    const OBFUSCATION_STRING = Shopgate_Helper_Logging_Obfuscator::OBFUSCATION_STRING;
+    const REMOVED_STRING     = Shopgate_Helper_Logging_Obfuscator::REMOVED_STRING;
     
     const LOGTYPE_ACCESS  = 'access';
     const LOGTYPE_REQUEST = 'request';
@@ -42,10 +42,10 @@ class ShopgateLogger implements LoggingInterface
     /** @var ShopgateLogger */
     private static $singleton;
     
-    /** @var Obfuscator */
+    /** @var Shopgate_Helper_Logging_Obfuscator */
     private $obfuscator;
     
-    /** @var LoggingInterface */
+    /** @var Shopgate_Helper_Logging_Strategy_LoggingInterface */
     private $loggingStrategy;
     
     /**
@@ -57,17 +57,20 @@ class ShopgateLogger implements LoggingInterface
      * @return ShopgateLogger
      */
     public static function getInstance(
-        $accessLogPath = null, $requestLogPath = null, $errorLogPath = null, $debugLogPath = null
+        $accessLogPath = null,
+        $requestLogPath = null,
+        $errorLogPath = null,
+        $debugLogPath = null
     ) {
         if (empty(self::$singleton)) {
             self::$singleton = new self();
             
             self::$singleton->setLoggingStrategy(
-                new DefaultLogging($accessLogPath, $requestLogPath, $errorLogPath, $debugLogPath)
+                new Shopgate_Helper_Logging_Strategy_DefaultLogging($accessLogPath, $requestLogPath, $errorLogPath, $debugLogPath)
             );
         }
         
-        if (self::$singleton->loggingStrategy instanceof DefaultLogging) {
+        if (self::$singleton->loggingStrategy instanceof Shopgate_Helper_Logging_Strategy_DefaultLogging) {
             /** @noinspection PhpUndefinedMethodInspection */
             self::$singleton->loggingStrategy->setLogFilePaths(
                 $accessLogPath, $requestLogPath, $errorLogPath, $debugLogPath
@@ -79,11 +82,12 @@ class ShopgateLogger implements LoggingInterface
     
     public function __construct()
     {
-        $this->obfuscator = new Obfuscator();
+        $this->obfuscator                    = new Shopgate_Helper_Logging_Obfuscator();
+        $this->memoryAnalyserLoggingSizeUnit = 'MB';
     }
     
     /**
-     * @param LoggingInterface $loggingStrategy
+     * @param Shopgate_Helper_Logging_Strategy_LoggingInterface $loggingStrategy
      */
     public function setLoggingStrategy($loggingStrategy)
     {
@@ -91,7 +95,7 @@ class ShopgateLogger implements LoggingInterface
     }
     
     /**
-     * @param Obfuscator $obfuscator
+     * @param Shopgate_Helper_Logging_Obfuscator $obfuscator
      */
     public function setObfuscator($obfuscator)
     {
@@ -99,7 +103,7 @@ class ShopgateLogger implements LoggingInterface
     }
     
     /**
-     * @return LoggingInterface
+     * @return Shopgate_Helper_Logging_Strategy_LoggingInterface
      */
     public function getLoggingStrategy()
     {

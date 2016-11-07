@@ -21,9 +21,9 @@
  *
  * @author Shopgate GmbH <interfaces@shopgate.com>
  */
-class DefaultLoggingTest extends PHPUnit_Framework_TestCase
+class Shopgate_Helper_Logging_Strategy_DefaultLoggingTest extends PHPUnit_Framework_TestCase
 {
-    /** @var DefaultLogging */
+    /** @var Shopgate_Helper_Logging_Strategy_DefaultLogging */
     private $defaultLoggingStrategy;
     /** @var array */
     private $phpUnitLogFiles = array();
@@ -38,7 +38,7 @@ class DefaultLoggingTest extends PHPUnit_Framework_TestCase
             ShopgateLogger::LOGTYPE_ERROR   => SHOPGATE_BASE_DIR . DS . 'temp' . DS . 'logs' . DS . 'phpunit_error.log',
             ShopgateLogger::LOGTYPE_DEBUG   => SHOPGATE_BASE_DIR . DS . 'temp' . DS . 'logs' . DS . 'phpunit_debug.log'
         );
-        $this->defaultLoggingStrategy = new DefaultLogging();
+        $this->defaultLoggingStrategy = new Shopgate_Helper_Logging_Strategy_DefaultLogging();
         $this->setLogPaths($this->defaultLoggingStrategy);
         $this->clearTmpFolder();
     }
@@ -61,7 +61,7 @@ class DefaultLoggingTest extends PHPUnit_Framework_TestCase
     
     public function testConstructorWithLogFilesParameter()
     {
-        $loggingStrategy = new DefaultLogging(
+        $loggingStrategy = new Shopgate_Helper_Logging_Strategy_DefaultLogging(
             $this->phpUnitLogFiles[ShopgateLogger::LOGTYPE_ACCESS] . '.test',
             $this->phpUnitLogFiles[ShopgateLogger::LOGTYPE_REQUEST] . '.test',
             $this->phpUnitLogFiles[ShopgateLogger::LOGTYPE_ERROR] . '.test',
@@ -82,7 +82,7 @@ class DefaultLoggingTest extends PHPUnit_Framework_TestCase
      */
     public function testDefaultLoggingPathsNotEmpty($logType)
     {
-        $loggingStrategy = new DefaultLogging();
+        $loggingStrategy = new Shopgate_Helper_Logging_Strategy_DefaultLogging();
         $files           = $loggingStrategy->getLogFiles();
         $this->assertEquals(true, !empty($files[$logType]['path']));
     }
@@ -173,7 +173,7 @@ class DefaultLoggingTest extends PHPUnit_Framework_TestCase
     public function testCallLogUnableToOpenLogFile()
     {
         $loggingMsg = 'This is a test message';
-        /** @var DefaultLogging|PHPUnit_Framework_MockObject_Builder_InvocationMocker $loggingStrategy */
+        /** @var Shopgate_Helper_Logging_Strategy_DefaultLogging|PHPUnit_Framework_MockObject_Builder_InvocationMocker $loggingStrategy */
         $loggingStrategy = $this->getMockBuilder('DefaultLogging')
                                 ->setMethods(array('openLogFileHandle'))
                                 ->getMock()
@@ -227,14 +227,14 @@ class DefaultLoggingTest extends PHPUnit_Framework_TestCase
         $logType = ShopgateLogger::LOGTYPE_DEBUG;
         
         $firstLoggingMsg      = 'This is the first test message';
-        $firstLoggingStrategy = new DefaultLogging();
+        $firstLoggingStrategy = new Shopgate_Helper_Logging_Strategy_DefaultLogging();
         $this->setLogPaths($firstLoggingStrategy);
         $firstLoggingStrategy->keepDebugLog($keepDebugLog);
         $firstLoggingStrategy->enableDebug();
         $firstLoggingStrategy->log($firstLoggingMsg, $logType);
         
         $secondLoggingMsg      = 'This is the second test message';
-        $secondLoggingStrategy = new DefaultLogging();
+        $secondLoggingStrategy = new Shopgate_Helper_Logging_Strategy_DefaultLogging();
         $this->setLogPaths($secondLoggingStrategy);
         $secondLoggingStrategy->keepDebugLog($keepDebugLog);
         $secondLoggingStrategy->enableDebug();
@@ -276,7 +276,7 @@ class DefaultLoggingTest extends PHPUnit_Framework_TestCase
     
     public function testTailUnableToOpenLogFile()
     {
-        /** @var DefaultLogging|PHPUnit_Framework_MockObject_Builder_InvocationMocker $loggingStrategy */
+        /** @var Shopgate_Helper_Logging_Strategy_DefaultLogging|PHPUnit_Framework_MockObject_Builder_InvocationMocker $loggingStrategy */
         $loggingStrategy = $this->getMockBuilder('DefaultLogging')
                                 ->setMethods(array('openLogFileHandle'))
                                 ->getMock()
@@ -323,9 +323,9 @@ class DefaultLoggingTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @param DefaultLogging $loggingStrategy
+     * @param Shopgate_Helper_Logging_Strategy_DefaultLogging $loggingStrategy
      */
-    private function setLogPaths(DefaultLogging $loggingStrategy)
+    private function setLogPaths(Shopgate_Helper_Logging_Strategy_DefaultLogging $loggingStrategy)
     {
         $loggingStrategy->setLogFilePaths(
             $this->phpUnitLogFiles[ShopgateLogger::LOGTYPE_ACCESS],

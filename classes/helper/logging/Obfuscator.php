@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Shopgate GmbH
  *
@@ -20,11 +21,10 @@
  *
  * @author Shopgate GmbH <interfaces@shopgate.com>
  */
-
-class Obfuscator
+class Shopgate_Helper_Logging_Obfuscator
 {
     const OBFUSCATION_STRING = 'XXXXXXXX';
-    const REMOVED_STRING = '<removed>';
+    const REMOVED_STRING     = '<removed>';
     
     /** @var string[] Names of the fields that should be obfuscated on logging. */
     private $obfuscationFields;
@@ -34,9 +34,8 @@ class Obfuscator
     
     public function __construct()
     {
-        $this->memoryAnalyserLoggingSizeUnit = 'MB';
         $this->obfuscationFields = array('pass');
-        $this->removeFields = array('cart');
+        $this->removeFields      = array('cart');
     }
     
     /**
@@ -44,7 +43,8 @@ class Obfuscator
      *
      * @param string[] $fieldNames
      */
-    public function addObfuscationFields(array $fieldNames) {
+    public function addObfuscationFields(array $fieldNames)
+    {
         $this->obfuscationFields = array_merge($fieldNames, $this->obfuscationFields);
     }
     
@@ -53,7 +53,8 @@ class Obfuscator
      *
      * @param string[] $fieldNames
      */
-    public function addRemoveFields(array $fieldNames) {
+    public function addRemoveFields(array $fieldNames)
+    {
         $this->removeFields = array_merge($fieldNames, $this->removeFields);
     }
     
@@ -63,9 +64,11 @@ class Obfuscator
      * Strips out critical request data like the password of a get_customer request.
      *
      * @param mixed[] $data The incoming request's parameters.
+     *
      * @return string The cleaned parameters as string ready to log.
      */
-    public function cleanParamsForLog($data) {
+    public function cleanParamsForLog($data)
+    {
         foreach ($data as $key => &$value) {
             if (in_array($key, $this->obfuscationFields)) {
                 $value = self::OBFUSCATION_STRING;
@@ -78,5 +81,4 @@ class Obfuscator
         
         return print_r($data, true);
     }
-    
 }
