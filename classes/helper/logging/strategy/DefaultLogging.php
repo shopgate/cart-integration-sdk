@@ -38,7 +38,10 @@ class Shopgate_Helper_Logging_Strategy_DefaultLogging implements Shopgate_Helper
     );
     
     public function __construct(
-        $accessLogPath = null, $requestLogPath = null, $errorLogPath = null, $debugLogPath = null
+        $accessLogPath = null,
+        $requestLogPath = null,
+        $errorLogPath = null,
+        $debugLogPath = null
     ) {
         // fall back to default log paths if none are specified
         if (empty($accessLogPath)) {
