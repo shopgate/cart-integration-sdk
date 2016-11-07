@@ -25,6 +25,10 @@ class Shopgate_Helper_Logging_Strategy_DefaultLogging implements Shopgate_Helper
 {
     /** @var bool */
     private $debug;
+    
+    /** @var bool */
+    private $useStackTrace;
+    
     /** @var mixed[] */
     private $logFiles = array(
         ShopgateLogger::LOGTYPE_ACCESS  => array('path' => '', 'handle' => null, 'mode' => 'a+'),
@@ -60,52 +64,37 @@ class Shopgate_Helper_Logging_Strategy_DefaultLogging implements Shopgate_Helper
         
         $this->setLogFilePaths($accessLogPath, $requestLogPath, $errorLogPath, $debugLogPath);
         
-        $this->debug = false;
+        $this->debug         = false;
+        $this->useStackTrace = true;
     }
     
-    /**
-     * Enables logging messages to debug log file.
-     */
     public function enableDebug()
     {
         $this->debug = true;
     }
     
-    /**
-     * Disables logging messages to debug log file.
-     */
     public function disableDebug()
     {
         $this->debug = false;
     }
     
-    /**
-     * @return true if logging messages to debug log file is enabled, false otherwise.
-     */
     public function isDebugEnabled()
     {
         return $this->debug;
     }
     
-    /**
-     * Logs a message to the according log file.
-     *
-     * This produces a log entry of the form<br />
-     * <br />
-     * [date] [time]: [message]\n<br />
-     * <br />
-     * to the selected log file. If an unknown log type is passed the message will be logged to the error log file.<br />
-     * <br />
-     * Logging to LOGTYPE_DEBUG only is done after $this->enableDebug() has been called and $this->disableDebug() has not
-     * been called after that. The debug log file will be truncated on opening by default. To prevent this call
-     * $this->keepDebugLog(true).
-     *
-     * @param string $msg  The error message.
-     * @param string $type The log type, that would be one of the ShopgateLogger::LOGTYPE_* constants.
-     *
-     * @return bool True on success, false on error.
-     */
-    public function log($msg, $type = ShopgateLogger::LOGTYPE_ERROR)
+    
+    public function enableStackTrace()
+    {
+        $this->useStackTrace = true;
+    }
+    
+    public function disableStackTrace()
+    {
+        $this->useStackTrace = false;
+    }
+    
+    public function log($msg, $type = ShopgateLogger::LOGTYPE_ERROR, $stackTrace = '')
     {
         // build log message
         $msg = gmdate('d-m-Y H:i:s: ') . $msg . "\n";
@@ -143,17 +132,6 @@ class Shopgate_Helper_Logging_Strategy_DefaultLogging implements Shopgate_Helper
         return $success;
     }
     
-    /**
-     * Returns the requested number of lines of the requested log file's end.
-     *
-     * @param string $type  The log file to be read
-     * @param int    $lines Number of lines to return
-     *
-     * @return string The requested log file content
-     * @throws ShopgateLibraryException
-     *
-     * @see http://tekkie.flashbit.net/php/tail-functionality-in-php
-     */
     public function tail($type = ShopgateLogger::LOGTYPE_ERROR, $lines = 20)
     {
         if (!isset($this->logFiles[$type])) {
@@ -253,11 +231,6 @@ class Shopgate_Helper_Logging_Strategy_DefaultLogging implements Shopgate_Helper
         return true;
     }
     
-    /**
-     * Set the file handler mode to a+ (keep) or to w+ (reverse) the debug log file
-     *
-     * @param bool $keep
-     */
     public function keepDebugLog($keep)
     {
         if ($keep) {

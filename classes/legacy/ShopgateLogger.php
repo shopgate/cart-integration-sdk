@@ -26,7 +26,7 @@
  *
  * @author Shopgate GmbH, 35510 Butzbach, DE
  */
-class ShopgateLogger implements Shopgate_Helper_Logging_Strategy_LoggingInterface
+class ShopgateLogger
 {
     const OBFUSCATION_STRING = Shopgate_Helper_Logging_Obfuscator::OBFUSCATION_STRING;
     const REMOVED_STRING     = Shopgate_Helper_Logging_Obfuscator::REMOVED_STRING;
@@ -110,26 +110,58 @@ class ShopgateLogger implements Shopgate_Helper_Logging_Strategy_LoggingInterfac
         return $this->loggingStrategy;
     }
     
+    /**
+     * Enables logging messages to debug log file.
+     */
     public function enableDebug()
     {
         $this->loggingStrategy->enableDebug();
     }
     
+    /**
+     * Disables logging messages to debug log file.
+     */
     public function disableDebug()
     {
         $this->loggingStrategy->disableDebug();
     }
     
+    /**
+     * @return bool true if logging messages to debug log file is enabled, false otherwise.
+     */
     public function isDebugEnabled()
     {
         return $this->loggingStrategy->isDebugEnabled();
     }
     
+    /**
+     * Logs a message to the according log file.
+     *
+     * Logging to LOGTYPE_DEBUG only is done after $this->enableDebug() has been called and $this->disableDebug() has not
+     * been called after that. The debug log file will be truncated on opening by default. To prevent this call
+     * $this->keepDebugLog(true).
+     *
+     * @param string $msg        The error message.
+     * @param string $type       The log type, that would be one of the ShopgateLogger::LOGTYPE_* constants.
+     *
+     * @return bool true on success, false on error.
+     */
     public function log($msg, $type = ShopgateLogger::LOGTYPE_ERROR)
     {
         return $this->loggingStrategy->log($msg, $type);
     }
     
+    /**
+     * Returns the requested number of lines of the requested log file's end.
+     *
+     * @param string $type  The log file to be read
+     * @param int    $lines Number of lines to return
+     *
+     * @return string The requested log file content
+     * @throws ShopgateLibraryException
+     *
+     * @see http://tekkie.flashbit.net/php/tail-functionality-in-php
+     */
     public function tail($type = ShopgateLogger::LOGTYPE_ERROR, $lines = 20)
     {
         return $this->loggingStrategy->tail($type, $lines);

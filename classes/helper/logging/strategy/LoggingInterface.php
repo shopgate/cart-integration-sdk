@@ -38,18 +38,29 @@ interface Shopgate_Helper_Logging_Strategy_LoggingInterface
     public function isDebugEnabled();
     
     /**
+     * Enables logging the stack trace, if available.
+     */
+    public function enableStackTrace();
+    
+    /**
+     * Disables logging the stack trace.
+     */
+    public function disableStackTrace();
+    
+    /**
      * Logs a message to the according log file.
      *
      * Logging to LOGTYPE_DEBUG only is done after $this->enableDebug() has been called and $this->disableDebug() has not
      * been called after that. The debug log file will be truncated on opening by default. To prevent this call
      * $this->keepDebugLog(true).
      *
-     * @param string $msg  The error message.
-     * @param string $type The log type, that would be one of the ShopgateLogger::LOGTYPE_* constants.
+     * @param string $msg        The error message.
+     * @param string $type       The log type, that would be one of the ShopgateLogger::LOGTYPE_* constants.
+     * @param string $stackTrace The stack trace that led to the error, if available.
      *
      * @return bool true on success, false on error.
      */
-    public function log($msg, $type = ShopgateLogger::LOGTYPE_ERROR);
+    public function log($msg, $type = ShopgateLogger::LOGTYPE_ERROR, $stackTrace = '');
     
     /**
      * Returns the requested number of lines of the requested log file's end.
