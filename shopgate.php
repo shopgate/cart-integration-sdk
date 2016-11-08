@@ -119,6 +119,7 @@ require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper' . DS . 'logging'
 require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper' . DS . 'logging' . DS . 'stack_trace' . DS
     . 'GeneratorDefault.php');
 require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper' . DS . 'error_handling' . DS . 'ExceptionHandler.php');
+require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper' . DS . 'error_handling' . DS . 'ErrorHandler.php');
 
 // vendors
 require_once(dirname(__FILE__) . DS . 'vendors' . DS . '2d_is.php');
