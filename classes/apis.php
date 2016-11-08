@@ -81,19 +81,33 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 	 * @var string The trace ID of the incoming request.
 	 */
 	protected $trace_id;
-	
-	public function __construct(
+    
+    /**
+     * @var Shopgate_Helper_Logging_Stack_Trace_GeneratorInterface
+     */
+    protected $stackTraceGenerator;
+    
+    /**
+     * @var Shopgate_Helper_Logging_Strategy_LoggingInterface
+     */
+    protected $logging;
+    
+    public function __construct(
 			ShopgateConfigInterface $config,
 			ShopgateAuthenticationServiceInterface $authService,
 			ShopgateMerchantApiInterface $merchantApi,
 			ShopgatePlugin $plugin,
-			ShopgatePluginApiResponse $response = null
+			ShopgatePluginApiResponse $response = null,
+			Shopgate_Helper_Logging_Stack_Trace_GeneratorInterface $stackTraceGenerator = null,
+			Shopgate_Helper_Logging_Strategy_LoggingInterface $logging = null
 	) {
 		$this->config = $config;
 		$this->authService = $authService;
 		$this->merchantApi = $merchantApi;
 		$this->plugin = $plugin;
 		$this->response = $response;
+		$this->stackTraceGenerator = $stackTraceGenerator;
+		$this->logging = $logging;
 		$this->responseData = array();
 		$this->preventResponseOutput = false;
 		
@@ -264,6 +278,24 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			$error = $se->getCode();
 			$errortext = $se->getMessage();
 		}
+		
+		// build stack trace if generator is available
+        $stackTrace = (!empty($e) && !empty($this->stackTraceGenerator))
+            ? $this->stackTraceGenerator->generate($e)
+            : '';
+        
+        // log error if there is any
+        if (!empty($stackTrace) && !empty($errortext)) {
+            if (!empty($this->logging)) {
+                $this->logging->log(
+                    $errortext,
+                    Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_ERROR,
+                    $stackTrace
+                );
+            } else {
+                ShopgateLogger::getInstance()->log($errortext);
+            }
+        }
 		
 		// print out the response
 		if (!empty($error)) {
