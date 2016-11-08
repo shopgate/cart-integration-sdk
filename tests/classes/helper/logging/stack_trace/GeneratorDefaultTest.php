@@ -23,8 +23,8 @@
  */
 class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTest extends PHPUnit_Framework_TestCase
 {
-    /** @var Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault */
-    protected $sut;
+    /** @var PHPUnit_Framework_MockObject_MockObject|Shopgate_Helper_Logging_Obfuscator */
+    protected $obfuscator;
     
     /** @var Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTestFixtureBuilder */
     protected $fixtureProvider;
@@ -34,7 +34,7 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTest extends PHPUnit_F
         // workaround for PHP versions below 7: load Throwable interface; TODO move to some bootstrap.php or the like
         include_once(dirname(__FILE__) . '/../../../../stubs/Throwable.php');
         
-        $this->sut = new Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault();
+        $this->obfuscator = $this->getMockBuilder('Shopgate_Helper_Logging_Obfuscator')->getMock();
         
         include_once(dirname(__FILE__)
             . '/../../../../fixtures/helper/logging/stack_trace/GeneratorDefaultTestFixtureBuilder.php');
@@ -43,24 +43,95 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTest extends PHPUnit_F
     
     public function testSimpleExceptionProducesProperStackTrace()
     {
+        $this->obfuscator
+            ->expects($this->any())
+            ->method('cleanParamsForLog')
+            ->withAnyParameters()
+            ->willReturnArgument(0)
+        ;
+        
+        $SUT = new Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault($this->obfuscator);
+        
         $this->assertEquals(
             $this->fixtureProvider->getSimpleExceptionExpected(),
-            $this->sut->generate($this->fixtureProvider->getSimpleException()));
+            $SUT->generate($this->fixtureProvider->getSimpleException()));
     }
     
     public function testExceptionWithPreviousExceptionsProducesProperStackTrace()
     {
+        $this->obfuscator
+            ->expects($this->any())
+            ->method('cleanParamsForLog')
+            ->withAnyParameters()
+            ->willReturnArgument(0)
+        ;
+        
+        $SUT = new Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault($this->obfuscator);
+        
         $this->assertEquals(
             $this->fixtureProvider->getExceptionWithPreviousExceptionsExpected(),
-            $this->sut->generate($this->fixtureProvider->getExceptionWithPreviousExceptions())
+            $SUT->generate($this->fixtureProvider->getExceptionWithPreviousExceptions())
         );
     }
     
     public function testDepthLimitIsHonoured()
     {
+        $this->obfuscator
+            ->expects($this->any())
+            ->method('cleanParamsForLog')
+            ->withAnyParameters()
+            ->willReturnArgument(0)
+        ;
+        
+        $SUT = new Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault($this->obfuscator);
+        
         $this->assertEquals(
-            $this->fixtureProvider->getExceptionWithPreviousExceptionsDepth2(),
-            $this->sut->generate($this->fixtureProvider->getExceptionWithPreviousExceptions(), 2)
+            $this->fixtureProvider->getExceptionWithPreviousExceptionsDepth2Expected(),
+            $SUT->generate($this->fixtureProvider->getExceptionWithPreviousExceptions(), 2)
+        );
+    }
+    
+    public function testObfuscation()
+    {
+        $args = array(
+            'user_and_pass' => array(
+                'user' => 'herp@derp.com',
+                'pass' => 'XXXXXXXX'
+            ),
+            'data'          => array(
+                'data' => array(
+                    'action'      => 'get_customer',
+                    'shop_number' => '23456',
+                    'user'        => 'herp@derp.com',
+                    'pass'        => 'XXXXXXXX',
+                )
+            )
+        );
+        
+        $this->obfuscator
+            ->expects($this->any())
+            ->method('cleanParamsForLog')
+            ->withAnyParameters()
+            ->willReturnOnConsecutiveCalls(
+            ### on ShopgateLibraryException
+                $args['user_and_pass'],
+                $args['data'],
+                $args['data'],
+                $args['user_and_pass'],
+                ### on LoginException
+                $args['user_and_pass'],
+                $args['user_and_pass'],
+                $args['data'],
+                $args['data'],
+                $args['user_and_pass']
+            )
+        ;
+        
+        $SUT = new Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault($this->obfuscator);
+        
+        $this->assertEquals(
+            $this->fixtureProvider->getExceptionExampleForFailedGetCustomerObfuscationExpected(),
+            $SUT->generate($this->fixtureProvider->getExceptionExampleForFailedGetCustomer())
         );
     }
 }

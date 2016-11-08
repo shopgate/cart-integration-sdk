@@ -21,9 +21,28 @@
  *
  * @author Shopgate GmbH <interfaces@shopgate.com>
  */
+
+/**
+ * Generates a stack trace with obfuscation of arguments and flattening of objects or arrays.
+ *
+ * In the stack trace, function calls will be presented with arguments, unless those are obfuscated or filtered by the
+ * Shopgate_Helper_Logging_Obfuscator passed in the constructor.
+ *
+ * An argument that is an object will be converted to 'Object'.
+ * An argument that is an array will be converted to 'Array'.
+ * An argument that is boolean true / false will be converted to 'true' / 'false'.
+ */
 class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault
     implements Shopgate_Helper_Logging_Stack_Trace_GeneratorInterface
 {
+    /** @var Shopgate_Helper_Logging_Obfuscator */
+    protected $obfuscator;
+    
+    public function __construct(Shopgate_Helper_Logging_Obfuscator $obfuscator)
+    {
+        $this->obfuscator = $obfuscator;
+    }
+    
     public function generate($e, $maxDepth = 10)
     {
         $msg = array($this->generateFormattedHeader($e) . "\n" . $this->generateFormattedTrace($e->getTrace()));
@@ -69,7 +88,10 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault
         $formattedTraceLines = array();
         $traces              = array_reverse($traces);
         foreach ($traces as $trace) {
-            $args = implode(', ', $trace['arguments']);
+            $args = $this->obfuscator->cleanParamsForLog($trace['arguments']);
+            
+            array_walk($args, array($this, 'flatten'));
+            $args = implode(', ', $args);
             
             $formattedTraceLines[] =
                 "at {$trace['class']}{$trace['type']}{$trace['function']}({$args}) " .
@@ -77,5 +99,31 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault
         }
         
         return implode("\n", $formattedTraceLines);
+    }
+    
+    /**
+     * Function to be passed to array_walk(); will remove sub-arrays or objects.
+     *
+     * @param mixed $key
+     * @param mixed $value
+     *
+     * @post $value contains 'Object' if it was an object before.
+     * @post $value contains 'Array' if it was an array before.
+     * @pist $value contains 'true' / 'false' if it was boolean true / false before.
+     * @post $value is left untouched if it was any other simple type before.
+     */
+    private function flatten(&$value, /** @noinspection PhpUnusedParameterInspection */ $key)
+    {
+        if (is_object($value)) {
+            $value = 'Object';
+        }
+        
+        if (is_array($value)) {
+            $value = 'Array';
+        }
+        
+        if (is_bool($value)) {
+            $value = $value ? 'true' : 'false';
+        }
     }
 }

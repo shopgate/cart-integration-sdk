@@ -24,8 +24,8 @@
 interface Shopgate_Helper_Logging_Stack_Trace_GeneratorInterface
 {
     /**
-     * @param Throwable|Exception $e Will accept Throwable for PHP 7 or Exception for PHP < 7.
-     * @param int                 $maxdepth
+     * @param Throwable|Exception $e        Will accept Throwable for PHP 7 or Exception for PHP < 7.
+     * @param int                 $maxdepth The maximum depth of causes for $e to go back.
      *
      * @return string
      */

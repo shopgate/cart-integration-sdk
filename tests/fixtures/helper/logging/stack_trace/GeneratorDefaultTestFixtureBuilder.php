@@ -22,7 +22,7 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTestFixtureBuilder
                 'code'            => 99,
                 'file'            => '/Animals/Mammals/Elephants/Dumbo.php',
                 'line'            => 34,
-                'trace'           => $this->getTraceFixture(0),
+                'trace'           => $this->getTraceFixture('DumboLandingException'),
                 'previous'        => null,
             )
         );
@@ -40,23 +40,49 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTestFixtureBuilder
                 'code'            => 99,
                 'file'            => '/Animals/Mammals/Elephants/Dumbo.php',
                 'line'            => 34,
-                'trace'           => $this->getTraceFixture(0),
+                'trace'           => $this->getTraceFixture('DumboLandingException'),
                 'previous'        => array(
                     'exception_class' => 'DumboHurtException',
                     'message'         => 'Dumbo is hurt.',
                     'code'            => 168,
                     'file'            => '/Animals/Mammals/Elephants/Dumbo/Legs.php',
                     'line'            => 48,
-                    'trace'           => $this->getTraceFixture(1),
+                    'trace'           => $this->getTraceFixture('DumboHurtException'),
                     'previous'        => array(
                         'exception_class' => 'DumboBrokenLegException',
                         'message'         => 'Dumbo has a broken leg.',
                         'code'            => 256,
                         'file'            => '/Animals/Mammals/Elephants/Dumbo/Legs/Leg.php',
                         'line'            => 130,
-                        'trace'           => $this->getTraceFixture(2),
+                        'trace'           => $this->getTraceFixture('DumboBrokenLegException'),
                         'previous'        => null,
                     ),
+                ),
+            )
+        );
+    }
+    
+    /**
+     * @return PHPUnit_Framework_MockObject_MockObject|ThrowableStub|Throwable
+     */
+    public function getExceptionExampleForFailedGetCustomer()
+    {
+        return $this->buildMockFromFixture(
+            array(
+                'exception_class' => 'ShopgateLibraryExceptionStub',
+                'message'         => 'wrong username or password: Username or password is incorrect',
+                'code'            => 71,
+                'file'            => '/var/www/cart/plugins/shopgate/plugin.php',
+                'line'            => 158,
+                'trace'           => $this->getTraceFixture('ShopgateLibraryExceptionStub'),
+                'previous'        => array(
+                    'exception_class' => 'LoginException',
+                    'message'         => 'Wrong username or password',
+                    'code'            => 196,
+                    'file'            => '/var/www/cart/classes/User.php',
+                    'line'            => 223,
+                    'trace'           => $this->getTraceFixture('LoginException'),
+                    'previous'        => null,
                 ),
             )
         );
@@ -107,7 +133,10 @@ at \Animals\Mammals\Elephants\Dumbo->land(90, 30) in /Animals/Mammals/Elephants/
 STACK_TRACE;
     }
     
-    public function getExceptionWithPreviousExceptionsDepth2()
+    /**
+     * @return string
+     */
+    public function getExceptionWithPreviousExceptionsDepth2Expected()
     {
         return <<<STACK_TRACE
 DumboLandingException: Landing failed.
@@ -126,14 +155,39 @@ STACK_TRACE;
     }
     
     /**
-     * @param int $index
+     * @return string
+     */
+    public function getExceptionExampleForFailedGetCustomerObfuscationExpected()
+    {
+        return <<<STACK_TRACE
+ShopgateLibraryExceptionStub: wrong username or password: Username or password is incorrect
+
+thrown from /var/www/cart/plugins/shopgate/plugin.php on line 158
+at ShopgatePluginMyCart->getCustomer(herp@derp.com, XXXXXXXX) in /var/www/cart/plugins/shopgate/plugin.php:80
+at ShopgatePlugin->handleRequest(Array) in /var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/core.php:1590
+at ShopgatePluginApi->handleRequest(Array) in /var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php:238
+at ShopgatePluginApi->getCustomer(herp@derp.com, XXXXXXXX) in /var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php:857
+
+caused by LoginException: Wrong username or password
+
+thrown from /var/www/cart/classes/User.php on line 223
+at User->login(herp@derp.com, XXXXXXXX) in /var/www/cart/classes/User.php:215
+at ShopgatePluginMyCart->getCustomer(herp@derp.com, XXXXXXXX) in /var/www/cart/plugins/shopgate/plugin.php:80
+at ShopgatePlugin->handleRequest(Array) in /var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/core.php:1590
+at ShopgatePluginApi->handleRequest(Array) in /var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php:238
+at ShopgatePluginApi->getCustomer(herp@derp.com, XXXXXXXX) in /var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php:857
+STACK_TRACE;
+    }
+    
+    /**
+     * @param string $index
      *
      * @return array
      */
-    private function getTraceFixture($index)
+    public function getTraceFixture($index)
     {
         $fixtures = array(
-            array(
+            'DumboLandingException'        => array(
                 array(
                     'file'      => '/Animals/Mammals/Elephants/Dumbo.php',
                     'line'      => 12,
@@ -151,7 +205,7 @@ STACK_TRACE;
                     'arguments' => array(),
                 ),
             ),
-            array(
+            'DumboHurtException'           => array(
                 array(
                     'file'      => '/Animals/Mammals/Elephants/Dumbo.php',
                     'line'      => 12,
@@ -177,7 +231,7 @@ STACK_TRACE;
                     'arguments' => array(),
                 )
             ),
-            array(
+            'DumboBrokenLegException'      => array(
                 array(
                     'file'      => '/Animals/Mammals/Elephants/Dumbo.php',
                     'line'      => 12,
@@ -225,6 +279,125 @@ STACK_TRACE;
                     'type'      => '->',
                     'function'  => 'checkHealth',
                     'arguments' => array(),
+                ),
+            ),
+            'ShopgateLibraryExceptionStub' => array(
+                array(
+                    'file'      => '/var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php',
+                    'line'      => 857,
+                    'class'     => 'ShopgatePluginApi',
+                    'type'      => '->',
+                    'function'  => 'getCustomer',
+                    'arguments' => array(
+                        'user' => 'herp@derp.com',
+                        'pass' => 'herpiderp',
+                    ),
+                ),
+                array(
+                    'file'      => '/var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php',
+                    'line'      => 238,
+                    'class'     => 'ShopgatePluginApi',
+                    'type'      => '->',
+                    'function'  => 'handleRequest',
+                    'arguments' => array(
+                        'data' => array(
+                            'action'      => 'get_customer',
+                            'shop_number' => '23456',
+                            'user'        => 'herp@derp.com',
+                            'pass'        => 'herpiderp'
+                        ),
+                    ),
+                ),
+                array(
+                    'file'      => '/var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/core.php',
+                    'line'      => 1590,
+                    'class'     => 'ShopgatePlugin',
+                    'type'      => '->',
+                    'function'  => 'handleRequest',
+                    'arguments' => array(
+                        'data' => array(
+                            'action'      => 'get_customer',
+                            'shop_number' => '23456',
+                            'user'        => 'herp@derp.com',
+                            'pass'        => 'herpiderp'
+                        ),
+                    ),
+                ),
+                array(
+                    'file'      => '/var/www/cart/plugins/shopgate/plugin.php',
+                    'line'      => 80,
+                    'class'     => 'ShopgatePluginMyCart',
+                    'type'      => '->',
+                    'function'  => 'getCustomer',
+                    'arguments' => array(
+                        'user' => 'herp@derp.com',
+                        'pass' => 'herpiderp',
+                    ),
+                ),
+            ),
+            'LoginException'               => array(
+                array(
+                    'file'      => '/var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php',
+                    'line'      => 857,
+                    'class'     => 'ShopgatePluginApi',
+                    'type'      => '->',
+                    'function'  => 'getCustomer',
+                    'arguments' => array(
+                        'user' => 'herp@derp.com',
+                        'pass' => 'herpiderp',
+                    ),
+                ),
+                array(
+                    'file'      => '/var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php',
+                    'line'      => 238,
+                    'class'     => 'ShopgatePluginApi',
+                    'type'      => '->',
+                    'function'  => 'handleRequest',
+                    'arguments' => array(
+                        'data' => array(
+                            'action'      => 'get_customer',
+                            'shop_number' => '23456',
+                            'user'        => 'herp@derp.com',
+                            'pass'        => 'herpiderp'
+                        ),
+                    ),
+                ),
+                array(
+                    'file'      => '/var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/core.php',
+                    'line'      => 1590,
+                    'class'     => 'ShopgatePlugin',
+                    'type'      => '->',
+                    'function'  => 'handleRequest',
+                    'arguments' => array(
+                        'data' => array(
+                            'action'      => 'get_customer',
+                            'shop_number' => '23456',
+                            'user'        => 'herp@derp.com',
+                            'pass'        => 'herpiderp'
+                        ),
+                    ),
+                ),
+                array(
+                    'file'      => '/var/www/cart/plugins/shopgate/plugin.php',
+                    'line'      => 80,
+                    'class'     => 'ShopgatePluginMyCart',
+                    'type'      => '->',
+                    'function'  => 'getCustomer',
+                    'arguments' => array(
+                        'user' => 'herp@derp.com',
+                        'pass' => 'herpiderp',
+                    ),
+                ),
+                array(
+                    'file'      => '/var/www/cart/classes/User.php',
+                    'line'      => 215,
+                    'class'     => 'User',
+                    'type'      => '->',
+                    'function'  => 'login',
+                    'arguments' => array(
+                        'user' => 'herp@derp.com',
+                        'pass' => 'herpiderp',
+                    ),
                 ),
             ),
         );
