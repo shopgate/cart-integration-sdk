@@ -404,16 +404,6 @@ class ShopgateLibraryException extends Exception {
 		} else {
 			parent::__construct($message, $code);
 		}
-
-		// Log the error
-		$logMessage = $this->buildLogMessage($appendAdditionalInformationToLog);
-		if (empty($writeLog)) {
-			$this->message .= ' (logging disabled for this message)';
-		} else {
-			if (ShopgateLogger::getInstance()->log($code.' - '.$logMessage) === false) {
-				$this->message .= ' (unable to log)';
-			}
-		}
 	}
 
 	/**
