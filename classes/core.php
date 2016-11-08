@@ -597,6 +597,9 @@ class ShopgateBuilder {
 	 * @var ShopgateConfigInterface
 	 */
 	protected $config;
+    
+    /** @var Shopgate_Helper_Logging_Strategy_LoggingInterface */
+    protected $logging;
 
 	/**
 	 * Loads configuration and initializes the ShopgateLogger class.
@@ -612,6 +615,7 @@ class ShopgateBuilder {
 
 		// set up logger
 		ShopgateLogger::getInstance($this->config->getAccessLogPath(), $this->config->getRequestLogPath(), $this->config->getErrorLogPath(), $this->config->getDebugLogPath());
+        $this->logging = ShopgateLogger::getInstance()->getLoggingStrategy();
 	}
 
 	/**
@@ -647,7 +651,7 @@ class ShopgateBuilder {
 		}
 		// -> PluginAPI auth service (currently the plugin API supports only one auth service)
 		$spaAuthService = new ShopgateAuthenticationServiceShopgate($this->config->getCustomerNumber(), $this->config->getApikey());
-		$pluginApi = new ShopgatePluginApi($this->config, $spaAuthService, $merchantApi, $plugin);
+		$pluginApi = new ShopgatePluginApi($this->config, $spaAuthService, $merchantApi, $plugin, null, $this->buildStackTraceGenerator(), $this->logging);
 
 		if ($this->config->getExportConvertEncoding()) {
 			array_splice(ShopgateObject::$sourceEncodings, 1, 0, $this->config->getEncoding());
@@ -692,6 +696,13 @@ class ShopgateBuilder {
 		$plugin->setPluginApi($pluginApi);
 		$plugin->setBuffer($fileBuffer);
 	}
+    
+    /**
+     * @return Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault
+     */
+	public function buildStackTraceGenerator() {
+        return new Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault(ShopgateLogger::getInstance()->getObfuscator());
+    }
 
 	/**
 	 * Builds the Shopgate Library object graph for ShopgateMerchantApi and returns the instance.

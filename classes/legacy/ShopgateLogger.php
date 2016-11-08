@@ -112,6 +112,14 @@ class ShopgateLogger
     }
     
     /**
+     * @return Shopgate_Helper_Logging_Obfuscator
+     */
+    public function getObfuscator()
+    {
+        return $this->obfuscator;
+    }
+    
+    /**
      * Enables logging messages to debug log file.
      */
     public function enableDebug()
