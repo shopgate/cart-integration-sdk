@@ -25,6 +25,8 @@
  * Global class (Singleton) to manage log files.
  *
  * @author Shopgate GmbH, 35510 Butzbach, DE
+ *
+ * @deprecated
  */
 class ShopgateLogger
 {
