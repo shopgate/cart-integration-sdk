@@ -31,10 +31,10 @@ class Shopgate_Helper_Logging_Strategy_DefaultLogging implements Shopgate_Helper
     
     /** @var mixed[] */
     private $logFiles = array(
-        ShopgateLogger::LOGTYPE_ACCESS  => array('path' => '', 'handle' => null, 'mode' => 'a+'),
-        ShopgateLogger::LOGTYPE_REQUEST => array('path' => '', 'handle' => null, 'mode' => 'a+'),
-        ShopgateLogger::LOGTYPE_ERROR   => array('path' => '', 'handle' => null, 'mode' => 'a+'),
-        ShopgateLogger::LOGTYPE_DEBUG   => array('path' => '', 'handle' => null, 'mode' => 'w+'),
+        self::LOGTYPE_ACCESS  => array('path' => '', 'handle' => null, 'mode' => 'a+'),
+        self::LOGTYPE_REQUEST => array('path' => '', 'handle' => null, 'mode' => 'a+'),
+        self::LOGTYPE_ERROR   => array('path' => '', 'handle' => null, 'mode' => 'a+'),
+        self::LOGTYPE_DEBUG   => array('path' => '', 'handle' => null, 'mode' => 'w+'),
     );
     
     public function __construct(
@@ -97,7 +97,7 @@ class Shopgate_Helper_Logging_Strategy_DefaultLogging implements Shopgate_Helper
         $this->useStackTrace = false;
     }
     
-    public function log($msg, $type = ShopgateLogger::LOGTYPE_ERROR, $stackTrace = '')
+    public function log($msg, $type = self::LOGTYPE_ERROR, $stackTrace = '')
     {
         // build log message
         $msg = gmdate('d-m-Y H:i:s: ') . $msg . "\n";
@@ -106,17 +106,17 @@ class Shopgate_Helper_Logging_Strategy_DefaultLogging implements Shopgate_Helper
         switch (strtolower($type)) {
             // write to error log if type is unknown
             default:
-                $type = ShopgateLogger::LOGTYPE_ERROR;
+                $type = self::LOGTYPE_ERROR;
             
             // allowed types:
-            case ShopgateLogger::LOGTYPE_ERROR:
-            case ShopgateLogger::LOGTYPE_ACCESS:
-            case ShopgateLogger::LOGTYPE_REQUEST:
-            case ShopgateLogger::LOGTYPE_DEBUG:
+            case self::LOGTYPE_ERROR:
+            case self::LOGTYPE_ACCESS:
+            case self::LOGTYPE_REQUEST:
+            case self::LOGTYPE_DEBUG:
         }
         
         // if debug logging is requested but not activated, simply return
-        if (($type === ShopgateLogger::LOGTYPE_DEBUG) && !$this->debug) {
+        if (($type === self::LOGTYPE_DEBUG) && !$this->debug) {
             return true;
         }
         
@@ -135,7 +135,7 @@ class Shopgate_Helper_Logging_Strategy_DefaultLogging implements Shopgate_Helper
         return $success;
     }
     
-    public function tail($type = ShopgateLogger::LOGTYPE_ERROR, $lines = 20)
+    public function tail($type = self::LOGTYPE_ERROR, $lines = 20)
     {
         if (!isset($this->logFiles[$type])) {
             throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_UNKNOWN_LOGTYPE, 'Type: ' . $type);
@@ -190,19 +190,19 @@ class Shopgate_Helper_Logging_Strategy_DefaultLogging implements Shopgate_Helper
     public function setLogFilePaths($accessLogPath, $requestLogPath, $errorLogPath, $debugLogPath)
     {
         if (!empty($accessLogPath)) {
-            $this->logFiles[ShopgateLogger::LOGTYPE_ACCESS]['path'] = $accessLogPath;
+            $this->logFiles[self::LOGTYPE_ACCESS]['path'] = $accessLogPath;
         }
         
         if (!empty($requestLogPath)) {
-            $this->logFiles[ShopgateLogger::LOGTYPE_REQUEST]['path'] = $requestLogPath;
+            $this->logFiles[self::LOGTYPE_REQUEST]['path'] = $requestLogPath;
         }
         
         if (!empty($errorLogPath)) {
-            $this->logFiles[ShopgateLogger::LOGTYPE_ERROR]['path'] = $errorLogPath;
+            $this->logFiles[self::LOGTYPE_ERROR]['path'] = $errorLogPath;
         }
         
         if (!empty($debugLogPath)) {
-            $this->logFiles[ShopgateLogger::LOGTYPE_DEBUG]['path'] = $debugLogPath;
+            $this->logFiles[self::LOGTYPE_DEBUG]['path'] = $debugLogPath;
         }
     }
     
@@ -211,7 +211,7 @@ class Shopgate_Helper_Logging_Strategy_DefaultLogging implements Shopgate_Helper
      *
      * Already opened file handles will not be opened again.
      *
-     * @param string $type The log type, that would be one of the ShopgateLogger::LOGTYPE_* constants.
+     * @param string $type The log type, that would be one of the self::LOGTYPE_* constants.
      *
      * @return bool true if opening succeeds or the handle is already open; false on error.
      */
@@ -237,9 +237,9 @@ class Shopgate_Helper_Logging_Strategy_DefaultLogging implements Shopgate_Helper
     public function keepDebugLog($keep)
     {
         if ($keep) {
-            $this->logFiles[ShopgateLogger::LOGTYPE_DEBUG]["mode"] = "a+";
+            $this->logFiles[self::LOGTYPE_DEBUG]["mode"] = "a+";
         } else {
-            $this->logFiles[ShopgateLogger::LOGTYPE_DEBUG]["mode"] = "w+";
+            $this->logFiles[self::LOGTYPE_DEBUG]["mode"] = "w+";
         }
     }
     

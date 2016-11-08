@@ -23,6 +23,11 @@
  */
 interface Shopgate_Helper_Logging_Strategy_LoggingInterface
 {
+    const LOGTYPE_ACCESS  = 'access';
+    const LOGTYPE_REQUEST = 'request';
+    const LOGTYPE_ERROR   = 'error';
+    const LOGTYPE_DEBUG   = 'debug';
+    
     /**
      * Enables logging messages to debug log file.
      */
@@ -61,7 +66,7 @@ interface Shopgate_Helper_Logging_Strategy_LoggingInterface
      *
      * @return bool true on success, false on error.
      */
-    public function log($msg, $type = ShopgateLogger::LOGTYPE_ERROR, $stackTrace = '');
+    public function log($msg, $type = self::LOGTYPE_ERROR, $stackTrace = '');
     
     /**
      * Returns the requested number of lines of the requested log file's end.
@@ -74,7 +79,7 @@ interface Shopgate_Helper_Logging_Strategy_LoggingInterface
      *
      * @see http://tekkie.flashbit.net/php/tail-functionality-in-php
      */
-    public function tail($type = ShopgateLogger::LOGTYPE_ERROR, $lines = 20);
+    public function tail($type = self::LOGTYPE_ERROR, $lines = 20);
     
     /**
      * If true the debug log of the last request won't be deleted and additional debug output will be appended

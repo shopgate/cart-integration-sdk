@@ -31,10 +31,10 @@ class ShopgateLogger
     const OBFUSCATION_STRING = Shopgate_Helper_Logging_Obfuscator::OBFUSCATION_STRING;
     const REMOVED_STRING     = Shopgate_Helper_Logging_Obfuscator::REMOVED_STRING;
     
-    const LOGTYPE_ACCESS  = 'access';
-    const LOGTYPE_REQUEST = 'request';
-    const LOGTYPE_ERROR   = 'error';
-    const LOGTYPE_DEBUG   = 'debug';
+    const LOGTYPE_ACCESS  = Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_ACCESS;
+    const LOGTYPE_REQUEST = Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_REQUEST;
+    const LOGTYPE_ERROR   = Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_ERROR;
+    const LOGTYPE_DEBUG   = Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_DEBUG;
     
     /** @var string */
     private $memoryAnalyserLoggingSizeUnit;
@@ -66,7 +66,8 @@ class ShopgateLogger
             self::$singleton = new self();
             
             self::$singleton->setLoggingStrategy(
-                new Shopgate_Helper_Logging_Strategy_DefaultLogging($accessLogPath, $requestLogPath, $errorLogPath, $debugLogPath)
+                new Shopgate_Helper_Logging_Strategy_DefaultLogging($accessLogPath, $requestLogPath, $errorLogPath,
+                    $debugLogPath)
             );
         }
         
@@ -141,8 +142,8 @@ class ShopgateLogger
      * been called after that. The debug log file will be truncated on opening by default. To prevent this call
      * $this->keepDebugLog(true).
      *
-     * @param string $msg        The error message.
-     * @param string $type       The log type, that would be one of the ShopgateLogger::LOGTYPE_* constants.
+     * @param string $msg  The error message.
+     * @param string $type The log type, that would be one of the ShopgateLogger::LOGTYPE_* constants.
      *
      * @return bool true on success, false on error.
      */
