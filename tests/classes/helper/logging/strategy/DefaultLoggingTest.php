@@ -277,7 +277,7 @@ class Shopgate_Helper_Logging_Strategy_DefaultLoggingTest extends PHPUnit_Framew
     public function testTailUnableToOpenLogFile()
     {
         /** @var Shopgate_Helper_Logging_Strategy_DefaultLogging|PHPUnit_Framework_MockObject_Builder_InvocationMocker $loggingStrategy */
-        $loggingStrategy = $this->getMockBuilder('DefaultLogging')
+        $loggingStrategy = $this->getMockBuilder('Shopgate_Helper_Logging_Strategy_DefaultLogging')
                                 ->setMethods(array('openLogFileHandle'))
                                 ->getMock()
         ;
