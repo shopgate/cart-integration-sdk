@@ -29,6 +29,7 @@ class ShopgateLoggerTest extends PHPUnit_Framework_TestCase
     
     public function setUp()
     {
+        /** @noinspection PhpDeprecationInspection */
         $this->shopgateLogger = ShopgateLogger::getInstance();
     }
     
