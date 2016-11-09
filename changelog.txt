@@ -1,3 +1,14 @@
+'''Version 2.9.56'''
+* fixed class names for logging classes to avoid duplicate declarations
+* removed self-logging functionality from ShopgateLibraryException
+* added proper stack trace generation
+* added proper handlers for errors and exceptions
+* added a new shutdown function to be able to log fatal errors that cause a script to stop unexpectedly
+* moved initialization of error reporting settings and handlers from ShopgatePluginApi to ShopgateBuilder
+* ShopgatePluginApi is now working with the "logging strategy" introduced in 2.9.55 if it was set
+* ShopgatePluginApi is now using the stack trace generation mentioned above if it was set
+* deprecated ShopgateLogger
+
 '''Version 2.9.55'''
 * refactored ShopgateLogger to be able to pass a strategy for logging
 
