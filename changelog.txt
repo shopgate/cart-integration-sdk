@@ -7,6 +7,7 @@
 * moved initialization of error reporting settings and handlers from ShopgatePluginApi to ShopgateBuilder
 * ShopgatePluginApi is now working with the "logging strategy" introduced in 2.9.55 if it was set
 * ShopgatePluginApi is now using the stack trace generation mentioned above if it was set
+* ShopgatePluginApi won't log stack traces anymore when using ShopgateLogger to avoid logging sensitive information
 * deprecated ShopgateLogger
 
 '''Version 2.9.55'''
