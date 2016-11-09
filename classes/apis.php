@@ -182,42 +182,6 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 				$this->authService->checkAuthentication();
 			}
 			
-			// set error handler to Shopgate's handler if requested
-			if (!empty($this->params['use_errorhandler'])) {
-				set_error_handler('ShopgateErrorHandler');
-				$this->setEnablePrintErrorsToLog($this->config->getErrorLogPath());
-			}
-			
-			if (!empty($this->params['use_shutdown_handler'])) {
-				register_shutdown_function('ShopgateShutdownHandler');
-			}
-			
-			// enable debugging if requested
-			if (!empty($this->params['debug_log'])) {
-				ShopgateLogger::getInstance()->enableDebug();
-				ShopgateLogger::getInstance()->keepDebugLog(!empty($this->params['keep_debug_log']));
-			}
-			
-			// enable error reporting if requested or running on development environment
-			if (
-				!empty($this->params['error_reporting'])
-				|| in_array($this->config->getServer(), array('custom', 'pg'))
-			) {
-				if (!isset($this->params['error_reporting'])) {
-					$this->params['error_reporting'] = 32767; // equivalent to E_ALL before PHP 5.4
-				}
-				error_reporting($this->params['error_reporting']);
-				ini_set('display_errors', (version_compare(PHP_VERSION, '5.2.4', '>=')) ? 'stdout' : true);
-			}
-			
-			// memory logging size unit setup
-			if (!empty($this->params['memory_logging_unit'])) {
-				ShopgateLogger::getInstance()->setMemoryAnalyserLoggingSizeUnit($this->params['memory_logging_unit']);
-			} else {
-				// MB by default if none is set
-				ShopgateLogger::getInstance()->setMemoryAnalyserLoggingSizeUnit('MB');
-			}
-			
 			// check if the request is for the correct shop number or an adapter-plugin
 			if (
 				!$this->config->getIsShopgateAdapter() &&
@@ -1467,29 +1431,16 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 
 		return $meta;
 	}
-
-	/**
-	 * enable error reporting to show exeption on request
-	 */
-	private function setEnableErrorReporting() {
-		@error_reporting(E_ERROR | E_CORE_ERROR | E_USER_ERROR);
-		@ini_set('display_errors', 1);
-	}
-
-	/**
-	 * @param $errorFile
-	 */
-	private function setEnablePrintErrorsToLog($errorFile) {
-		$logFileHandler = @fopen($errorFile, 'a');
-		@fclose($logFileHandler);
-		@chmod($errorFile,0777);
-		@chmod($errorFile,0755);
-		@error_reporting(E_ALL ^ E_DEPRECATED);
-		@ini_set('log_errors', 1);
-		@ini_set('error_log', $errorFile);
-		@ini_set('ignore_repeated_errors', 1);
-		@ini_set('html_errors', 0);
-	}
+    
+    /**
+     * enable error reporting to show exeption on request
+     */
+    private function setEnableErrorReporting()
+    {
+        @error_reporting(E_ERROR | E_CORE_ERROR | E_USER_ERROR);
+        @ini_set('display_errors', 1);
+    }
+    
 }
 
 class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiInterface {
