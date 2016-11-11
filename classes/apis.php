@@ -2279,6 +2279,7 @@ class ShopgatePluginApiResponseTextCsvExport extends ShopgatePluginApiResponseEx
 	protected function getHeaders() {
 		return array(
 				'Content-Type: text/csv',
+				'Content-Length: ' . filesize($this->data),
 				'Content-Disposition: attachment; filename="'.basename($this->data).'"',
 		);
 	}
@@ -2291,6 +2292,7 @@ class ShopgatePluginApiResponseAppXmlExport extends ShopgatePluginApiResponseExp
 	protected function getHeaders() {
 		return array(
 				'Content-Type: application/xml',
+				'Content-Length: ' . filesize($this->data),
 				'Content-Disposition: attachment; filename="'.basename($this->data).'"',
 		);
 	}
@@ -2303,10 +2305,11 @@ class ShopgatePluginApiResponseAppJsonExport extends ShopgatePluginApiResponseEx
 	protected function getHeaders() {
 		return array(
 				'Content-Type: application/json',
+				'Content-Length: ' . mb_strlen($this->data, SHOPGATE_LIBRARY_ENCODING),
 				'Content-Disposition: attachment; filename="'.basename($this->data).'"',
 		);
 	}
-		}
+}
 		
 class ShopgatePluginApiResponseAppGzipExport extends ShopgatePluginApiResponseExport {
 	protected function getHeaders() {

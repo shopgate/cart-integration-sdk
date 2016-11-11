@@ -1,5 +1,6 @@
 '''Version 2.9.56'''
 * added ShopgateClient to ShopgateCartBase to distinguish between the mobile clients
+* added Content-Length header to Response objects for CSV, XML and JSON repsonses
 
 '''Version 2.9.55'''
 * refactored ShopgateLogger to be able to pass a strategy for logging
