@@ -194,6 +194,8 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	protected $phone;
 	protected $mobile;
 
+    protected $client;
+
 	protected $custom_fields;
 
 	protected $shipping_group;
@@ -286,6 +288,23 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	public function setMobile($value) {
 		$this->mobile = $value;
 	}
+
+    /**
+     * @param ShopgateClient $value
+     */
+    public function setClient($value) {
+        if (!($value instanceof ShopgateClient) && !is_array($value)) {
+            $this->client = null;
+
+            return;
+        }
+
+        if (is_array($value)) {
+            $value = new ShopgateClient($value);
+        }
+
+        $this->client = $value;
+    }
 
 	/**
 	 * @param string $value
@@ -590,6 +609,13 @@ abstract class ShopgateCartBase extends ShopgateContainer {
 	public function getMobile() {
 		return $this->mobile;
 	}
+
+    /**
+     * @return ShopgateClient
+     */
+    public function getClient() {
+        return $this->client;
+    }
 
 	/**
 	 * @return string

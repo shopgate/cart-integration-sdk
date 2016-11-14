@@ -26,18 +26,19 @@ if (!defined('DS')) {
 }
 
 if (file_exists(dirname(__FILE__) . DS . 'dev.php')) {
-    require_once(dirname(__FILE__) . DS . 'dev.php');
+    require_once(dirname(__FILE__).DS.'dev.php');
 }
 
 // core
-require_once(dirname(__FILE__) . DS . 'classes' . DS . 'core.php');
-require_once(dirname(__FILE__) . DS . 'classes' . DS . 'apis.php');
-require_once(dirname(__FILE__) . DS . 'classes' . DS . 'configuration.php');
-require_once(dirname(__FILE__) . DS . 'classes' . DS . 'customers.php');
-require_once(dirname(__FILE__) . DS . 'classes' . DS . 'orders.php');
-require_once(dirname(__FILE__) . DS . 'classes' . DS . 'external_orders.php');
-require_once(dirname(__FILE__) . DS . 'classes' . DS . 'items.php');
-require_once(dirname(__FILE__) . DS . 'classes' . DS . 'redirect.php');
+require_once(dirname(__FILE__).DS.'classes'.DS.'core.php');
+require_once(dirname(__FILE__).DS.'classes'.DS.'apis.php');
+require_once(dirname(__FILE__).DS.'classes'.DS.'client.php');
+require_once(dirname(__FILE__).DS.'classes'.DS.'configuration.php');
+require_once(dirname(__FILE__).DS.'classes'.DS.'customers.php');
+require_once(dirname(__FILE__).DS.'classes'.DS.'orders.php');
+require_once(dirname(__FILE__).DS.'classes'.DS.'external_orders.php');
+require_once(dirname(__FILE__).DS.'classes'.DS.'items.php');
+require_once(dirname(__FILE__).DS.'classes'.DS.'redirect.php');
 
 // models (global / abstract)
 require_once(dirname(__FILE__) . DS . 'classes' . DS . 'models' . DS . 'Abstract.php');
@@ -131,5 +132,5 @@ require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper' . DS . 'error_ha
     . 'LastErrorProvider.php');
 
 // vendors
-require_once(dirname(__FILE__) . DS . 'vendors' . DS . '2d_is.php');
-include_once(dirname(__FILE__) . DS . 'vendors' . DS . 'JSON.php');
+require_once(dirname(__FILE__).DS.'vendors'.DS.'2d_is.php');
+include_once(dirname(__FILE__).DS.'vendors'.DS.'JSON.php');

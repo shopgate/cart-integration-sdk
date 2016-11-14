@@ -3015,6 +3015,7 @@ interface ShopgateContainerVisitor {
 	public function visitCustomer(ShopgateCustomer $c);
 	public function visitAddress(ShopgateAddress $a);
 	public function visitCart(ShopgateCart $c);
+    public function visitClient(ShopgateClient $c);
 	public function visitOrder(ShopgateOrder $o);
 	public function visitExternalOrder(ShopgateExternalOrder $o);
 	public function visitExternalOrderTax(ShopgateExternalOrderTax $t);
@@ -3181,6 +3182,18 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor {
 			$this->object = null;
 		}
 	}
+
+    public function visitClient(ShopgateClient $c) {
+        $properties = $c->buildProperties();
+        $this->iterateSimpleProperties($properties);
+
+        // create new object with utf-8 en- / decoded data
+        try {
+            $this->object = new ShopgateClient($properties);
+        } catch (ShopgateLibraryException $e) {
+            $this->object = null;
+        }
+    }
 
 	public function visitOrder(ShopgateOrder $o) {
 		// get properties
@@ -3727,6 +3740,11 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor {
 
 		$this->array = $properties;
 	}
+
+    public function visitClient(ShopgateClient $c) {
+        // get properties and iterate (no complex types in ShopgateClient objects)
+        $this->array = $this->iterateSimpleProperties($c->buildProperties());
+    }
 
 	public function visitOrder(ShopgateOrder $o) {
 		// get properties
