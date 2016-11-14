@@ -233,6 +233,6 @@ class ShopgateLogger
      */
     public function cleanParamsForLog($data)
     {
-        return $this->obfuscator->cleanParamsForLog($data);
+        return print_r($this->obfuscator->cleanParamsForLog($data), true);
     }
 }

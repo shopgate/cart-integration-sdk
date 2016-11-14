@@ -65,7 +65,7 @@ class Shopgate_Helper_Logging_Obfuscator
      *
      * @param mixed[] $data The incoming request's parameters.
      *
-     * @return string The cleaned parameters as string ready to log.
+     * @return mixed[] The cleaned parameters.
      */
     public function cleanParamsForLog($data)
     {
@@ -79,6 +79,6 @@ class Shopgate_Helper_Logging_Obfuscator
             }
         }
         
-        return print_r($data, true);
+        return $data;
     }
 }
