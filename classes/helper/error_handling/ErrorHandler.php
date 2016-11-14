@@ -89,7 +89,7 @@ class Shopgate_Helper_Error_Handling_ErrorHandler
         }
         
         try {
-            throw new Exception();
+            throw new Exception('Wrapped around the actual error by Shopgate error handler.');
         } catch (Exception $e) {
             $this->logging->log(
                 $this->severityName($severity) . ': ' . $message . ' in ' . $file . ' on line ' . $line,
