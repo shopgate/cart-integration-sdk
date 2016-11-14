@@ -97,8 +97,8 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTestFixtureBuilder
 DumboLandingException: Landing failed.
 
 thrown from /Animals/Mammals/Elephants/Dumbo.php on line 34
-at \Animals\Mammals\Elephants\Dumbo->checkHealth() in /Animals/Mammals/Elephants/Dumbo.php:23
-at \Animals\Mammals\Elephants\Dumbo->land(90, 30) in /Animals/Mammals/Elephants/Dumbo.php:12
+at \Animals\Mammals\Elephants\Dumbo->checkHealth() called in /Animals/Mammals/Elephants/Dumbo.php:23
+at \Animals\Mammals\Elephants\Dumbo->land(90, 30) called in /Animals/Mammals/Elephants/Dumbo.php:12
 STACK_TRACE;
     }
     
@@ -111,25 +111,25 @@ STACK_TRACE;
 DumboLandingException: Landing failed.
 
 thrown from /Animals/Mammals/Elephants/Dumbo.php on line 34
-at \Animals\Mammals\Elephants\Dumbo->checkHealth() in /Animals/Mammals/Elephants/Dumbo.php:23
-at \Animals\Mammals\Elephants\Dumbo->land(90, 30) in /Animals/Mammals/Elephants/Dumbo.php:12
+at \Animals\Mammals\Elephants\Dumbo->checkHealth() called in /Animals/Mammals/Elephants/Dumbo.php:23
+at \Animals\Mammals\Elephants\Dumbo->land(90, 30) called in /Animals/Mammals/Elephants/Dumbo.php:12
 
 caused by DumboHurtException: Dumbo is hurt.
 
 thrown from /Animals/Mammals/Elephants/Dumbo/Legs.php on line 48
-at \Animals\Mammals\Elephants\Dumbo\Leg->checkHealth() in /Animals/Mammals/Elephants/Dumbo/Legs.php:45
-at \Animals\Mammals\Elephants\Dumbo->checkHealth() in /Animals/Mammals/Elephants/Dumbo.php:23
-at \Animals\Mammals\Elephants\Dumbo->land(90, 30) in /Animals/Mammals/Elephants/Dumbo.php:12
+at \Animals\Mammals\Elephants\Dumbo\Leg->checkHealth() called in /Animals/Mammals/Elephants/Dumbo/Legs.php:45
+at \Animals\Mammals\Elephants\Dumbo->checkHealth() called in /Animals/Mammals/Elephants/Dumbo.php:23
+at \Animals\Mammals\Elephants\Dumbo->land(90, 30) called in /Animals/Mammals/Elephants/Dumbo.php:12
 
 caused by DumboBrokenLegException: Dumbo has a broken leg.
 
 thrown from /Animals/Mammals/Elephants/Dumbo/Legs/Leg.php on line 130
-at \Animals\Mammals\Elephants\Dumbo\Legs\Leg->checkHealth() in /Animals/Mammals/Elephants/Dumbo/Legs/Leg.php:114
-at \Animals\Mammals\Elephants\Dumbo\Legs->checkHealthFor(left_front) in /Animals/Mammals/Elephants/Dumbo/Legs.php:163
-at \Animals\Mammals\Elephants\Dumbo\Legs->checkHealthFor(left_front) in /Animals/Mammals/Elephants/Dumbo/Legs.php:163
-at \Animals\Mammals\Elephants\Dumbo\Legs->checkHealth() in /Animals/Mammals/Elephants/Dumbo/Legs.php:45
-at \Animals\Mammals\Elephants\Dumbo->checkHealth() in /Animals/Mammals/Elephants/Dumbo.php:23
-at \Animals\Mammals\Elephants\Dumbo->land(90, 30) in /Animals/Mammals/Elephants/Dumbo.php:12
+at \Animals\Mammals\Elephants\Dumbo\Legs\Leg->checkHealth() called in /Animals/Mammals/Elephants/Dumbo/Legs/Leg.php:114
+at \Animals\Mammals\Elephants\Dumbo\Legs->checkHealthFor(left_front) called in /Animals/Mammals/Elephants/Dumbo/Legs.php:163
+at \Animals\Mammals\Elephants\Dumbo\Legs->checkHealthFor(left_front) called in /Animals/Mammals/Elephants/Dumbo/Legs.php:163
+at \Animals\Mammals\Elephants\Dumbo\Legs->checkHealth() called in /Animals/Mammals/Elephants/Dumbo/Legs.php:45
+at \Animals\Mammals\Elephants\Dumbo->checkHealth() called in /Animals/Mammals/Elephants/Dumbo.php:23
+at \Animals\Mammals\Elephants\Dumbo->land(90, 30) called in /Animals/Mammals/Elephants/Dumbo.php:12
 STACK_TRACE;
     }
     
@@ -142,15 +142,15 @@ STACK_TRACE;
 DumboLandingException: Landing failed.
 
 thrown from /Animals/Mammals/Elephants/Dumbo.php on line 34
-at \Animals\Mammals\Elephants\Dumbo->checkHealth() in /Animals/Mammals/Elephants/Dumbo.php:23
-at \Animals\Mammals\Elephants\Dumbo->land(90, 30) in /Animals/Mammals/Elephants/Dumbo.php:12
+at \Animals\Mammals\Elephants\Dumbo->checkHealth() called in /Animals/Mammals/Elephants/Dumbo.php:23
+at \Animals\Mammals\Elephants\Dumbo->land(90, 30) called in /Animals/Mammals/Elephants/Dumbo.php:12
 
 caused by DumboHurtException: Dumbo is hurt.
 
 thrown from /Animals/Mammals/Elephants/Dumbo/Legs.php on line 48
-at \Animals\Mammals\Elephants\Dumbo\Leg->checkHealth() in /Animals/Mammals/Elephants/Dumbo/Legs.php:45
-at \Animals\Mammals\Elephants\Dumbo->checkHealth() in /Animals/Mammals/Elephants/Dumbo.php:23
-at \Animals\Mammals\Elephants\Dumbo->land(90, 30) in /Animals/Mammals/Elephants/Dumbo.php:12
+at \Animals\Mammals\Elephants\Dumbo\Leg->checkHealth() called in /Animals/Mammals/Elephants/Dumbo/Legs.php:45
+at \Animals\Mammals\Elephants\Dumbo->checkHealth() called in /Animals/Mammals/Elephants/Dumbo.php:23
+at \Animals\Mammals\Elephants\Dumbo->land(90, 30) called in /Animals/Mammals/Elephants/Dumbo.php:12
 STACK_TRACE;
     }
     
@@ -163,19 +163,34 @@ STACK_TRACE;
 ShopgateLibraryExceptionStub: wrong username or password: Username or password is incorrect
 
 thrown from /var/www/cart/plugins/shopgate/plugin.php on line 158
-at ShopgatePluginMyCart->getCustomer(herp@derp.com, XXXXXXXX) in /var/www/cart/plugins/shopgate/plugin.php:80
-at ShopgatePlugin->handleRequest(Array) in /var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/core.php:1590
-at ShopgatePluginApi->handleRequest(Array) in /var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php:238
-at ShopgatePluginApi->getCustomer(herp@derp.com, XXXXXXXX) in /var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php:857
+at ShopgatePluginMyCart->getCustomer(herp@derp.com, XXXXXXXX) called in /var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php:80
+at ShopgatePluginApi->getCustomer() called in /var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php:857
+at ShopgatePluginApi->handleRequest(Array) called in /var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php:238
+at ShopgatePlugin->handleRequest(Array) called in /var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/core.php:1590
 
 caused by LoginException: Wrong username or password
 
 thrown from /var/www/cart/classes/User.php on line 223
-at User->login(herp@derp.com, XXXXXXXX) in /var/www/cart/classes/User.php:215
-at ShopgatePluginMyCart->getCustomer(herp@derp.com, XXXXXXXX) in /var/www/cart/plugins/shopgate/plugin.php:80
-at ShopgatePlugin->handleRequest(Array) in /var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/core.php:1590
-at ShopgatePluginApi->handleRequest(Array) in /var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php:238
-at ShopgatePluginApi->getCustomer(herp@derp.com, XXXXXXXX) in /var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php:857
+at User->login(herp@derp.com, XXXXXXXX) called in /var/www/cart/plugins/shopgate/plugin.php:215
+at ShopgatePluginMyCart->getCustomer(herp@derp.com, XXXXXXXX) called in /var/www/cart/plugins/shopgate/plugin.php:80
+at ShopgatePluginApi->getCustomer() called in /var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php:857
+at ShopgatePluginApi->handleRequest(Array) called in /var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php:238
+at ShopgatePlugin->handleRequest(Array) called in /var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/core.php:1590
+STACK_TRACE;
+    }
+    
+    public function getExceptionIncompleteStackTraceInformationExpected()
+    {
+        return <<<STACK_TRACE
+ShopgateLibraryExceptionStub: wrong username or password: Username or password is incorrect
+
+thrown from /var/www/cart/plugins/shopgate/plugin.php on line 158
+at Shopgate_Helper_Error_Handling_ErrorHandler->handle(256, nope!, /src/htdocs/public/shopify/classes/base/PluginBase.php, 296, Array) called in :
+at User->login(herp@derp.com, XXXXXXXX) called in /var/www/cart/plugins/shopgate/plugin.php:215
+at ShopgatePluginMyCart->getCustomer(herp@derp.com, XXXXXXXX) called in /var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php:80
+at ShopgatePluginApi->getCustomer() called in /var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php:857
+at ShopgatePluginApi->handleRequest(Array) called in /var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php:238
+at ShopgatePlugin->handleRequest(Array) called in /var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/core.php:1590
 STACK_TRACE;
     }
     
@@ -189,118 +204,107 @@ STACK_TRACE;
         $fixtures = array(
             'DumboLandingException'        => array(
                 array(
-                    'file'      => '/Animals/Mammals/Elephants/Dumbo.php',
-                    'line'      => 12,
-                    'class'     => '\Animals\Mammals\Elephants\Dumbo',
-                    'type'      => '->',
-                    'function'  => 'land',
-                    'arguments' => array('angle' => 90, 'speed' => 30),
+                    'file'     => '/Animals/Mammals/Elephants/Dumbo.php',
+                    'line'     => 12,
+                    'class'    => '\Animals\Mammals\Elephants\Dumbo',
+                    'type'     => '->',
+                    'function' => 'land',
+                    'args'     => array('angle' => 90, 'speed' => 30),
                 ),
                 array(
-                    'file'      => '/Animals/Mammals/Elephants/Dumbo.php',
-                    'line'      => 23,
-                    'class'     => '\Animals\Mammals\Elephants\Dumbo',
-                    'type'      => '->',
-                    'function'  => 'checkHealth',
-                    'arguments' => array(),
+                    'file'     => '/Animals/Mammals/Elephants/Dumbo.php',
+                    'line'     => 23,
+                    'class'    => '\Animals\Mammals\Elephants\Dumbo',
+                    'type'     => '->',
+                    'function' => 'checkHealth',
+                    'args'     => array(),
                 ),
             ),
             'DumboHurtException'           => array(
                 array(
-                    'file'      => '/Animals/Mammals/Elephants/Dumbo.php',
-                    'line'      => 12,
-                    'class'     => '\Animals\Mammals\Elephants\Dumbo',
-                    'type'      => '->',
-                    'function'  => 'land',
-                    'arguments' => array('angle' => 90, 'speed' => 30),
+                    'file'     => '/Animals/Mammals/Elephants/Dumbo.php',
+                    'line'     => 12,
+                    'class'    => '\Animals\Mammals\Elephants\Dumbo',
+                    'type'     => '->',
+                    'function' => 'land',
+                    'args'     => array('angle' => 90, 'speed' => 30),
                 ),
                 array(
-                    'file'      => '/Animals/Mammals/Elephants/Dumbo.php',
-                    'line'      => 23,
-                    'class'     => '\Animals\Mammals\Elephants\Dumbo',
-                    'type'      => '->',
-                    'function'  => 'checkHealth',
-                    'arguments' => array(),
+                    'file'     => '/Animals/Mammals/Elephants/Dumbo.php',
+                    'line'     => 23,
+                    'class'    => '\Animals\Mammals\Elephants\Dumbo',
+                    'type'     => '->',
+                    'function' => 'checkHealth',
+                    'args'     => array(),
                 ),
                 array(
-                    'file'      => '/Animals/Mammals/Elephants/Dumbo/Legs.php',
-                    'line'      => 45,
-                    'class'     => '\Animals\Mammals\Elephants\Dumbo\Leg',
-                    'type'      => '->',
-                    'function'  => 'checkHealth',
-                    'arguments' => array(),
+                    'file'     => '/Animals/Mammals/Elephants/Dumbo/Legs.php',
+                    'line'     => 45,
+                    'class'    => '\Animals\Mammals\Elephants\Dumbo\Leg',
+                    'type'     => '->',
+                    'function' => 'checkHealth',
+                    'args'     => array(),
                 )
             ),
             'DumboBrokenLegException'      => array(
                 array(
-                    'file'      => '/Animals/Mammals/Elephants/Dumbo.php',
-                    'line'      => 12,
-                    'class'     => '\Animals\Mammals\Elephants\Dumbo',
-                    'type'      => '->',
-                    'function'  => 'land',
-                    'arguments' => array('angle' => 90, 'speed' => 30),
+                    'file'     => '/Animals/Mammals/Elephants/Dumbo.php',
+                    'line'     => 12,
+                    'class'    => '\Animals\Mammals\Elephants\Dumbo',
+                    'type'     => '->',
+                    'function' => 'land',
+                    'args'     => array('angle' => 90, 'speed' => 30),
                 ),
                 array(
-                    'file'      => '/Animals/Mammals/Elephants/Dumbo.php',
-                    'line'      => 23,
-                    'class'     => '\Animals\Mammals\Elephants\Dumbo',
-                    'type'      => '->',
-                    'function'  => 'checkHealth',
-                    'arguments' => array(),
+                    'file'     => '/Animals/Mammals/Elephants/Dumbo.php',
+                    'line'     => 23,
+                    'class'    => '\Animals\Mammals\Elephants\Dumbo',
+                    'type'     => '->',
+                    'function' => 'checkHealth',
+                    'args'     => array(),
                 ),
                 array(
-                    'file'      => '/Animals/Mammals/Elephants/Dumbo/Legs.php',
-                    'line'      => 45,
-                    'class'     => '\Animals\Mammals\Elephants\Dumbo\Legs',
-                    'type'      => '->',
-                    'function'  => 'checkHealth',
-                    'arguments' => array(),
+                    'file'     => '/Animals/Mammals/Elephants/Dumbo/Legs.php',
+                    'line'     => 45,
+                    'class'    => '\Animals\Mammals\Elephants\Dumbo\Legs',
+                    'type'     => '->',
+                    'function' => 'checkHealth',
+                    'args'     => array(),
                 ),
                 array(
-                    'file'      => '/Animals/Mammals/Elephants/Dumbo/Legs.php',
-                    'line'      => 163,
-                    'class'     => '\Animals\Mammals\Elephants\Dumbo\Legs',
-                    'type'      => '->',
-                    'function'  => 'checkHealthFor',
-                    'arguments' => array('leg' => 'left_front'),
+                    'file'     => '/Animals/Mammals/Elephants/Dumbo/Legs.php',
+                    'line'     => 163,
+                    'class'    => '\Animals\Mammals\Elephants\Dumbo\Legs',
+                    'type'     => '->',
+                    'function' => 'checkHealthFor',
+                    'args'     => array('leg' => 'left_front'),
                 ),
                 array(
-                    'file'      => '/Animals/Mammals/Elephants/Dumbo/Legs.php',
-                    'line'      => 163,
-                    'class'     => '\Animals\Mammals\Elephants\Dumbo\Legs',
-                    'type'      => '->',
-                    'function'  => 'checkHealthFor',
-                    'arguments' => array('leg' => 'left_front'),
+                    'file'     => '/Animals/Mammals/Elephants/Dumbo/Legs.php',
+                    'line'     => 163,
+                    'class'    => '\Animals\Mammals\Elephants\Dumbo\Legs',
+                    'type'     => '->',
+                    'function' => 'checkHealthFor',
+                    'args'     => array('left_front'),
                 ),
                 array(
-                    'file'      => '/Animals/Mammals/Elephants/Dumbo/Legs/Leg.php',
-                    'line'      => 114,
-                    'class'     => '\Animals\Mammals\Elephants\Dumbo\Legs\Leg',
-                    'type'      => '->',
-                    'function'  => 'checkHealth',
-                    'arguments' => array(),
+                    'file'     => '/Animals/Mammals/Elephants/Dumbo/Legs/Leg.php',
+                    'line'     => 114,
+                    'class'    => '\Animals\Mammals\Elephants\Dumbo\Legs\Leg',
+                    'type'     => '->',
+                    'function' => 'checkHealth',
+                    'args'     => array(),
                 ),
             ),
             'ShopgateLibraryExceptionStub' => array(
                 array(
-                    'file'      => '/var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php',
-                    'line'      => 857,
-                    'class'     => 'ShopgatePluginApi',
-                    'type'      => '->',
-                    'function'  => 'getCustomer',
-                    'arguments' => array(
-                        'user' => 'herp@derp.com',
-                        'pass' => 'herpiderp',
-                    ),
-                ),
-                array(
-                    'file'      => '/var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php',
-                    'line'      => 238,
-                    'class'     => 'ShopgatePluginApi',
-                    'type'      => '->',
-                    'function'  => 'handleRequest',
-                    'arguments' => array(
-                        'data' => array(
+                    'file'     => '/var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/core.php',
+                    'line'     => 1590,
+                    'class'    => 'ShopgatePlugin',
+                    'type'     => '->',
+                    'function' => 'handleRequest',
+                    'args'     => array(
+                        array(
                             'action'      => 'get_customer',
                             'shop_number' => '23456',
                             'user'        => 'herp@derp.com',
@@ -309,13 +313,13 @@ STACK_TRACE;
                     ),
                 ),
                 array(
-                    'file'      => '/var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/core.php',
-                    'line'      => 1590,
-                    'class'     => 'ShopgatePlugin',
-                    'type'      => '->',
-                    'function'  => 'handleRequest',
-                    'arguments' => array(
-                        'data' => array(
+                    'file'     => '/var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php',
+                    'line'     => 238,
+                    'class'    => 'ShopgatePluginApi',
+                    'type'     => '->',
+                    'function' => 'handleRequest',
+                    'args'     => array(
+                        array(
                             'action'      => 'get_customer',
                             'shop_number' => '23456',
                             'user'        => 'herp@derp.com',
@@ -324,37 +328,31 @@ STACK_TRACE;
                     ),
                 ),
                 array(
-                    'file'      => '/var/www/cart/plugins/shopgate/plugin.php',
-                    'line'      => 80,
-                    'class'     => 'ShopgatePluginMyCart',
-                    'type'      => '->',
-                    'function'  => 'getCustomer',
-                    'arguments' => array(
-                        'user' => 'herp@derp.com',
-                        'pass' => 'herpiderp',
-                    ),
+                    'file'     => '/var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php',
+                    'line'     => 857,
+                    'class'    => 'ShopgatePluginApi',
+                    'type'     => '->',
+                    'function' => 'getCustomer',
+                    'args'     => array(),
+                ),
+                array(
+                    'file'     => '/var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php',
+                    'line'     => 80,
+                    'class'    => 'ShopgatePluginMyCart',
+                    'type'     => '->',
+                    'function' => 'getCustomer',
+                    'args'     => array('herp@derp.com', 'herpiderp',),
                 ),
             ),
             'LoginException'               => array(
                 array(
-                    'file'      => '/var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php',
-                    'line'      => 857,
-                    'class'     => 'ShopgatePluginApi',
-                    'type'      => '->',
-                    'function'  => 'getCustomer',
-                    'arguments' => array(
-                        'user' => 'herp@derp.com',
-                        'pass' => 'herpiderp',
-                    ),
-                ),
-                array(
-                    'file'      => '/var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php',
-                    'line'      => 238,
-                    'class'     => 'ShopgatePluginApi',
-                    'type'      => '->',
-                    'function'  => 'handleRequest',
-                    'arguments' => array(
-                        'data' => array(
+                    'file'     => '/var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/core.php',
+                    'line'     => 1590,
+                    'class'    => 'ShopgatePlugin',
+                    'type'     => '->',
+                    'function' => 'handleRequest',
+                    'args'     => array(
+                        array(
                             'action'      => 'get_customer',
                             'shop_number' => '23456',
                             'user'        => 'herp@derp.com',
@@ -363,13 +361,13 @@ STACK_TRACE;
                     ),
                 ),
                 array(
-                    'file'      => '/var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/core.php',
-                    'line'      => 1590,
-                    'class'     => 'ShopgatePlugin',
-                    'type'      => '->',
-                    'function'  => 'handleRequest',
-                    'arguments' => array(
-                        'data' => array(
+                    'file'     => '/var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php',
+                    'line'     => 238,
+                    'class'    => 'ShopgatePluginApi',
+                    'type'     => '->',
+                    'function' => 'handleRequest',
+                    'args'     => array(
+                        array(
                             'action'      => 'get_customer',
                             'shop_number' => '23456',
                             'user'        => 'herp@derp.com',
@@ -378,26 +376,28 @@ STACK_TRACE;
                     ),
                 ),
                 array(
-                    'file'      => '/var/www/cart/plugins/shopgate/plugin.php',
-                    'line'      => 80,
-                    'class'     => 'ShopgatePluginMyCart',
-                    'type'      => '->',
-                    'function'  => 'getCustomer',
-                    'arguments' => array(
-                        'user' => 'herp@derp.com',
-                        'pass' => 'herpiderp',
-                    ),
+                    'file'     => '/var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/apis.php',
+                    'line'     => 857,
+                    'class'    => 'ShopgatePluginApi',
+                    'type'     => '->',
+                    'function' => 'getCustomer',
+                    'args'     => array(),
                 ),
                 array(
-                    'file'      => '/var/www/cart/classes/User.php',
-                    'line'      => 215,
-                    'class'     => 'User',
-                    'type'      => '->',
-                    'function'  => 'login',
-                    'arguments' => array(
-                        'user' => 'herp@derp.com',
-                        'pass' => 'herpiderp',
-                    ),
+                    'file'     => '/var/www/cart/plugins/shopgate/plugin.php',
+                    'line'     => 80,
+                    'class'    => 'ShopgatePluginMyCart',
+                    'type'     => '->',
+                    'function' => 'getCustomer',
+                    'args'     => array('herp@derp.com', 'herpiderp',),
+                ),
+                array(
+                    'file'     => '/var/www/cart/plugins/shopgate/plugin.php',
+                    'line'     => 215,
+                    'class'    => 'User',
+                    'type'     => '->',
+                    'function' => 'login',
+                    'args'     => array('herp@derp.com', 'herpiderp',),
                 ),
             ),
         );
@@ -443,5 +443,20 @@ STACK_TRACE;
         }
         
         return $exceptions[0];
+    }
+    
+    public function buildMockFromTraceFixture(array $values)
+    {
+        $arguments = array();
+        
+        foreach (array_reverse($values) as $trace) {
+            $arguments[] = array(
+                $trace['class'],
+                $trace['function'],
+                $trace['args']
+            );
+        }
+        
+        return $arguments;
     }
 }

@@ -114,10 +114,16 @@ require_once(dirname(__FILE__) . DS . 'classes' . DS . 'legacy' . DS . 'Shopgate
 require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper' . DS . 'logging' . DS . 'Obfuscator.php');
 require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper' . DS . 'logging' . DS . 'strategy' . DS
     . 'DefaultLogging.php');
+
 require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper' . DS . 'logging' . DS . 'stack_trace' . DS
     . 'GeneratorInterface.php');
 require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper' . DS . 'logging' . DS . 'stack_trace' . DS
     . 'GeneratorDefault.php');
+require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper' . DS . 'logging' . DS . 'stack_trace' . DS
+    . 'NamedParameterProviderInterface.php');
+require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper' . DS . 'logging' . DS . 'stack_trace' . DS
+    . 'NamedParameterProviderReflection.php');
+
 require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper' . DS . 'error_handling' . DS . 'ExceptionHandler.php');
 require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper' . DS . 'error_handling' . DS . 'ErrorHandler.php');
 require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper' . DS . 'error_handling' . DS . 'ShutdownHandler.php');

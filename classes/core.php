@@ -791,7 +791,10 @@ class ShopgateBuilder {
      * @return Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault
      */
 	public function buildStackTraceGenerator() {
-        return new Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault(ShopgateLogger::getInstance()->getObfuscator());
+        return new Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault(
+            ShopgateLogger::getInstance()->getObfuscator(),
+            new Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderInterfaceReflection()
+        );
     }
 
 	/**

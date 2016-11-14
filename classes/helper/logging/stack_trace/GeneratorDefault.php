@@ -38,9 +38,19 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault
     /** @var Shopgate_Helper_Logging_Obfuscator */
     protected $obfuscator;
     
-    public function __construct(Shopgate_Helper_Logging_Obfuscator $obfuscator)
-    {
-        $this->obfuscator = $obfuscator;
+    /** @var Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderInterface */
+    protected $namedParameterProvider;
+    
+    /** @var array [string, string[]] */
+    protected $functionArgumentsCache;
+    
+    public function __construct(
+        Shopgate_Helper_Logging_Obfuscator $obfuscator,
+        Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderInterface $namedParameterProvider
+    ) {
+        $this->obfuscator             = $obfuscator;
+        $this->namedParameterProvider = $namedParameterProvider;
+        $this->functionArgumentsCache = array();
     }
     
     public function generate($e, $maxDepth = 10)
@@ -88,14 +98,15 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault
         $formattedTraceLines = array();
         $traces              = array_reverse($traces);
         foreach ($traces as $trace) {
-            $args = $this->obfuscator->cleanParamsForLog($trace['arguments']);
+            $arguments = $this->namedParameterProvider->get($trace['class'], $trace['function'], $trace['args']);
+            $arguments = $this->obfuscator->cleanParamsForLog($arguments);
             
-            array_walk($args, array($this, 'flatten'));
-            $args = implode(', ', $args);
+            array_walk($arguments, array($this, 'flatten'));
+            $arguments = implode(', ', $arguments);
             
             $formattedTraceLines[] =
-                "at {$trace['class']}{$trace['type']}{$trace['function']}({$args}) " .
-                "in {$trace['file']}:{$trace['line']}";
+                "at {$trace['class']}{$trace['type']}{$trace['function']}({$arguments}) " .
+                "called in {$trace['file']}:{$trace['line']}";
         }
         
         return implode("\n", $formattedTraceLines);
@@ -112,8 +123,11 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault
      * @pist $value contains 'true' / 'false' if it was boolean true / false before.
      * @post $value is left untouched if it was any other simple type before.
      */
-    private function flatten(&$value, /** @noinspection PhpUnusedParameterInspection */ $key)
-    {
+    private function flatten(
+        &$value,
+        /** @noinspection PhpUnusedParameterInspection */
+        $key
+    ) {
         if (is_object($value)) {
             $value = 'Object';
         }
