@@ -238,9 +238,9 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 			$message  = get_class($e) . " with code: {$e->getCode()} and message: '{$e->getMessage()}'";
 			
 			// new ShopgateLibraryException to build proper error message and perform logging
-			$se = new ShopgateLibraryException($message, null, false, true, $e);
-			$error = $se->getCode();
-			$errortext = $se->getMessage();
+			$e = new ShopgateLibraryException($message, null, false, true, $e);
+			$error = $e->getCode();
+			$errortext = $e->getMessage();
 		}
 		
 		// build stack trace if generator is available
@@ -249,7 +249,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
             : '';
         
         // log error if there is any
-        if (!empty($stackTrace) && !empty($errortext)) {
+        if (!empty($stackTrace) || !empty($errortext)) {
             if (!empty($this->logging)) {
                 $this->logging->log(
                     $errortext,
@@ -257,7 +257,9 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
                     $stackTrace
                 );
             } else {
-                ShopgateLogger::getInstance()->log($errortext);
+                ShopgateLogger::getInstance()->log(
+                    $errortext . ' ### Stack trace omitted due to use of deprecated ShopgateLogger.'
+                );
             }
         }
 		
