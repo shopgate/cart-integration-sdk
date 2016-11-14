@@ -680,7 +680,8 @@ class ShopgateBuilder {
             new Shopgate_Helper_Error_Handling_ShutdownHandler(
                 $this->logging,
                 new Shopgate_Helper_Error_Handling_Shutdown_Handler_LastErrorProvider()
-            )
+            ),
+            'handle'
         ));
     }
     
