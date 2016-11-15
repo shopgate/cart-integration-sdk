@@ -89,15 +89,13 @@ class Shopgate_Helper_Error_Handling_ErrorHandler
             return $this->skipInternalErrorHandler;
         }
         
-        try {
-            throw new Exception('Wrapped around the actual error by Shopgate error handler.');
-        } catch (Exception $e) {
-            $this->logging->log(
-                $this->severityName($severity) . ': ' . $message . ' in ' . $file . ' on line ' . $line,
-                Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_ERROR,
-                $this->stackTraceGenerator->generate($e)
-            );
-        }
+        $this->logging->log(
+            $this->severityName($severity) . ': ' . $message . ' in ' . $file . ' on line ' . $line,
+            Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_ERROR,
+            $this->stackTraceGenerator->generate(
+                new Exception('Wrapped around the actual error by Shopgate error handler.')
+            )
+        );
         
         return $this->skipInternalErrorHandler;
     }
