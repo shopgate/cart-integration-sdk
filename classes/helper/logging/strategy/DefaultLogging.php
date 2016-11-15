@@ -86,7 +86,6 @@ class Shopgate_Helper_Logging_Strategy_DefaultLogging implements Shopgate_Helper
         return $this->debug;
     }
     
-    
     public function enableStackTrace()
     {
         $this->useStackTrace = true;
@@ -124,7 +123,6 @@ class Shopgate_Helper_Logging_Strategy_DefaultLogging implements Shopgate_Helper
         if (!$this->openLogFileHandle($type)) {
             return false;
         }
-        
         
         // try to log
         $success = false;
