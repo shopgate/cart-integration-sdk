@@ -82,8 +82,14 @@ class Shopgate_Helper_Error_Handling_ErrorHandler
      *
      * @see http://php.net/manual/en/function.set-error-handler.php
      */
-    public function handle($severity, $message, $file, $line = -1, array $context = array())
-    {
+    public function handle(
+        $severity,
+        $message,
+        $file,
+        $line = -1,
+        /** @noinspection PhpUnusedParameterInspection */
+        array $context = array()
+    ) {
         // on error supression with '@' do not log
         if ($severity === 0) {
             return $this->skipInternalErrorHandler;
