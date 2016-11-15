@@ -21,6 +21,10 @@
  *
  * @author Shopgate GmbH <interfaces@shopgate.com>
  */
+
+/**
+ * @see http://php.net/manual/de/function.set-error-handler.php
+ */
 class Shopgate_Helper_Error_Handling_ErrorHandler
 {
     /** @var Shopgate_Helper_Logging_Stack_Trace_GeneratorInterface */
