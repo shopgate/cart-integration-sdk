@@ -25,7 +25,7 @@
 /**
  * Tries to get the argument names from a function and map the actual values it was called with to them using Reflection.
  */
-class Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderInterfaceReflection
+class Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderReflection
     implements Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderInterface
 {
     /** @var array [string, string[]] */
