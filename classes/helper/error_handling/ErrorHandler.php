@@ -37,21 +37,21 @@ class Shopgate_Helper_Error_Handling_ErrorHandler
     protected $severityMapping;
     
     /** @var bool */
-    protected $useInternalErrorHandler;
+    protected $skipInternalErrorHandler;
     
     /**
      * @param Shopgate_Helper_Logging_Stack_Trace_GeneratorInterface $stackTraceGenerator
      * @param Shopgate_Helper_Logging_Strategy_LoggingInterface      $logging
-     * @param bool                                                   $useInternalErrorHandler
+     * @param bool                                                   $skipInternalErrorHandler
      */
     public function __construct(
         Shopgate_Helper_Logging_Stack_Trace_GeneratorInterface $stackTraceGenerator,
         Shopgate_Helper_Logging_Strategy_LoggingInterface $logging,
-        $useInternalErrorHandler = true
+        $skipInternalErrorHandler = false
     ) {
-        $this->stackTraceGenerator     = $stackTraceGenerator;
-        $this->logging                 = $logging;
-        $this->useInternalErrorHandler = $useInternalErrorHandler;
+        $this->stackTraceGenerator      = $stackTraceGenerator;
+        $this->logging                  = $logging;
+        $this->skipInternalErrorHandler = $skipInternalErrorHandler;
         
         $this->severityMapping = array(
             E_NOTICE       => 'Notice',
@@ -84,12 +84,9 @@ class Shopgate_Helper_Error_Handling_ErrorHandler
      */
     public function handle($severity, $message, $file, $line = -1, array $context = array())
     {
-        // from php.net: "If the function returns FALSE then the normal error handler continues."
-        $returnValue = !$this->useInternalErrorHandler;
-        
         // on error supression with '@' do not log
         if ($severity === 0) {
-            return $returnValue;
+            return $this->skipInternalErrorHandler;
         }
         
         try {
@@ -102,7 +99,7 @@ class Shopgate_Helper_Error_Handling_ErrorHandler
             );
         }
         
-        return $returnValue;
+        return $this->skipInternalErrorHandler;
     }
     
     /**

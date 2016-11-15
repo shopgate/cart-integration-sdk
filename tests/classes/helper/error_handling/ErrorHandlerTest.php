@@ -94,11 +94,11 @@ class Shopgate_Helper_Error_Handling_ErrorHandlerTest extends PHPUnit_Framework_
         $this->assertFalse($SUT->handle(123, 'a message', '/var/www/failingscript.php', 100, array()));
         
         // internal error handler explicitly used
-        $SUT = new Shopgate_Helper_Error_Handling_ErrorHandler($this->stackTraceGenerator, $this->logging, true);
+        $SUT = new Shopgate_Helper_Error_Handling_ErrorHandler($this->stackTraceGenerator, $this->logging, false);
         $this->assertFalse($SUT->handle(123, 'a message', '/var/www/failingscript.php', 100, array()));
         
         // internal error handler disabled
-        $SUT = new Shopgate_Helper_Error_Handling_ErrorHandler($this->stackTraceGenerator, $this->logging, false);
+        $SUT = new Shopgate_Helper_Error_Handling_ErrorHandler($this->stackTraceGenerator, $this->logging, true);
         $this->assertTrue($SUT->handle(123, 'a message', '/var/www/failingscript.php', 100, array()));
     }
 }
