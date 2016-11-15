@@ -249,19 +249,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
             : '';
         
         // log error if there is any
-        if (!empty($stackTrace) || !empty($errortext)) {
-            if (!empty($this->logging)) {
-                $this->logging->log(
-                    $errortext,
-                    Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_ERROR,
-                    $stackTrace
-                );
-            } else {
-                ShopgateLogger::getInstance()->log(
-                    $errortext . ' ### Stack trace omitted due to use of deprecated ShopgateLogger.'
-                );
-            }
-        }
+        $this->logApiError($errortext, $stackTrace);
 		
 		// print out the response
 		if (!empty($error)) {
@@ -1443,6 +1431,28 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
         @ini_set('display_errors', 1);
     }
     
+    /**
+     * @param string $stackTrace
+     * @param string $errortext
+     */
+    private function logApiError($errortext, $stackTrace)
+    {
+        if (empty($stackTrace) && empty($errortext)) {
+            return;
+        }
+        
+        if (!empty($this->logging)) {
+            $this->logging->log(
+                $errortext,
+                Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_ERROR,
+                $stackTrace
+            );
+        } else {
+            ShopgateLogger::getInstance()
+                          ->log($errortext . ' ### Stack trace omitted due to use of deprecated ShopgateLogger.')
+            ;
+        }
+    }
 }
 
 class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiInterface {
