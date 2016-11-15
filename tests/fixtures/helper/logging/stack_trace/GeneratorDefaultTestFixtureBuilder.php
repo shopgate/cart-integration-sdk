@@ -5,6 +5,9 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTestFixtureBuilder
     /** @var PHPUnit_Framework_TestCase */
     private $testCase;
     
+    /**
+     * @param PHPUnit_Framework_TestCase $testCase The calling test case; mock objects might be built using this.
+     */
     public function __construct(PHPUnit_Framework_TestCase $testCase)
     {
         $this->testCase = $testCase;
@@ -179,6 +182,9 @@ at ShopgatePlugin->handleRequest(Array) called in /var/www/cart/plugins/shopgate
 STACK_TRACE;
     }
     
+    /**
+     * @return string
+     */
     public function getExceptionIncompleteStackTraceInformationExpected()
     {
         return <<<STACK_TRACE
@@ -445,6 +451,11 @@ STACK_TRACE;
         return $exceptions[0];
     }
     
+    /**
+     * @param array $values A stack trace fixture as returned by getTraceFixture().
+     *
+     * @return array A list of stack trace entries with "class", "function" and "arguments" (similar to what Exception::getTrace() returns).
+     */
     public function buildMockFromTraceFixture(array $values)
     {
         $arguments = array();
