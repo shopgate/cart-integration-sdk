@@ -618,18 +618,10 @@ class ShopgateBuilder {
         
         // set up logging strategy
         /** @noinspection PhpDeprecationInspection */
-        $this->logging = ShopgateLogger::getInstance()->getLoggingStrategy();
-        
-        // determine desired error reporting (default to E_ALL == 32767 for PHP versions up to 5.4)
-        $errorReporting = (isset($_REQUEST['error_reporting'])) ? $_REQUEST['error_reporting'] : 32767;
-        
-        // determine error reporting for the current stage (custom, pg => E_ALL; the previously requested otherwise)
-        $serverTypesAdvancedErrorLogging = array('custom', 'pg');
-        $errorReporting = (isset($serverTypesAdvancedErrorLogging[$this->config->getServer()]))
-            ? 32767
-            : $errorReporting;
+        $this->logging  = ShopgateLogger::getInstance()->getLoggingStrategy();
         
         // set error reporting
+        $errorReporting = $this->determineErrorReporting($_REQUEST);
         $this->setErrorReporting($errorReporting);
         
         // set custom error and exception handlers if requested
@@ -978,6 +970,25 @@ class ShopgateBuilder {
 
 		return new Shopgate_Helper_Redirect_Type_Http($redirector);
 	}
+    
+    /**
+     * @param array $request The request parameters.
+     *
+     * @return int
+     */
+    private function determineErrorReporting($request)
+    {
+        // determine desired error reporting (default to E_ALL == 32767 for PHP versions up to 5.4)
+        $errorReporting = ($request['error_reporting']) ? $request['error_reporting'] : 32767;
+        
+        // determine error reporting for the current stage (custom, pg => E_ALL; the previously requested otherwise)
+        $serverTypesAdvancedErrorLogging = array('custom', 'pg');
+        $errorReporting                  = (isset($serverTypesAdvancedErrorLogging[$this->config->getServer()]))
+            ? 32767
+            : $errorReporting;
+        
+        return $errorReporting;
+    }
 }
 
 /**
