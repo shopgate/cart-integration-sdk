@@ -28,7 +28,7 @@
 class Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderReflection
     implements Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderInterface
 {
-    /** @var array [string, string[]] */
+    /** @var array [string, ReflectionParameter[]] */
     protected $functionArgumentsCache;
     
     public function __construct()
@@ -42,30 +42,84 @@ class Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderReflection
             return $arguments;
         }
         
-        $fullFunctionName = (empty($className)) ? $functionName : $className . '::' . $functionName;
-        
-        if (!function_exists($fullFunctionName) && !method_exists($className, $functionName)) {
+        if (!$this->exists($className, $functionName)) {
             return $arguments;
         }
         
-        $reflectionFunction = (empty($className))
-            ? new ReflectionFunction($fullFunctionName)
-            : new ReflectionMethod($className, $functionName);
-        
+        $fullFunctionName                                = $this->getFullFunctionName($className, $functionName);
         $this->functionArgumentsCache[$fullFunctionName] = array();
         
-        $i              = 0;
-        $namedArguments = array();
-        foreach ($reflectionFunction->getParameters() as $parameter) {
-            $this->functionArgumentsCache[$fullFunctionName][] = $parameter->getName();
-            $namedArguments[$parameter->getName()]             = $arguments[$i];
-            $i++;
-        }
+        $namedArguments = $this->getNamedArguments($className, $functionName, $arguments);
         
-        for (/* using the current value of $i */; $i < count($arguments); $i++) {
+        for ($i = count($namedArguments); $i < count($arguments); $i++) {
             $namedArguments['unnamed argument ' . $i] = $arguments[$i];
         }
         
         return $namedArguments;
+    }
+    
+    private function getNamedArguments($className, $functionName, array $arguments)
+    {
+        $fullFunctionName = $this->getFullFunctionName($className, $functionName);
+        
+        if (empty($this->functionArgumentsCache[$fullFunctionName])) {
+            $this->functionArgumentsCache[$fullFunctionName] =
+                $this->buildReflectionFunction($className, $functionName)->getParameters();
+        }
+        
+        $i              = 0;
+        $namedArguments = array();
+        foreach ($this->functionArgumentsCache[$fullFunctionName] as $parameter) {
+            /** @var ReflectionParameter $parameter */
+            try {
+                $defaultValue = '[defaultValue:' . $parameter->getDefaultValue() . ']';
+            } catch (ReflectionException $e) {
+                $defaultValue = '';
+            }
+            
+            $namedArguments[$parameter->getName()] = isset($arguments[$i]) ? $arguments[$i] : $defaultValue;
+            $i++;
+        }
+        
+        return $namedArguments;
+    }
+    
+    /**
+     * @param string $className
+     * @param string $functionName
+     *
+     * @return string
+     */
+    private function getFullFunctionName($className, $functionName)
+    {
+        return empty($className)
+            ? $functionName
+            : $className . '::' . $functionName;
+    }
+    
+    /**
+     * @param string $className
+     * @param string $functionName
+     *
+     * @return ReflectionFunctionAbstract
+     */
+    private function buildReflectionFunction($className, $functionName)
+    {
+        return (empty($className))
+            ? new ReflectionFunction($this->getFullFunctionName($className, $functionName))
+            : new ReflectionMethod($className, $functionName);
+    }
+    
+    /**
+     * @param string $className
+     * @param string $functionName
+     *
+     * @return bool
+     */
+    private function exists($className, $functionName)
+    {
+        return
+            function_exists($this->getFullFunctionName($className, $functionName))
+            || method_exists($className, $functionName);
     }
 }
