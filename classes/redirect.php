@@ -505,8 +505,8 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 				$nonSslUrl = ShopgateMobileRedirectInterface::SHOPGATE_PG_STATIC;
 			break;
 			case 'custom':
-				$sslUrl = 'https://shopgatedev-public.s3.amazonaws.com';
-				$nonSslUrl = 'http://shopgatedev-public.s3.amazonaws.com';
+				$sslUrl = '//shopgatedev-public.s3.amazonaws.com';
+				$nonSslUrl = '//shopgatedev-public.s3.amazonaws.com';
 			break;
 		}
 		
