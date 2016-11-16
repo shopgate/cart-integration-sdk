@@ -239,6 +239,7 @@ class ShopgateLibraryException extends Exception {
 	const CART_ITEM_REQUESTED_QUANTITY_OVER_MAXIMUM_QUANTITY = 305;
     const CART_ITEM_INVALID_PRODUCT_COMBINATION = 306;
 	const CART_ITEM_PRODUCT_NOT_ALLOWED = 307;
+	const CART_ITEM_SILENT_UPDATE = 308;
 
 	//Helper class exception
 	const SHOPGATE_HELPER_FUNCTION_NOT_FOUND_EXCEPTION = 310;
@@ -348,6 +349,7 @@ class ShopgateLibraryException extends Exception {
 		self::CART_ITEM_REQUESTED_QUANTITY_OVER_MAXIMUM_QUANTITY => 'requested quantity is higher than allowed maximum quantity',
         self::CART_ITEM_INVALID_PRODUCT_COMBINATION => 'products can not be ordered together',
 		self::CART_ITEM_PRODUCT_NOT_ALLOWED => 'product not allowed in cart constellation',
+		self::CART_ITEM_SILENT_UPDATE => '',
 
 		// Authentication errors
 		self::AUTHENTICATION_FAILED => 'authentication failed',
