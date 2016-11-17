@@ -58,6 +58,13 @@ class Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderReflection
         return $namedArguments;
     }
     
+    /**
+     * @param string  $className
+     * @param string  $functionName
+     * @param mixed[] $arguments The list of arguments.
+     *
+     * @return array [string, mixed] An array of the arguments with named indices according to function parameter names.
+     */
     private function getNamedArguments($className, $functionName, array $arguments)
     {
         $fullFunctionName = $this->getFullFunctionName($className, $functionName);
