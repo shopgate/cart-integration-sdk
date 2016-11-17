@@ -165,7 +165,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 		
 		// log incoming request
 		$this->log(
-			'process ID: '. $processId . ' parameters: ' 
+			'process ID: '. $processId . ' parameters: '
 			. ShopgateLogger::getInstance()->cleanParamsForLog($data), ShopgateLogger::LOGTYPE_ACCESS
 		);
 		
@@ -1512,7 +1512,7 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 	 *
 	 * @throws ShopgateLibraryException in case the connection can't be established, the response is invalid or an error occured.
 	 * @throws ShopgateMerchantApiException
-	 * 
+	 *
 	 * @return ShopgateMerchantApiResponse The response object.
 	 **/
 	protected function sendRequest($parameters = array(), $curlOptOverride = array()) {
@@ -2194,6 +2194,7 @@ class ShopgatePluginApiResponseTextPlain extends ShopgatePluginApiResponse {
 	public function send() {
 		header('HTTP/1.0 200 OK');
 		header('Content-Type: text/plain; charset=UTF-8');
+		header('Content-Length: ' . strlen($this->data));
 		echo $this->data;
 		exit;
 	}
@@ -2209,14 +2210,17 @@ class ShopgatePluginApiResponseAppJson extends ShopgatePluginApiResponse {
 		$data['error_text'] = $this->error_text;
 		$data['trace_id'] = $this->trace_id;
 		$data['shopgate_library_version'] = $this->version;
+		$this->data = array_merge($data, $this->data);
+		$jsonEncodedData = $this->jsonEncode($this->data);
+		
 		if (!empty($this->pluginVersion)) {
 			$data['plugin_version'] = $this->pluginVersion;
 		}
-		$this->data = array_merge($data, $this->data);
-
+		
 		header("HTTP/1.0 200 OK");
 		header("Content-Type: application/json");
-		echo $this->jsonEncode($this->data);
+		header('Content-Length: ' . strlen($jsonEncodedData));
+		echo $jsonEncodedData;
 	}
 }
 
@@ -2274,6 +2278,7 @@ class ShopgatePluginApiResponseTextCsvExport extends ShopgatePluginApiResponseEx
 	protected function getHeaders() {
 		return array(
 				'Content-Type: text/csv',
+				'Content-Length: ' . filesize($this->data),
 				'Content-Disposition: attachment; filename="'.basename($this->data).'"',
 		);
 	}
@@ -2286,6 +2291,7 @@ class ShopgatePluginApiResponseAppXmlExport extends ShopgatePluginApiResponseExp
 	protected function getHeaders() {
 		return array(
 				'Content-Type: application/xml',
+				'Content-Length: ' . filesize($this->data),
 				'Content-Disposition: attachment; filename="'.basename($this->data).'"',
 		);
 	}
@@ -2298,10 +2304,11 @@ class ShopgatePluginApiResponseAppJsonExport extends ShopgatePluginApiResponseEx
 	protected function getHeaders() {
 		return array(
 				'Content-Type: application/json',
+				'Content-Length: ' . filesize($this->data),
 				'Content-Disposition: attachment; filename="'.basename($this->data).'"',
 		);
 	}
-		}
+}
 		
 class ShopgatePluginApiResponseAppGzipExport extends ShopgatePluginApiResponseExport {
 	protected function getHeaders() {
