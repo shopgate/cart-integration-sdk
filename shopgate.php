@@ -111,10 +111,25 @@ require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper' . DS . 'redirect
 require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper' . DS . 'redirect' . DS . 'type' . DS . 'Http.php');
 require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper' . DS . 'logging' . DS . 'strategy' . DS
     . 'LoggingInterface.php');
-require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper' . DS . 'logging' . DS . 'ShopgateLogger.php');
+require_once(dirname(__FILE__) . DS . 'classes' . DS . 'legacy' . DS . 'ShopgateLogger.php');
 require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper' . DS . 'logging' . DS . 'Obfuscator.php');
 require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper' . DS . 'logging' . DS . 'strategy' . DS
     . 'DefaultLogging.php');
+
+require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper' . DS . 'logging' . DS . 'stack_trace' . DS
+    . 'GeneratorInterface.php');
+require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper' . DS . 'logging' . DS . 'stack_trace' . DS
+    . 'GeneratorDefault.php');
+require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper' . DS . 'logging' . DS . 'stack_trace' . DS
+    . 'NamedParameterProviderInterface.php');
+require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper' . DS . 'logging' . DS . 'stack_trace' . DS
+    . 'NamedParameterProviderReflection.php');
+
+require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper' . DS . 'error_handling' . DS . 'ExceptionHandler.php');
+require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper' . DS . 'error_handling' . DS . 'ErrorHandler.php');
+require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper' . DS . 'error_handling' . DS . 'ShutdownHandler.php');
+require_once(dirname(__FILE__) . DS . 'classes' . DS . 'helper' . DS . 'error_handling' . DS . 'shutdown_handler' . DS
+    . 'LastErrorProvider.php');
 
 // vendors
 require_once(dirname(__FILE__).DS.'vendors'.DS.'2d_is.php');
