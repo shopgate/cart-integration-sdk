@@ -1,4 +1,14 @@
 '''Version 2.9.56'''
+* fixed class names for logging classes to avoid duplicate declarations
+* removed self-logging functionality from ShopgateLibraryException
+* added proper stack trace generation
+* added proper handlers for errors and exceptions
+* added a new shutdown function to be able to log fatal errors that cause a script to stop unexpectedly
+* moved initialization of error reporting settings and handlers from ShopgatePluginApi to ShopgateBuilder
+* ShopgatePluginApi is now working with the "logging strategy" introduced in 2.9.55 if it was set
+* ShopgatePluginApi is now using the stack trace generation mentioned above if it was set
+* ShopgatePluginApi won't log stack traces anymore when using ShopgateLogger to avoid logging sensitive information
+* deprecated ShopgateLogger
 * added ShopgateClient to ShopgateCartBase to distinguish between the mobile clients
 * added error code to remove items silently in the cart validation
 * replaced "document.write" with asynchronous loading of mobile redirect / mobile header

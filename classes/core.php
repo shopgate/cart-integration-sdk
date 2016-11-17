@@ -406,16 +406,6 @@ class ShopgateLibraryException extends Exception {
 		} else {
 			parent::__construct($message, $code);
 		}
-
-		// Log the error
-		$logMessage = $this->buildLogMessage($appendAdditionalInformationToLog);
-		if (empty($writeLog)) {
-			$this->message .= ' (logging disabled for this message)';
-		} else {
-			if (ShopgateLogger::getInstance()->log($code.' - '.$logMessage) === false) {
-				$this->message .= ' (unable to log)';
-			}
-		}
 	}
 
 	/**
@@ -609,6 +599,9 @@ class ShopgateBuilder {
 	 * @var ShopgateConfigInterface
 	 */
 	protected $config;
+    
+    /** @var Shopgate_Helper_Logging_Strategy_LoggingInterface */
+    protected $logging;
 
 	/**
 	 * Loads configuration and initializes the ShopgateLogger class.
@@ -624,7 +617,91 @@ class ShopgateBuilder {
 
 		// set up logger
 		ShopgateLogger::getInstance($this->config->getAccessLogPath(), $this->config->getRequestLogPath(), $this->config->getErrorLogPath(), $this->config->getDebugLogPath());
+        
+        // set up logging strategy
+        /** @noinspection PhpDeprecationInspection */
+        $this->logging  = ShopgateLogger::getInstance()->getLoggingStrategy();
+        
+        // set error reporting
+        $errorReporting = $this->determineErrorReporting($_REQUEST);
+        $this->setErrorReporting($errorReporting);
+        
+        // set custom error and exception handlers if requested
+        if (!empty($_REQUEST['use_errorhandler'])) {
+            $this->enableErrorHandler($errorReporting);
+        }
+        
+        // register shutdown function if requested
+        if (!empty($_REQUEST['use_shutdown_handler'])) {
+            $this->enableShutdownFunction();
+        }
+        
+        // set memory logging size unit; default to MB
+        $this->setMemoryLoggingSizeUnit(isset($_REQUEST['memory_logging_unit'])
+            ? $_REQUEST['memory_logging_unit']
+            : 'MB'
+        );
 	}
+    
+	public function enableErrorHandler($errorReporting = 32767)
+    {
+        set_error_handler(
+            array(
+                new Shopgate_Helper_Error_Handling_ErrorHandler($this->buildStackTraceGenerator(), $this->logging),
+                'handle',
+            ),
+            $errorReporting
+        );
+        
+        set_exception_handler(array(
+            new Shopgate_Helper_Error_Handling_ExceptionHandler($this->buildStackTraceGenerator(), $this->logging),
+        ));
+        
+        $logFileHandler = @fopen($this->config->getErrorLogPath(), 'a');
+        @fclose($logFileHandler);
+        @chmod($this->config->getErrorLogPath(), 0777);
+        @chmod($this->config->getErrorLogPath(), 0755);
+        @error_reporting(E_ALL ^ E_DEPRECATED);
+        @ini_set('log_errors', 1);
+        @ini_set('error_log', $this->config->getErrorLogPath());
+        @ini_set('ignore_repeated_errors', 1);
+        @ini_set('html_errors', 0);
+    }
+    
+    public function enableShutdownFunction()
+    {
+        register_shutdown_function(array(
+            new Shopgate_Helper_Error_Handling_ShutdownHandler(
+                $this->logging,
+                new Shopgate_Helper_Error_Handling_Shutdown_Handler_LastErrorProvider()
+            ),
+            'handle'
+        ));
+    }
+    
+    public function enableDebug($keepDebugLog)
+    {
+        // todo call to $this->logging once ShopgateLogger has been removed
+        
+        /** @noinspection PhpDeprecationInspection */
+        ShopgateLogger::getInstance()->enableDebug();
+    
+        /** @noinspection PhpDeprecationInspection */
+        ShopgateLogger::getInstance()->keepDebugLog($keepDebugLog);
+    }
+    
+    public function setErrorReporting($errorReporting = 32767)
+    {
+        error_reporting($errorReporting);
+        ini_set('display_errors', (version_compare(PHP_VERSION, '5.2.4', '>=')) ? 'stdout' : true);
+    }
+    
+    public function setMemoryLoggingSizeUnit($unit = 'MB')
+    {
+        // todo call to $this->logging once ShopgateLogger has been removed
+        /** @noinspection PhpDeprecationInspection */
+        ShopgateLogger::getInstance()->setMemoryAnalyserLoggingSizeUnit($unit);
+    }
 
 	/**
 	 * Builds the Shopgate Library object graph for a given ShopgatePlugin object.
@@ -659,7 +736,7 @@ class ShopgateBuilder {
 		}
 		// -> PluginAPI auth service (currently the plugin API supports only one auth service)
 		$spaAuthService = new ShopgateAuthenticationServiceShopgate($this->config->getCustomerNumber(), $this->config->getApikey());
-		$pluginApi = new ShopgatePluginApi($this->config, $spaAuthService, $merchantApi, $plugin);
+		$pluginApi = new ShopgatePluginApi($this->config, $spaAuthService, $merchantApi, $plugin, null, $this->buildStackTraceGenerator(), $this->logging);
 
 		if ($this->config->getExportConvertEncoding()) {
 			array_splice(ShopgateObject::$sourceEncodings, 1, 0, $this->config->getEncoding());
@@ -704,6 +781,16 @@ class ShopgateBuilder {
 		$plugin->setPluginApi($pluginApi);
 		$plugin->setBuffer($fileBuffer);
 	}
+    
+    /**
+     * @return Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault
+     */
+	public function buildStackTraceGenerator() {
+        return new Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault(
+            ShopgateLogger::getInstance()->getObfuscator(),
+            new Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderReflection()
+        );
+    }
 
 	/**
 	 * Builds the Shopgate Library object graph for ShopgateMerchantApi and returns the instance.
@@ -885,6 +972,25 @@ class ShopgateBuilder {
 
 		return new Shopgate_Helper_Redirect_Type_Http($redirector);
 	}
+    
+    /**
+     * @param array $request The request parameters.
+     *
+     * @return int
+     */
+    private function determineErrorReporting($request)
+    {
+        // determine desired error reporting (default to E_ALL == 32767 for PHP versions up to 5.4)
+        $errorReporting = ($request['error_reporting']) ? $request['error_reporting'] : 32767;
+        
+        // determine error reporting for the current stage (custom, pg => E_ALL; the previously requested otherwise)
+        $serverTypesAdvancedErrorLogging = array('custom', 'pg');
+        $errorReporting                  = (isset($serverTypesAdvancedErrorLogging[$this->config->getServer()]))
+            ? 32767
+            : $errorReporting;
+        
+        return $errorReporting;
+    }
 }
 
 /**

@@ -21,14 +21,14 @@
  *
  * @author Shopgate GmbH <interfaces@shopgate.com>
  */
-class ObfuscatorTest extends PHPUnit_Framework_TestCase
+class Shopgate_Helper_Logging_ObfuscatorTest extends PHPUnit_Framework_TestCase
 {
-    /** @var Obfuscator */
+    /** @var Shopgate_Helper_Logging_Obfuscator */
     private $obfuscator;
     
     public function setUp()
     {
-        $this->obfuscator = new Obfuscator();
+        $this->obfuscator = new Shopgate_Helper_Logging_Obfuscator();
     }
     
     public function testAddObfuscationFields()
@@ -40,8 +40,15 @@ class ObfuscatorTest extends PHPUnit_Framework_TestCase
             'pass'       => 'this is secure',
             'test'       => 'this is secure'
         );
+        
+        $expected = array(
+            'mytestData' => 'this must be readable',
+            'user'       => 'this must be readable',
+            'pass'       => 'XXXXXXXX',
+            'test'       => 'XXXXXXXX'
+        );
         $this->assertEquals(
-            "Array\n(\n    [mytestData] => this must be readable\n    [user] => this must be readable\n    [pass] => XXXXXXXX\n    [test] => XXXXXXXX\n)\n",
+            $expected,
             $this->obfuscator->cleanParamsForLog($data)
         );
     }
@@ -69,7 +76,10 @@ class ObfuscatorTest extends PHPUnit_Framework_TestCase
                     'user' => 'this must be readable',
                     'pass' => 'this shall be removed',
                 ),
-                "Array\n(\n    [user] => this must be readable\n    [pass] => <removed>\n)\n"
+                array(
+                    'user' => 'this must be readable',
+                    'pass' => '<removed>',
+                ),
             ),
             'remove cart' => array(
                 array(
@@ -79,7 +89,10 @@ class ObfuscatorTest extends PHPUnit_Framework_TestCase
                         'all infos' => 'in this array must be removed'
                     ),
                 ),
-                "Array\n(\n    [user] => this must be readable\n    [cart] => <removed>\n)\n"
+                array(
+                    'user' => 'this must be readable',
+                    'cart' => '<removed>',
+                ),
             ),
         );
     }
@@ -105,19 +118,26 @@ class ObfuscatorTest extends PHPUnit_Framework_TestCase
                     'username' => 'this must be readable',
                     'pass'     => 'this is secure',
                 ),
-                "Array\n(\n    [username] => this must be readable\n    [pass] => XXXXXXXX\n)\n"
+                array(
+                    'username' => 'this must be readable',
+                    'pass'     => 'XXXXXXXX',
+                ),
             ),
             'secure only' => array(
                 array(
                     'pass' => 'this is secure',
                 ),
-                "Array\n(\n    [pass] => XXXXXXXX\n)\n"
+                array(
+                    'pass' => 'XXXXXXXX',
+                ),
             ),
             'no secure'   => array(
                 array(
                     'test' => 'this must be readable',
                 ),
-                "Array\n(\n    [test] => this must be readable\n)\n"
+                array(
+                    'test' => 'this must be readable',
+                ),
             ),
         );
     }

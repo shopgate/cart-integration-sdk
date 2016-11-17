@@ -25,16 +25,18 @@
  * Global class (Singleton) to manage log files.
  *
  * @author Shopgate GmbH, 35510 Butzbach, DE
+ *
+ * @deprecated
  */
-class ShopgateLogger implements LoggingInterface
+class ShopgateLogger
 {
-    const OBFUSCATION_STRING = Obfuscator::OBFUSCATION_STRING;
-    const REMOVED_STRING     = Obfuscator::REMOVED_STRING;
+    const OBFUSCATION_STRING = Shopgate_Helper_Logging_Obfuscator::OBFUSCATION_STRING;
+    const REMOVED_STRING     = Shopgate_Helper_Logging_Obfuscator::REMOVED_STRING;
     
-    const LOGTYPE_ACCESS  = 'access';
-    const LOGTYPE_REQUEST = 'request';
-    const LOGTYPE_ERROR   = 'error';
-    const LOGTYPE_DEBUG   = 'debug';
+    const LOGTYPE_ACCESS  = Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_ACCESS;
+    const LOGTYPE_REQUEST = Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_REQUEST;
+    const LOGTYPE_ERROR   = Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_ERROR;
+    const LOGTYPE_DEBUG   = Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_DEBUG;
     
     /** @var string */
     private $memoryAnalyserLoggingSizeUnit;
@@ -42,10 +44,10 @@ class ShopgateLogger implements LoggingInterface
     /** @var ShopgateLogger */
     private static $singleton;
     
-    /** @var Obfuscator */
+    /** @var Shopgate_Helper_Logging_Obfuscator */
     private $obfuscator;
     
-    /** @var LoggingInterface */
+    /** @var Shopgate_Helper_Logging_Strategy_LoggingInterface */
     private $loggingStrategy;
     
     /**
@@ -57,17 +59,21 @@ class ShopgateLogger implements LoggingInterface
      * @return ShopgateLogger
      */
     public static function getInstance(
-        $accessLogPath = null, $requestLogPath = null, $errorLogPath = null, $debugLogPath = null
+        $accessLogPath = null,
+        $requestLogPath = null,
+        $errorLogPath = null,
+        $debugLogPath = null
     ) {
         if (empty(self::$singleton)) {
             self::$singleton = new self();
             
             self::$singleton->setLoggingStrategy(
-                new DefaultLogging($accessLogPath, $requestLogPath, $errorLogPath, $debugLogPath)
+                new Shopgate_Helper_Logging_Strategy_DefaultLogging($accessLogPath, $requestLogPath, $errorLogPath,
+                    $debugLogPath)
             );
         }
         
-        if (self::$singleton->loggingStrategy instanceof DefaultLogging) {
+        if (self::$singleton->loggingStrategy instanceof Shopgate_Helper_Logging_Strategy_DefaultLogging) {
             /** @noinspection PhpUndefinedMethodInspection */
             self::$singleton->loggingStrategy->setLogFilePaths(
                 $accessLogPath, $requestLogPath, $errorLogPath, $debugLogPath
@@ -79,11 +85,12 @@ class ShopgateLogger implements LoggingInterface
     
     public function __construct()
     {
-        $this->obfuscator = new Obfuscator();
+        $this->obfuscator                    = new Shopgate_Helper_Logging_Obfuscator();
+        $this->memoryAnalyserLoggingSizeUnit = 'MB';
     }
     
     /**
-     * @param LoggingInterface $loggingStrategy
+     * @param Shopgate_Helper_Logging_Strategy_LoggingInterface $loggingStrategy
      */
     public function setLoggingStrategy($loggingStrategy)
     {
@@ -91,7 +98,7 @@ class ShopgateLogger implements LoggingInterface
     }
     
     /**
-     * @param Obfuscator $obfuscator
+     * @param Shopgate_Helper_Logging_Obfuscator $obfuscator
      */
     public function setObfuscator($obfuscator)
     {
@@ -99,33 +106,73 @@ class ShopgateLogger implements LoggingInterface
     }
     
     /**
-     * @return LoggingInterface
+     * @return Shopgate_Helper_Logging_Strategy_LoggingInterface
      */
     public function getLoggingStrategy()
     {
         return $this->loggingStrategy;
     }
     
+    /**
+     * @return Shopgate_Helper_Logging_Obfuscator
+     */
+    public function getObfuscator()
+    {
+        return $this->obfuscator;
+    }
+    
+    /**
+     * Enables logging messages to debug log file.
+     */
     public function enableDebug()
     {
         $this->loggingStrategy->enableDebug();
     }
     
+    /**
+     * Disables logging messages to debug log file.
+     */
     public function disableDebug()
     {
         $this->loggingStrategy->disableDebug();
     }
     
+    /**
+     * @return bool true if logging messages to debug log file is enabled, false otherwise.
+     */
     public function isDebugEnabled()
     {
         return $this->loggingStrategy->isDebugEnabled();
     }
     
+    /**
+     * Logs a message to the according log file.
+     *
+     * Logging to LOGTYPE_DEBUG only is done after $this->enableDebug() has been called and $this->disableDebug() has not
+     * been called after that. The debug log file will be truncated on opening by default. To prevent this call
+     * $this->keepDebugLog(true).
+     *
+     * @param string $msg  The error message.
+     * @param string $type The log type, that would be one of the ShopgateLogger::LOGTYPE_* constants.
+     *
+     * @return bool true on success, false on error.
+     */
     public function log($msg, $type = ShopgateLogger::LOGTYPE_ERROR)
     {
         return $this->loggingStrategy->log($msg, $type);
     }
     
+    /**
+     * Returns the requested number of lines of the requested log file's end.
+     *
+     * @param string $type  The log file to be read
+     * @param int    $lines Number of lines to return
+     *
+     * @return string The requested log file content
+     * @throws ShopgateLibraryException
+     *
+     * @see http://tekkie.flashbit.net/php/tail-functionality-in-php
+     */
     public function tail($type = ShopgateLogger::LOGTYPE_ERROR, $lines = 20)
     {
         return $this->loggingStrategy->tail($type, $lines);
@@ -186,6 +233,6 @@ class ShopgateLogger implements LoggingInterface
      */
     public function cleanParamsForLog($data)
     {
-        return $this->obfuscator->cleanParamsForLog($data);
+        return print_r($this->obfuscator->cleanParamsForLog($data), true);
     }
 }
