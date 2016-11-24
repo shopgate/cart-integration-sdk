@@ -2210,12 +2210,13 @@ class ShopgatePluginApiResponseAppJson extends ShopgatePluginApiResponse {
 		$data['error_text'] = $this->error_text;
 		$data['trace_id'] = $this->trace_id;
 		$data['shopgate_library_version'] = $this->version;
-		$this->data = array_merge($data, $this->data);
-		$jsonEncodedData = $this->jsonEncode($this->data);
 		
 		if (!empty($this->pluginVersion)) {
 			$data['plugin_version'] = $this->pluginVersion;
 		}
+		
+		$this->data = array_merge($data, $this->data);
+		$jsonEncodedData = $this->jsonEncode($this->data);
 		
 		header("HTTP/1.0 200 OK");
 		header("Content-Type: application/json");
