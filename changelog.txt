@@ -1,3 +1,7 @@
+'''Version 2.9.58'''
+* fixed 'undefined index' notice in ShopgateBuilder
+* fixed turning on error_reporting for all errors by default
+
 '''Version 2.9.57'''
 * fixed missing plugin_version in JSON response
 

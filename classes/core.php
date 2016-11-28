@@ -690,7 +690,7 @@ class ShopgateBuilder {
         ShopgateLogger::getInstance()->keepDebugLog($keepDebugLog);
     }
     
-    public function setErrorReporting($errorReporting = 32767)
+    public function setErrorReporting($errorReporting = 0)
     {
         error_reporting($errorReporting);
         ini_set('display_errors', (version_compare(PHP_VERSION, '5.2.4', '>=')) ? 'stdout' : true);
@@ -980,8 +980,8 @@ class ShopgateBuilder {
      */
     private function determineErrorReporting($request)
     {
-        // determine desired error reporting (default to E_ALL == 32767 for PHP versions up to 5.4)
-        $errorReporting = ($request['error_reporting']) ? $request['error_reporting'] : 32767;
+        // determine desired error reporting (default to 0)
+        $errorReporting = (isset($request['error_reporting'])) ? $request['error_reporting'] : 0;
         
         // determine error reporting for the current stage (custom, pg => E_ALL; the previously requested otherwise)
         $serverTypesAdvancedErrorLogging = array('custom', 'pg');
