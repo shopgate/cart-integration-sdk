@@ -1880,6 +1880,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	public function setDefaultExecutionTime($default_execution_time) {
 		$this->default_execution_time = $default_execution_time;
 	}
+
 	/**
 	 * @param int $default_memory_limit
 	 */
@@ -1887,8 +1888,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		$this->default_memory_limit = $default_memory_limit;
 	}
 
+	/**
+	 * @param $exclude_item_ids int[]|string set list of item Ids which should be excluded from the item export
+	 */
 	public function setExcludeItemIds($exclude_item_ids) {
-		$this->exclude_item_ids = $exclude_item_ids;
+		$this->exclude_item_ids = is_array($exclude_item_ids) ? $exclude_item_ids : json_decode($exclude_item_ids);
 	}
 	
 	###############
@@ -3486,7 +3490,7 @@ interface ShopgateConfigInterface {
 	public function setDefaultMemoryLimit($default_memory_limit);
 
 	/**
-	 * @param $exclude_item_ids int[] set list of item Ids which should be excluded from the item export
+	 * @param $exclude_item_ids int[]|string set list of item Ids which should be excluded from the item export
 	 */
 	public function setExcludeItemIds($exclude_item_ids);
 	
