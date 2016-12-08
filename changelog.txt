@@ -1,3 +1,6 @@
+'''Version 2.9.59'''
+* Shopgate configuration extended with parameter exclude_item_ids
+
 '''Version 2.9.58'''
 * fixed 'undefined index' notice in ShopgateBuilder
 * fixed turning on error_reporting for all errors by default
