@@ -1,3 +1,7 @@
+'''Version 2.9.59'''
+* fixed a bug in the stack trace generation
+* fixed a bug in registering an exception handler
+
 '''Version 2.9.58'''
 * fixed 'undefined index' notice in ShopgateBuilder
 * fixed turning on error_reporting for all errors by default
