@@ -1892,7 +1892,8 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 * @param $exclude_item_ids int[]|string set list of item Ids which should be excluded from the item export
 	 */
 	public function setExcludeItemIds($exclude_item_ids) {
-		$this->exclude_item_ids = is_array($exclude_item_ids) ? $exclude_item_ids : json_decode($exclude_item_ids);
+		$this->exclude_item_ids =
+			is_array($exclude_item_ids) ? $exclude_item_ids : (array)json_decode($exclude_item_ids);
 	}
 	
 	###############
