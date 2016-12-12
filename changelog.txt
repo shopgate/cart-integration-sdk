@@ -1,4 +1,6 @@
 '''Version 2.9.59'''
+* fixed a bug in the stack trace generation
+* fixed a bug in registering an exception handler
 * Shopgate configuration extended with parameter exclude_item_ids
 
 '''Version 2.9.58'''

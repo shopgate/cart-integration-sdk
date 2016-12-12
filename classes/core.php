@@ -655,6 +655,7 @@ class ShopgateBuilder {
         
         set_exception_handler(array(
             new Shopgate_Helper_Error_Handling_ExceptionHandler($this->buildStackTraceGenerator(), $this->logging),
+            'handle'
         ));
         
         $logFileHandler = @fopen($this->config->getErrorLogPath(), 'a');
