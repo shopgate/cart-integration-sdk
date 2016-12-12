@@ -501,7 +501,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	protected $default_memory_limit;
 
 	/**
-	 * @var int[] list of items which should be excluded from the item export
+	 * @var array list of items which should be excluded from the item export
 	 */
 	protected $exclude_item_ids = array();
 
@@ -1889,7 +1889,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	}
 
 	/**
-	 * @param $exclude_item_ids int[]|string set list of item Ids which should be excluded from the item export
+	 * @param array|string $exclude_item_ids list of item Ids which should be excluded from the item export
 	 */
 	public function setExcludeItemIds($exclude_item_ids) {
 		$this->exclude_item_ids =
@@ -3004,7 +3004,7 @@ interface ShopgateConfigInterface {
 	public function getDefaultMemoryLimit();
 
 	/**
-	 * @return int[] list of items which should be excluded from the item export
+	 * @return array list of items which should be excluded from the item export
 	 */
 	public function getExcludeItemIds();
 	
@@ -3491,7 +3491,7 @@ interface ShopgateConfigInterface {
 	public function setDefaultMemoryLimit($default_memory_limit);
 
 	/**
-	 * @param $exclude_item_ids int[]|string set list of item Ids which should be excluded from the item export
+	 * @param array|string $exclude_item_ids list of item Ids which should be excluded from the item export
 	 */
 	public function setExcludeItemIds($exclude_item_ids);
 	

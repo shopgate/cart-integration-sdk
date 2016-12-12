@@ -20,9 +20,8 @@
  * of paragraph 69 d, sub-paragraphs 2, 3 and paragraph 69, sub-paragraph e of the German Copyright Act shall remain unaffected.
  *
  * @author             Shopgate GmbH <interfaces@shopgate.com>
- * @author             Konstantin Kiritsenko <konstantin.kiritsenko@shopgate.com>
+ * @author             Rainer Skistims <rainer.skistims@shopgate.com>
  * @group              Shopgate_Library
- * @group              Shopgate_Library_Helpers
  *
  * @coversDefaultClass ShopgateConfig
  */
@@ -40,10 +39,10 @@ class Shopgate_configurationTest extends PHPUnit_Framework_TestCase
      * Tests the setter and getter for exclude_item_ids because the setter has logic
      *
      * @dataProvider excludeItemIdsProvider
-     * @covers ::getVariables
+     * @covers ::setExcludeItemIds
      *
-     * @param $input
-     * @param array() $expected
+     * @param array|string $input
+     * @param array $expected
      */
     public function testExcludeItemIds($input, $expected)
     {
@@ -53,7 +52,7 @@ class Shopgate_configurationTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return array()
+     * @return array
      */
     public function excludeItemIdsProvider()
     {
