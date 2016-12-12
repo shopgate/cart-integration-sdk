@@ -24,11 +24,11 @@
  * @group              Shopgate_Library
  * @group              Shopgate_Library_Helpers
  *
- * @coversDefaultClass Shopgate_Helper_Redirect_TemplateParser
+ * @coversDefaultClass ShopgateConfig
  */
 class Shopgate_configurationTest extends PHPUnit_Framework_TestCase
 {
-    /** @var Shopgate_Helper_Redirect_TemplateParser $class */
+    /** @var ShopgateConfig $class */
     protected $class;
 
     public function setUp()
@@ -37,27 +37,44 @@ class Shopgate_configurationTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests the most basic regex check, export {variable} name
+     * Tests the setter and getter for exclude_item_ids because the setter has logic
      *
-     * @uses   Shopgate_Model_Redirect_HtmlTagVariable::getData
-     *
+     * @dataProvider excludeItemIdsProvider
      * @covers ::getVariables
+     *
+     * @param $input
+     * @param array() $expected
      */
-    public function testGetVariablesSimple()
+    public function testExcludeItemIds($input, $expected)
     {
-		$input     = array(1,2);
-		$expected  = array(1,2);
-		$returned  = $this->class->setExcludeItemIds($input);
-		$this->assertEquals($returned, $expected);
+        $this->class->setExcludeItemIds($input);
+        $returned = $this->class->getExcludeItemIds();
+        $this->assertEquals($expected, $returned);
+    }
 
-		$input     = '';
-		$expected  = array();
-		$returned  = $this->class->setExcludeItemIds($input);
-		$this->assertEquals($returned, $expected);
+    /**
+     * @return array()
+     */
+    public function excludeItemIdsProvider()
+    {
+        return array(
+            'array with data to array with data' => array(
+                array(1, 2),
+                array(1, 2)
+            ),
+            'empty array to empty array' => array(
+                array(),
+                array()
+            ),
+            'empty string to empty array' => array(
+                '',
+                array()
+            ),
+            'JSON To Array with Data' => array(
+                '[4,9,5,7,345,9864,1]',
+                array(4, 9, 5, 7, 345, 9864, 1)
 
-		$input     = '[4,9,5,7,345,9864,1]';
-		$expected  = array(4,9,5,7,345,9864,1);
-		$returned  = $this->class->setExcludeItemIds($input);
-		$this->assertEquals($returned, $expected);
+            ),
+        );
     }
 }
