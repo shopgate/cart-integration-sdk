@@ -69,10 +69,9 @@ class Shopgate_ConfigurationTest extends PHPUnit_Framework_TestCase
                 '',
                 array()
             ),
-            'JSON To Array with Data' => array(
+            'JSON to array with data' => array(
                 '[4,9,5,7,345,9864,1]',
                 array(4, 9, 5, 7, 345, 9864, 1)
-
             ),
         );
     }
