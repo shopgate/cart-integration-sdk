@@ -25,7 +25,7 @@
  *
  * @coversDefaultClass ShopgateConfig
  */
-class Shopgate_configurationTest extends PHPUnit_Framework_TestCase
+class Shopgate_ConfigurationTest extends PHPUnit_Framework_TestCase
 {
     /** @var ShopgateConfig $class */
     protected $class;
