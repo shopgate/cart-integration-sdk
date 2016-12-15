@@ -628,7 +628,7 @@ class ShopgateBuilder {
         
         // enable debug logging if requested
         if (!empty($_REQUEST['debug_log'])) {
-            $this->enableDebug(1);
+            $this->enableDebug(true);
         }
 
         // set custom error and exception handlers if requested
