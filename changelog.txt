@@ -1,3 +1,6 @@
+'''Version 2.9.60'''
+* fixed debug logging
+
 '''Version 2.9.59'''
 * fixed a bug in the stack trace generation
 * fixed a bug in registering an exception handler
