@@ -626,6 +626,11 @@ class ShopgateBuilder {
         $errorReporting = $this->determineErrorReporting($_REQUEST);
         $this->setErrorReporting($errorReporting);
         
+        // enable debug logging if requested
+        if (!empty($_REQUEST['debug_log'])) {
+            $this->enableDebug(true);
+        }
+
         // set custom error and exception handlers if requested
         if (!empty($_REQUEST['use_errorhandler'])) {
             $this->enableErrorHandler($errorReporting);
@@ -2611,7 +2616,7 @@ abstract class ShopgatePlugin extends ShopgateObject {
 	 *
 	 * @see http://developer.shopgate.com/plugin_api/system_information/clear_cache
 	 */
-	protected function clearCache() {
+    public function clearCache() {
 		return array();
 	}
 }
