@@ -127,6 +127,40 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTest extends PHPUnit_F
         );
     }
     
+    public function testStackTraceGenerationWithFunction()
+    {
+        $this->obfuscator
+            ->expects($this->any())
+            ->method('cleanParamsForLog')
+            ->withAnyParameters()
+            ->willReturnArgument(0)
+        ;
+        
+        $this->namedParameterProvider->expects($this->any())->method('get')->willReturnArgument(2);
+        
+        $this->assertEquals(
+            $this->fixtureProvider->getExceptionWithMissingFunctionExpected(),
+            $this->subjectUnderTest->generate($this->fixtureProvider->getExceptionWithMissingFunctionFixture())
+        );
+    }
+    
+    public function testStackTraceGenerationWithArgs()
+    {
+        $this->obfuscator
+            ->expects($this->any())
+            ->method('cleanParamsForLog')
+            ->withAnyParameters()
+            ->willReturnArgument(0)
+        ;
+        
+        $this->namedParameterProvider->expects($this->any())->method('get')->willReturnArgument(2);
+        
+        $this->assertEquals(
+            $this->fixtureProvider->getExceptionWithMissingArgsExpected(),
+            $this->subjectUnderTest->generate($this->fixtureProvider->getExceptionWithMissingArgsFixture())
+        );
+    }
+    
     public function testDepthLimitIsHonoured()
     {
         $this->obfuscator

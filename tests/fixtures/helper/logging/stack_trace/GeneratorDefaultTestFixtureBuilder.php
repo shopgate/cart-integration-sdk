@@ -140,6 +140,48 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTestFixtureBuilder
     }
     
     /**
+     * @return PHPUnit_Framework_MockObject_MockObject|ThrowableStub|Throwable
+     */
+    public function getExceptionWithMissingFunctionFixture()
+    {
+        $trace = $this->getTraceFixture('DumboLandingException');
+        unset($trace[0]['function']);
+        
+        return $this->buildMockFromFixture(
+            array(
+                'exception_class' => 'DumboLandingException',
+                'message'         => 'Landing failed.',
+                'code'            => 99,
+                'file'            => '/Animals/Mammals/Elephants/Dumbo.php',
+                'line'            => 34,
+                'trace'           => $trace,
+                'previous'        => null,
+            )
+        );
+    }
+    
+    /**
+     * @return PHPUnit_Framework_MockObject_MockObject|ThrowableStub|Throwable
+     */
+    public function getExceptionWithMissingArgsFixture()
+    {
+        $trace = $this->getTraceFixture('DumboLandingException');
+        unset($trace[0]['args']);
+        
+        return $this->buildMockFromFixture(
+            array(
+                'exception_class' => 'DumboLandingException',
+                'message'         => 'Landing failed.',
+                'code'            => 99,
+                'file'            => '/Animals/Mammals/Elephants/Dumbo.php',
+                'line'            => 34,
+                'trace'           => $trace,
+                'previous'        => null,
+            )
+        );
+    }
+    
+    /**
      * @return string
      */
     public function getSimpleExceptionExpected()
@@ -273,6 +315,34 @@ DumboLandingException: Landing failed.
 thrown from /Animals/Mammals/Elephants/Dumbo.php on line 34
 at checkHealth() called in /Animals/Mammals/Elephants/Dumbo.php:23
 at land(90, 30) called in /Animals/Mammals/Elephants/Dumbo.php:12
+STACK_TRACE;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getExceptionWithMissingFunctionExpected()
+    {
+        return <<<STACK_TRACE
+DumboLandingException: Landing failed.
+
+thrown from /Animals/Mammals/Elephants/Dumbo.php on line 34
+at \Animals\Mammals\Elephants\Dumbo->checkHealth() called in /Animals/Mammals/Elephants/Dumbo.php:23
+at \Animals\Mammals\Elephants\Dumbo->unknown function(90, 30) called in /Animals/Mammals/Elephants/Dumbo.php:12
+STACK_TRACE;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getExceptionWithMissingArgsExpected()
+    {
+        return <<<STACK_TRACE
+DumboLandingException: Landing failed.
+
+thrown from /Animals/Mammals/Elephants/Dumbo.php on line 34
+at \Animals\Mammals\Elephants\Dumbo->checkHealth() called in /Animals/Mammals/Elephants/Dumbo.php:23
+at \Animals\Mammals\Elephants\Dumbo->land() called in /Animals/Mammals/Elephants/Dumbo.php:12
 STACK_TRACE;
     }
     

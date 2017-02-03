@@ -105,7 +105,15 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault
             
             if (!isset($trace['file'])) {
                 $trace['file'] = 'unknown file';
-                $trace['line']  = 'unknown line';
+                $trace['line'] = 'unknown line';
+            }
+            
+            if (!isset($trace['function'])) {
+                $trace['function'] = 'unknown function';
+            }
+            
+            if (!isset($trace['args']) || !is_array($trace['args'])) {
+                $trace['args'] = array();
             }
             
             $arguments = $this->namedParameterProvider->get($trace['class'], $trace['function'], $trace['args']);
