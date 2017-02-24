@@ -1,3 +1,6 @@
+'''Version 2.9.62'''
+* restored compatibility for PHP versions below 5.3
+
 '''Version 2.9.61'''
 * fixed a bug in stack trace generation that may appear on certain server configurations
 
