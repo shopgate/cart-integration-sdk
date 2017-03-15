@@ -1,3 +1,6 @@
+'''Version 2.9.63'''
+* Added payment method constants for Merchant Payment
+
 '''Version 2.9.62'''
 * restored compatibility for PHP versions below 5.3
 
