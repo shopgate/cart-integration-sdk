@@ -1,5 +1,5 @@
 '''Version 2.9.64'''
-* Added missing getter for review xml filename in the configuration
+* Added missing getter for review XML filename in the configuration
 
 '''Version 2.9.63'''
 * Added payment method constants for Merchant Payment
