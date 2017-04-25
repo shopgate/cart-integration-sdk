@@ -58,7 +58,13 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault
         $msg = array($this->generateFormattedHeader($e) . "\n" . $this->generateFormattedTrace($e->getTrace()));
         
         $depthCounter = 1;
-        $previous     = $e->getPrevious();
+
+        // Exception::getPrevious only available PHP >= 5.3.0
+        $previous = null;
+        if (version_compare(PHP_VERSION, '5.3.0', '>=')) {
+            $previous = $previous->getPrevious();
+        }
+
         while ($previous !== null && $depthCounter < $maxDepth) {
             $msg[] =
                 $this->generateFormattedHeader($previous, false) . "\n" .
