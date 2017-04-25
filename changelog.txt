@@ -1,5 +1,6 @@
 '''Version 2.9.64'''
 * Added missing getter for review XML filename in the configuration
+* Added PHP-Version checkup to avoid errors in the stack trace default generator
 
 '''Version 2.9.63'''
 * Added payment method constants for Merchant Payment
