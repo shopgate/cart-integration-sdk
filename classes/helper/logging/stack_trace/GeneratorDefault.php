@@ -43,12 +43,7 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault
     
     /** @var array [string, string[]] */
     protected $functionArgumentsCache;
-
-    /**
-     * Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault constructor.
-     * @param Shopgate_Helper_Logging_Obfuscator $obfuscator
-     * @param Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderInterface $namedParameterProvider
-     */
+    
     public function __construct(
         Shopgate_Helper_Logging_Obfuscator $obfuscator,
         Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderInterface $namedParameterProvider
@@ -57,18 +52,53 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault
         $this->namedParameterProvider = $namedParameterProvider;
         $this->functionArgumentsCache = array();
     }
-
+    
     /**
-     * @param Exception|Throwable $e
-     * @param int $maxDepth
+     * @param Exception|Throwable $exception
+     * @param int                 $maxDepth
+     *
      * @return string
      */
-    public function generate($e, $maxDepth = 10)
+    public function generate($exception, $maxDepth = 10)
     {
-        $msg = array($this->generateFormattedHeader($e) . "\n" . $this->generateFormattedTrace($e->getTrace()));
-        $msg = $this->getPreviousException($e, $maxDepth, $msg);
+        $formattedHeader = $this->generateFormattedHeader($exception);
+        $formattedTrace = $this->generateFormattedTrace($exception->getTrace());
+        $messages = array($formattedHeader . "\n" . $formattedTrace);
         
-        return implode("\n\n", $msg);
+        $depthCounter = 1;
+        $previousException = $this->getPreviousException($exception);
+        
+        while ($previousException !== null && $depthCounter < $maxDepth) {
+            $messages[] =
+                $this->generateFormattedHeader($previousException, false) . "\n" .
+                $this->generateFormattedTrace($previousException->getTrace());
+            
+            $previousException = $this->getPreviousException($previousException);
+            $depthCounter++;
+        }
+        
+        return implode("\n\n", $messages);
+    }
+    
+    
+    /**
+     * Returns previous exception.
+     * Some customers are still running PHP below version 5.3, but method Exception::getPrevious is available since
+     * version 5.3. Therefor we check if method is existent, if not method returns null
+     *
+     * @param Exception|Throwable $exception
+     *
+     * @return Exception|null
+     */
+    private function getPreviousException($exception)
+    {
+        $previousException = null;
+        
+        if (method_exists($exception, 'getPrevious')) {
+            $previousException = $exception->getPrevious();
+        }
+        
+        return $previousException;
     }
     
     /**
@@ -157,33 +187,5 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault
         if (is_bool($value)) {
             $value = $value ? 'true' : 'false';
         }
-    }
-
-    /**
-     * Exception::getPrevious only available PHP >= 5.3.0
-     * @param Exception $e
-     * @param $maxDepth
-     * @param $msg
-     * @return array
-     */
-    private function getPreviousException($e, $maxDepth, $msg)
-    {
-        $depthCounter = 1;
-
-        if (version_compare(PHP_VERSION, '5.3.0', '>=')) {
-            $previous = $e->getPrevious();
-        } else {
-            $previous = null;
-        }
-
-        while ($previous !== null && $depthCounter < $maxDepth) {
-            $msg[] =
-                $this->generateFormattedHeader($previous, false) . "\n" .
-                $this->generateFormattedTrace($previous->getTrace());
-
-            $previous = $previous->getPrevious();
-            $depthCounter++;
-        }
-        return $msg;
     }
 }
