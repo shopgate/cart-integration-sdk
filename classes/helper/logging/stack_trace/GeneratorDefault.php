@@ -43,7 +43,12 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault
     
     /** @var array [string, string[]] */
     protected $functionArgumentsCache;
-    
+
+    /**
+     * Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault constructor.
+     * @param Shopgate_Helper_Logging_Obfuscator $obfuscator
+     * @param Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderInterface $namedParameterProvider
+     */
     public function __construct(
         Shopgate_Helper_Logging_Obfuscator $obfuscator,
         Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderInterface $namedParameterProvider
@@ -52,27 +57,16 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault
         $this->namedParameterProvider = $namedParameterProvider;
         $this->functionArgumentsCache = array();
     }
-    
+
+    /**
+     * @param Exception|Throwable $e
+     * @param int $maxDepth
+     * @return string
+     */
     public function generate($e, $maxDepth = 10)
     {
         $msg = array($this->generateFormattedHeader($e) . "\n" . $this->generateFormattedTrace($e->getTrace()));
-        
-        $depthCounter = 1;
-
-        // Exception::getPrevious only available PHP >= 5.3.0
-        $previous = null;
-        if (version_compare(PHP_VERSION, '5.3.0', '>=')) {
-            $previous = $previous->getPrevious();
-        }
-
-        while ($previous !== null && $depthCounter < $maxDepth) {
-            $msg[] =
-                $this->generateFormattedHeader($previous, false) . "\n" .
-                $this->generateFormattedTrace($previous->getTrace());
-            
-            $previous = $previous->getPrevious();
-            $depthCounter++;
-        }
+        $msg = $this->getPreviousException($e, $maxDepth, $msg);
         
         return implode("\n\n", $msg);
     }
@@ -163,5 +157,33 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault
         if (is_bool($value)) {
             $value = $value ? 'true' : 'false';
         }
+    }
+
+    /**
+     * Exception::getPrevious only available PHP >= 5.3.0
+     * @param Exception $e
+     * @param $maxDepth
+     * @param $msg
+     * @return array
+     */
+    private function getPreviousException($e, $maxDepth, $msg)
+    {
+        $depthCounter = 1;
+
+        if (version_compare(PHP_VERSION, '5.3.0', '>=')) {
+            $previous = $e->getPrevious();
+        } else {
+            $previous = null;
+        }
+
+        while ($previous !== null && $depthCounter < $maxDepth) {
+            $msg[] =
+                $this->generateFormattedHeader($previous, false) . "\n" .
+                $this->generateFormattedTrace($previous->getTrace());
+
+            $previous = $previous->getPrevious();
+            $depthCounter++;
+        }
+        return $msg;
     }
 }
