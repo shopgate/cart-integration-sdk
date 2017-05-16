@@ -1,12 +1,14 @@
+'''Version 2.9.65'''
+* adjusted internal stack trace generation in order to restore compatibility with PHP 5.2.17
+
 '''Version 2.9.64'''
-* Added missing getter for review XML filename in the configuration
-* Added PHP-Version checkup to avoid errors in the stack trace default generator
+* added missing getter for review XML filename in the configuration
 
 '''Version 2.9.63'''
-* Added payment method constants for Merchant Payment
+* added payment method constants for Merchant Payment
 
 '''Version 2.9.62'''
-* restored compatibility for PHP versions below 5.3
+* restored compatibility for PHP 5.2.17
 
 '''Version 2.9.61'''
 * fixed a bug in stack trace generation that may appear on certain server configurations
