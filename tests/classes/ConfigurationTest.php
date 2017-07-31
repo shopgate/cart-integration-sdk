@@ -18,7 +18,9 @@
  * @author    Shopgate Inc, 804 Congress Ave, Austin, Texas 78701 <interfaces@shopgate.com>
  * @copyright Shopgate Inc
  * @license   http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
- * 
+ */
+
+/**
  * @group              Shopgate_Library
  *
  * @coversDefaultClass ShopgateConfig

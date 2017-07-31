@@ -17,7 +17,9 @@
  * @author    Shopgate Inc, 804 Congress Ave, Austin, Texas 78701 <interfaces@shopgate.com>
  * @copyright Shopgate Inc
  * @license   http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
- * 
+ */
+
+/**
  * @deprecated Will be removed in 3.0.0. Use Shopgate_Helper_Redirect_MobileRedirect instead.
  */
 class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRedirectInterface
