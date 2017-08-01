@@ -503,6 +503,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 	 */
 	protected $exclude_item_ids = array();
 
+	/**
+	 * @var int the facebook pixel ID, configurable in the merchant area and automatically sent to the plugin
+	 */
+	protected $facebook_pixel_id = null;
+
 	###################################################
 	### Initialization, loading, saving, validating ###
 	###################################################
@@ -1401,6 +1406,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 		return $this->exclude_item_ids;
 	}
 
+	public function getFacebookPixelId() {
+		return $this->facebook_pixel_id;
+	}
+
 	###############
 	### Setters ###
 	###############
@@ -1898,6 +1907,13 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 			is_array($exclude_item_ids) ? $exclude_item_ids : (array)$this->jsonDecode($exclude_item_ids);
 	}
 	
+	/**
+	 * @param int $facebook_pixel_id
+	 */
+	public function setFacebookPixelId($facebook_pixel_id) {
+		$this->facebook_pixel_id = $facebook_pixel_id;
+	}
+
 	###############
 	### Helpers ###
 	###############
@@ -3011,6 +3027,11 @@ interface ShopgateConfigInterface {
 	public function getExcludeItemIds();
 	
 	/**
+	 * @return int facebook pixel ID
+	 */
+	public function getFacebookPixelId();
+
+	/**
 	 * @param string $value The name of the plugin / shop system the plugin is for.
 	 */
 	public function setPluginName($value);
@@ -3496,6 +3517,11 @@ interface ShopgateConfigInterface {
 	 * @param array|string $exclude_item_ids list of item Ids which should be excluded from the item export
 	 */
 	public function setExcludeItemIds($exclude_item_ids);
+
+	/**
+	 * @param int $facebook_pixel_id
+	 */
+	public function setFacebookPixelId($facebook_pixel_id);
 	
 	/**
 	 * Returns an additional setting.

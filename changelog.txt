@@ -1,3 +1,6 @@
+'''Version 2.9.66'''
+* Shopgate configuration expanded by facebook_pixel_id
+
 '''Version 2.9.65'''
 * adjusted internal stack trace generation in order to restore compatibility with PHP 5.2.17
 
