@@ -13,7 +13,7 @@ Download and unzip the latest package from http://files.shopgate.com/plugins/sho
 
 Include ```shopgate.php``` from the root folder of the package:
 
-```require_once 'vendor/shopgate_library/shopgate.php';```
+```require_once 'vendor/shopgate/library/shopgate.php';```
 
 ## Developing a Shopgate Integration
 If you want to know more about how the Shopgate Library works have a look into the [documentation](http://developer.shopgate.com/library).
