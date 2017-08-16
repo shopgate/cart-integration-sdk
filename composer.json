@@ -1,21 +1,104 @@
 {
-    "name": "shopgate/library",
-    "description": "A PHP framework supporting the implementation of the Shopgate Plugin API and abstracts access to the Shopgate Merchant API.",
-    "website": "http://developers.shopgate.com/",
-    "license": "proprietary",
-    "authors": [
-        {
-            "name": "Shopgate",
-            "email": "interfaces@shopgate.com"
-        }
-    ],
-    "require": {
-        "php": ">=5.2"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "4.8.*"
-    },
-    "autoload": {
-        "files": ["./shopgate.php"]
+  "name": "shopgate/library",
+  "description": "A PHP framework supporting the implementation of the Shopgate Plugin API and abstracts access to the Shopgate Merchant API.",
+  "homepage": "https://github.com/shopgate/interface-library",
+  "license": "Apache-2.0",
+  "config": {
+    "platform": {
+      "php": "5.3.3"
     }
+  },
+  "authors": [
+    {
+      "name": "Shopgate",
+      "email": "interfaces@shopgate.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.3",
+    "zendframework/zend-json": "2.2.*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "4.8.*"
+  },
+  "autoload": {
+    "files": [
+      "classes/core.php",
+      "classes/apis.php",
+      "classes/client.php",
+      "classes/configuration.php",
+      "classes/customers.php",
+      "classes/orders.php",
+      "classes/external_orders.php",
+      "classes/items.php",
+      "classes/redirect.php",
+      "classes/models/Abstract.php",
+      "classes/models/AbstractExport.php",
+      "classes/models/XmlEmptyObject.php",
+      "classes/models/XmlResultObject.php",
+      "classes/models/catalog/Review.php",
+      "classes/models/catalog/Product.php",
+      "classes/models/catalog/Price.php",
+      "classes/models/catalog/TierPrice.php",
+      "classes/models/catalog/Category.php",
+      "classes/models/catalog/CategoryPath.php",
+      "classes/models/catalog/Shipping.php",
+      "classes/models/catalog/Manufacturer.php",
+      "classes/models/catalog/Visibility.php",
+      "classes/models/catalog/Property.php",
+      "classes/models/catalog/Stock.php",
+      "classes/models/catalog/Identifier.php",
+      "classes/models/catalog/Tag.php",
+      "classes/models/catalog/Relation.php",
+      "classes/models/catalog/Attribute.php",
+      "classes/models/catalog/Input.php",
+      "classes/models/catalog/Validation.php",
+      "classes/models/catalog/Option.php",
+      "classes/models/catalog/AttributeGroup.php",
+      "classes/models/catalog/Attribute.php",
+      "classes/models/media/Image.php",
+      "classes/models/redirect/DeeplinkSuffix.php",
+      "classes/models/redirect/DeeplinkSuffixValue.php",
+      "classes/models/redirect/DeeplinkSuffixValueUnset.php",
+      "classes/models/redirect/DeeplinkSuffixValueDisabled.php",
+      "classes/models/redirect/HtmlTag.php",
+      "classes/models/redirect/HtmlTagAttribute.php",
+      "classes/models/redirect/HtmlTagVariable.php",
+      "classes/helper/DataStructure.php",
+      "classes/helper/Pricing.php",
+      "classes/helper/String.php",
+      "classes/helper/redirect/KeywordsManagerInterface.php",
+      "classes/helper/redirect/KeywordsManager.php",
+      "classes/helper/redirect/LinkBuilderInterface.php",
+      "classes/helper/redirect/LinkBuilder.php",
+      "classes/helper/redirect/MobileRedirectInterface.php",
+      "classes/helper/redirect/MobileRedirect.php",
+      "classes/helper/redirect/RedirectorInterface.php",
+      "classes/helper/redirect/Redirector.php",
+      "classes/helper/redirect/SettingsManagerInterface.php",
+      "classes/helper/redirect/SettingsManager.php",
+      "classes/helper/redirect/TagsGeneratorInterface.php",
+      "classes/helper/redirect/TagsGenerator.php",
+      "classes/helper/redirect/TemplateParserInterface.php",
+      "classes/helper/redirect/TemplateParser.php",
+      "classes/helper/redirect/JsScriptBuilderInterface.php",
+      "classes/helper/redirect/JsScriptBuilder.php",
+      "classes/helper/redirect/type/TypeInterface.php",
+      "classes/helper/redirect/type/Js.php",
+      "classes/helper/redirect/type/Http.php",
+      "classes/helper/logging/strategy/LoggingInterface.php",
+      "classes/legacy/ShopgateLogger.php",
+      "classes/helper/logging/Obfuscator.php",
+      "classes/helper/logging/strategy/DefaultLogging.php",
+      "classes/helper/logging/stack_trace/GeneratorInterface.php",
+      "classes/helper/logging/stack_trace/GeneratorDefault.php",
+      "classes/helper/logging/stack_trace/NamedParameterProviderInterface.php",
+      "classes/helper/logging/stack_trace/NamedParameterProviderReflection.php",
+      "classes/helper/error_handling/ExceptionHandler.php",
+      "classes/helper/error_handling/ErrorHandler.php",
+      "classes/helper/error_handling/ShutdownHandler.php",
+      "classes/helper/error_handling/shutdown_handler/LastErrorProvider.php",
+      "shopgate.php"
+    ]
+  }
 }
