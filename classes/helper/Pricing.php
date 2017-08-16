@@ -19,20 +19,23 @@
  * @license   http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  */
 
-class Shopgate_Helper_Pricing {
+class Shopgate_Helper_Pricing
+{
+    /**
+     * Rounds and formats a price.
+     *
+     * @param float  $price          The price of an item.
+     * @param int    $digits         The number of digits after the decimal separator.
+     * @param string $decimalPoint   The decimal separator.
+     * @param string $thousandPoints The thousands separator.
+     *
+     * @return float|string
+     */
+    public function formatPriceNumber($price, $digits = 2, $decimalPoint = ".", $thousandPoints = "")
+    {
+        $price = round($price, $digits);
+        $price = number_format($price, $digits, $decimalPoint, $thousandPoints);
 
-	/**
-	 * Rounds and formats a price.
-	 *
-	 * @param float $price The price of an item.
-	 * @param int $digits The number of digits after the decimal separator.
-	 * @param string $decimalPoint The decimal separator.
-	 * @param string $thousandPoints The thousands separator.
-	 * @return float|string
-	 */
-	public function formatPriceNumber($price, $digits = 2, $decimalPoint = ".", $thousandPoints = "") {
-		$price = round($price, $digits);
-		$price = number_format($price, $digits, $decimalPoint, $thousandPoints);
-		return $price;
-	}
+        return $price;
+    }
 }

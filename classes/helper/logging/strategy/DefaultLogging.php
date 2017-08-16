@@ -23,10 +23,10 @@ class Shopgate_Helper_Logging_Strategy_DefaultLogging implements Shopgate_Helper
 {
     /** @var bool */
     private $debug;
-    
+
     /** @var bool */
     private $useStackTrace;
-    
+
     /** @var mixed[] */
     private $logFiles = array(
         self::LOGTYPE_ACCESS  => array('path' => '', 'handle' => null, 'mode' => 'a+'),
@@ -34,7 +34,7 @@ class Shopgate_Helper_Logging_Strategy_DefaultLogging implements Shopgate_Helper
         self::LOGTYPE_ERROR   => array('path' => '', 'handle' => null, 'mode' => 'a+'),
         self::LOGTYPE_DEBUG   => array('path' => '', 'handle' => null, 'mode' => 'w+'),
     );
-    
+
     public function __construct(
         $accessLogPath = null,
         $requestLogPath = null,
@@ -62,95 +62,96 @@ class Shopgate_Helper_Logging_Strategy_DefaultLogging implements Shopgate_Helper
                 SHOPGATE_BASE_DIR . DS . 'temp' . DS . 'logs' . DS . ShopgateConfigInterface::SHOPGATE_FILE_PREFIX
                 . 'debug.log';
         }
-        
+
         $this->setLogFilePaths($accessLogPath, $requestLogPath, $errorLogPath, $debugLogPath);
-        
+
         $this->debug         = false;
         $this->useStackTrace = true;
     }
-    
+
     public function enableDebug()
     {
         $this->debug = true;
     }
-    
+
     public function disableDebug()
     {
         $this->debug = false;
     }
-    
+
     public function isDebugEnabled()
     {
         return $this->debug;
     }
-    
+
     public function enableStackTrace()
     {
         $this->useStackTrace = true;
     }
-    
+
     public function disableStackTrace()
     {
         $this->useStackTrace = false;
     }
-    
+
     public function log($msg, $type = self::LOGTYPE_ERROR, $stackTrace = '')
     {
         // build log message
-        $msg = gmdate('d-m-Y H:i:s: ') . $msg . "\n" . ($this->useStackTrace ? $stackTrace ."\n\n" : '');
-        
+        $msg = gmdate('d-m-Y H:i:s: ') . $msg . "\n" . ($this->useStackTrace ? $stackTrace . "\n\n" : '');
+
         // determine log file type and append message
         switch (strtolower($type)) {
             // write to error log if type is unknown
             default:
                 $type = self::LOGTYPE_ERROR;
-            
+
             // allowed types:
+            // no break
             case self::LOGTYPE_ERROR:
             case self::LOGTYPE_ACCESS:
             case self::LOGTYPE_REQUEST:
             case self::LOGTYPE_DEBUG:
         }
-        
+
         // if debug logging is requested but not activated, simply return
         if (($type === self::LOGTYPE_DEBUG) && !$this->debug) {
             return true;
         }
-        
+
         // open log files if necessary
         if (!$this->openLogFileHandle($type)) {
             return false;
         }
-        
+
         // try to log
         $success = false;
         if (fwrite($this->logFiles[$type]['handle'], $msg) !== false) {
             $success = true;
         }
-        
+
         return $success;
     }
-    
+
     public function tail($type = self::LOGTYPE_ERROR, $lines = 20)
     {
         if (!isset($this->logFiles[$type])) {
             throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_UNKNOWN_LOGTYPE, 'Type: ' . $type);
         }
-        
+
         if (!$this->openLogFileHandle($type)) {
             throw new ShopgateLibraryException(ShopgateLibraryException::INIT_LOGFILE_OPEN_ERROR, 'Type: ' . $type);
         }
-        
+
         if (empty($lines)) {
             $lines = 20;
         }
-        
+
         $handle      = $this->logFiles[$type]['handle'];
         $lineCounter = $lines;
         $pos         = -2;
         $beginning   = false;
         $text        = '';
-        
+
         while ($lineCounter > 0) {
             $t = '';
             while ($t !== "\n") {
@@ -161,7 +162,7 @@ class Shopgate_Helper_Logging_Strategy_DefaultLogging implements Shopgate_Helper
                 $t = @fgetc($handle);
                 $pos--;
             }
-            
+
             $lineCounter--;
             if ($beginning) {
                 @rewind($handle);
@@ -171,10 +172,10 @@ class Shopgate_Helper_Logging_Strategy_DefaultLogging implements Shopgate_Helper
                 break;
             }
         }
-        
+
         return $text;
     }
-    
+
     /**
      * Sets the paths to the log files.
      *
@@ -188,20 +189,20 @@ class Shopgate_Helper_Logging_Strategy_DefaultLogging implements Shopgate_Helper
         if (!empty($accessLogPath)) {
             $this->logFiles[self::LOGTYPE_ACCESS]['path'] = $accessLogPath;
         }
-        
+
         if (!empty($requestLogPath)) {
             $this->logFiles[self::LOGTYPE_REQUEST]['path'] = $requestLogPath;
         }
-        
+
         if (!empty($errorLogPath)) {
             $this->logFiles[self::LOGTYPE_ERROR]['path'] = $errorLogPath;
         }
-        
+
         if (!empty($debugLogPath)) {
             $this->logFiles[self::LOGTYPE_DEBUG]['path'] = $debugLogPath;
         }
     }
-    
+
     /**
      * Opens log file handles for the requested log type if necessary.
      *
@@ -217,19 +218,19 @@ class Shopgate_Helper_Logging_Strategy_DefaultLogging implements Shopgate_Helper
         if (!empty($this->logFiles[$type]['handle'])) {
             return true;
         }
-        
+
         // set the file handle
         $this->logFiles[$type]['handle'] = @fopen($this->logFiles[$type]['path'], $this->logFiles[$type]['mode']);
-        
+
         // if log files are not writeable continue silently to the next handle
         // TODO: This seems a bit too silent... How could we get notice of the error?
         if ($this->logFiles[$type]['handle'] === false) {
             return false;
         }
-        
+
         return true;
     }
-    
+
     public function keepDebugLog($keep)
     {
         if ($keep) {
@@ -238,7 +239,7 @@ class Shopgate_Helper_Logging_Strategy_DefaultLogging implements Shopgate_Helper
             $this->logFiles[self::LOGTYPE_DEBUG]["mode"] = "w+";
         }
     }
-    
+
     /**
      * @return mixed[]
      */

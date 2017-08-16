@@ -23,21 +23,22 @@
 /**
  * @class Shopgate_Model_Catalog_XmlEmptyObject
  */
-class Shopgate_Model_Catalog_XmlEmptyObject extends Shopgate_Model_AbstractExport {
+class Shopgate_Model_Catalog_XmlEmptyObject extends Shopgate_Model_AbstractExport
+{
+    /**
+     * define allowed methods
+     *
+     * @var array
+     */
+    protected $allowedMethods = array();
 
-	/**
-	 * define allowed methods
-	 *
-	 * @var array
-	 */
-	protected $allowedMethods = array();
-
-	/**
-	 * @param Shopgate_Model_XmlResultObject $itemNode
-	 *
-	 * @return Shopgate_Model_XmlResultObject
-	 */
-	public function asXml(Shopgate_Model_XmlResultObject $itemNode) {
-		return $itemNode;
-	}
+    /**
+     * @param Shopgate_Model_XmlResultObject $itemNode
+     *
+     * @return Shopgate_Model_XmlResultObject
+     */
+    public function asXml(Shopgate_Model_XmlResultObject $itemNode)
+    {
+        return $itemNode;
+    }
 }

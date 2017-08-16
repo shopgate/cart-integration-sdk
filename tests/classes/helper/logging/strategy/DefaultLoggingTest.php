@@ -23,9 +23,10 @@ class Shopgate_Helper_Logging_Strategy_DefaultLoggingTest extends PHPUnit_Framew
 {
     /** @var Shopgate_Helper_Logging_Strategy_DefaultLogging */
     private $defaultLoggingStrategy;
+
     /** @var array */
     private $phpUnitLogFiles = array();
-    
+
     public function setUp()
     {
         $this->phpUnitLogFiles        = array(
@@ -36,13 +37,13 @@ class Shopgate_Helper_Logging_Strategy_DefaultLoggingTest extends PHPUnit_Framew
             Shopgate_Helper_Logging_Strategy_DefaultLogging::LOGTYPE_ERROR   => SHOPGATE_BASE_DIR . DS . 'temp' . DS
                 . 'logs' . DS . 'phpunit_error.log',
             Shopgate_Helper_Logging_Strategy_DefaultLogging::LOGTYPE_DEBUG   => SHOPGATE_BASE_DIR . DS . 'temp' . DS
-                . 'logs' . DS . 'phpunit_debug.log'
+                . 'logs' . DS . 'phpunit_debug.log',
         );
         $this->defaultLoggingStrategy = new Shopgate_Helper_Logging_Strategy_DefaultLogging();
         $this->setLogPaths($this->defaultLoggingStrategy);
         $this->clearTmpFolder();
     }
-    
+
     public function testSetLogFilePaths()
     {
         $this->defaultLoggingStrategy->setLogFilePaths(
@@ -51,14 +52,14 @@ class Shopgate_Helper_Logging_Strategy_DefaultLoggingTest extends PHPUnit_Framew
             $this->phpUnitLogFiles[Shopgate_Helper_Logging_Strategy_DefaultLogging::LOGTYPE_ERROR] . '.test',
             $this->phpUnitLogFiles[Shopgate_Helper_Logging_Strategy_DefaultLogging::LOGTYPE_DEBUG] . '.test'
         );
-        
+
         $logFiles = $this->defaultLoggingStrategy->getLogFiles();
-        
+
         foreach ($logFiles as $logType => $log) {
             $this->assertEquals($this->phpUnitLogFiles[$logType] . '.test', $log['path']);
         }
     }
-    
+
     public function testConstructorWithLogFilesParameter()
     {
         $loggingStrategy = new Shopgate_Helper_Logging_Strategy_DefaultLogging(
@@ -67,14 +68,14 @@ class Shopgate_Helper_Logging_Strategy_DefaultLoggingTest extends PHPUnit_Framew
             $this->phpUnitLogFiles[Shopgate_Helper_Logging_Strategy_DefaultLogging::LOGTYPE_ERROR] . '.test',
             $this->phpUnitLogFiles[Shopgate_Helper_Logging_Strategy_DefaultLogging::LOGTYPE_DEBUG] . '.test'
         );
-        
+
         $logFiles = $loggingStrategy->getLogFiles();
-        
+
         foreach ($logFiles as $logType => $log) {
             $this->assertEquals($this->phpUnitLogFiles[$logType] . '.test', $log['path']);
         }
     }
-    
+
     /**
      * @param string $logType
      *
@@ -86,7 +87,7 @@ class Shopgate_Helper_Logging_Strategy_DefaultLoggingTest extends PHPUnit_Framew
         $files           = $loggingStrategy->getLogFiles();
         $this->assertEquals(true, !empty($files[$logType]['path']));
     }
-    
+
     /**
      * @param string $logType
      *
@@ -96,14 +97,14 @@ class Shopgate_Helper_Logging_Strategy_DefaultLoggingTest extends PHPUnit_Framew
     {
         $loggingMsg = 'This is a test message';
         $logFiles   = $this->defaultLoggingStrategy->getLogFiles();
-        
+
         $this->defaultLoggingStrategy->enableDebug();
         $this->defaultLoggingStrategy->log($loggingMsg, $logType);
-        
+
         $this->assertEquals(true, file_exists($logFiles[$logType]['path']));
         $this->assertEquals(true, $this->in_string($loggingMsg, file_get_contents($logFiles[$logType]['path'])));
     }
-    
+
     /**
      * @param bool   $expectedResult
      * @param string $logType
@@ -114,10 +115,10 @@ class Shopgate_Helper_Logging_Strategy_DefaultLoggingTest extends PHPUnit_Framew
     {
         $testMsg  = 'This is a test message';
         $logFiles = $this->defaultLoggingStrategy->getLogFiles();
-        
+
         $this->defaultLoggingStrategy->disableDebug();
         $this->defaultLoggingStrategy->log($testMsg, $logType);
-        
+
         $this->assertEquals($expectedResult, file_exists($logFiles[$logType]['path']));
         if (file_exists($logFiles[$logType]['path'])) {
             $this->assertEquals(
@@ -125,7 +126,7 @@ class Shopgate_Helper_Logging_Strategy_DefaultLoggingTest extends PHPUnit_Framew
             );
         }
     }
-    
+
     /**
      * @return array
      */
@@ -150,7 +151,7 @@ class Shopgate_Helper_Logging_Strategy_DefaultLoggingTest extends PHPUnit_Framew
             ),
         );
     }
-    
+
     /**
      * When a unknown log type is passed to the log method the error will be logged into type
      * Shopgate_Helper_Logging_Strategy_DefaultLogging::LOGTYPE_ERROR
@@ -159,9 +160,9 @@ class Shopgate_Helper_Logging_Strategy_DefaultLoggingTest extends PHPUnit_Framew
     {
         $loggingMsg = 'This is a test message';
         $logFiles   = $this->defaultLoggingStrategy->getLogFiles();
-        
+
         $this->defaultLoggingStrategy->log($loggingMsg, 'unknown log type');
-        
+
         $this->assertEquals(
             true,
             file_exists($logFiles[Shopgate_Helper_Logging_Strategy_DefaultLogging::LOGTYPE_ERROR]['path'])
@@ -174,7 +175,7 @@ class Shopgate_Helper_Logging_Strategy_DefaultLoggingTest extends PHPUnit_Framew
             )
         );
     }
-    
+
     /**
      * In case the ShopgateLogger is unable to open the file, the log method will just return false
      */
@@ -183,18 +184,17 @@ class Shopgate_Helper_Logging_Strategy_DefaultLoggingTest extends PHPUnit_Framew
         $loggingMsg = 'This is a test message';
         /** @var Shopgate_Helper_Logging_Strategy_DefaultLogging|PHPUnit_Framework_MockObject_Builder_InvocationMocker $loggingStrategy */
         $loggingStrategy = $this->getMockBuilder('Shopgate_Helper_Logging_Strategy_DefaultLogging')
-                                ->setMethods(array('openLogFileHandle'))
-                                ->getMock()
-        ;
+            ->setMethods(array('openLogFileHandle'))
+            ->getMock();
         $loggingStrategy->method('openLogFileHandle')->willReturn(false);
-        
+
         $success = $loggingStrategy->log(
             $loggingMsg,
             Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_ACCESS
         );
         $this->assertEquals(false, $success);
     }
-    
+
     /**
      * In case log files are not yet created the tail method will return an empty string
      *
@@ -207,7 +207,7 @@ class Shopgate_Helper_Logging_Strategy_DefaultLoggingTest extends PHPUnit_Framew
         $logContent = $this->defaultLoggingStrategy->tail($logType);
         $this->assertEquals('', $logContent);
     }
-    
+
     /**
      * @param string $logType
      *
@@ -218,11 +218,11 @@ class Shopgate_Helper_Logging_Strategy_DefaultLoggingTest extends PHPUnit_Framew
         $testMsg = 'This is a test message';
         $this->defaultLoggingStrategy->enableDebug();
         $this->defaultLoggingStrategy->log($testMsg, $logType);
-        
+
         $logContent = $this->defaultLoggingStrategy->tail($logType);
         $this->assertEquals(true, $this->in_string($testMsg, $logContent));
     }
-    
+
     /**
      * We simulate two requests by initiate two DefaultLogging strategy objects. If keepDebugLog is true
      * the "old" debug_log should not be erased. If keepDebugLog is false the first entry must be erased.
@@ -236,27 +236,27 @@ class Shopgate_Helper_Logging_Strategy_DefaultLoggingTest extends PHPUnit_Framew
     public function testKeepDebugLog($keepDebugLog, $isFirstMessageInLogFile, $isSecondMessageInLogFile)
     {
         $logType = Shopgate_Helper_Logging_Strategy_DefaultLogging::LOGTYPE_DEBUG;
-        
+
         $firstLoggingMsg      = 'This is the first test message';
         $firstLoggingStrategy = new Shopgate_Helper_Logging_Strategy_DefaultLogging();
         $this->setLogPaths($firstLoggingStrategy);
         $firstLoggingStrategy->keepDebugLog($keepDebugLog);
         $firstLoggingStrategy->enableDebug();
         $firstLoggingStrategy->log($firstLoggingMsg, $logType);
-        
+
         $secondLoggingMsg      = 'This is the second test message';
         $secondLoggingStrategy = new Shopgate_Helper_Logging_Strategy_DefaultLogging();
         $this->setLogPaths($secondLoggingStrategy);
         $secondLoggingStrategy->keepDebugLog($keepDebugLog);
         $secondLoggingStrategy->enableDebug();
         $secondLoggingStrategy->log($secondLoggingMsg, $logType);
-        
+
         $logFiles   = $secondLoggingStrategy->getLogFiles();
         $logContent = file_get_contents($logFiles[$logType]['path']);
         $this->assertEquals($isFirstMessageInLogFile, $this->in_string($firstLoggingMsg, $logContent));
         $this->assertEquals($isSecondMessageInLogFile, $this->in_string($secondLoggingMsg, $logContent));
     }
-    
+
     /**
      * @return array
      */
@@ -266,16 +266,16 @@ class Shopgate_Helper_Logging_Strategy_DefaultLoggingTest extends PHPUnit_Framew
             array(
                 true,
                 true,
-                true
+                true,
             ),
             array(
                 false,
                 false,
-                true
+                true,
             ),
         );
     }
-    
+
     public function testTailUnknownLogType()
     {
         $this->setExpectedException(
@@ -284,23 +284,22 @@ class Shopgate_Helper_Logging_Strategy_DefaultLoggingTest extends PHPUnit_Framew
         $logContent = $this->defaultLoggingStrategy->tail('type not exists');
         $this->assertEquals('', $logContent);
     }
-    
+
     public function testTailUnableToOpenLogFile()
     {
         /** @var Shopgate_Helper_Logging_Strategy_DefaultLogging|PHPUnit_Framework_MockObject_Builder_InvocationMocker $loggingStrategy */
         $loggingStrategy = $this->getMockBuilder('Shopgate_Helper_Logging_Strategy_DefaultLogging')
-                                ->setMethods(array('openLogFileHandle'))
-                                ->getMock()
-        ;
+            ->setMethods(array('openLogFileHandle'))
+            ->getMock();
         $loggingStrategy->method('openLogFileHandle')->willReturn(false);
-        
+
         $this->setExpectedException(
             'ShopgateLibraryException', '', ShopgateLibraryException::INIT_LOGFILE_OPEN_ERROR
         );
         $logContent = $loggingStrategy->tail(Shopgate_Helper_Logging_Strategy_DefaultLogging::LOGTYPE_ACCESS);
         $this->assertEquals('', $logContent);
     }
-    
+
     /**
      * @return array
      */
@@ -311,15 +310,15 @@ class Shopgate_Helper_Logging_Strategy_DefaultLoggingTest extends PHPUnit_Framew
         foreach ($logTypes as $logType) {
             $returnTypes[] = array($logType);
         }
-        
+
         return $returnTypes;
     }
-    
+
     public function in_string($needle, $string)
     {
         return mb_strpos($string, $needle) !== false;
     }
-    
+
     /**
      * @return string[]
      */
@@ -332,7 +331,7 @@ class Shopgate_Helper_Logging_Strategy_DefaultLoggingTest extends PHPUnit_Framew
             Shopgate_Helper_Logging_Strategy_DefaultLogging::LOGTYPE_ERROR,
         );
     }
-    
+
     /**
      * @param Shopgate_Helper_Logging_Strategy_DefaultLogging $loggingStrategy
      */
@@ -345,7 +344,7 @@ class Shopgate_Helper_Logging_Strategy_DefaultLoggingTest extends PHPUnit_Framew
             $this->phpUnitLogFiles[Shopgate_Helper_Logging_Strategy_DefaultLogging::LOGTYPE_DEBUG]
         );
     }
-    
+
     /**
      * Deletes all log files which are currently handled by the logging strategy
      */

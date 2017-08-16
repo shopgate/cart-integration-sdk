@@ -21,10 +21,10 @@
  */
 class Shopgate_Model_Redirect_DeeplinkSuffixValueDisabled extends Shopgate_Model_Redirect_DeeplinkSuffixValue
 {
-	public function __construct()
-	{
-		parent::__construct();
-		
-		$this->setDisabled(true);
-	}
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->setDisabled(true);
+    }
 }

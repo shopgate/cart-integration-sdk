@@ -21,55 +21,55 @@
  */
 interface Shopgate_Helper_Redirect_JsScriptBuilderInterface
 {
-	/**
-	 * @param string $pageType
-	 * @param array  $parameters [string, string]
-	 *
-	 * @return string
-	 */
-	public function buildTags($pageType, $parameters = array());
+    /**
+     * @param string $pageType
+     * @param array  $parameters [string, string]
+     *
+     * @return string
+     */
+    public function buildTags($pageType, $parameters = array());
 
-	/**
-	 * Sets the file path of javascript template
-	 * to use
-	 *
-	 * @param string $filePath
-	 *
-	 * @return Shopgate_Helper_Redirect_JsScriptBuilderInterface
-	 */
-	public function setJsTemplateFilePath($filePath);
+    /**
+     * Sets the file path of javascript template
+     * to use
+     *
+     * @param string $filePath
+     *
+     * @return Shopgate_Helper_Redirect_JsScriptBuilderInterface
+     */
+    public function setJsTemplateFilePath($filePath);
 
-	/**
-	 * Helps set all parameters at once
-	 *
-	 * @param array $params - array(key => value)
-	 *
-	 * @return Shopgate_Helper_Redirect_JsScriptBuilderInterface
-	 */
-	public function setSiteParameters($params);
+    /**
+     * Helps set all parameters at once
+     *
+     * @param array $params - array(key => value)
+     *
+     * @return Shopgate_Helper_Redirect_JsScriptBuilderInterface
+     */
+    public function setSiteParameters($params);
 
-	/**
-	 * @param string $key
-	 * @param string $value
-	 *
-	 * @return Shopgate_Helper_Redirect_JsScriptBuilderInterface
-	 */
-	public function setSiteParameter($key, $value);
+    /**
+     * @param string $key
+     * @param string $value
+     *
+     * @return Shopgate_Helper_Redirect_JsScriptBuilderInterface
+     */
+    public function setSiteParameter($key, $value);
 
-	/**
-	 * @param string $file
-	 *
-	 * @return Shopgate_Helper_Redirect_JsScriptBuilderInterface
-	 */
-	public function setTemplateFile($file);
+    /**
+     * @param string $file
+     *
+     * @return Shopgate_Helper_Redirect_JsScriptBuilderInterface
+     */
+    public function setTemplateFile($file);
 
-	/**
-	 * Prints a value to JS script to prevent
-	 * web app redirect
-	 *
-	 * @param bool $param
-	 *
-	 * @return Shopgate_Helper_Redirect_JsScriptBuilderInterface
-	 */
-	public function suppressWebAppRedirect($param);
+    /**
+     * Prints a value to JS script to prevent
+     * web app redirect
+     *
+     * @param bool $param
+     *
+     * @return Shopgate_Helper_Redirect_JsScriptBuilderInterface
+     */
+    public function suppressWebAppRedirect($param);
 }

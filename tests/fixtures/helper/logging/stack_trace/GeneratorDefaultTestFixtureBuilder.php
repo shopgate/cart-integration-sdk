@@ -23,7 +23,7 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTestFixtureBuilder
 {
     /** @var PHPUnit_Framework_TestCase */
     private $testCase;
-    
+
     /**
      * @param PHPUnit_Framework_TestCase $testCase The calling test case; mock objects might be built using this.
      */
@@ -31,7 +31,7 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTestFixtureBuilder
     {
         $this->testCase = $testCase;
     }
-    
+
     /**
      * @return PHPUnit_Framework_MockObject_MockObject|ThrowableStub|Throwable
      */
@@ -49,7 +49,7 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTestFixtureBuilder
             )
         );
     }
-    
+
     /**
      * @return PHPUnit_Framework_MockObject_MockObject|ThrowableStub|Throwable
      */
@@ -83,7 +83,7 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTestFixtureBuilder
             )
         );
     }
-    
+
     /**
      * @return PHPUnit_Framework_MockObject_MockObject|ThrowableStub|Throwable
      */
@@ -109,7 +109,7 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTestFixtureBuilder
             )
         );
     }
-    
+
     /**
      * @return PHPUnit_Framework_MockObject_MockObject|ThrowableStub|Throwable
      */
@@ -120,7 +120,7 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTestFixtureBuilder
         unset($trace[0]['line']);
         unset($trace[1]['file']);
         unset($trace[1]['line']);
-        
+
         return $this->buildMockFromFixture(
             array(
                 'exception_class' => 'DumboLandingException',
@@ -133,7 +133,7 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTestFixtureBuilder
             )
         );
     }
-    
+
     /**
      * @return PHPUnit_Framework_MockObject_MockObject|ThrowableStub|Throwable
      */
@@ -144,7 +144,7 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTestFixtureBuilder
         unset($trace[0]['type']);
         unset($trace[1]['class']);
         unset($trace[1]['type']);
-        
+
         return $this->buildMockFromFixture(
             array(
                 'exception_class' => 'DumboLandingException',
@@ -157,7 +157,7 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTestFixtureBuilder
             )
         );
     }
-    
+
     /**
      * @return PHPUnit_Framework_MockObject_MockObject|ThrowableStub|Throwable
      */
@@ -165,7 +165,7 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTestFixtureBuilder
     {
         $trace = $this->getTraceFixture('DumboLandingException');
         unset($trace[0]['function']);
-        
+
         return $this->buildMockFromFixture(
             array(
                 'exception_class' => 'DumboLandingException',
@@ -178,7 +178,7 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTestFixtureBuilder
             )
         );
     }
-    
+
     /**
      * @return PHPUnit_Framework_MockObject_MockObject|ThrowableStub|Throwable
      */
@@ -186,7 +186,7 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTestFixtureBuilder
     {
         $trace = $this->getTraceFixture('DumboLandingException');
         unset($trace[0]['args']);
-        
+
         return $this->buildMockFromFixture(
             array(
                 'exception_class' => 'DumboLandingException',
@@ -199,7 +199,7 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTestFixtureBuilder
             )
         );
     }
-    
+
     /**
      * @return string
      */
@@ -213,7 +213,7 @@ at \Animals\Mammals\Elephants\Dumbo->checkHealth() called in /Animals/Mammals/El
 at \Animals\Mammals\Elephants\Dumbo->land(90, 30) called in /Animals/Mammals/Elephants/Dumbo.php:12
 STACK_TRACE;
     }
-    
+
     /**
      * @return string
      */
@@ -244,7 +244,7 @@ at \Animals\Mammals\Elephants\Dumbo->checkHealth() called in /Animals/Mammals/El
 at \Animals\Mammals\Elephants\Dumbo->land(90, 30) called in /Animals/Mammals/Elephants/Dumbo.php:12
 STACK_TRACE;
     }
-    
+
     /**
      * @return string
      */
@@ -265,7 +265,7 @@ at \Animals\Mammals\Elephants\Dumbo->checkHealth() called in /Animals/Mammals/El
 at \Animals\Mammals\Elephants\Dumbo->land(90, 30) called in /Animals/Mammals/Elephants/Dumbo.php:12
 STACK_TRACE;
     }
-    
+
     /**
      * @return string
      */
@@ -290,7 +290,7 @@ at ShopgatePluginApi->handleRequest(Array) called in /var/www/cart/plugins/shopg
 at ShopgatePlugin->handleRequest(Array) called in /var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/core.php:1590
 STACK_TRACE;
     }
-    
+
     /**
      * @return string
      */
@@ -308,7 +308,7 @@ at ShopgatePluginApi->handleRequest(Array) called in /var/www/cart/plugins/shopg
 at ShopgatePlugin->handleRequest(Array) called in /var/www/cart/plugins/shopgate/vendor/shopgate/library/classes/core.php:1590
 STACK_TRACE;
     }
-    
+
     /**
      * @return string
      */
@@ -322,7 +322,7 @@ at \Animals\Mammals\Elephants\Dumbo->checkHealth() called in unknown file:unknow
 at \Animals\Mammals\Elephants\Dumbo->land(90, 30) called in unknown file:unknown line
 STACK_TRACE;
     }
-    
+
     /**
      * @return string
      */
@@ -336,7 +336,7 @@ at checkHealth() called in /Animals/Mammals/Elephants/Dumbo.php:23
 at land(90, 30) called in /Animals/Mammals/Elephants/Dumbo.php:12
 STACK_TRACE;
     }
-    
+
     /**
      * @return string
      */
@@ -350,7 +350,7 @@ at \Animals\Mammals\Elephants\Dumbo->checkHealth() called in /Animals/Mammals/El
 at \Animals\Mammals\Elephants\Dumbo->unknown function(90, 30) called in /Animals/Mammals/Elephants/Dumbo.php:12
 STACK_TRACE;
     }
-    
+
     /**
      * @return string
      */
@@ -364,7 +364,7 @@ at \Animals\Mammals\Elephants\Dumbo->checkHealth() called in /Animals/Mammals/El
 at \Animals\Mammals\Elephants\Dumbo->land() called in /Animals/Mammals/Elephants/Dumbo.php:12
 STACK_TRACE;
     }
-    
+
     /**
      * @param string $index
      *
@@ -415,7 +415,7 @@ STACK_TRACE;
                     'type'     => '->',
                     'function' => 'checkHealth',
                     'args'     => array(),
-                )
+                ),
             ),
             'DumboBrokenLegException'      => array(
                 array(
@@ -479,7 +479,7 @@ STACK_TRACE;
                             'action'      => 'get_customer',
                             'shop_number' => '23456',
                             'user'        => 'herp@derp.com',
-                            'pass'        => 'herpiderp'
+                            'pass'        => 'herpiderp',
                         ),
                     ),
                 ),
@@ -494,7 +494,7 @@ STACK_TRACE;
                             'action'      => 'get_customer',
                             'shop_number' => '23456',
                             'user'        => 'herp@derp.com',
-                            'pass'        => 'herpiderp'
+                            'pass'        => 'herpiderp',
                         ),
                     ),
                 ),
@@ -527,7 +527,7 @@ STACK_TRACE;
                             'action'      => 'get_customer',
                             'shop_number' => '23456',
                             'user'        => 'herp@derp.com',
-                            'pass'        => 'herpiderp'
+                            'pass'        => 'herpiderp',
                         ),
                     ),
                 ),
@@ -542,7 +542,7 @@ STACK_TRACE;
                             'action'      => 'get_customer',
                             'shop_number' => '23456',
                             'user'        => 'herp@derp.com',
-                            'pass'        => 'herpiderp'
+                            'pass'        => 'herpiderp',
                         ),
                     ),
                 ),
@@ -572,10 +572,10 @@ STACK_TRACE;
                 ),
             ),
         );
-        
+
         return $fixtures[$index];
     }
-    
+
     /**
      * @param array $values
      *
@@ -584,55 +584,55 @@ STACK_TRACE;
     private function buildMockFromFixture(array $values)
     {
         $exceptions = array();
-        
+
         do {
             $exception = $this->testCase->getMockBuilder('ThrowableStub')
-                                        ->setMockClassName($values['exception_class'])
-                                        ->getMock()
-            ;
-            
+                ->setMockClassName($values['exception_class'])
+                ->getMock();
+
             $exception->expects($this->testCase->any())->method('getMessage')->willReturn($values['message']);
             $exception->expects($this->testCase->any())->method('getCode')->willReturn($values['code']);
             $exception->expects($this->testCase->any())->method('getFile')->willReturn($values['file']);
             $exception->expects($this->testCase->any())->method('getLine')->willReturn($values['line']);
             $exception->expects($this->testCase->any())->method('getTrace')->willReturn($values['trace']);
-            
+
             $exceptions[] = $exception;
-            
+
             if (!empty($values['previous'])) {
                 $values = $values['previous'];
             } else {
                 break;
             }
         } while (true);
-        
+
         $previous = null;
         foreach (array_reverse($exceptions) as $exception) {
             /** @var ThrowableStub|PHPUnit_Framework_MockObject_MockObject $exception */
             $exception->expects($this->testCase->any())->method('getPrevious')->willReturn($previous);
             $previous = $exception;
         }
-        
+
         return $exceptions[0];
     }
-    
+
     /**
      * @param array $values A stack trace fixture as returned by getTraceFixture().
      *
-     * @return array A list of stack trace entries with "class", "function" and "arguments" (similar to what Exception::getTrace() returns).
+     * @return array A list of stack trace entries with "class", "function" and "arguments" (similar to what
+     *               Exception::getTrace() returns).
      */
     public function buildMockFromTraceFixture(array $values)
     {
         $arguments = array();
-        
+
         foreach (array_reverse($values) as $trace) {
             $arguments[] = array(
                 $trace['class'],
                 $trace['function'],
-                $trace['args']
+                $trace['args'],
             );
         }
-        
+
         return $arguments;
     }
 }

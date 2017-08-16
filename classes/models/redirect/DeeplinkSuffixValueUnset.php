@@ -21,10 +21,10 @@
  */
 class Shopgate_Model_Redirect_DeeplinkSuffixValueUnset extends Shopgate_Model_Redirect_DeeplinkSuffixValue
 {
-	public function __construct()
-	{
-		parent::__construct();
-		
-		$this->setUnset(true);
-	}
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->setUnset(true);
+    }
 }

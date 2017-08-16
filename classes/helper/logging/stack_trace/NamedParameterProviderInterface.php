@@ -33,13 +33,15 @@
 interface Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderInterface
 {
     /**
-     * Maps numerically indexed arguments to a function or method to its named parameters if it is available and callable.
+     * Maps numerically indexed arguments to a function or method to its named parameters if it is available and
+     * callable.
      *
      * @param string   $className    The name of the class or an empty string if not referring to a method.
      * @param string   $functionName The name of the function.
      * @param string[] $arguments    The arguments the function was called with.
      *
-     * @return array [int|string, string] An array with the argument names as keys or the untouched $arguments if names could not be determined.
+     * @return array [int|string, string] An array with the argument names as keys or the untouched $arguments if names
+     *               could not be determined.
      */
     public function get($className, $functionName, array $arguments);
 }

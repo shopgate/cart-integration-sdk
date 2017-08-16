@@ -21,41 +21,41 @@
  */
 interface Shopgate_Helper_Logging_Strategy_LoggingInterface
 {
-    const LOGTYPE_ACCESS  = 'access';
+    const LOGTYPE_ACCESS = 'access';
     const LOGTYPE_REQUEST = 'request';
-    const LOGTYPE_ERROR   = 'error';
-    const LOGTYPE_DEBUG   = 'debug';
-    
+    const LOGTYPE_ERROR = 'error';
+    const LOGTYPE_DEBUG = 'debug';
+
     /**
      * Enables logging messages to debug log file.
      */
     public function enableDebug();
-    
+
     /**
      * Disables logging messages to debug log file.
      */
     public function disableDebug();
-    
+
     /**
      * @return bool true if logging messages to debug log file is enabled, false otherwise.
      */
     public function isDebugEnabled();
-    
+
     /**
      * Enables logging the stack trace, if available.
      */
     public function enableStackTrace();
-    
+
     /**
      * Disables logging the stack trace.
      */
     public function disableStackTrace();
-    
+
     /**
      * Logs a message to the according log file.
      *
-     * Logging to LOGTYPE_DEBUG only is done after $this->enableDebug() has been called and $this->disableDebug() has not
-     * been called after that. The debug log file will be truncated on opening by default. To prevent this call
+     * Logging to LOGTYPE_DEBUG only is done after $this->enableDebug() has been called and $this->disableDebug() has
+     * not been called after that. The debug log file will be truncated on opening by default. To prevent this call
      * $this->keepDebugLog(true).
      *
      * @param string $msg        The error message.
@@ -65,7 +65,7 @@ interface Shopgate_Helper_Logging_Strategy_LoggingInterface
      * @return bool true on success, false on error.
      */
     public function log($msg, $type = self::LOGTYPE_ERROR, $stackTrace = '');
-    
+
     /**
      * Returns the requested number of lines of the requested log file's end.
      *
@@ -78,7 +78,7 @@ interface Shopgate_Helper_Logging_Strategy_LoggingInterface
      * @see http://tekkie.flashbit.net/php/tail-functionality-in-php
      */
     public function tail($type = self::LOGTYPE_ERROR, $lines = 20);
-    
+
     /**
      * If true the debug log of the last request won't be deleted and additional debug output will be appended
      *

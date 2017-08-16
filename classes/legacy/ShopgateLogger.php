@@ -29,25 +29,24 @@
 class ShopgateLogger
 {
     const OBFUSCATION_STRING = Shopgate_Helper_Logging_Obfuscator::OBFUSCATION_STRING;
-    const REMOVED_STRING     = Shopgate_Helper_Logging_Obfuscator::REMOVED_STRING;
-    
-    const LOGTYPE_ACCESS  = Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_ACCESS;
+    const REMOVED_STRING = Shopgate_Helper_Logging_Obfuscator::REMOVED_STRING;
+    const LOGTYPE_ACCESS = Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_ACCESS;
     const LOGTYPE_REQUEST = Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_REQUEST;
-    const LOGTYPE_ERROR   = Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_ERROR;
-    const LOGTYPE_DEBUG   = Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_DEBUG;
-    
+    const LOGTYPE_ERROR = Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_ERROR;
+    const LOGTYPE_DEBUG = Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_DEBUG;
+
     /** @var string */
     private $memoryAnalyserLoggingSizeUnit;
-    
+
     /** @var ShopgateLogger */
     private static $singleton;
-    
+
     /** @var Shopgate_Helper_Logging_Obfuscator */
     private $obfuscator;
-    
+
     /** @var Shopgate_Helper_Logging_Strategy_LoggingInterface */
     private $loggingStrategy;
-    
+
     /**
      * @param string $accessLogPath
      * @param string $requestLogPath
@@ -64,29 +63,29 @@ class ShopgateLogger
     ) {
         if (empty(self::$singleton)) {
             self::$singleton = new self();
-            
+
             self::$singleton->setLoggingStrategy(
                 new Shopgate_Helper_Logging_Strategy_DefaultLogging($accessLogPath, $requestLogPath, $errorLogPath,
                     $debugLogPath)
             );
         }
-        
+
         if (self::$singleton->loggingStrategy instanceof Shopgate_Helper_Logging_Strategy_DefaultLogging) {
             /** @noinspection PhpUndefinedMethodInspection */
             self::$singleton->loggingStrategy->setLogFilePaths(
                 $accessLogPath, $requestLogPath, $errorLogPath, $debugLogPath
             );
         }
-        
+
         return self::$singleton;
     }
-    
+
     public function __construct()
     {
         $this->obfuscator                    = new Shopgate_Helper_Logging_Obfuscator();
         $this->memoryAnalyserLoggingSizeUnit = 'MB';
     }
-    
+
     /**
      * @param Shopgate_Helper_Logging_Strategy_LoggingInterface $loggingStrategy
      */
@@ -94,7 +93,7 @@ class ShopgateLogger
     {
         $this->loggingStrategy = $loggingStrategy;
     }
-    
+
     /**
      * @param Shopgate_Helper_Logging_Obfuscator $obfuscator
      */
@@ -102,7 +101,7 @@ class ShopgateLogger
     {
         $this->obfuscator = $obfuscator;
     }
-    
+
     /**
      * @return Shopgate_Helper_Logging_Strategy_LoggingInterface
      */
@@ -110,7 +109,7 @@ class ShopgateLogger
     {
         return $this->loggingStrategy;
     }
-    
+
     /**
      * @return Shopgate_Helper_Logging_Obfuscator
      */
@@ -118,7 +117,7 @@ class ShopgateLogger
     {
         return $this->obfuscator;
     }
-    
+
     /**
      * Enables logging messages to debug log file.
      */
@@ -126,7 +125,7 @@ class ShopgateLogger
     {
         $this->loggingStrategy->enableDebug();
     }
-    
+
     /**
      * Disables logging messages to debug log file.
      */
@@ -134,7 +133,7 @@ class ShopgateLogger
     {
         $this->loggingStrategy->disableDebug();
     }
-    
+
     /**
      * @return bool true if logging messages to debug log file is enabled, false otherwise.
      */
@@ -142,12 +141,12 @@ class ShopgateLogger
     {
         return $this->loggingStrategy->isDebugEnabled();
     }
-    
+
     /**
      * Logs a message to the according log file.
      *
-     * Logging to LOGTYPE_DEBUG only is done after $this->enableDebug() has been called and $this->disableDebug() has not
-     * been called after that. The debug log file will be truncated on opening by default. To prevent this call
+     * Logging to LOGTYPE_DEBUG only is done after $this->enableDebug() has been called and $this->disableDebug() has
+     * not been called after that. The debug log file will be truncated on opening by default. To prevent this call
      * $this->keepDebugLog(true).
      *
      * @param string $msg  The error message.
@@ -159,7 +158,7 @@ class ShopgateLogger
     {
         return $this->loggingStrategy->log($msg, $type);
     }
-    
+
     /**
      * Returns the requested number of lines of the requested log file's end.
      *
@@ -175,12 +174,12 @@ class ShopgateLogger
     {
         return $this->loggingStrategy->tail($type, $lines);
     }
-    
+
     public function keepDebugLog($keep)
     {
         $this->loggingStrategy->keepDebugLog($keep);
     }
-    
+
     /**
      * Sets the unit in which the memory usage logger outputs its values in
      *
@@ -209,7 +208,7 @@ class ShopgateLogger
                 break;
         }
     }
-    
+
     /**
      * returns the unit in which the memory usage logger outputs its values in
      *
@@ -219,7 +218,7 @@ class ShopgateLogger
     {
         return $this->memoryAnalyserLoggingSizeUnit;
     }
-    
+
     /**
      * Function to prepare the parameters of an API request for logging.
      *

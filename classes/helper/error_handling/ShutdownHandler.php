@@ -23,10 +23,10 @@ class Shopgate_Helper_Error_Handling_ShutdownHandler
 {
     /** @var Shopgate_Helper_Logging_Strategy_LoggingInterface */
     protected $logging;
-    
+
     /** @var Shopgate_Helper_Error_Handling_Shutdown_Handler_LastErrorProvider */
     protected $lastErrorProvider;
-    
+
     /**
      * @param Shopgate_Helper_Logging_Strategy_LoggingInterface                 $logging
      * @param Shopgate_Helper_Error_Handling_Shutdown_Handler_LastErrorProvider $lastErrorProvider
@@ -38,7 +38,7 @@ class Shopgate_Helper_Error_Handling_ShutdownHandler
         $this->logging           = $logging;
         $this->lastErrorProvider = $lastErrorProvider;
     }
-    
+
     /**
      * Handles errors upon shutdown of PHP.
      *
@@ -47,15 +47,15 @@ class Shopgate_Helper_Error_Handling_ShutdownHandler
     public function handle()
     {
         $error = $this->lastErrorProvider->get();
-        
+
         if ($error === null) {
             return;
         }
-        
+
         if (!($error['type'] & (E_ERROR | E_USER_ERROR))) {
             return;
         }
-        
+
         $this->logging->log(
             'Script stopped due to FATAL error in ' . $error['file'] .
             ' in line ' . $error['line'] .

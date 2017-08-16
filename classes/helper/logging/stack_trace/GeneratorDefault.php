@@ -30,18 +30,17 @@
  * An argument that is an array will be converted to 'Array'.
  * An argument that is boolean true / false will be converted to 'true' / 'false'.
  */
-class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault
-    implements Shopgate_Helper_Logging_Stack_Trace_GeneratorInterface
+class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault implements Shopgate_Helper_Logging_Stack_Trace_GeneratorInterface
 {
     /** @var Shopgate_Helper_Logging_Obfuscator */
     protected $obfuscator;
-    
+
     /** @var Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderInterface */
     protected $namedParameterProvider;
-    
+
     /** @var array [string, string[]] */
     protected $functionArgumentsCache;
-    
+
     public function __construct(
         Shopgate_Helper_Logging_Obfuscator $obfuscator,
         Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderInterface $namedParameterProvider
@@ -50,7 +49,7 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault
         $this->namedParameterProvider = $namedParameterProvider;
         $this->functionArgumentsCache = array();
     }
-    
+
     /**
      * @param Exception|Throwable $exception
      * @param int                 $maxDepth
@@ -60,25 +59,24 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault
     public function generate($exception, $maxDepth = 10)
     {
         $formattedHeader = $this->generateFormattedHeader($exception);
-        $formattedTrace = $this->generateFormattedTrace($exception->getTrace());
-        $messages = array($formattedHeader . "\n" . $formattedTrace);
-        
-        $depthCounter = 1;
+        $formattedTrace  = $this->generateFormattedTrace($exception->getTrace());
+        $messages        = array($formattedHeader . "\n" . $formattedTrace);
+
+        $depthCounter      = 1;
         $previousException = $this->getPreviousException($exception);
-        
+
         while ($previousException !== null && $depthCounter < $maxDepth) {
             $messages[] =
                 $this->generateFormattedHeader($previousException, false) . "\n" .
                 $this->generateFormattedTrace($previousException->getTrace());
-            
+
             $previousException = $this->getPreviousException($previousException);
             $depthCounter++;
         }
-        
+
         return implode("\n\n", $messages);
     }
-    
-    
+
     /**
      * Returns previous exception.
      * Some customers are still running PHP below version 5.3, but method Exception::getPrevious is available since
@@ -91,14 +89,14 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault
     private function getPreviousException($exception)
     {
         $previousException = null;
-        
+
         if (method_exists($exception, 'getPrevious')) {
             $previousException = $exception->getPrevious();
         }
-        
+
         return $previousException;
     }
-    
+
     /**
      * @param Exception|Throwable $e
      * @param bool                $first
@@ -110,12 +108,12 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault
         $prefix = $first
             ? ""
             : "caused by ";
-        
+
         $exceptionClass = get_class($e);
-        
+
         return "{$prefix}{$exceptionClass}: {$e->getMessage()}\n\nthrown from {$e->getFile()} on line {$e->getLine()}";
     }
-    
+
     /**
      * @param array $traces
      *
@@ -130,34 +128,34 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault
                 $trace['class'] = '';
                 $trace['type']  = '';
             }
-            
+
             if (!isset($trace['file'])) {
                 $trace['file'] = 'unknown file';
                 $trace['line'] = 'unknown line';
             }
-            
+
             if (!isset($trace['function'])) {
                 $trace['function'] = 'unknown function';
             }
-            
+
             if (!isset($trace['args']) || !is_array($trace['args'])) {
                 $trace['args'] = array();
             }
-            
+
             $arguments = $this->namedParameterProvider->get($trace['class'], $trace['function'], $trace['args']);
             $arguments = $this->obfuscator->cleanParamsForLog($arguments);
-            
+
             array_walk($arguments, array($this, 'flatten'));
             $arguments = implode(', ', $arguments);
-            
+
             $formattedTraceLines[] =
                 "at {$trace['class']}{$trace['type']}{$trace['function']}({$arguments}) " .
                 "called in {$trace['file']}:{$trace['line']}";
         }
-        
+
         return implode("\n", $formattedTraceLines);
     }
-    
+
     /**
      * Function to be passed to array_walk(); will remove sub-arrays or objects.
      *
@@ -177,11 +175,11 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault
         if (is_object($value)) {
             $value = 'Object';
         }
-        
+
         if (is_array($value)) {
             $value = 'Array';
         }
-        
+
         if (is_bool($value)) {
             $value = $value ? 'true' : 'false';
         }

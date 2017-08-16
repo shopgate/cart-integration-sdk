@@ -22,7 +22,7 @@
 
 /**
  * @class Shopgate_Model_Catalog_Attribute
- * @see http://developer.shopgate.com/file_formats/xml/products
+ * @see   http://developer.shopgate.com/file_formats/xml/products
  *
  * @method              setUid(int $value)
  * @method int          getUid()
@@ -34,31 +34,33 @@
  * @method string       getLabel()
  *
  */
-class Shopgate_Model_Catalog_Attribute extends Shopgate_Model_AbstractExport {
+class Shopgate_Model_Catalog_Attribute extends Shopgate_Model_AbstractExport
+{
+    /**
+     * define allowed methods
+     *
+     * @var array
+     */
+    protected $allowedMethods = array(
+        'Uid',
+        'GroupUid',
+        'Label',
+    );
 
-	/**
-	 * define allowed methods
-	 *
-	 * @var array
-	 */
-	protected $allowedMethods = array(
-		'Uid',
-		'GroupUid',
-		'Label');
+    /**
+     * @param Shopgate_Model_XmlResultObject $itemNode
+     *
+     * @return Shopgate_Model_XmlResultObject
+     */
+    public function asXml(Shopgate_Model_XmlResultObject $itemNode)
+    {
+        /**
+         * @var Shopgate_Model_XmlResultObject $attributeNode
+         */
+        $attributeNode = $itemNode->addChildWithCDATA('attribute', $this->getLabel());
+        $attributeNode->addAttribute('uid', $this->getUid());
+        $attributeNode->addAttribute('group_uid', $this->getGroupUid());
 
-	/**
-	 * @param Shopgate_Model_XmlResultObject $itemNode
-	 *
-	 * @return Shopgate_Model_XmlResultObject
-	 */
-	public function asXml(Shopgate_Model_XmlResultObject $itemNode) {
-		/**
-		 * @var Shopgate_Model_XmlResultObject $attributeNode
-		 */
-		$attributeNode = $itemNode->addChildWithCDATA('attribute', $this->getLabel());
-		$attributeNode->addAttribute('uid', $this->getUid());
-		$attributeNode->addAttribute('group_uid', $this->getGroupUid());
-
-		return $itemNode;
-	}
+        return $itemNode;
+    }
 }

@@ -21,63 +21,59 @@
  */
 class ShopgateLoggerTest extends PHPUnit_Framework_TestCase
 {
-    
     /** @var ShopgateLogger */
     private $shopgateLogger;
-    
+
     public function setUp()
     {
         /** @noinspection PhpDeprecationInspection */
         $this->shopgateLogger = ShopgateLogger::getInstance();
     }
-    
+
     public function testInstantiateShopgateLogger()
     {
         $this->assertInstanceOf('ShopgateLogger', $this->shopgateLogger);
         #$this->assertInstanceOf('LoggingInterface', $this->shopgateLogger);
     }
-    
+
     public function testInjectLoggingStrategy()
     {
         $loggingStrategy = $this->getMockBuilder('Shopgate_Helper_Logging_Strategy_LoggingInterface')
-                                ->getMock()
-        ;
-        
+            ->getMock();
+
         $this->shopgateLogger->setLoggingStrategy($loggingStrategy);
-        
+
         $this->assertEquals($loggingStrategy, $this->shopgateLogger->getLoggingStrategy());
     }
-    
+
     public function testInjectLoggingStrategyEnableDebug()
     {
         $loggingStrategy = $this->getMockBuilder('Shopgate_Helper_Logging_Strategy_LoggingInterface')
-                                ->getMock()
-        ;
+            ->getMock();
         $loggingStrategy->expects($this->once())->method('enableDebug')->willReturn(true);
         $loggingStrategy->expects($this->once())->method('isDebugEnabled')->willReturn(true);
-        
+
         $this->shopgateLogger->setLoggingStrategy($loggingStrategy);
-        
+
         $this->shopgateLogger->enableDebug();
-        
+
         $this->assertEquals(true, $this->shopgateLogger->isDebugEnabled());
     }
-    
+
     public function testInjectLoggingStrategyDisableDebug()
     {
         $loggingStrategy = $this->getMockBuilder('Shopgate_Helper_Logging_Strategy_LoggingInterface')
-                                ->getMock()
-        ;
+            ->getMock();
         $loggingStrategy->expects($this->once())->method('disableDebug')->willReturn(true);
         $loggingStrategy->expects($this->once())->method('isDebugEnabled')->willReturn(false);
-        
+
         $this->shopgateLogger->setLoggingStrategy($loggingStrategy);
-        
+
         $this->shopgateLogger->disableDebug();
-        
+
         $this->assertEquals(false, $this->shopgateLogger->isDebugEnabled());
     }
-    
+
     /**
      * testing log proxy
      *
@@ -89,18 +85,17 @@ class ShopgateLoggerTest extends PHPUnit_Framework_TestCase
     public function testInjectLoggingStrategyLog($msg, $type)
     {
         $loggingStrategy = $this->getMockBuilder('Shopgate_Helper_Logging_Strategy_LoggingInterface')
-                                ->getMock()
-        ;
-        
+            ->getMock();
+
         $loggingStrategy->expects($this->once())->method('log')->with($msg, $type)->willReturn(true);
-        
+
         $this->shopgateLogger->setLoggingStrategy($loggingStrategy);
-        
+
         $success = $this->shopgateLogger->log($msg, $type);
-        
+
         $this->assertTrue($success);
     }
-    
+
     /**
      * testing tail proxy
      *
@@ -112,17 +107,16 @@ class ShopgateLoggerTest extends PHPUnit_Framework_TestCase
     public function testInjectLoggingStrategyTail($mockLogContent, $type)
     {
         $loggingStrategy = $this->getMockBuilder('Shopgate_Helper_Logging_Strategy_LoggingInterface')
-                                ->getMock()
-        ;
+            ->getMock();
         $loggingStrategy->expects($this->once())->method('tail')->with($type)->willReturn($mockLogContent);
-        
+
         $this->shopgateLogger->setLoggingStrategy($loggingStrategy);
-        
+
         $logs = $this->shopgateLogger->tail($type);
-        
+
         $this->assertEquals($logs, $mockLogContent);
     }
-    
+
     /**
      * @return array
      */
@@ -131,40 +125,39 @@ class ShopgateLoggerTest extends PHPUnit_Framework_TestCase
         return array(
             'log access'  => array(
                 'this is a test access log message',
-                ShopgateLogger::LOGTYPE_ACCESS
+                ShopgateLogger::LOGTYPE_ACCESS,
             ),
             'log debug'   => array(
                 'this is a test debug log message',
-                ShopgateLogger::LOGTYPE_DEBUG
+                ShopgateLogger::LOGTYPE_DEBUG,
             ),
             'log error'   => array(
                 'this is a test error log message',
-                ShopgateLogger::LOGTYPE_ERROR
+                ShopgateLogger::LOGTYPE_ERROR,
             ),
             'log request' => array(
                 'this is a test request log message',
-                ShopgateLogger::LOGTYPE_REQUEST
+                ShopgateLogger::LOGTYPE_REQUEST,
             ),
         );
     }
-    
+
     /**
      * testing keepDebug proxy
      */
     public function testInjectLoggingStrategyKeepDebugLog()
     {
         $loggingStrategy = $this->getMockBuilder('Shopgate_Helper_Logging_Strategy_LoggingInterface')
-                                ->getMock()
-        ;
-        
+            ->getMock();
+
         $keepDebugLog = true;
         $loggingStrategy->expects($this->once())->method('keepDebugLog')->with($keepDebugLog);
-        
+
         $this->shopgateLogger->setLoggingStrategy($loggingStrategy);
-        
+
         $this->shopgateLogger->keepDebugLog($keepDebugLog);
     }
-    
+
     /**
      * testing cleanParamsForLog proxy
      *
@@ -174,16 +167,13 @@ class ShopgateLoggerTest extends PHPUnit_Framework_TestCase
      */
     public function testCleanParamsForLog($data)
     {
-        
         $obfuscator = $this->getMockBuilder('Shopgate_Helper_Logging_Obfuscator')
-                           ->getMock()
-        ;
+            ->getMock();
         $obfuscator->expects($this->once())->method('cleanParamsForLog')->with($data);
         $this->shopgateLogger->setObfuscator($obfuscator);
         $this->shopgateLogger->cleanParamsForLog($data);
     }
-    
-    
+
     public function cleanParamsForLogProvider()
     {
         return array(
@@ -205,7 +195,7 @@ class ShopgateLoggerTest extends PHPUnit_Framework_TestCase
             ),
         );
     }
-    
+
     /**
      * @param string $parameterSize
      * @param string $expectedUnit
@@ -215,54 +205,53 @@ class ShopgateLoggerTest extends PHPUnit_Framework_TestCase
     public function testSetMemoryAnalyserLoggingSizeUnit($parameterSize, $expectedUnit)
     {
         $this->shopgateLogger->setMemoryAnalyserLoggingSizeUnit($parameterSize);
-        
+
         $this->assertEquals($expectedUnit, $this->shopgateLogger->getMemoryAnalyserLoggingSizeUnit());
     }
-    
+
     public function setMemoryAnalyserLoggingSizeUnitProvider()
     {
         return array(
             'bytes'     => array(
                 'ByTes',
-                'BYTES'
+                'BYTES',
             ),
             'kilobytes' => array(
                 'KiloBYtes',
-                'KB'
+                'KB',
             ),
             'kilobyte'  => array(
                 'KiloBYte',
-                'KB'
+                'KB',
             ),
             'kb'        => array(
                 'kB',
-                'KB'
+                'KB',
             ),
             'Megabytes' => array(
                 'mEgaBytes',
-                'MB'
+                'MB',
             ),
             'Megabyte'  => array(
                 'mEgaByte',
-                'MB'
+                'MB',
             ),
             'Mb'        => array(
                 'Mb',
-                'MB'
+                'MB',
             ),
             'gIgaBytes' => array(
                 'gIgaBytes',
-                'GB'
+                'GB',
             ),
             'gIgaByte'  => array(
                 'gIgaByte',
-                'GB'
+                'GB',
             ),
             'Gb'        => array(
                 'Gb',
-                'GB'
+                'GB',
             ),
         );
     }
-    
 }

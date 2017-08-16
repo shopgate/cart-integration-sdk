@@ -21,41 +21,41 @@
  */
 
 /**
- * Tries to get the argument names from a function and map the actual values it was called with to them using Reflection.
+ * Tries to get the argument names from a function and map the actual values it was called with to them using
+ * Reflection.
  */
-class Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderReflection
-    implements Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderInterface
+class Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderReflection implements Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderInterface
 {
     /** @var array [string, ReflectionParameter[]] */
     protected $functionArgumentsCache;
-    
+
     public function __construct()
     {
         $this->functionArgumentsCache = array();
     }
-    
+
     public function get($className, $functionName, array $arguments)
     {
         if (!empty($className) && !class_exists($className)) {
             return $arguments;
         }
-        
+
         if (!$this->exists($className, $functionName)) {
             return $arguments;
         }
-        
+
         $fullFunctionName                                = $this->getFullFunctionName($className, $functionName);
         $this->functionArgumentsCache[$fullFunctionName] = array();
-        
+
         $namedArguments = $this->getNamedArguments($className, $functionName, $arguments);
-        
+
         for ($i = count($namedArguments); $i < count($arguments); $i++) {
             $namedArguments['unnamed argument ' . $i] = $arguments[$i];
         }
-        
+
         return $namedArguments;
     }
-    
+
     /**
      * @param string  $className
      * @param string  $functionName
@@ -66,12 +66,12 @@ class Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderReflection
     private function getNamedArguments($className, $functionName, array $arguments)
     {
         $fullFunctionName = $this->getFullFunctionName($className, $functionName);
-        
+
         if (empty($this->functionArgumentsCache[$fullFunctionName])) {
             $this->functionArgumentsCache[$fullFunctionName] =
                 $this->buildReflectionFunction($className, $functionName)->getParameters();
         }
-        
+
         $i              = 0;
         $namedArguments = array();
         foreach ($this->functionArgumentsCache[$fullFunctionName] as $parameter) {
@@ -81,14 +81,14 @@ class Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderReflection
             } catch (ReflectionException $e) {
                 $defaultValue = '';
             }
-            
+
             $namedArguments[$parameter->getName()] = isset($arguments[$i]) ? $arguments[$i] : $defaultValue;
             $i++;
         }
-        
+
         return $namedArguments;
     }
-    
+
     /**
      * @param string $className
      * @param string $functionName
@@ -101,7 +101,7 @@ class Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderReflection
             ? $functionName
             : $className . '::' . $functionName;
     }
-    
+
     /**
      * @param string $className
      * @param string $functionName
@@ -114,7 +114,7 @@ class Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderReflection
             ? new ReflectionFunction($this->getFullFunctionName($className, $functionName))
             : new ReflectionMethod($className, $functionName);
     }
-    
+
     /**
      * @param string $className
      * @param string $functionName
@@ -127,7 +127,7 @@ class Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderReflection
             function_exists($this->getFullFunctionName($className, $functionName))
             || method_exists($className, $functionName);
     }
-    
+
     /**
      * @param mixed $value
      *
@@ -138,15 +138,15 @@ class Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderReflection
         if ($value === null) {
             $value = 'null';
         }
-        
+
         if (is_array($value)) {
             $value = 'array';
         }
-        
+
         if (is_bool($value)) {
             $value = $value ? 'true' : 'false';
         }
-        
+
         return $value;
     }
 }

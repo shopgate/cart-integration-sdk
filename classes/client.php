@@ -19,60 +19,61 @@
  * @license   http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  */
 
-class ShopgateClient extends ShopgateContainer {
+class ShopgateClient extends ShopgateContainer
+{
+    const TYPE_MOBILESITE = 'mobilesite';
+    const TYPE_IPHONEAPP = 'iphoneapp';
+    const TYPE_IPADAPP = 'ipadapp';
+    const TYPE_ANDROIDPHONEAPP = 'androidphoneapp';
+    const TYPE_ANDROIDTABLETAPP = 'androidtabletapp';
 
-	const TYPE_MOBILESITE       = 'mobilesite';
-	const TYPE_IPHONEAPP        = 'iphoneapp';
-	const TYPE_IPADAPP          = 'ipadapp';
-	const TYPE_ANDROIDPHONEAPP  = 'androidphoneapp';
-	const TYPE_ANDROIDTABLETAPP = 'androidtabletapp';
+    /** @var string */
+    protected $type;
 
-	/** @var string */
-	protected $type;
+    /**
+     * @param string
+     */
+    public function setType($data)
+    {
+        return $this->type = $data;
+    }
 
-	/**
-	 * @param string
-	 */
-	public function setType($data)
-	{
-		return $this->type = $data;
-	}
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getType()
-	{
-		return $this->type;
-	}
+    /**
+     * @return bool
+     */
+    public function isMobileWebsite()
+    {
+        return $this->type == self::TYPE_MOBILESITE;
+    }
 
-	/**
-	 * @return bool
-	 */
-	public function isMobileWebsite()
-	{
-		return $this->type == self::TYPE_MOBILESITE;
-	}
+    /**
+     * @return bool
+     */
+    public function isApp()
+    {
+        $appTypes = array(
+            self::TYPE_ANDROIDPHONEAPP,
+            self::TYPE_ANDROIDTABLETAPP,
+            self::TYPE_IPADAPP,
+            self::TYPE_IPHONEAPP,
+        );
 
-	/**
-	 * @return bool
-	 */
-	public function isApp()
-	{
-		$appTypes = array(
-			self::TYPE_ANDROIDPHONEAPP,
-			self::TYPE_ANDROIDTABLETAPP,
-			self::TYPE_IPADAPP,
-			self::TYPE_IPHONEAPP
-		);
-		return in_array($this->type, $appTypes);
-	}
+        return in_array($this->type, $appTypes);
+    }
 
-	/**
-	 * @param ShopgateContainerVisitor $v
-	 */
-	public function accept(ShopgateContainerVisitor $v)
-	{
-		$v->visitClient($this);
-	}
+    /**
+     * @param ShopgateContainerVisitor $v
+     */
+    public function accept(ShopgateContainerVisitor $v)
+    {
+        $v->visitClient($this);
+    }
 }

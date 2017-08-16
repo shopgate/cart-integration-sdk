@@ -35,13 +35,13 @@
  */
 class Shopgate_Model_Redirect_HtmlTagAttribute extends Shopgate_Model_Abstract
 {
-	public function __construct()
-	{
-		$this->allowedMethods = array(
-			'Name',
-			'Value',
-			'DeeplinkSuffix',
-			'Variables',
-		);
-	}
+    public function __construct()
+    {
+        $this->allowedMethods = array(
+            'Name',
+            'Value',
+            'DeeplinkSuffix',
+            'Variables',
+        );
+    }
 }

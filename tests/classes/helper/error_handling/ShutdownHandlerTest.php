@@ -23,24 +23,22 @@ class Shopgate_Helper_Error_Handling_ShutdownHandlerTest extends PHPUnit_Framewo
 {
     /** @var PHPUnit_Framework_MockObject_MockObject|Shopgate_Helper_Logging_Strategy_LoggingInterface */
     protected $logging;
-    
+
     /** @var PHPUnit_Framework_MockObject_MockObject|Shopgate_Helper_Error_Handling_Shutdown_Handler_LastErrorProvider */
     protected $lastErrorProvider;
-    
+
     public function setUp()
     {
         $this->logging = $this
             ->getMockBuilder('Shopgate_Helper_Logging_Strategy_LoggingInterface')
-            ->getMock()
-        ;
-        
+            ->getMock();
+
         $this->lastErrorProvider = $this
             ->getMockBuilder('Shopgate_Helper_Error_Handling_Shutdown_Handler_LastErrorProvider')
             ->setMethods(array('get'))
-            ->getMock()
-        ;
+            ->getMock();
     }
-    
+
     public function testLoggerCalledOnShutdownFatalErrors()
     {
         $this->logging
@@ -51,9 +49,8 @@ class Shopgate_Helper_Error_Handling_ShutdownHandlerTest extends PHPUnit_Framewo
                 Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_ERROR,
                 ''
             )
-            ->willReturnOnConsecutiveCalls(true)
-        ;
-        
+            ->willReturnOnConsecutiveCalls(true);
+
         // E_ERROR
         $this->lastErrorProvider
             ->expects($this->exactly(2))
@@ -63,26 +60,25 @@ class Shopgate_Helper_Error_Handling_ShutdownHandlerTest extends PHPUnit_Framewo
                     'type'    => E_ERROR,
                     'message' => 'Call to member function on a non-object.',
                     'file'    => '/var/www/failing_script.php',
-                    'line'    => 99
+                    'line'    => 99,
                 ),
                 array(
                     'type'    => E_USER_ERROR,
                     'message' => 'Call to member function on a non-object.',
                     'file'    => '/var/www/failing_script.php',
-                    'line'    => 99
+                    'line'    => 99,
                 )
-            )
-        ;
-        
+            );
+
         $SUT = new Shopgate_Helper_Error_Handling_ShutdownHandler($this->logging, $this->lastErrorProvider);
         $SUT->handle(); // E_ERROR
         $SUT->handle(); // E_USER_ERROR
     }
-    
+
     public function testLoggerNotCalledOnShutdownNonFatalError()
     {
         $this->logging->expects($this->never())->method('log');
-        
+
         $this->lastErrorProvider
             ->expects($this->once())
             ->method('get')
@@ -91,25 +87,23 @@ class Shopgate_Helper_Error_Handling_ShutdownHandlerTest extends PHPUnit_Framewo
                     'type'    => E_WARNING,
                     'message' => 'Illegal string offset \'bla\'.',
                     'file'    => '/var/www/failing_script.php',
-                    'line'    => 99
+                    'line'    => 99,
                 )
-            )
-        ;
-        
+            );
+
         $SUT = new Shopgate_Helper_Error_Handling_ShutdownHandler($this->logging, $this->lastErrorProvider);
         $SUT->handle();
     }
-    
+
     public function testLoggerNotCalledOnRegularShutdownOrErrorGetLastNotAvailable()
     {
         $this->logging->expects($this->never())->method('log');
-        
+
         $this->lastErrorProvider
             ->expects($this->once())
             ->method('get')
-            ->willReturn(null)
-        ;
-        
+            ->willReturn(null);
+
         $SUT = new Shopgate_Helper_Error_Handling_ShutdownHandler($this->logging, $this->lastErrorProvider);
         $SUT->handle();
     }

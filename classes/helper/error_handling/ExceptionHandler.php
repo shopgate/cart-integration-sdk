@@ -23,10 +23,10 @@ class Shopgate_Helper_Error_Handling_ExceptionHandler
 {
     /** @var Shopgate_Helper_Logging_Stack_Trace_GeneratorInterface */
     protected $stackTraceGenerator;
-    
+
     /** @var Shopgate_Helper_Logging_Strategy_LoggingInterface */
     protected $logging;
-    
+
     /**
      * @param Shopgate_Helper_Logging_Stack_Trace_GeneratorInterface $stackTraceGenerator
      * @param Shopgate_Helper_Logging_Strategy_LoggingInterface      $logging
@@ -38,7 +38,7 @@ class Shopgate_Helper_Error_Handling_ExceptionHandler
         $this->stackTraceGenerator = $stackTraceGenerator;
         $this->logging             = $logging;
     }
-    
+
     /**
      * Handles uncaught exceptions of type ShopgateLibraryException.
      *
@@ -55,7 +55,7 @@ class Shopgate_Helper_Error_Handling_ExceptionHandler
         if (!($e instanceof ShopgateLibraryException)) {
             return;
         }
-        
+
         $this->logging->log(
             'FATAL: Uncaught ShopgateLibraryException',
             Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_ERROR,

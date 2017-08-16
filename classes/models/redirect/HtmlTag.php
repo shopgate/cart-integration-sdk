@@ -29,11 +29,11 @@
  */
 class Shopgate_Model_Redirect_HtmlTag extends Shopgate_Model_Abstract
 {
-	public function __construct()
-	{
-		$this->allowedMethods = array(
-			'Name',
-			'Attributes',
-		);
-	}
+    public function __construct()
+    {
+        $this->allowedMethods = array(
+            'Name',
+            'Attributes',
+        );
+    }
 }

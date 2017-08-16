@@ -22,20 +22,20 @@
 class Shopgate_Helper_Logging_Obfuscator
 {
     const OBFUSCATION_STRING = 'XXXXXXXX';
-    const REMOVED_STRING     = '<removed>';
-    
+    const REMOVED_STRING = '<removed>';
+
     /** @var string[] Names of the fields that should be obfuscated on logging. */
     private $obfuscationFields;
-    
+
     /** @var string Names of the fields that should be removed from logging. */
     private $removeFields;
-    
+
     public function __construct()
     {
         $this->obfuscationFields = array('pass');
         $this->removeFields      = array('cart');
     }
-    
+
     /**
      * Adds field names to the list of fields that should be obfuscated in the logs.
      *
@@ -45,7 +45,7 @@ class Shopgate_Helper_Logging_Obfuscator
     {
         $this->obfuscationFields = array_merge($fieldNames, $this->obfuscationFields);
     }
-    
+
     /**
      * Adds field names to the list of fields that should be removed from the logs.
      *
@@ -55,7 +55,7 @@ class Shopgate_Helper_Logging_Obfuscator
     {
         $this->removeFields = array_merge($fieldNames, $this->removeFields);
     }
-    
+
     /**
      * Function to prepare the parameters of an API request for logging.
      *
@@ -71,12 +71,12 @@ class Shopgate_Helper_Logging_Obfuscator
             if (in_array($key, $this->obfuscationFields)) {
                 $value = self::OBFUSCATION_STRING;
             }
-            
+
             if (in_array($key, $this->removeFields)) {
                 $value = self::REMOVED_STRING;
             }
         }
-        
+
         return $data;
     }
 }

@@ -23,12 +23,12 @@ class Shopgate_Helper_Logging_ObfuscatorTest extends PHPUnit_Framework_TestCase
 {
     /** @var Shopgate_Helper_Logging_Obfuscator */
     private $obfuscator;
-    
+
     public function setUp()
     {
         $this->obfuscator = new Shopgate_Helper_Logging_Obfuscator();
     }
-    
+
     public function testAddObfuscationFields()
     {
         $this->obfuscator->addObfuscationFields(array('test'));
@@ -36,21 +36,21 @@ class Shopgate_Helper_Logging_ObfuscatorTest extends PHPUnit_Framework_TestCase
             'mytestData' => 'this must be readable',
             'user'       => 'this must be readable',
             'pass'       => 'this is secure',
-            'test'       => 'this is secure'
+            'test'       => 'this is secure',
         );
-        
+
         $expected = array(
             'mytestData' => 'this must be readable',
             'user'       => 'this must be readable',
             'pass'       => 'XXXXXXXX',
-            'test'       => 'XXXXXXXX'
+            'test'       => 'XXXXXXXX',
         );
         $this->assertEquals(
             $expected,
             $this->obfuscator->cleanParamsForLog($data)
         );
     }
-    
+
     /**
      * @param array  $data
      * @param string $expectedResult
@@ -65,7 +65,7 @@ class Shopgate_Helper_Logging_ObfuscatorTest extends PHPUnit_Framework_TestCase
             $this->obfuscator->cleanParamsForLog($data)
         );
     }
-    
+
     public function addRemoveFieldProvider()
     {
         return array(
@@ -84,7 +84,7 @@ class Shopgate_Helper_Logging_ObfuscatorTest extends PHPUnit_Framework_TestCase
                     'user' => 'this must be readable',
                     'cart' => array(
                         'amount'    => 12.34,
-                        'all infos' => 'in this array must be removed'
+                        'all infos' => 'in this array must be removed',
                     ),
                 ),
                 array(
@@ -94,7 +94,7 @@ class Shopgate_Helper_Logging_ObfuscatorTest extends PHPUnit_Framework_TestCase
             ),
         );
     }
-    
+
     /**
      * @param array  $data
      * @param string $resultString
@@ -104,10 +104,10 @@ class Shopgate_Helper_Logging_ObfuscatorTest extends PHPUnit_Framework_TestCase
     public function testCleanParamsForLogDefault($data, $resultString)
     {
         $loggingResult = $this->obfuscator->cleanParamsForLog($data);
-        
+
         $this->assertEquals($resultString, $loggingResult);
     }
-    
+
     public function cleanParamsForLogDefaultProvider()
     {
         return array(
@@ -139,5 +139,4 @@ class Shopgate_Helper_Logging_ObfuscatorTest extends PHPUnit_Framework_TestCase
             ),
         );
     }
-    
 }

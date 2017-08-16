@@ -27,16 +27,16 @@ class Shopgate_Helper_Error_Handling_ErrorHandler
 {
     /** @var Shopgate_Helper_Logging_Stack_Trace_GeneratorInterface */
     protected $stackTraceGenerator;
-    
+
     /** @var Shopgate_Helper_Logging_Strategy_LoggingInterface */
     protected $logging;
-    
+
     /** @var array [int, string] */
     protected $severityMapping;
-    
+
     /** @var bool */
     protected $skipInternalErrorHandler;
-    
+
     /**
      * @param Shopgate_Helper_Logging_Stack_Trace_GeneratorInterface $stackTraceGenerator
      * @param Shopgate_Helper_Logging_Strategy_LoggingInterface      $logging
@@ -50,7 +50,7 @@ class Shopgate_Helper_Error_Handling_ErrorHandler
         $this->stackTraceGenerator      = $stackTraceGenerator;
         $this->logging                  = $logging;
         $this->skipInternalErrorHandler = $skipInternalErrorHandler;
-        
+
         $this->severityMapping = array(
             E_NOTICE       => 'Notice',
             E_USER_NOTICE  => 'User Notice',
@@ -59,7 +59,7 @@ class Shopgate_Helper_Error_Handling_ErrorHandler
             E_USER_ERROR   => 'User Error',
         );
     }
-    
+
     /**
      * Handles non-fatal errors.
      *
@@ -92,7 +92,7 @@ class Shopgate_Helper_Error_Handling_ErrorHandler
         if ($severity === 0) {
             return $this->skipInternalErrorHandler;
         }
-        
+
         $this->logging->log(
             $this->severityName($severity) . ': ' . $message . ' in ' . $file . ' on line ' . $line,
             Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_ERROR,
@@ -100,10 +100,10 @@ class Shopgate_Helper_Error_Handling_ErrorHandler
                 new Exception('Wrapped around the actual error by Shopgate error handler.')
             )
         );
-        
+
         return $this->skipInternalErrorHandler;
     }
-    
+
     /**
      * @param int $severity
      *

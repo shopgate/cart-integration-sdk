@@ -38,16 +38,16 @@
  */
 class Shopgate_Model_Redirect_DeeplinkSuffixValue extends Shopgate_Model_Abstract
 {
-	public function __construct()
-	{
-		$this->allowedMethods = array(
-			'Name',
-			'Value',
-			'Unset',
-			'Disabled',
-			'Variables',
-		);
-		
-		$this->setVariables(array());
-	}
+    public function __construct()
+    {
+        $this->allowedMethods = array(
+            'Name',
+            'Value',
+            'Unset',
+            'Disabled',
+            'Variables',
+        );
+
+        $this->setVariables(array());
+    }
 }

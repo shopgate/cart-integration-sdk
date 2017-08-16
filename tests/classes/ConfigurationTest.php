@@ -42,7 +42,7 @@ class Shopgate_ConfigurationTest extends PHPUnit_Framework_TestCase
      * @covers ::setExcludeItemIds
      *
      * @param array|string $input
-     * @param array $expected
+     * @param array        $expected
      */
     public function testExcludeItemIds($input, $expected)
     {
@@ -59,19 +59,19 @@ class Shopgate_ConfigurationTest extends PHPUnit_Framework_TestCase
         return array(
             'array with data to array with data' => array(
                 array(1, 2),
-                array(1, 2)
+                array(1, 2),
             ),
-            'empty array to empty array' => array(
+            'empty array to empty array'         => array(
                 array(),
-                array()
+                array(),
             ),
-            'empty string to empty array' => array(
+            'empty string to empty array'        => array(
                 '',
-                array()
+                array(),
             ),
-            'JSON to array with data' => array(
+            'JSON to array with data'            => array(
                 '[4,9,5,7,345,9864,1]',
-                array(4, 9, 5, 7, 345, 9864, 1)
+                array(4, 9, 5, 7, 345, 9864, 1),
             ),
         );
     }

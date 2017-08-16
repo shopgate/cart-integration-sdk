@@ -21,57 +21,56 @@
  */
 interface Shopgate_Helper_Redirect_Type_TypeInterface
 {
+    const HTTP = 'http';
+    const JS = 'js';
 
-	const HTTP = 'http';
-	const JS   = 'js';
+    /**
+     * @return Shopgate_Helper_Redirect_JsScriptBuilderInterface | Shopgate_Helper_Redirect_RedirectorInterface
+     */
+    public function getBuilder();
 
-	/**
-	 * @return Shopgate_Helper_Redirect_JsScriptBuilderInterface | Shopgate_Helper_Redirect_RedirectorInterface
-	 */
-	public function getBuilder();
+    /**
+     * @param string $manufacturer
+     *
+     * @return string | void
+     */
+    public function loadBrand($manufacturer);
 
-	/**
-	 * @param string $manufacturer
-	 *
-	 * @return string | void
-	 */
-	public function loadBrand($manufacturer);
+    /**
+     * @param string | int $categoryId
+     *
+     * @return string | void
+     */
+    public function loadCategory($categoryId);
 
-	/**
-	 * @param string | int $categoryId
-	 *
-	 * @return string | void
-	 */
-	public function loadCategory($categoryId);
+    /**
+     * @param string $cmsPage
+     *
+     * @return string | void
+     */
+    public function loadCms($cmsPage);
 
-	/**
-	 * @param string $cmsPage
-	 *
-	 * @return string | void
-	 */
-	public function loadCms($cmsPage);
+    /**
+     * @return string | void
+     */
+    public function loadDefault();
 
-	/**
-	 * @return string | void
-	 */
-	public function loadDefault();
+    /**
+     * @return string | void
+     */
+    public function loadHome();
 
-	/**
-	 * @return string | void
-	 */
-	public function loadHome();
+    /**
+     * @param string | int $productId
+     *
+     * @return string | void
+     */
+    public function loadProduct($productId);
 
-	/**
-	 * @param string | int $productId
-	 *
-	 * @return string | void
-	 */
-	public function loadProduct($productId);
-
-	/**
-	 * @param string $query
-	 *
-	 * @return string | void
-	 */
-	public function loadSearch($query);
+    /**
+     * @param string $query
+     *
+     * @return string | void
+     */
+    public function loadSearch($query);
 }
