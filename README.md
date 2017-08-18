@@ -1,19 +1,20 @@
 # Shopgate Cart Integration SDK
 
 [![GitHub license](http://dmlc.github.io/img/apache2.svg)](./LICENSE)
+[![Build Status](https://travis-ci.org/shopgate/cart-integration-sdk.svg?branch=master)](https://travis-ci.org/shopgate/cart-integration-sdk)
 
 The Shopgate Cart Integration SDK is a compilation of classes to manage the communication between your shop system and Shopgate via the Shopgate Plugin API and the Shopgate Merchant API. The SDK provides methods for processing incoming and outgoing requests, configuration options and for handling errors. 
 
 ## Getting Started
 #### Via Composer
-```composer require shopgate/library```
+```composer require shopgate/cart-integration-sdk```
 
 #### Manually
 Download and unzip the latest package from http://files.shopgate.com/plugins/shopgate_library.zip.
 
 Include ```shopgate.php``` from the root folder of the package:
 
-```require_once 'vendor/shopgate/library/shopgate.php';```
+```require_once 'shopgate_library/shopgate.php';```
 
 ## Developing a Shopgate Integration
 If you want to know more about how the Shopgate Cart Integration SDK works have a look into the [documentation](http://developer.shopgate.com/library).
