@@ -1,3 +1,5 @@
+# Contributing
+
 Contributions to the integration are welcome and encouraged!
 
 1. Fork the project and clone locally.
