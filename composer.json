@@ -1,7 +1,7 @@
 {
-  "name": "shopgate/library",
-  "description": "A PHP framework supporting the implementation of the Shopgate Plugin API and abstracts access to the Shopgate Merchant API.",
-  "homepage": "https://github.com/shopgate/interface-library",
+  "name": "shopgate/cart-integration-sdk",
+  "description": "A PHP framework supporting the implementation of the Shopgate Plugin API and abstracting access to the Shopgate Merchant API.",
+  "homepage": "https://github.com/shopgate/cart-integration-sdk",
   "license": "Apache-2.0",
   "config": {
     "platform": {

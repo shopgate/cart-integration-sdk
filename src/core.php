@@ -125,9 +125,9 @@ function ShopgateErrorHandler($errno, $errstr, $errfile, $errline, $errContext)
 }
 
 /**
- * Exception type for errors within the Shopgate Library.
+ * Exception type for errors within the Shopgate Cart Integration SDK.
  *
- * This is used by the Shopgate Library and should be used by plugins and their components. Predefined error
+ * This is used by the Shopgate Cart Integration SDK and should be used by plugins and their components. Predefined error
  * codes and messages are to be used. If not suitable, a custom message can be passed which results in error
  * code 999 (unknown error code) with the message appended. Error code, message, time, additional information
  * and part of the stack trace will be logged automatically on construction of a ShopgateLibraryException.
@@ -587,7 +587,7 @@ class ShopgateMerchantApiException extends Exception
 }
 
 /**
- * Builds the Shopgate Library object graphs for different purposes.
+ * Builds the Shopgate Cart Integration SDK object graphs for different purposes.
  *
  * @author Shopgate GmbH, 35510 Butzbach, DE
  */
@@ -710,7 +710,7 @@ class ShopgateBuilder
     }
 
     /**
-     * Builds the Shopgate Library object graph for a given ShopgatePlugin object.
+     * Builds the Shopgate Cart Integration SDK object graph for a given ShopgatePlugin object.
      *
      * This initializes all necessary objects of the library, wires them together and injects them into
      * the plugin class via its set* methods.
@@ -814,7 +814,7 @@ class ShopgateBuilder
     }
 
     /**
-     * Builds the Shopgate Library object graph for ShopgateMerchantApi and returns the instance.
+     * Builds the Shopgate Cart Integration SDK object graph for ShopgateMerchantApi and returns the instance.
      *
      * @return ShopgateMerchantApi
      */
@@ -845,7 +845,7 @@ class ShopgateBuilder
     }
 
     /**
-     * Builds the Shopgate Library object graph for Shopgate mobile redirect and returns the instance.
+     * Builds the Shopgate Cart Integration SDK object graph for Shopgate mobile redirect and returns the instance.
      *
      * @return ShopgateMobileRedirect
      *
@@ -882,7 +882,7 @@ class ShopgateBuilder
     }
 
     /**
-     * Builds the Shopgate Library object graph for Shopgate mobile redirect and returns the instance.
+     * Builds the Shopgate Cart Integration SDK object graph for Shopgate mobile redirect and returns the instance.
      *
      * @param string $userAgent The requesting entity's user agent, e.g. $_SERVER['HTTP_USER_AGENT']
      * @param array  $get       [string, mixed] A copy of $_GET or the query string in the form of $_GET.
@@ -1021,7 +1021,7 @@ class ShopgateBuilder
 }
 
 /**
- * ShopgateObject acts as root class of the Shopgate Library.
+ * ShopgateObject acts as root class of the Shopgate Cart Integration SDK.
  *
  * It provides basic functionality like logging, camelization of strings, JSON de- and encoding etc.<br />
  * <br />
@@ -1147,7 +1147,7 @@ abstract class ShopgateObject
     /**
      * Creates a JSON string from any passed value.
      *
-     * If json_encode() exists it's done by that, otherwise an external class provided with the Shopgate Library is
+     * If json_encode() exists it's done by that, otherwise an external class provided with the Shopgate Cart Integration SDK is
      * used.
      *
      * @param mixed $value
@@ -1170,7 +1170,7 @@ abstract class ShopgateObject
     /**
      * Creates a variable, array or object from any passed JSON string.
      *
-     * If json_encode() exists it's done by that, otherwise an external class provided with the Shopgate Library is
+     * If json_encode() exists it's done by that, otherwise an external class provided with the Shopgate Cart Integration SDK is
      * used.
      *
      * @param      $json
@@ -1469,7 +1469,7 @@ abstract class ShopgateObject
 /**
  * This class acts as super class for plugin implementations and provides some basic functionality.
  *
- * A plugin implementation using the Shopgate Library must be derived from this class. The abstract methods are
+ * A plugin implementation using the Shopgate Cart Integration SDK must be derived from this class. The abstract methods are
  * callback methods for shop system specific operations such as retrieval of customer or order information, adding or
  * updating orders etc.
  *
@@ -2288,7 +2288,7 @@ abstract class ShopgatePlugin extends ShopgateObject
                 try {
                     $result = call_user_func_array(array($this, $method), $arguments);
                 } catch (ShopgateLibraryException $e) {
-                    // pass through known Shopgate Library Exceptions
+                    // pass through known Shopgate Cart Integration SDK Exceptions
                     throw $e;
                 } catch (Exception $e) {
                     $msg = "An unknown exception has been thrown in loader method \"{$method}\". Memory usage "
@@ -3087,7 +3087,7 @@ class ShopgateFileBufferXml extends ShopgateFileBuffer
 }
 
 /**
- * This class provides basic functionality for the Shopgate Library's container objects.
+ * This class provides basic functionality for the Shopgate Cart Integration SDK's container objects.
  *
  * It provides initialization with an array, conversion to an array, utf-8 decoding of the container's properties etc.
  *

@@ -3177,7 +3177,7 @@ interface ShopgateMerchantApiInterface
 /**
  * This class provides methods to check and generate authentication strings.
  *
- * It is used internally by the Shopgate Library to send requests or check incoming requests.
+ * It is used internally by the Shopgate Cart Integration SDK to send requests or check incoming requests.
  *
  * To check authentication on incoming request it accesses the $_SERVER variable which should contain the required X
  * header fields for authentication.

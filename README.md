@@ -1,8 +1,8 @@
-# Shopgate Library
+# Shopgate Cart Integration SDK
 
 [![GitHub license](http://dmlc.github.io/img/apache2.svg)](./LICENSE)
 
-The Shopgate Library is a compilation of classes to manage the communication between your shop system and Shopgate via the Shopgate Plugin API and the Shopgate Merchant API. The Library provides methods for processing incoming and outgoing requests, configuration options and for handling errors. 
+The Shopgate Cart Integration SDK is a compilation of classes to manage the communication between your shop system and Shopgate via the Shopgate Plugin API and the Shopgate Merchant API. The SDK provides methods for processing incoming and outgoing requests, configuration options and for handling errors. 
 
 ## Getting Started
 #### Via Composer
@@ -16,7 +16,7 @@ Include ```shopgate.php``` from the root folder of the package:
 ```require_once 'vendor/shopgate/library/shopgate.php';```
 
 ## Developing a Shopgate Integration
-If you want to know more about how the Shopgate Library works have a look into the [documentation](http://developer.shopgate.com/library).
+If you want to know more about how the Shopgate Cart Integration SDK works have a look into the [documentation](http://developer.shopgate.com/library).
 
 Wanna see all the code? Try the [example plugin](http://developer.shopgate.com/example_plugin).
 
@@ -38,6 +38,6 @@ Shopgate offers everything online retailers need to be successful in mobile. Our
 
 ## License
 
-The Shopgate Library is available under the Apache License, Version 2.0.
+The Shopgate Cart Integration SDK is available under the Apache License, Version 2.0.
 
 See the [LICENSE.md](./LICENSE.md) file for more information.

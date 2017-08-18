@@ -707,7 +707,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
      * The configuration file must be a PHP script defining an indexed array called $shopgate_config
      * containing the desired configuration values to set. If that is not the case, an exception is thrown
      *
-     * @param string $path The path to the configuration file or nothing to load the default Shopgate Library
+     * @param string $path The path to the configuration file or nothing to load the default Shopgate Cart Integration SDK
      *                     configuration files.
      *
      * @throws ShopgateLibraryException in case a configuration file could not be loaded or the $shopgate_config is not
