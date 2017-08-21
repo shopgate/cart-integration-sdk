@@ -3240,7 +3240,7 @@ abstract class ShopgateContainer extends ShopgateObject
      *
      * @param ShopgateContainer $obj
      * @param ShopgateContainer $obj2
-     * @param                   $whitelist
+     * @param string[]          $whitelist
      *
      * @return bool
      */
