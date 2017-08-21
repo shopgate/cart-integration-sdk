@@ -2,26 +2,48 @@ dist: precise
 sudo: false
 language: php
 
-matrix:
-  include:
-  - php: 5.3
-  - php: 5.4
-  - php: 5.5
-  - php: 5.6
-    env: WITH_CODESTYLE_CHECK=true
-  - php: 7.0
-  - php: 7.1
-
 before_script:
 - phpenv config-rm xdebug.ini || return 0
 - composer install
-- curl -L http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar -o php-cs-fixer
-- chmod a+x php-cs-fixer
 
 script:
-- if [[ "$WITH_CODESTYLE_CHECK" == "true" ]]; then ./php-cs-fixer fix --config=.php-cs.dist
-  --cache-file=.php-cs.cache --diff --dry-run --verbose .; fi
 - vendor/bin/phpunit
+
+jobs:
+  include:
+  - stage: Unit Test + Code Style Fixing
+    php: 5.3
+  - stage: Unit Test + Code Style Fixing
+    php: 5.4
+  - stage: Unit Test + Code Style Fixing
+    php: 5.5
+  - stage: Unit Test + Code Style Fixing
+    php: 7.0
+  - stage: Unit Test + Code Style Fixing
+    php: 7.1
+  - stage: Unit Test + Code Style Fixing
+    php: 5.6
+    script:
+    - curl -L http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar -o php-cs-fixer
+    - chmod a+x php-cs-fixer
+    - git checkout $TRAVIS_BRANCH
+    - ./php-cs-fixer fix --config=.php-cs.dist --cache-file=.php-cs.cache --diff --dry-run
+      --verbose .
+    - rm php-cs-fixer
+    - vendor/bin/phpunit
+  - stage: deploy
+    php: 5.6
+    before_script: skip
+    script:
+    - if [[ "$TRAVIS_TAG" ]]; then ./release/build_release_package.sh ; fi
+    deploy:
+      provider: releases
+      api_key:
+        secure: o0fajv0gXUPWRk1iNmoDnFJpyK9LYSUTqe1H+oAcsiOWeF7K0oIMlWEy2m7K3Vf3lhjDfqNZk2OtlQ58+N4cb+KpsfOuVcvBDWcG3GU94ASnbytWH+TnQzcUm5sF9MXvDQGKzseXArIIKTs0+yBkm/lTwuEP4hWhqk6+zuWax+j/uh7El3Blvn+6n4grwu5GItiLgFXGbaYYwEwb73zTJZ5RviMnMgCeqsDM0SYTSLa6nDCNe8PESADJnPwL/X74hqequwF7Sga6GbYhP0ys1avLsirqb8HMFxBz8JFB34XC2xmQABa+DfHJhtCrqu6VsFVvT5yfKfzgmqIeyDyhWAQHMs6kjXoiTt+Lwz+j88U/ktJ5UduJTMyuoLsQ742yIWxHEjmw/IqtiJmHUn6BL0sl8gxqGgLcQWfDmd155/jwT1PhbNJQBiDIlBNHhlDTyLO44NYvWECeWWX9DBqf4UMOdL2B7mzqtvRo0eMmScmm2pKGdicfr3fhqUHw418ZVjcsci/y18apaQCd9L1qN9sEBKRsMMuerEsJdfwipZM1P0dWhevLkHSXjGFcrY5x1tA/EyMQoz5eVItNsBc29fJgcYcPTSbjwH02mLHFtIvnGnRYqJy4qvGJp3RONkfpvyefjpQFocl5P4rTgq/rNod9PJv1WMVv0BSvy0A+Y+8=
+      file: shopgate-cart-integration-sdk.zip
+      skip_cleanup: true
+      on:
+        tags: true
 
 notifications:
   slack:
