@@ -751,8 +751,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
     public function loadByShopNumber($shopNumber)
     {
         if (empty($shopNumber) || !preg_match($this->coreValidations['shop_number'], $shopNumber)) {
-            throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR,
-                'configuration file cannot be found without shop number');
+            throw new ShopgateLibraryException(
+                ShopgateLibraryException::CONFIG_READ_WRITE_ERROR,
+                'configuration file cannot be found without shop number'
+            );
         }
 
         // find all config files
@@ -773,8 +775,12 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
         }
         ob_end_clean();
         if (empty($configFile)) {
-            throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR,
-                'no configuration file found for shop number "' . $shopNumber . '"', true, false);
+            throw new ShopgateLibraryException(
+                ShopgateLibraryException::CONFIG_READ_WRITE_ERROR,
+                'no configuration file found for shop number "' . $shopNumber . '"',
+                true,
+                false
+            );
         }
 
         $this->loadFile($configFile);
@@ -789,8 +795,12 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
     public function loadByLanguage($language)
     {
         if (!is_null($language) && !preg_match('/[a-z]{2}/', $language)) {
-            throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR,
-                'invalid language code "' . $language . '"', true, false);
+            throw new ShopgateLibraryException(
+                ShopgateLibraryException::CONFIG_READ_WRITE_ERROR,
+                'invalid language code "' . $language . '"',
+                true,
+                false
+            );
         }
 
         $this->loadFile($this->config_folder_path . DS . 'myconfig-' . $language . '.php');
@@ -885,8 +895,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
         // create the array definition string and save it to the file
         $shopgateConfigFile = "<?php\n\$shopgate_config = " . var_export($newConfig, true) . ';';
         if (!@file_put_contents($path, $shopgateConfigFile)) {
-            throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR,
-                'The configuration file "' . $path . '" could not be saved.');
+            throw new ShopgateLibraryException(
+                ShopgateLibraryException::CONFIG_READ_WRITE_ERROR,
+                'The configuration file "' . $path . '" could not be saved.'
+            );
         }
     }
 
@@ -1002,8 +1014,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
         $fileName = $this->config_folder_path . DS . 'myconfig-' . $language . '.php';
         if (file_exists($fileName)) {
             if (!@unlink($fileName)) {
-                throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR,
-                    'Error deleting configuration file "' . $fileName . "'.");
+                throw new ShopgateLibraryException(
+                    ShopgateLibraryException::CONFIG_READ_WRITE_ERROR,
+                    'Error deleting configuration file "' . $fileName . "'."
+                );
             }
         }
     }
@@ -1035,8 +1049,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
         }
 
         if (!empty($failedFields)) {
-            throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_INVALID_VALUE,
-                implode(',', $failedFields));
+            throw new ShopgateLibraryException(
+                ShopgateLibraryException::CONFIG_INVALID_VALUE,
+                implode(',', $failedFields)
+            );
         }
     }
 
