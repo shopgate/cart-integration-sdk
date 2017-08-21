@@ -1325,8 +1325,8 @@ abstract class ShopgateObject
      */
     public function recursiveToUtf8($subject, $sourceEncoding = 'ISO-8859-15', $force = false, $useIconv = false)
     {
+        /** @var array $subject */
         if (is_array($subject)) {
-            /** @var array $subject */
             foreach ($subject as $key => $value) {
                 $subject[$key] = $this->recursiveToUtf8($value, $sourceEncoding, $force, $useIconv);
             }
