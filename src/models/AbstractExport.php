@@ -58,16 +58,20 @@ abstract class Shopgate_Model_AbstractExport extends Shopgate_Model_Abstract
         if (is_array($key)) {
             foreach ($key as $key => $value) {
                 if (!is_array($value) && !is_object($value)) {
-                    $value = $this->stripInvalidUnicodeSequences($this->stringToUtf8($value,
-                        ShopgateObject::$sourceEncodings));
+                    $value = $this->stripInvalidUnicodeSequences($this->stringToUtf8(
+                        $value,
+                        ShopgateObject::$sourceEncodings
+                    ));
                 }
                 $this->$key = $value;
             }
         } else {
             if (!is_array($value) && !is_object($value)) {
                 if (!is_null($value)) {
-                    $value = $this->stripInvalidUnicodeSequences($this->stringToUtf8($value,
-                        ShopgateObject::$sourceEncodings));
+                    $value = $this->stripInvalidUnicodeSequences($this->stringToUtf8(
+                        $value,
+                        ShopgateObject::$sourceEncodings
+                    ));
                 }
             }
             $this->$key = $value;
