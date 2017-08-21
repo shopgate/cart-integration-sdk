@@ -876,7 +876,9 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
         $saveFields    = array();
         $currentConfig = $this->toArray();
         foreach ($fieldList as $field) {
-            $saveFields[$field] = (isset($currentConfig[$field])) ? $currentConfig[$field] : null;
+            $saveFields[$field] = (isset($currentConfig[$field]))
+                ? $currentConfig[$field]
+                : null;
         }
 
         // load the current configuration file
@@ -2163,7 +2165,9 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
     public function setExcludeItemIds($exclude_item_ids)
     {
         $this->exclude_item_ids =
-            is_array($exclude_item_ids) ? $exclude_item_ids : (array)$this->jsonDecode($exclude_item_ids);
+            is_array($exclude_item_ids)
+                ? $exclude_item_ids
+                : (array)$this->jsonDecode($exclude_item_ids);
     }
 
     /**
@@ -2184,7 +2188,9 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 
     public function returnAdditionalSetting($setting)
     {
-        return (isset($this->additionalSettings[$setting])) ? $this->additionalSettings[$setting] : null;
+        return (isset($this->additionalSettings[$setting]))
+            ? $this->additionalSettings[$setting]
+            : null;
     }
 
     public function returnAdditionalSettings()
@@ -2759,7 +2765,9 @@ class ShopgateConfigOld extends ShopgateObject
                         $field = false;
                     }
 
-                    $returnString .= '$shopgate_config["' . $key . '"] = ' . ($field ? 'true' : 'false') . ';' . "\r\n";
+                    $returnString .= '$shopgate_config["' . $key . '"] = ' . ($field
+                            ? 'true'
+                            : 'false') . ';' . "\r\n";
                 } else {
                     if (is_numeric($field)) {
                         $returnString .= '$shopgate_config["' . $key . '"] = ' . $field . ';' . "\r\n";

@@ -118,7 +118,11 @@ class Shopgate_Model_Catalog_Category extends Shopgate_Model_AbstractExport
         $categoryNode = $itemNode->addChild('category');
         $categoryNode->addAttribute('uid', $this->getUid());
         $categoryNode->addAttribute('sort_order', (int)$this->getSortOrder());
-        $categoryNode->addAttribute('parent_uid', $this->getParentUid() ? $this->getParentUid() : null);
+        $categoryNode->addAttribute('parent_uid',
+            $this->getParentUid()
+                ? $this->getParentUid()
+                : null
+        );
         $categoryNode->addAttribute('is_active', (int)$this->getIsActive());
         $categoryNode->addAttribute('is_anchor', (int)$this->getIsAnchor());
         $categoryNode->addChildWithCDATA('name', $this->getName());

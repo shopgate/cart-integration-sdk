@@ -812,8 +812,12 @@ class ShopgateAddress extends ShopgateContainer
     public function getAddressType()
     {
         return (int)(
-            ($this->getIsInvoiceAddress() ? self::INVOICE : 0) |
-            ($this->getIsDeliveryAddress() ? self::DELIVERY : 0)
+            ($this->getIsInvoiceAddress()
+                ? self::INVOICE
+                : 0) |
+            ($this->getIsDeliveryAddress()
+                ? self::DELIVERY
+                : 0)
         );
     }
 
@@ -978,22 +982,36 @@ class ShopgateAddress extends ShopgateContainer
 
         //contains only digits OR no digits at all --> don't split
         if (preg_match("/^[0-9]+$/i", $street) || preg_match("/^[^0-9]+$/i", $street)) {
-            return ($type == 'street') ? $street : "";
+            return ($type == 'street')
+                ? $street
+                : "";
         }
 
         //number at the end ("Schlossstr. 10", "Schlossstr. 10a", "Schlossstr. 10a+b"...)
         if (preg_match("/^([^0-9]+)([0-9]+ ?[a-z]?([ \-\&\+]+[a-z])?)$/i", $street, $matches)) {
-            return trim(($type == 'street') ? $matches[1] : $matches[2]);
+            return trim(
+                ($type == 'street')
+                    ? $matches[1]
+                    : $matches[2]
+            );
         }
 
         //number at the end ("Schlossstr. 10-12", "Schlossstr. 10 & 12"...)
         if (preg_match("/^([^0-9]+)([0-9]+([ \-\&\+]+[0-9]+)?)$/i", $street, $matches)) {
-            return trim(($type == 'street') ? $matches[1] : $matches[2]);
+            return trim(
+                ($type == 'street')
+                    ? $matches[1]
+                    : $matches[2]
+            );
         }
 
         //number at the beginning (e.g. "2225 E. Bayshore Road", "2225-2227 E. Bayshore Road")
         if (preg_match("/^([0-9]+([ \-\&\+]+[0-9]+)?)([^0-9]+.*)$/i", $street, $matches)) {
-            return trim(($type == 'street') ? $matches[3] : $matches[1]);
+            return trim(
+                ($type == 'street')
+                    ? $matches[3]
+                    : $matches[1]
+            );
         }
 
         if (!preg_match("/^(.+)\s(.*[0-9]+.*)$/is", $street, $splittedArray)) {

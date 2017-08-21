@@ -278,8 +278,12 @@ class Shopgate_Helper_Redirect_MobileRedirect extends ShopgateObject implements 
     {
         $additionalParameters = '';
 
-        $defaultRedirect = $this->settingsManager->isDefaultRedirectDisabled() ? 'false' : 'true';
-        $jsRedirect      = $this->suppressRedirectJavascript ? 'false' : 'true';
+        $defaultRedirect = $this->settingsManager->isDefaultRedirectDisabled()
+            ? 'false'
+            : 'true';
+        $jsRedirect      = $this->suppressRedirectJavascript
+            ? 'false'
+            : 'true';
 
         $additionalParameters .= "_shopgate.is_default_redirect_disabled = {$defaultRedirect};\n";
         $additionalParameters .= "    _shopgate.redirect_to_webapp = {$jsRedirect};\n";

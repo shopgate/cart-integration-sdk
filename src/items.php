@@ -794,7 +794,9 @@ class ShopgateItem extends ShopgateContainer
      */
     public function getCategoryNumbers()
     {
-        return (!empty($this->category_numbers)) ? $this->category_numbers : array();
+        return (!empty($this->category_numbers))
+            ? $this->category_numbers
+            : array();
     }
 
     /**
@@ -1114,7 +1116,9 @@ class ShopgateItem extends ShopgateContainer
      */
     public function getProperties()
     {
-        return (!empty($this->properties)) ? $this->properties : array();
+        return (!empty($this->properties))
+            ? $this->properties
+            : array();
     }
 
     /**
@@ -1130,7 +1134,9 @@ class ShopgateItem extends ShopgateContainer
      */
     public function getRelatedItemNumbers()
     {
-        return (!empty($this->related_item_numbers)) ? $this->related_item_numbers : array();
+        return (!empty($this->related_item_numbers))
+            ? $this->related_item_numbers
+            : array();
     }
 
     /**
@@ -1138,7 +1144,9 @@ class ShopgateItem extends ShopgateContainer
      */
     public function getOptions()
     {
-        return (!empty($this->options)) ? $this->options : array();
+        return (!empty($this->options))
+            ? $this->options
+            : array();
     }
 
     /**
@@ -1146,7 +1154,9 @@ class ShopgateItem extends ShopgateContainer
      */
     public function getInputs()
     {
-        return (!empty($this->inputs)) ? $this->inputs : array();
+        return (!empty($this->inputs))
+            ? $this->inputs
+            : array();
     }
 
     public function accept(ShopgateContainerVisitor $v)
@@ -1258,7 +1268,9 @@ class ShopgateItemOption extends ShopgateContainer
      */
     public function getOptionValues()
     {
-        return (!empty($this->option_values)) ? $this->option_values : array();
+        return (!empty($this->option_values))
+            ? $this->option_values
+            : array();
     }
 
     public function accept(ShopgateContainerVisitor $v)

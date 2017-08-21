@@ -97,7 +97,9 @@ class Shopgate_Helper_Logging_Strategy_DefaultLogging implements Shopgate_Helper
     public function log($msg, $type = self::LOGTYPE_ERROR, $stackTrace = '')
     {
         // build log message
-        $msg = gmdate('d-m-Y H:i:s: ') . $msg . "\n" . ($this->useStackTrace ? $stackTrace . "\n\n" : '');
+        $msg = gmdate('d-m-Y H:i:s: ') . $msg . "\n" . ($this->useStackTrace
+                ? $stackTrace . "\n\n"
+                : '');
 
         // determine log file type and append message
         switch (strtolower($type)) {

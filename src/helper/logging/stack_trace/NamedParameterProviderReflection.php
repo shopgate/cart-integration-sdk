@@ -82,7 +82,9 @@ class Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderReflection imple
                 $defaultValue = '';
             }
 
-            $namedArguments[$parameter->getName()] = isset($arguments[$i]) ? $arguments[$i] : $defaultValue;
+            $namedArguments[$parameter->getName()] = isset($arguments[$i])
+                ? $arguments[$i]
+                : $defaultValue;
             $i++;
         }
 
@@ -144,7 +146,9 @@ class Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderReflection imple
         }
 
         if (is_bool($value)) {
-            $value = $value ? 'true' : 'false';
+            $value = $value
+                ? 'true'
+                : 'false';
         }
 
         return $value;

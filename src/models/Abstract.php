@@ -75,12 +75,20 @@ class Shopgate_Model_Abstract extends ShopgateObject
         switch (substr($method, 0, 3)) {
             case 'get':
                 $key  = $this->underscore(substr($method, 3));
-                $data = $this->getData($key, isset($args[0]) ? $args[0] : null);
+                $data = $this->getData($key,
+                    isset($args[0])
+                        ? $args[0]
+                        : null
+                );
 
                 return $data;
             case 'set':
                 $key    = $this->underscore(substr($method, 3));
-                $result = $this->setData($key, isset($args[0]) ? $args[0] : null);
+                $result = $this->setData($key,
+                    isset($args[0])
+                        ? $args[0]
+                        : null
+                );
 
                 return $result;
         }

@@ -129,7 +129,9 @@ class Shopgate_Helper_Redirect_SettingsManager implements Shopgate_Helper_Redire
 
     public function getDefaultTemplatesByPageType()
     {
-        $templatePageDefault = $this->isDefaultRedirectDisabled() ? false : '{baseUrl}';
+        $templatePageDefault = $this->isDefaultRedirectDisabled()
+            ? false
+            : '{baseUrl}';
 
         return array(
             Shopgate_Helper_Redirect_LinkBuilderInterface::LINK_TYPE_DEFAULT  => $templatePageDefault,

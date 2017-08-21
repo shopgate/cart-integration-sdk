@@ -118,10 +118,12 @@ function ShopgateErrorHandler($errno, $errstr, $errfile, $errline, $errContext)
 
     $msg = "$severity [Nr. $errno : $errfile / $errline] ";
     $msg .= "$errstr";
-    $msg .= (isset($errContext["printStackTrace"]) && $errContext["printStackTrace"]) ? "\n" . print_r(
+    $msg .= (isset($errContext["printStackTrace"]) && $errContext["printStackTrace"])
+        ? "\n" . print_r(
             debug_backtrace(false),
             true
-        ) : "";
+        )
+        : "";
 
     ShopgateLogger::getInstance()->log($msg);
 
@@ -408,7 +410,9 @@ class ShopgateLibraryException extends Exception
      */
     public function getAdditionalInformation()
     {
-        return (!is_null($this->additionalInformation) ? $this->additionalInformation : '');
+        return (!is_null($this->additionalInformation)
+            ? $this->additionalInformation
+            : '');
     }
 
     /**
@@ -469,10 +473,18 @@ class ShopgateLibraryException extends Exception
         // Add tracing information to the message
 
         $previous = $this->getPreviousException();
-        $trace    = $previous ? $previous->getTraceAsString() : $this->getTraceAsString();
-        $line     = $previous ? $previous->getLine() : $this->getLine();
-        $file     = $previous ? $previous->getFile() : $this->getFile();
-        $class    = $previous ? get_class($previous) : get_class($this);
+        $trace    = $previous
+            ? $previous->getTraceAsString()
+            : $this->getTraceAsString();
+        $line     = $previous
+            ? $previous->getLine()
+            : $this->getLine();
+        $file     = $previous
+            ? $previous->getFile()
+            : $this->getFile();
+        $class    = $previous
+            ? get_class($previous)
+            : get_class($this);
 
         $traceLines = explode("\n", $trace);
         array_unshift($traceLines, "## $file($line): throw $class");
@@ -714,7 +726,12 @@ class ShopgateBuilder
     public function setErrorReporting($errorReporting = 0)
     {
         error_reporting($errorReporting);
-        ini_set('display_errors', (version_compare(PHP_VERSION, '5.2.4', '>=')) ? 'stdout' : true);
+        ini_set(
+            'display_errors',
+            (version_compare(PHP_VERSION, '5.2.4', '>='))
+                ? 'stdout'
+                : true
+        );
     }
 
     public function setMemoryLoggingSizeUnit($unit = 'MB')
@@ -793,7 +810,9 @@ class ShopgateBuilder
                 'get_reviews'    => 'Shopgate_Model_Review',
             );
 
-            $format = (!empty($_REQUEST['response_type'])) ? $_REQUEST['response_type'] : '';
+            $format = (!empty($_REQUEST['response_type']))
+                ? $_REQUEST['response_type']
+                : '';
             switch ($format) {
                 default:
                 case 'xml':
@@ -1052,7 +1071,9 @@ class ShopgateBuilder
     private function determineErrorReporting($request)
     {
         // determine desired error reporting (default to 0)
-        $errorReporting = (isset($request['error_reporting'])) ? $request['error_reporting'] : 0;
+        $errorReporting = (isset($request['error_reporting']))
+            ? $request['error_reporting']
+            : 0;
 
         // determine error reporting for the current stage (custom, pg => E_ALL; the previously requested otherwise)
         $serverTypesAdvancedErrorLogging = array('custom', 'pg');
@@ -1234,7 +1255,12 @@ abstract class ShopgateObject
             }
         }
 
-        return \Zend\Json\Decoder::decode($json, $assoc ? \Zend\Json\Json::TYPE_ARRAY : \Zend\Json\Json::TYPE_OBJECT);
+        return \Zend\Json\Decoder::decode(
+            $json,
+            $assoc
+                ? \Zend\Json\Json::TYPE_ARRAY
+                : \Zend\Json\Json::TYPE_OBJECT
+        );
     }
 
     /**
@@ -1441,7 +1467,9 @@ abstract class ShopgateObject
                     echo str_repeat(" ", $depth * 4) . '[';
                     if ($key{0} == "\0") {
                         $keyParts = explode("\0", $key);
-                        echo $keyParts[2] . (($keyParts[1] == '*') ? ':protected' : ':private');
+                        echo $keyParts[2] . (($keyParts[1] == '*')
+                                ? ':protected'
+                                : ':private');
                     } else {
                         echo $key;
                     }
@@ -2473,7 +2501,9 @@ abstract class ShopgatePlugin extends ShopgateObject
      */
     public function getActionUrl($pluginApiActionName)
     {
-        return 'http' . (!empty($_SERVER['HTTPS']) ? 's' : '') . '://' . trim(
+        return 'http' . (!empty($_SERVER['HTTPS'])
+                ? 's'
+                : '') . '://' . trim(
                 $_SERVER['HTTP_HOST'],
                 '/'
             ) . '/' . trim($_SERVER['SCRIPT_NAME'], '/');

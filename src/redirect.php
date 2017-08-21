@@ -245,7 +245,9 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
     public function enableKeywordUpdate($cacheTime = ShopgateMobileRedirectInterface::DEFAULT_CACHE_TIME)
     {
         $this->updateRedirectKeywords   = true;
-        $this->redirectKeywordCacheTime = ($cacheTime >= ShopgateMobileRedirectInterface::MIN_CACHE_TIME) ? $cacheTime : ShopgateMobileRedirectInterface::MIN_CACHE_TIME;
+        $this->redirectKeywordCacheTime = ($cacheTime >= ShopgateMobileRedirectInterface::MIN_CACHE_TIME)
+            ? $cacheTime
+            : ShopgateMobileRedirectInterface::MIN_CACHE_TIME;
         // try loading keywords
         $this->updateRedirectKeywords();
     }
@@ -310,14 +312,18 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 
         // check user agent for redirection keywords and skip redirection keywords and return the result
         return
-            (!empty($this->redirectKeywords) ? preg_match(
-                '/' . implode('|', $this->redirectKeywords) . '/i',
-                $userAgent
-            ) : false) &&
-            (!empty($this->skipRedirectKeywords) ? !preg_match(
-                '/' . implode('|', $this->skipRedirectKeywords) . '/i',
-                $userAgent
-            ) : true);
+            (!empty($this->redirectKeywords)
+                ? preg_match(
+                    '/' . implode('|', $this->redirectKeywords) . '/i',
+                    $userAgent
+                )
+                : false) &&
+            (!empty($this->skipRedirectKeywords)
+                ? !preg_match(
+                    '/' . implode('|', $this->skipRedirectKeywords) . '/i',
+                    $userAgent
+                )
+                : true);
     }
 
     public function isRedirectAllowed()
@@ -334,7 +340,9 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
             return false;
         }
 
-        return empty($_COOKIE[ShopgateMobileRedirectInterface::COOKIE_NAME]) ? true : false;
+        return empty($_COOKIE[ShopgateMobileRedirectInterface::COOKIE_NAME])
+            ? true
+            : false;
     }
 
     /**
@@ -379,8 +387,12 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
         $html = $this->loadTemplate($this->mobileHeaderTemplatePath);
 
         // set parameters
-        $this->buttonOnImageSource  = (($this->useSecureConnection) ? ShopgateMobileRedirectInterface::SHOPGATE_STATIC_SSL : ShopgateMobileRedirectInterface::SHOPGATE_STATIC) . '/api/mobile_header/button_on.png';
-        $this->buttonOffImageSource = (($this->useSecureConnection) ? ShopgateMobileRedirectInterface::SHOPGATE_STATIC_SSL : ShopgateMobileRedirectInterface::SHOPGATE_STATIC) . '/api/mobile_header/button_off.png';
+        $this->buttonOnImageSource  = (($this->useSecureConnection)
+                ? ShopgateMobileRedirectInterface::SHOPGATE_STATIC_SSL
+                : ShopgateMobileRedirectInterface::SHOPGATE_STATIC) . '/api/mobile_header/button_on.png';
+        $this->buttonOffImageSource = (($this->useSecureConnection)
+                ? ShopgateMobileRedirectInterface::SHOPGATE_STATIC_SSL
+                : ShopgateMobileRedirectInterface::SHOPGATE_STATIC) . '/api/mobile_header/button_off.png';
         $html                       = str_replace('{$cookieName}', ShopgateMobileRedirectInterface::COOKIE_NAME, $html);
         $html                       = str_replace('{$buttonOnImageSource}', $this->buttonOnImageSource, $html);
         $html                       = str_replace('{$buttonOffImageSource}', $this->buttonOffImageSource, $html);
@@ -388,7 +400,9 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
         $html                       = str_replace('{$buttonParent}', $this->buttonParent, $html);
         $html                       = str_replace(
             '{$buttonPrepend}',
-            (($this->buttonPrepend) ? 'true' : 'false'),
+            (($this->buttonPrepend)
+                ? 'true'
+                : 'false'),
             $html
         );
 
@@ -518,7 +532,9 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
         }
 
         if ($redirectCode == 'default') {
-            $additionalParameters .= '_shopgate.is_default_redirect_disabled = ' . ((!$this->enableDefaultRedirect) ? 'true' : 'false') . ';';
+            $additionalParameters .= '_shopgate.is_default_redirect_disabled = ' . ((!$this->enableDefaultRedirect)
+                    ? 'true'
+                    : 'false') . ';';
             $linkTag              = '';
         }
 
@@ -750,9 +766,13 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
         $queryDataKeys = array_intersect($this->config->getRedirectableGetParams(), array_keys($_GET));
         $queryData     = array_intersect_key($_GET, array_flip($queryDataKeys));
 
-        $connector = preg_match('/\?/', $url) ? "&" : "?";
+        $connector = preg_match('/\?/', $url)
+            ? "&"
+            : "?";
 
-        return count($queryData) ? $connector . http_build_query($queryData) : "";
+        return count($queryData)
+            ? $connector . http_build_query($queryData)
+            : "";
     }
 
     #############################

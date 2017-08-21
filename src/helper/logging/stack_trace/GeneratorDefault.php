@@ -181,7 +181,9 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault implements Shopgate_H
         }
 
         if (is_bool($value)) {
-            $value = $value ? 'true' : 'false';
+            $value = $value
+                ? 'true'
+                : 'false';
         }
     }
 }

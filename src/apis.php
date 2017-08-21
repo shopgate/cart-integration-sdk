@@ -163,7 +163,11 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 
         $this->setEnableErrorReporting();
 
-        $processId = function_exists('posix_getpid') ? posix_getpid() : (function_exists('getmypid') ? getmypid() : 0);
+        $processId = function_exists('posix_getpid')
+            ? posix_getpid()
+            : (function_exists('getmypid')
+                ? getmypid()
+                : 0);
 
         // log incoming request
         $this->log(
@@ -249,8 +253,8 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
         } catch (ShopgateMerchantApiException $e) {
             $error     = ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED;
             $errortext = ShopgateLibraryException::getMessageFor(
-                ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED
-            ) . ': "' . $e->getCode() . ' - ' . $e->getMessage() . '"';
+                    ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED
+                ) . ': "' . $e->getCode() . ' - ' . $e->getMessage() . '"';
         } catch (Exception $e) {
             $message = get_class($e) . " with code: {$e->getCode()} and message: '{$e->getMessage()}'";
 
@@ -317,13 +321,16 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
         $this->responseData['permissions']              = $this->getPermissions();
         $this->responseData['php_version']              = phpversion();
         $this->responseData['php_config']               = $this->getPhpSettings();
-        $this->responseData['php_curl']                 = function_exists('curl_version') ? curl_version(
-        ) : 'No PHP-CURL installed';
+        $this->responseData['php_curl']                 = function_exists('curl_version')
+            ? curl_version()
+            : 'No PHP-CURL installed';
         $this->responseData['php_extensions']           = get_loaded_extensions();
         $this->responseData['shopgate_library_version'] = SHOPGATE_LIBRARY_VERSION;
         $this->responseData['plugin_version']           = defined(
             'SHOPGATE_PLUGIN_VERSION'
-        ) ? SHOPGATE_PLUGIN_VERSION : 'UNKNOWN';
+        )
+            ? SHOPGATE_PLUGIN_VERSION
+            : 'UNKNOWN';
         $this->responseData['shop_info']                = $this->plugin->createShopInfo();
 
         // set data and return response
@@ -584,7 +591,9 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
         $cartData     = $this->plugin->checkCart($cart);
         $responseData = array();
 
-        $responseData['internal_cart_info'] = (isset($cartData['internal_cart_info'])) ? $cartData['internal_cart_info'] : null;
+        $responseData['internal_cart_info'] = (isset($cartData['internal_cart_info']))
+            ? $cartData['internal_cart_info']
+            : null;
 
         if (!is_array($cartData)) {
             throw new ShopgateLibraryException(
@@ -669,7 +678,9 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
                 if (!is_object($cartItem) || !($cartItem instanceof ShopgateCartItem)) {
                     throw new ShopgateLibraryException(
                         ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT,
-                        '$cartItem is of type: ' . is_object($cartItem) ? get_class($cartItem) : gettype($cartItem)
+                        '$cartItem is of type: ' . is_object($cartItem)
+                            ? get_class($cartItem)
+                            : gettype($cartItem)
                     );
                 }
                 $cartItems[] = $cartItem->toArray();
@@ -684,7 +695,9 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
                 if (!is_object($coupon) || !($coupon instanceof ShopgateExternalCoupon)) {
                     throw new ShopgateLibraryException(
                         ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT,
-                        '$coupon is of type: ' . is_object($coupon) ? get_class($coupon) : gettype($coupon)
+                        '$coupon is of type: ' . is_object($coupon)
+                            ? get_class($coupon)
+                            : gettype($coupon)
                     );
                 }
                 $coupon = $coupon->toArray();
@@ -734,7 +747,9 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
                 if (!is_object($cartItem) || !($cartItem instanceof ShopgateCartItem)) {
                     throw new ShopgateLibraryException(
                         ShopgateLibraryException::PLUGIN_API_WRONG_RESPONSE_FORMAT,
-                        '$cartItem Is type of : ' . is_object($cartItem) ? get_class($cartItem) : gettype($cartItem)
+                        '$cartItem Is type of : ' . is_object($cartItem)
+                            ? get_class($cartItem)
+                            : gettype($cartItem)
                     );
                 }
                 $item               = $cartItem->toArray();
@@ -823,7 +838,9 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
                 continue;
             }
 
-            $shopgateSettingsNew[$setting['name']] = isset($setting['value']) ? $setting['value'] : null;
+            $shopgateSettingsNew[$setting['name']] = isset($setting['value'])
+                ? $setting['value']
+                : null;
         }
 
         $this->config->load($shopgateSettingsNew);
@@ -857,10 +874,18 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
         $orders = $this->plugin->getOrders(
             $this->params['customer_token'],
             $this->params['customer_language'],
-            isset($this->params['limit']) ? $this->params['limit'] : 10,
-            isset($this->params['offset']) ? $this->params['offset'] : 0,
-            isset($this->params['order_date_from']) ? $this->params['order_date_from'] : '',
-            isset($this->params['sort_order']) ? $this->params['sort_order'] : 'created_desc'
+            isset($this->params['limit'])
+                ? $this->params['limit']
+                : 10,
+            isset($this->params['offset'])
+                ? $this->params['offset']
+                : 0,
+            isset($this->params['order_date_from'])
+                ? $this->params['order_date_from']
+                : '',
+            isset($this->params['sort_order'])
+                ? $this->params['sort_order']
+                : 'created_desc'
         );
 
         if (!is_array($orders)) {
@@ -1103,10 +1128,18 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
      */
     protected function getItems()
     {
-        $limit        = isset($this->params['limit']) ? (int)$this->params['limit'] : null;
-        $offset       = isset($this->params['offset']) ? (int)$this->params['offset'] : null;
-        $uids         = isset($this->params['uids']) ? (array)$this->params['uids'] : array();
-        $responseType = isset($this->params['response_type']) ? $this->params['response_type'] : false;
+        $limit        = isset($this->params['limit'])
+            ? (int)$this->params['limit']
+            : null;
+        $offset       = isset($this->params['offset'])
+            ? (int)$this->params['offset']
+            : null;
+        $uids         = isset($this->params['uids'])
+            ? (array)$this->params['uids']
+            : array();
+        $responseType = isset($this->params['response_type'])
+            ? $this->params['response_type']
+            : false;
 
         $supportedResponseTypes = $this->config->getSupportedResponseTypes();
         if (!empty($responseType) && !in_array($responseType, $supportedResponseTypes['get_items'])) {
@@ -1146,10 +1179,18 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
      */
     protected function getCategories()
     {
-        $limit        = isset($this->params['limit']) ? (int)$this->params['limit'] : null;
-        $offset       = isset($this->params['offset']) ? (int)$this->params['offset'] : null;
-        $uids         = isset($this->params['uids']) ? (array)$this->params['uids'] : array();
-        $responseType = isset($this->params['response_type']) ? $this->params['response_type'] : false;
+        $limit        = isset($this->params['limit'])
+            ? (int)$this->params['limit']
+            : null;
+        $offset       = isset($this->params['offset'])
+            ? (int)$this->params['offset']
+            : null;
+        $uids         = isset($this->params['uids'])
+            ? (array)$this->params['uids']
+            : array();
+        $responseType = isset($this->params['response_type'])
+            ? $this->params['response_type']
+            : false;
 
         $supportedResponseTypes = $this->config->getSupportedResponseTypes();
         if (!empty($responseType) && !in_array($responseType, $supportedResponseTypes['get_categories'])) {
@@ -1235,10 +1276,18 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
      */
     protected function getReviews()
     {
-        $limit        = isset($this->params['limit']) ? (int)$this->params['limit'] : null;
-        $offset       = isset($this->params['offset']) ? (int)$this->params['offset'] : null;
-        $uids         = isset($this->params['uids']) ? (array)$this->params['uids'] : array();
-        $responseType = isset($this->params['response_type']) ? $this->params['response_type'] : false;
+        $limit        = isset($this->params['limit'])
+            ? (int)$this->params['limit']
+            : null;
+        $offset       = isset($this->params['offset'])
+            ? (int)$this->params['offset']
+            : null;
+        $uids         = isset($this->params['uids'])
+            ? (array)$this->params['uids']
+            : array();
+        $responseType = isset($this->params['response_type'])
+            ? $this->params['response_type']
+            : false;
 
         $supportedResponseTypes = $this->config->getSupportedResponseTypes();
         if (!empty($responseType) && !in_array($responseType, $supportedResponseTypes['get_reviews'])) {
@@ -1283,8 +1332,12 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
         $logger->disableDebug();
         $logger->keepDebugLog(true);
 
-        $type  = (empty($this->params['log_type'])) ? ShopgateLogger::LOGTYPE_ERROR : $this->params['log_type'];
-        $lines = (!isset($this->params['lines'])) ? null : $this->params['lines'];
+        $type  = (empty($this->params['log_type']))
+            ? ShopgateLogger::LOGTYPE_ERROR
+            : $this->params['log_type'];
+        $lines = (!isset($this->params['lines']))
+            ? null
+            : $this->params['lines'];
 
         $log = $logger->tail($type, $lines);
 
@@ -1483,8 +1536,12 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
                 $merchantApiUrl,
                 $matches
             );
-            $protocol          = (!empty($matches['protocol']) ? $matches['protocol'] : 'https://');
-            $hostname          = (!empty($matches['hostname']) ? $matches['hostname'] : 'shopgate.com');
+            $protocol          = (!empty($matches['protocol'])
+                ? $matches['protocol']
+                : 'https://');
+            $hostname          = (!empty($matches['hostname'])
+                ? $matches['hostname']
+                : 'shopgate.com');
             $requestServerHost = "{$protocol}{$subdomain}.{$hostname}";
         }
 
@@ -1495,7 +1552,9 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
     {
         $settingDetails = array();
 
-        $allSettings = function_exists('ini_get_all') ? ini_get_all() : array();
+        $allSettings = function_exists('ini_get_all')
+            ? ini_get_all()
+            : array();
 
         $settings = array(
             'max_execution_time',
@@ -1672,14 +1731,18 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
         $opt[CURLOPT_HEADER]         = false;
         $opt[CURLOPT_USERAGENT]      = 'ShopgatePlugin/' . (defined(
                 'SHOPGATE_PLUGIN_VERSION'
-            ) ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin');
+            )
+                ? SHOPGATE_PLUGIN_VERSION
+                : 'called outside plugin');
         $opt[CURLOPT_SSL_VERIFYPEER] = false;
         $opt[CURLOPT_RETURNTRANSFER] = true;
         $opt[CURLOPT_HTTPHEADER]     = array(
             'X-Shopgate-Library-Version: ' . SHOPGATE_LIBRARY_VERSION,
             'X-Shopgate-Plugin-Version: ' . (defined(
                 'SHOPGATE_PLUGIN_VERSION'
-            ) ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin'),
+            )
+                ? SHOPGATE_PLUGIN_VERSION
+                : 'called outside plugin'),
         );
         $opt[CURLOPT_HTTPHEADER]     = !empty($opt[CURLOPT_HTTPHEADER])
             ? ($this->authService->getAuthHttpHeaders() + $opt[CURLOPT_HTTPHEADER])
@@ -2053,8 +2116,12 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
         $request = array(
             'action'               => 'delete_category',
             'category_number'      => $categoryNumber,
-            'delete_subcategories' => $deleteSubCategories ? 1 : 0,
-            'delete_items'         => $deleteItems ? 1 : 0,
+            'delete_subcategories' => $deleteSubCategories
+                ? 1
+                : 0,
+            'delete_items'         => $deleteItems
+                ? 1
+                : 0,
         );
 
         return $this->sendRequest($request);
@@ -2276,11 +2343,13 @@ class ShopgateAuthenticationServiceOAuth extends ShopgateObject implements Shopg
             ) && !$config->getOauthAccessToken()) {
             // needs to load the non-oauth-url since the new access token needs to be generated using the classic shopgate merchant api authentication
             $apiUrls                = $config->getApiUrls();
-            $apiUrl                 = $config->getServer() == 'custom' ? str_replace(
-                '/api/merchant2',
-                '/api/merchant',
-                $config->getApiUrl()
-            ) : $apiUrls[$config->getServer()][ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_SHOPGATE];
+            $apiUrl                 = $config->getServer() == 'custom'
+                ? str_replace(
+                    '/api/merchant2',
+                    '/api/merchant',
+                    $config->getApiUrl()
+                )
+                : $apiUrls[$config->getServer()][ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_SHOPGATE];
             $smaAuthServiceShopgate = new ShopgateAuthenticationServiceShopgate(
                 $config->getCustomerNumber(),
                 $config->getApikey()
@@ -2396,14 +2465,18 @@ class ShopgateAuthenticationServiceOAuth extends ShopgateObject implements Shopg
             CURLOPT_HEADER         => false,
             CURLOPT_USERAGENT      => 'ShopgatePlugin/' . (defined(
                     'SHOPGATE_PLUGIN_VERSION'
-                ) ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin'),
+                )
+                    ? SHOPGATE_PLUGIN_VERSION
+                    : 'called outside plugin'),
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HTTPHEADER     => array(
                 'X-Shopgate-Library-Version: ' . SHOPGATE_LIBRARY_VERSION,
                 'X-Shopgate-Plugin-Version: ' . (defined(
                     'SHOPGATE_PLUGIN_VERSION'
-                ) ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin'),
+                )
+                    ? SHOPGATE_PLUGIN_VERSION
+                    : 'called outside plugin'),
             ),
             CURLOPT_TIMEOUT        => 30, // Default timeout 30sec
             CURLOPT_POST           => true,
@@ -2439,7 +2512,9 @@ class ShopgateAuthenticationServiceOAuth extends ShopgateObject implements Shopg
         $decodedResponse = $this->jsonDecode($response, true);
 
         // check for valid access token
-        $this->accessToken = !empty($decodedResponse['access_token']) ? $decodedResponse['access_token'] : '';
+        $this->accessToken = !empty($decodedResponse['access_token'])
+            ? $decodedResponse['access_token']
+            : '';
         if (empty($this->accessToken)) {
             throw new ShopgateLibraryException(
                 ShopgateLibraryException::SHOPGATE_OAUTH_MISSING_ACCESS_TOKEN,
@@ -2520,7 +2595,9 @@ abstract class ShopgatePluginApiResponse extends ShopgateObject
         $this->version       = $version;
         $this->pluginVersion = (empty($pluginVersion) && defined(
                 'SHOPGATE_PLUGIN_VERSION'
-            )) ? SHOPGATE_PLUGIN_VERSION : $pluginVersion;
+            ))
+            ? SHOPGATE_PLUGIN_VERSION
+            : $pluginVersion;
     }
 
     /**
