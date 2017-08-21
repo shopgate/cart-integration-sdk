@@ -122,7 +122,8 @@ class Shopgate_Helper_Logging_Strategy_DefaultLoggingTest extends PHPUnit_Framew
         $this->assertEquals($expectedResult, file_exists($logFiles[$logType]['path']));
         if (file_exists($logFiles[$logType]['path'])) {
             $this->assertEquals(
-                true, $this->in_string($testMsg, file_get_contents($logFiles[$logType]['path']))
+                true,
+                $this->in_string($testMsg, file_get_contents($logFiles[$logType]['path']))
             );
         }
     }
@@ -279,7 +280,9 @@ class Shopgate_Helper_Logging_Strategy_DefaultLoggingTest extends PHPUnit_Framew
     public function testTailUnknownLogType()
     {
         $this->setExpectedException(
-            'ShopgateLibraryException', '', ShopgateLibraryException::PLUGIN_API_UNKNOWN_LOGTYPE
+            'ShopgateLibraryException',
+            '',
+            ShopgateLibraryException::PLUGIN_API_UNKNOWN_LOGTYPE
         );
         $logContent = $this->defaultLoggingStrategy->tail('type not exists');
         $this->assertEquals('', $logContent);
@@ -294,7 +297,9 @@ class Shopgate_Helper_Logging_Strategy_DefaultLoggingTest extends PHPUnit_Framew
         $loggingStrategy->method('openLogFileHandle')->willReturn(false);
 
         $this->setExpectedException(
-            'ShopgateLibraryException', '', ShopgateLibraryException::INIT_LOGFILE_OPEN_ERROR
+            'ShopgateLibraryException',
+            '',
+            ShopgateLibraryException::INIT_LOGFILE_OPEN_ERROR
         );
         $logContent = $loggingStrategy->tail(Shopgate_Helper_Logging_Strategy_DefaultLogging::LOGTYPE_ACCESS);
         $this->assertEquals('', $logContent);

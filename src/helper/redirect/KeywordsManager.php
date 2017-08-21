@@ -173,8 +173,10 @@ class Shopgate_Helper_Redirect_KeywordsManager implements Shopgate_Helper_Redire
         $cacheFile = @fopen($filePath, 'a+');
         if (empty($cacheFile)) {
             // exception without logging
-            throw new ShopgateLibraryException(ShopgateLibraryException::FILE_READ_WRITE_ERROR,
-                'Could not read file "' . $filePath . '".', false, false);
+            throw new ShopgateLibraryException(
+                ShopgateLibraryException::FILE_READ_WRITE_ERROR,
+                'Could not read file "' . $filePath . '".', false, false
+            );
         }
 
         $keywordsFromFile = explode("\n", @fread($cacheFile, filesize($filePath)));

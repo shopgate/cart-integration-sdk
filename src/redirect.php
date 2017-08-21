@@ -195,7 +195,8 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
         $this->buttonParent             = 'body';
         $this->buttonPrepend            = true;
 
-        $this->useSecureConnection = isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] === "on" || $_SERVER["HTTPS"] == "1") || $this->config->getAlwaysUseSsl();
+        $this->useSecureConnection = isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] === "on" || $_SERVER["HTTPS"] == "1") || $this->config->getAlwaysUseSsl(
+            );
 
         // mobile header options
         $this->mobileHeaderTemplatePath = dirname(__FILE__) . '/../assets/mobile_header.html';
@@ -309,10 +310,14 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 
         // check user agent for redirection keywords and skip redirection keywords and return the result
         return
-            (!empty($this->redirectKeywords) ? preg_match('/' . implode('|', $this->redirectKeywords) . '/i',
-                $userAgent) : false) &&
-            (!empty($this->skipRedirectKeywords) ? !preg_match('/' . implode('|', $this->skipRedirectKeywords) . '/i',
-                $userAgent) : true);
+            (!empty($this->redirectKeywords) ? preg_match(
+                '/' . implode('|', $this->redirectKeywords) . '/i',
+                $userAgent
+            ) : false) &&
+            (!empty($this->skipRedirectKeywords) ? !preg_match(
+                '/' . implode('|', $this->skipRedirectKeywords) . '/i',
+                $userAgent
+            ) : true);
     }
 
     public function isRedirectAllowed()
@@ -336,7 +341,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
      * @param string $url
      * @param bool   $autoRedirect
      *
-     * @return string|void
+     * @return string
      * @post ends script execution in case of http redirect
      */
     public function redirect($url, $autoRedirect = true)
@@ -347,7 +352,8 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
 
         $url .= $this->processQueryString($url);
 
-        if (!$this->isRedirectAllowed() || !$this->isMobileRequest() || !$autoRedirect || (($this->redirectType == 'default') && !$this->enableDefaultRedirect)) {
+        if (!$this->isRedirectAllowed() || !$this->isMobileRequest(
+            ) || !$autoRedirect || (($this->redirectType == 'default') && !$this->enableDefaultRedirect)) {
             return $this->getJsHeader($url);
         }
 
@@ -380,8 +386,11 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
         $html                       = str_replace('{$buttonOffImageSource}', $this->buttonOffImageSource, $html);
         $html                       = str_replace('{$buttonDescription}', $this->buttonDescription, $html);
         $html                       = str_replace('{$buttonParent}', $this->buttonParent, $html);
-        $html                       = str_replace('{$buttonPrepend}', (($this->buttonPrepend) ? 'true' : 'false'),
-            $html);
+        $html                       = str_replace(
+            '{$buttonPrepend}',
+            (($this->buttonPrepend) ? 'true' : 'false'),
+            $html
+        );
 
         return $html;
     }
@@ -610,7 +619,9 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
         // load the keywords
         try {
             $redirectKeywordsFromFile     = $this->loadKeywordsFromFile($this->config->getRedirectKeywordCachePath());
-            $skipRedirectKeywordsFromFile = $this->loadKeywordsFromFile($this->config->getRedirectSkipKeywordCachePath());
+            $skipRedirectKeywordsFromFile = $this->loadKeywordsFromFile(
+                $this->config->getRedirectSkipKeywordCachePath()
+            );
         } catch (ShopgateLibraryException $e) {
             // if reading the files fails DO NOT UPDATE
             return;
@@ -644,10 +655,16 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
                 /* do not abort */
                 $newTimestamp = (time() - ($this->redirectKeywordCacheTime * 3600)) + 300;
                 // save old keywords
-                $this->saveKeywordsToFile($redirectKeywords, $this->config->getRedirectKeywordCachePath(),
-                    $newTimestamp);
-                $this->saveKeywordsToFile($skipRedirectKeywords, $this->config->getRedirectSkipKeywordCachePath(),
-                    $newTimestamp);
+                $this->saveKeywordsToFile(
+                    $redirectKeywords,
+                    $this->config->getRedirectKeywordCachePath(),
+                    $newTimestamp
+                );
+                $this->saveKeywordsToFile(
+                    $skipRedirectKeywords,
+                    $this->config->getRedirectSkipKeywordCachePath(),
+                    $newTimestamp
+                );
             }
         }
 
@@ -694,8 +711,10 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
         $cacheFile = @fopen($file, 'a+');
         if (empty($cacheFile)) {
             // exception without logging
-            throw new ShopgateLibraryException(ShopgateLibraryException::FILE_READ_WRITE_ERROR,
-                'Could not read file "' . $file . '".', false, false);
+            throw new ShopgateLibraryException(
+                ShopgateLibraryException::FILE_READ_WRITE_ERROR,
+                'Could not read file "' . $file . '".', false, false
+            );
         }
 
         $keywordsFromFile = explode("\n", @fread($cacheFile, filesize($file)));

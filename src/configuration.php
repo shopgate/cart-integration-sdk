@@ -723,8 +723,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
             $config = $this->includeFile($path);
 
             if (!$config) {
-                throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_READ_WRITE_ERROR,
-                    'The passed configuration file "' . $path . '" does not exist or does not define the $shopgate_config variable.');
+                throw new ShopgateLibraryException(
+                    ShopgateLibraryException::CONFIG_READ_WRITE_ERROR,
+                    'The passed configuration file "' . $path . '" does not exist or does not define the $shopgate_config variable.'
+                );
             }
         } else {
             // try myconfig.php
@@ -881,7 +883,9 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
         try {
             $this->loadFile($path);
         } catch (ShopgateLibraryException $e) {
-            ShopgateLogger::getInstance()->log('-- Don\'t worry about the "error reading or writing configuration", that was just a routine check during saving.');
+            ShopgateLogger::getInstance()->log(
+                '-- Don\'t worry about the "error reading or writing configuration", that was just a routine check during saving.'
+            );
         }
 
         // merge old config with new values
@@ -2278,10 +2282,13 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
      */
     public static function __callStatic($name, $arguments)
     {
-        return call_user_func_array(array(
-            'ShopgateConfigOld',
-            $name,
-        ), $arguments);
+        return call_user_func_array(
+            array(
+                'ShopgateConfigOld',
+                $name,
+            ),
+            $arguments
+        );
     }
 
     /**
@@ -2692,16 +2699,22 @@ class ShopgateConfigOld extends ShopgateObject
 
         //Pflichtfelder überprüfen
         if (!preg_match("/^\S+/", $newConfig['apikey'])) {
-            throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_INVALID_VALUE,
-                "Field 'apikey' contains invalid value '{$newConfig['apikey']}'.");
+            throw new ShopgateLibraryException(
+                ShopgateLibraryException::CONFIG_INVALID_VALUE,
+                "Field 'apikey' contains invalid value '{$newConfig['apikey']}'."
+            );
         }
         if (!preg_match("/^\d{5,}$/", $newConfig['customer_number'])) {
-            throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_INVALID_VALUE,
-                "Field 'customer_number' contains invalid value '{$newConfig['customer_number']}'.");
+            throw new ShopgateLibraryException(
+                ShopgateLibraryException::CONFIG_INVALID_VALUE,
+                "Field 'customer_number' contains invalid value '{$newConfig['customer_number']}'."
+            );
         }
         if (!preg_match("/^\d{5,}$/", $newConfig['shop_number'])) {
-            throw new ShopgateLibraryException(ShopgateLibraryException::CONFIG_INVALID_VALUE,
-                "Field 'shop_number' contains invalid value '{$newConfig['shop_number']}'.");
+            throw new ShopgateLibraryException(
+                ShopgateLibraryException::CONFIG_INVALID_VALUE,
+                "Field 'shop_number' contains invalid value '{$newConfig['shop_number']}'."
+            );
         }
 
         ////////////////////////////////////////////////////////////////////////

@@ -68,7 +68,8 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTest extends PHPUnit_F
 
         $this->assertEquals(
             $this->fixtureProvider->getSimpleExceptionExpected(),
-            $this->subjectUnderTest->generate($this->fixtureProvider->getSimpleException()));
+            $this->subjectUnderTest->generate($this->fixtureProvider->getSimpleException())
+        );
     }
 
     public function testExceptionWithPreviousExceptionsProducesProperStackTrace()

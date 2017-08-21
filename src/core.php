@@ -74,8 +74,10 @@ function ShopgateShutdownHandler()
     if (function_exists("error_get_last")) {
         if (!is_null($e = error_get_last())) {
             $type = shopgateGetErrorType($e['type']);
-            ShopgateLogger::getInstance()->log("{$e['message']} \n {$e['file']} : [{$e['line']}] , Type: {$type}",
-                ShopgateLogger::LOGTYPE_ERROR);
+            ShopgateLogger::getInstance()->log(
+                "{$e['message']} \n {$e['file']} : [{$e['line']}] , Type: {$type}",
+                ShopgateLogger::LOGTYPE_ERROR
+            );
         }
     }
 }
@@ -116,8 +118,10 @@ function ShopgateErrorHandler($errno, $errstr, $errfile, $errline, $errContext)
 
     $msg = "$severity [Nr. $errno : $errfile / $errline] ";
     $msg .= "$errstr";
-    $msg .= (isset($errContext["printStackTrace"]) && $errContext["printStackTrace"]) ? "\n" . print_r(debug_backtrace(false),
-            true) : "";
+    $msg .= (isset($errContext["printStackTrace"]) && $errContext["printStackTrace"]) ? "\n" . print_r(
+            debug_backtrace(false),
+            true
+        ) : "";
 
     ShopgateLogger::getInstance()->log($msg);
 
@@ -570,7 +574,9 @@ class ShopgateMerchantApiException extends Exception
             $message .= "\n" . print_r($errors, true);
         }
 
-        if (ShopgateLogger::getInstance()->log('SMA reports error: ' . $code . ' - ' . $additionalInformation) === false) {
+        if (ShopgateLogger::getInstance()->log(
+                'SMA reports error: ' . $code . ' - ' . $additionalInformation
+            ) === false) {
             $message .= ' (unable to log)';
         }
 
@@ -615,8 +621,12 @@ class ShopgateBuilder
         }
 
         // set up logger
-        ShopgateLogger::getInstance($this->config->getAccessLogPath(), $this->config->getRequestLogPath(),
-            $this->config->getErrorLogPath(), $this->config->getDebugLogPath());
+        ShopgateLogger::getInstance(
+            $this->config->getAccessLogPath(),
+            $this->config->getRequestLogPath(),
+            $this->config->getErrorLogPath(),
+            $this->config->getDebugLogPath()
+        );
 
         // set up logging strategy
         /** @noinspection PhpDeprecationInspection */
@@ -642,9 +652,10 @@ class ShopgateBuilder
         }
 
         // set memory logging size unit; default to MB
-        $this->setMemoryLoggingSizeUnit(isset($_REQUEST['memory_logging_unit'])
-            ? $_REQUEST['memory_logging_unit']
-            : 'MB'
+        $this->setMemoryLoggingSizeUnit(
+            isset($_REQUEST['memory_logging_unit'])
+                ? $_REQUEST['memory_logging_unit']
+                : 'MB'
         );
     }
 
@@ -658,10 +669,12 @@ class ShopgateBuilder
             $errorReporting
         );
 
-        set_exception_handler(array(
-            new Shopgate_Helper_Error_Handling_ExceptionHandler($this->buildStackTraceGenerator(), $this->logging),
-            'handle',
-        ));
+        set_exception_handler(
+            array(
+                new Shopgate_Helper_Error_Handling_ExceptionHandler($this->buildStackTraceGenerator(), $this->logging),
+                'handle',
+            )
+        );
 
         $logFileHandler = @fopen($this->config->getErrorLogPath(), 'a');
         @fclose($logFileHandler);
@@ -676,13 +689,15 @@ class ShopgateBuilder
 
     public function enableShutdownFunction()
     {
-        register_shutdown_function(array(
-            new Shopgate_Helper_Error_Handling_ShutdownHandler(
-                $this->logging,
-                new Shopgate_Helper_Error_Handling_Shutdown_Handler_LastErrorProvider()
-            ),
-            'handle',
-        ));
+        register_shutdown_function(
+            array(
+                new Shopgate_Helper_Error_Handling_ShutdownHandler(
+                    $this->logging,
+                    new Shopgate_Helper_Error_Handling_Shutdown_Handler_LastErrorProvider()
+                ),
+                'handle',
+            )
+        );
     }
 
     public function enableDebug($keepDebugLog)
@@ -728,11 +743,15 @@ class ShopgateBuilder
         // -> MerchantAPI auth service (needs to be initialized first, since the config still can change along with the authentication information
         switch ($this->config->getSmaAuthServiceClassName()) {
             case ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_SHOPGATE:
-                $smaAuthService = new ShopgateAuthenticationServiceShopgate($this->config->getCustomerNumber(),
-                    $this->config->getApikey());
+                $smaAuthService = new ShopgateAuthenticationServiceShopgate(
+                    $this->config->getCustomerNumber(),
+                    $this->config->getApikey()
+                );
                 $smaAuthService->setup($this->config);
-                $merchantApi = new ShopgateMerchantApi($smaAuthService, $this->config->getShopNumber(),
-                    $this->config->getApiUrl());
+                $merchantApi = new ShopgateMerchantApi(
+                    $smaAuthService, $this->config->getShopNumber(),
+                    $this->config->getApiUrl()
+                );
                 break;
             case ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_OAUTH:
                 $smaAuthService = new ShopgateAuthenticationServiceOAuth($this->config->getOauthAccessToken());
@@ -741,14 +760,20 @@ class ShopgateBuilder
                 break;
             default:
                 // undefined auth service
-                return trigger_error('Invalid SMA-Auth-Service defined - this should not happen with valid plugin code',
-                    E_USER_ERROR);
+                return trigger_error(
+                    'Invalid SMA-Auth-Service defined - this should not happen with valid plugin code',
+                    E_USER_ERROR
+                );
         }
         // -> PluginAPI auth service (currently the plugin API supports only one auth service)
-        $spaAuthService = new ShopgateAuthenticationServiceShopgate($this->config->getCustomerNumber(),
-            $this->config->getApikey());
-        $pluginApi      = new ShopgatePluginApi($this->config, $spaAuthService, $merchantApi, $plugin, null,
-            $this->buildStackTraceGenerator(), $this->logging);
+        $spaAuthService = new ShopgateAuthenticationServiceShopgate(
+            $this->config->getCustomerNumber(),
+            $this->config->getApikey()
+        );
+        $pluginApi      = new ShopgatePluginApi(
+            $this->config, $spaAuthService, $merchantApi, $plugin, null,
+            $this->buildStackTraceGenerator(), $this->logging
+        );
 
         if ($this->config->getExportConvertEncoding()) {
             array_splice(ShopgateObject::$sourceEncodings, 1, 0, $this->config->getEncoding());
@@ -775,23 +800,36 @@ class ShopgateBuilder
                     /* @var $xmlModel Shopgate_Model_AbstractExport */
                     $xmlModel   = new $xmlModelNames[$_REQUEST['action']]();
                     $xmlNode    = new Shopgate_Model_XmlResultObject($xmlModel->getItemNodeIdentifier());
-                    $fileBuffer = new ShopgateFileBufferXml($xmlModel, $xmlNode,
-                        $this->config->getExportBufferCapacity(), $this->config->getExportConvertEncoding(),
-                        ShopgateObject::$sourceEncodings);
+                    $fileBuffer = new ShopgateFileBufferXml(
+                        $xmlModel,
+                        $xmlNode,
+                        $this->config->getExportBufferCapacity(),
+                        $this->config->getExportConvertEncoding(),
+                        ShopgateObject::$sourceEncodings
+                    );
                     break;
 
                 case 'json':
-                    $fileBuffer = new ShopgateFileBufferJson($this->config->getExportBufferCapacity(),
-                        $this->config->getExportConvertEncoding(), ShopgateObject::$sourceEncodings);
+                    $fileBuffer = new ShopgateFileBufferJson(
+                        $this->config->getExportBufferCapacity(),
+                        $this->config->getExportConvertEncoding(),
+                        ShopgateObject::$sourceEncodings
+                    );
                     break;
             }
         } else {
             if (!empty($_REQUEST['action']) && (($_REQUEST['action'] == 'get_items_csv') || ($_REQUEST['action'] == 'get_categories_csv') || ($_REQUEST['action'] == 'get_reviews_csv'))) {
-                $fileBuffer = new ShopgateFileBufferCsv($this->config->getExportBufferCapacity(),
-                    $this->config->getExportConvertEncoding(), ShopgateObject::$sourceEncodings);
+                $fileBuffer = new ShopgateFileBufferCsv(
+                    $this->config->getExportBufferCapacity(),
+                    $this->config->getExportConvertEncoding(),
+                    ShopgateObject::$sourceEncodings
+                );
             } else {
-                $fileBuffer = new ShopgateFileBufferCsv($this->config->getExportBufferCapacity(),
-                    $this->config->getExportConvertEncoding(), ShopgateObject::$sourceEncodings);
+                $fileBuffer = new ShopgateFileBufferCsv(
+                    $this->config->getExportBufferCapacity(),
+                    $this->config->getExportConvertEncoding(),
+                    ShopgateObject::$sourceEncodings
+                );
             }
         }
 
@@ -823,11 +861,15 @@ class ShopgateBuilder
         $merchantApi = null;
         switch ($smaAuthServiceClassName = $this->config->getSmaAuthServiceClassName()) {
             case ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_SHOPGATE:
-                $smaAuthService = new ShopgateAuthenticationServiceShopgate($this->config->getCustomerNumber(),
-                    $this->config->getApikey());
+                $smaAuthService = new ShopgateAuthenticationServiceShopgate(
+                    $this->config->getCustomerNumber(),
+                    $this->config->getApikey()
+                );
                 $smaAuthService->setup($this->config);
-                $merchantApi = new ShopgateMerchantApi($smaAuthService, $this->config->getShopNumber(),
-                    $this->config->getApiUrl());
+                $merchantApi = new ShopgateMerchantApi(
+                    $smaAuthService, $this->config->getShopNumber(),
+                    $this->config->getApiUrl()
+                );
                 break;
             case ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_OAUTH:
                 $smaAuthService = new ShopgateAuthenticationServiceOAuth($this->config->getOauthAccessToken());
@@ -836,8 +878,10 @@ class ShopgateBuilder
                 break;
             default:
                 // undefined auth service
-                trigger_error('Invalid SMA-Auth-Service defined - this should not happen with valid plugin code',
-                    E_USER_ERROR);
+                trigger_error(
+                    'Invalid SMA-Auth-Service defined - this should not happen with valid plugin code',
+                    E_USER_ERROR
+                );
                 break;
         }
 
@@ -1095,8 +1139,10 @@ abstract class ShopgateObject
 
             return $this->helperClassInstances[$helperClassName];
         }
-        throw new ShopgateLibraryException("Helper function {$helperName} not found",
-            ShopgateLibraryException::SHOPGATE_HELPER_FUNCTION_NOT_FOUND_EXCEPTION);
+        throw new ShopgateLibraryException(
+            "Helper function {$helperName} not found",
+            ShopgateLibraryException::SHOPGATE_HELPER_FUNCTION_NOT_FOUND_EXCEPTION
+        );
     }
 
     /**
@@ -1455,9 +1501,13 @@ abstract class ShopgateObject
     {
         switch (strtoupper(trim(ShopgateLogger::getInstance()->getMemoryAnalyserLoggingSizeUnit()))) {
             case 'GB':
-                return (memory_get_usage() / (1024 * 1024 * 1024)) . " GB (real usage " . (memory_get_usage(true) / (1024 * 1024 * 1024)) . " GB)";
+                return (memory_get_usage() / (1024 * 1024 * 1024)) . " GB (real usage " . (memory_get_usage(
+                            true
+                        ) / (1024 * 1024 * 1024)) . " GB)";
             case 'MB':
-                return (memory_get_usage() / (1024 * 1024)) . " MB (real usage " . (memory_get_usage(true) / (1024 * 1024)) . " MB)";
+                return (memory_get_usage() / (1024 * 1024)) . " MB (real usage " . (memory_get_usage(
+                            true
+                        ) / (1024 * 1024)) . " MB)";
             case 'KB':
                 return (memory_get_usage() / 1024) . " KB (real usage " . (memory_get_usage(true) / 1024) . " KB)";
             default:
@@ -2283,8 +2333,11 @@ abstract class ShopgatePlugin extends ShopgateObject
 
         foreach ($loaders as $method) {
             if (method_exists($this, $method)) {
-                $this->log("Calling function \"{$method}\": Actual memory usage before method: " . $this->getMemoryUsageString(),
-                    ShopgateLogger::LOGTYPE_DEBUG);
+                $this->log(
+                    "Calling function \"{$method}\": Actual memory usage before method: " . $this->getMemoryUsageString(
+                    ),
+                    ShopgateLogger::LOGTYPE_DEBUG
+                );
                 try {
                     $result = call_user_func_array(array($this, $method), $arguments);
                 } catch (ShopgateLibraryException $e) {
@@ -2292,9 +2345,15 @@ abstract class ShopgatePlugin extends ShopgateObject
                     throw $e;
                 } catch (Exception $e) {
                     $msg = "An unknown exception has been thrown in loader method \"{$method}\". Memory usage "
-                        . $this->getMemoryUsageString() . " Exception '" . get_class($e) . "': [Code: {$e->getCode()}] {$e->getMessage()}";
-                    throw new ShopgateLibraryException(ShopgateLibraryException::UNKNOWN_ERROR_CODE, $msg, true, true,
-                        $e);
+                        . $this->getMemoryUsageString() . " Exception '" . get_class(
+                            $e
+                        ) . "': [Code: {$e->getCode()}] {$e->getMessage()}";
+                    throw new ShopgateLibraryException(
+                        ShopgateLibraryException::UNKNOWN_ERROR_CODE,
+                        $msg, true,
+                        true,
+                        $e
+                    );
                 }
 
                 if ($result) {
@@ -2414,8 +2473,10 @@ abstract class ShopgatePlugin extends ShopgateObject
      */
     public function getActionUrl($pluginApiActionName)
     {
-        return 'http' . (!empty($_SERVER['HTTPS']) ? 's' : '') . '://' . trim($_SERVER['HTTP_HOST'],
-                '/') . '/' . trim($_SERVER['SCRIPT_NAME'], '/');
+        return 'http' . (!empty($_SERVER['HTTPS']) ? 's' : '') . '://' . trim(
+                $_SERVER['HTTP_HOST'],
+                '/'
+            ) . '/' . trim($_SERVER['SCRIPT_NAME'], '/');
     }
 
     /**
@@ -2884,8 +2945,10 @@ abstract class ShopgateFileBuffer extends ShopgateObject implements ShopgateFile
 
             $this->fileHandle = @fopen($filePath, 'w');
             if (!$this->fileHandle) {
-                throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR,
-                    'File: ' . $filePath);
+                throw new ShopgateLibraryException(
+                    ShopgateLibraryException::PLUGIN_FILE_OPEN_ERROR,
+                    'File: ' . $filePath
+                );
             }
         }
     }
@@ -3058,11 +3121,14 @@ class ShopgateFileBufferXml extends ShopgateFileBuffer
 
     protected function onStart()
     {
-        fputs($this->fileHandle, sprintf(
-            '<%s xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="%s">',
-            $this->xmlModel->getIdentifier(),
-            $this->xmlModel->getXsdFileLocation()
-        ));
+        fputs(
+            $this->fileHandle,
+            sprintf(
+                '<%s xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="%s">',
+                $this->xmlModel->getIdentifier(),
+                $this->xmlModel->getXsdFileLocation()
+            )
+        );
     }
 
     protected function onFlush()
@@ -3151,7 +3217,8 @@ abstract class ShopgateContainer extends ShopgateObject
     public function compare($obj, $obj2, $whitelist)
     {
         foreach ($whitelist as $acceptedField) {
-            if ($obj->{$this->camelize('get_' . $acceptedField)}() != $obj2->{$this->camelize('get_' . $acceptedField)}()) {
+            if ($obj->{$this->camelize('get_' . $acceptedField)}() != $obj2->{$this->camelize('get_' . $acceptedField)}(
+                )) {
                 return false;
             }
         }
@@ -3183,8 +3250,11 @@ abstract class ShopgateContainer extends ShopgateObject
      */
     public function utf8Encode($sourceEncoding = 'ISO-8859-15', $force = false, $useIconv = false)
     {
-        $visitor = new ShopgateContainerUtf8Visitor(ShopgateContainerUtf8Visitor::MODE_ENCODE, $sourceEncoding, $force,
-            $useIconv);
+        $visitor = new ShopgateContainerUtf8Visitor(
+            ShopgateContainerUtf8Visitor::MODE_ENCODE, $sourceEncoding,
+            $force,
+            $useIconv
+        );
         $visitor->visitContainer($this);
 
         return $visitor->getObject();
@@ -3203,8 +3273,11 @@ abstract class ShopgateContainer extends ShopgateObject
      */
     public function utf8Decode($destinationEncoding = 'ISO-8859-15', $force = false, $useIconv = false)
     {
-        $visitor = new ShopgateContainerUtf8Visitor(ShopgateContainerUtf8Visitor::MODE_DECODE, $destinationEncoding,
-            $force, $useIconv);
+        $visitor = new ShopgateContainerUtf8Visitor(
+            ShopgateContainerUtf8Visitor::MODE_DECODE,
+            $destinationEncoding,
+            $force, $useIconv
+        );
         $visitor->visitContainer($this);
 
         return $visitor->getObject();
@@ -3956,8 +4029,12 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor
         if (!empty($list) && is_array($list)) {
             foreach ($list as $object) {
                 if (!($object instanceof ShopgateContainer)) {
-                    ShopgateLogger::getInstance()->log('Encountered unknown type in what is supposed to be a list of ShopgateContainer objects: ' . var_export($object,
-                            true));
+                    ShopgateLogger::getInstance()->log(
+                        'Encountered unknown type in what is supposed to be a list of ShopgateContainer objects: ' . var_export(
+                            $object,
+                            true
+                        )
+                    );
                     continue;
                 }
 
@@ -4386,8 +4463,12 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor
         if (!empty($list) && is_array($list)) {
             foreach ($list as $object) {
                 if (!($object instanceof ShopgateContainer)) {
-                    ShopgateLogger::getInstance()->log('Encountered unknown type in what is supposed to be a list of ShopgateContainer objects: ' . var_export($object,
-                            true));
+                    ShopgateLogger::getInstance()->log(
+                        'Encountered unknown type in what is supposed to be a list of ShopgateContainer objects: ' . var_export(
+                            $object,
+                            true
+                        )
+                    );
                     continue;
                 }
 

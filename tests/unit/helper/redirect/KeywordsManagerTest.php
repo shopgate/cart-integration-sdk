@@ -35,22 +35,24 @@ class Shopgate_Helper_Redirect_KeywordsManagerTest extends PHPUnit_Framework_Tes
         /** @var ShopgateMerchantApiInterface|PHPUnit_Framework_MockObject_MockObject $merchantApi */
         $this->merchantApi = $this->getMockForAbstractClass('ShopgateMerchantApiInterface');
 
-        $this->merchantApi->method('getMobileRedirectUserAgents')->will($this->returnValue(
-            array(
-                'keywords'      => array(
-                    'redirectbot',
-                    'iphone',
-                    'ipod',
-                    'ipad',
-                    'android',
-                    'windows phone 8',
-                ),
-                'skip_keywords' => array(
-                    'shopgate',
-                    'nexus 7',
-                ),
+        $this->merchantApi->method('getMobileRedirectUserAgents')->will(
+            $this->returnValue(
+                array(
+                    'keywords'      => array(
+                        'redirectbot',
+                        'iphone',
+                        'ipod',
+                        'ipad',
+                        'android',
+                        'windows phone 8',
+                    ),
+                    'skip_keywords' => array(
+                        'shopgate',
+                        'nexus 7',
+                    ),
+                )
             )
-        ));
+        );
 
         $this->matchingUserAgents = array(
             'redirectbot',

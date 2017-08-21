@@ -248,7 +248,9 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
             $errortext = $e->getMessage();
         } catch (ShopgateMerchantApiException $e) {
             $error     = ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED;
-            $errortext = ShopgateLibraryException::getMessageFor(ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED) . ': "' . $e->getCode() . ' - ' . $e->getMessage() . '"';
+            $errortext = ShopgateLibraryException::getMessageFor(
+                ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED
+            ) . ': "' . $e->getCode() . ' - ' . $e->getMessage() . '"';
         } catch (Exception $e) {
             $message = get_class($e) . " with code: {$e->getCode()} and message: '{$e->getMessage()}'";
 
@@ -315,10 +317,13 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
         $this->responseData['permissions']              = $this->getPermissions();
         $this->responseData['php_version']              = phpversion();
         $this->responseData['php_config']               = $this->getPhpSettings();
-        $this->responseData['php_curl']                 = function_exists('curl_version') ? curl_version() : 'No PHP-CURL installed';
+        $this->responseData['php_curl']                 = function_exists('curl_version') ? curl_version(
+        ) : 'No PHP-CURL installed';
         $this->responseData['php_extensions']           = get_loaded_extensions();
         $this->responseData['shopgate_library_version'] = SHOPGATE_LIBRARY_VERSION;
-        $this->responseData['plugin_version']           = defined('SHOPGATE_PLUGIN_VERSION') ? SHOPGATE_PLUGIN_VERSION : 'UNKNOWN';
+        $this->responseData['plugin_version']           = defined(
+            'SHOPGATE_PLUGIN_VERSION'
+        ) ? SHOPGATE_PLUGIN_VERSION : 'UNKNOWN';
         $this->responseData['shop_info']                = $this->plugin->createShopInfo();
 
         // set data and return response
@@ -417,10 +422,12 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
             throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ORDER_NUMBER);
         }
         /** @var ShopgateOrder[] $orders */
-        $orders = $this->merchantApi->getOrders(array(
-            'order_numbers[0]' => $this->params['order_number'],
-            'with_items'       => 1,
-        ))->getData();
+        $orders = $this->merchantApi->getOrders(
+            array(
+                'order_numbers[0]' => $this->params['order_number'],
+                'with_items'       => 1,
+            )
+        )->getData();
         if (empty($orders)) {
             throw new ShopgateLibraryException(
                 ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE,
@@ -459,10 +466,12 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
             throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_NO_ORDER_NUMBER);
         }
         /** @var ShopgateOrder[] $orders */
-        $orders = $this->merchantApi->getOrders(array(
-            'order_numbers[0]' => $this->params['order_number'],
-            'with_items'       => 1,
-        ))->getData();
+        $orders = $this->merchantApi->getOrders(
+            array(
+                'order_numbers[0]' => $this->params['order_number'],
+                'with_items'       => 1,
+            )
+        )->getData();
 
         if (empty($orders)) {
             throw new ShopgateLibraryException(
@@ -1385,7 +1394,8 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
      */
     protected function receiveAuthorization()
     {
-        if ($this->config->getSmaAuthServiceClassName() != ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_OAUTH) {
+        if ($this->config->getSmaAuthServiceClassName(
+            ) != ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_OAUTH) {
             throw new ShopgateLibraryException(
                 ShopgateLibraryException::PLUGIN_API_INVALID_ACTION,
                 '=> "receive_authorization" action can only be called for plugins with SMA-AuthService set to "OAuth" type',
@@ -1660,12 +1670,16 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
         $opt = array();
 
         $opt[CURLOPT_HEADER]         = false;
-        $opt[CURLOPT_USERAGENT]      = 'ShopgatePlugin/' . (defined('SHOPGATE_PLUGIN_VERSION') ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin');
+        $opt[CURLOPT_USERAGENT]      = 'ShopgatePlugin/' . (defined(
+                'SHOPGATE_PLUGIN_VERSION'
+            ) ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin');
         $opt[CURLOPT_SSL_VERIFYPEER] = false;
         $opt[CURLOPT_RETURNTRANSFER] = true;
         $opt[CURLOPT_HTTPHEADER]     = array(
             'X-Shopgate-Library-Version: ' . SHOPGATE_LIBRARY_VERSION,
-            'X-Shopgate-Plugin-Version: ' . (defined('SHOPGATE_PLUGIN_VERSION') ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin'),
+            'X-Shopgate-Plugin-Version: ' . (defined(
+                'SHOPGATE_PLUGIN_VERSION'
+            ) ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin'),
         );
         $opt[CURLOPT_HTTPHEADER]     = !empty($opt[CURLOPT_HTTPHEADER])
             ? ($this->authService->getAuthHttpHeaders() + $opt[CURLOPT_HTTPHEADER])
@@ -1699,7 +1713,9 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
         $parameters['trace_id'] = 'spa-' . uniqid();
 
         $this->log(
-            'Sending request to "' . $this->apiUrl . '": ' . ShopgateLogger::getInstance()->cleanParamsForLog($parameters),
+            'Sending request to "' . $this->apiUrl . '": ' . ShopgateLogger::getInstance()->cleanParamsForLog(
+                $parameters
+            ),
             ShopgateLogger::LOGTYPE_REQUEST
         );
 
@@ -2256,7 +2272,8 @@ class ShopgateAuthenticationServiceOAuth extends ShopgateObject implements Shopg
     public function setup(ShopgateConfigInterface $config)
     {
         // needs to check if an old config is present without any access token
-        if ($config->getCustomerNumber() && $config->getShopNumber() && $config->getApikey() && !$config->getOauthAccessToken()) {
+        if ($config->getCustomerNumber() && $config->getShopNumber() && $config->getApikey(
+            ) && !$config->getOauthAccessToken()) {
             // needs to load the non-oauth-url since the new access token needs to be generated using the classic shopgate merchant api authentication
             $apiUrls                = $config->getApiUrls();
             $apiUrl                 = $config->getServer() == 'custom' ? str_replace(
@@ -2377,12 +2394,16 @@ class ShopgateAuthenticationServiceOAuth extends ShopgateObject implements Shopg
         // -> setup request headers
         $curlOpt = array(
             CURLOPT_HEADER         => false,
-            CURLOPT_USERAGENT      => 'ShopgatePlugin/' . (defined('SHOPGATE_PLUGIN_VERSION') ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin'),
+            CURLOPT_USERAGENT      => 'ShopgatePlugin/' . (defined(
+                    'SHOPGATE_PLUGIN_VERSION'
+                ) ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin'),
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HTTPHEADER     => array(
                 'X-Shopgate-Library-Version: ' . SHOPGATE_LIBRARY_VERSION,
-                'X-Shopgate-Plugin-Version: ' . (defined('SHOPGATE_PLUGIN_VERSION') ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin'),
+                'X-Shopgate-Plugin-Version: ' . (defined(
+                    'SHOPGATE_PLUGIN_VERSION'
+                ) ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin'),
             ),
             CURLOPT_TIMEOUT        => 30, // Default timeout 30sec
             CURLOPT_POST           => true,
@@ -2497,7 +2518,9 @@ abstract class ShopgatePluginApiResponse extends ShopgateObject
         $this->error_text    = null;
         $this->trace_id      = $traceId;
         $this->version       = $version;
-        $this->pluginVersion = (empty($pluginVersion) && defined('SHOPGATE_PLUGIN_VERSION')) ? SHOPGATE_PLUGIN_VERSION : $pluginVersion;
+        $this->pluginVersion = (empty($pluginVersion) && defined(
+                'SHOPGATE_PLUGIN_VERSION'
+            )) ? SHOPGATE_PLUGIN_VERSION : $pluginVersion;
     }
 
     /**

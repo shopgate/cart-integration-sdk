@@ -65,15 +65,22 @@ class ShopgateLogger
             self::$singleton = new self();
 
             self::$singleton->setLoggingStrategy(
-                new Shopgate_Helper_Logging_Strategy_DefaultLogging($accessLogPath, $requestLogPath, $errorLogPath,
-                    $debugLogPath)
+                new Shopgate_Helper_Logging_Strategy_DefaultLogging(
+                    $accessLogPath,
+                    $requestLogPath,
+                    $errorLogPath,
+                    $debugLogPath
+                )
             );
         }
 
         if (self::$singleton->loggingStrategy instanceof Shopgate_Helper_Logging_Strategy_DefaultLogging) {
             /** @noinspection PhpUndefinedMethodInspection */
             self::$singleton->loggingStrategy->setLogFilePaths(
-                $accessLogPath, $requestLogPath, $errorLogPath, $debugLogPath
+                $accessLogPath,
+                $requestLogPath,
+                $errorLogPath,
+                $debugLogPath
             );
         }
 
