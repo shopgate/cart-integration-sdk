@@ -2632,12 +2632,12 @@ abstract class ShopgatePlugin extends ShopgateObject
     /**
      * Redeems coupons that are passed along with a ShopgateCart object.
      *
-     * @see        http://developer.shopgate.com/plugin_api/coupons
-     *
      * @param ShopgateCart $cart The ShopgateCart object containing the coupons that should be redeemed.
      *
      * @return array('external_coupons' => ShopgateExternalCoupon[])
      * @throws ShopgateLibraryException if an error occurs.
+     *
+     * @see        http://developer.shopgate.com/plugin_api/coupons
      *
      * @deprecated no longer supported.
      */
