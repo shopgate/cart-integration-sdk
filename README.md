@@ -39,4 +39,4 @@ Shopgate offers everything online retailers need to be successful in mobile. Our
 
 The Shopgate Cart Integration SDK is available under the Apache License, Version 2.0.
 
-See the [LICENSE.md](./LICENSE.md) file for more information.
+See the [LICENSE.md](LICENSE.md) file for more information.

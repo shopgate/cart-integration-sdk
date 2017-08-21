@@ -45,7 +45,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 * fixed turning on error_reporting for all errors by default
 
 ## [2.9.57]
-* fixed missing plugin_v## in JSON response
+* fixed missing plugin_version in JSON response
 
 ## [2.9.56]
 * fixed class names for logging classes to avoid duplicate declarations
@@ -513,7 +513,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 * add the parameter "keep_debug_log" to incoming requests to prevent the debug log file from being discarded
 
 ## [2.1.26]
-* conv## of encodings is now performed via iconv if the mb_string extension for PHP is not installed
+* conersion of encodings is now performed via iconv if the mb_string extension for PHP is not installed
 * implemented logic to handle processing of file-based global and language dependend configurations
 
 ## [2.1.25]
@@ -604,7 +604,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [2.1.6]
 * new csv column "active_status"
-* plugin API returns the plugin v## if exists
+* plugin API returns the plugin version if exists
 
 ## [2.1.5]
 * fixed error in use of old configuration
