@@ -14,7 +14,6 @@ $fixers = array(
     'array_syntax' => array(
         'syntax' => 'long',
     ),
-    //'method_separation' => true,
     'blank_line_after_opening_tag' => true,
     'method_argument_space' => false,
 );
