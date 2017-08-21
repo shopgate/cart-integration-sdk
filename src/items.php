@@ -1358,7 +1358,7 @@ class ShopgateItemOptionValue extends ShopgateContainer
 
 class ShopgateItemInput extends ShopgateContainer
 {
-    const INPUT_TYPE_TEXT = "text";
+    const INPUT_TYPE_TEXT  = "text";
     const INPUT_TYPE_IMAGE = "image";
 
     protected $input_number;
@@ -1486,8 +1486,8 @@ class ShopgateItemInput extends ShopgateContainer
 
 class ShopgateSyncItem extends ShopgateContainer
 {
-    const STATUS_NEW = 'new';
-    const STATUS_DELETED = 'deleted';
+    const STATUS_NEW      = 'new';
+    const STATUS_DELETED  = 'deleted';
     const STATUS_EXISTING = 'existing';
 
     /**

@@ -21,10 +21,10 @@
  */
 interface Shopgate_Helper_Redirect_TemplateParserInterface
 {
-    const FUNCTION_NAME_HEX = 'hex';
+    const FUNCTION_NAME_HEX        = 'hex';
     const FUNCTION_NAME_URLENCODED = 'urlencoded';
-    const FUNCTION_NAME_BASE64 = 'base64';
-    const FUNCTION_NAME_ESCAPED = 'escaped';
+    const FUNCTION_NAME_BASE64     = 'base64';
+    const FUNCTION_NAME_ESCAPED    = 'escaped';
 
     /**
      * @param $template

@@ -872,8 +872,8 @@ class ShopgateExternalOrderItem extends ShopgateContainer
 class ShopgateExternalOrderExtraCost extends ShopgateContainer
 {
     const TYPE_SHIPPING = 'shipping';
-    const TYPE_PAYMENT = 'payment';
-    const TYPE_MISC = 'misc';
+    const TYPE_PAYMENT  = 'payment';
+    const TYPE_MISC     = 'misc';
 
     protected $type;
 

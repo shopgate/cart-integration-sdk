@@ -22,7 +22,7 @@
 class Shopgate_Helper_Logging_Obfuscator
 {
     const OBFUSCATION_STRING = 'XXXXXXXX';
-    const REMOVED_STRING = '<removed>';
+    const REMOVED_STRING     = '<removed>';
 
     /** @var string[] Names of the fields that should be obfuscated on logging. */
     private $obfuscationFields;

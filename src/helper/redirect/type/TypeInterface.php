@@ -22,7 +22,7 @@
 interface Shopgate_Helper_Redirect_Type_TypeInterface
 {
     const HTTP = 'http';
-    const JS = 'js';
+    const JS   = 'js';
 
     /**
      * @return Shopgate_Helper_Redirect_JsScriptBuilderInterface | Shopgate_Helper_Redirect_RedirectorInterface

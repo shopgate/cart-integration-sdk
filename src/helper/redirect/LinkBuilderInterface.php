@@ -21,13 +21,13 @@
  */
 interface Shopgate_Helper_Redirect_LinkBuilderInterface
 {
-    const LINK_TYPE_DEFAULT = 'default';
-    const LINK_TYPE_HOME = 'home';
-    const LINK_TYPE_PRODUCT = 'product';
+    const LINK_TYPE_DEFAULT  = 'default';
+    const LINK_TYPE_HOME     = 'home';
+    const LINK_TYPE_PRODUCT  = 'product';
     const LINK_TYPE_CATEGORY = 'category';
-    const LINK_TYPE_CMS = 'cms';
-    const LINK_TYPE_BRAND = 'brand';
-    const LINK_TYPE_SEARCH = 'search';
+    const LINK_TYPE_CMS      = 'cms';
+    const LINK_TYPE_BRAND    = 'brand';
+    const LINK_TYPE_SEARCH   = 'search';
 
     /**
      * @param Shopgate_Model_Redirect_DeeplinkSuffix[] $parameters

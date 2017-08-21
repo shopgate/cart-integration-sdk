@@ -865,11 +865,11 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
  */
 interface ShopgateMobileRedirectInterface
 {
-    const SHOPGATE_STATIC = Shopgate_Helper_Redirect_SettingsManagerInterface::SHOPGATE_STATIC;
-    const SHOPGATE_STATIC_SSL = Shopgate_Helper_Redirect_SettingsManagerInterface::SHOPGATE_STATIC;
-    const SHOPGATE_PG_STATIC = Shopgate_Helper_Redirect_SettingsManagerInterface::SHOPGATE_PG_STATIC;
+    const SHOPGATE_STATIC        = Shopgate_Helper_Redirect_SettingsManagerInterface::SHOPGATE_STATIC;
+    const SHOPGATE_STATIC_SSL    = Shopgate_Helper_Redirect_SettingsManagerInterface::SHOPGATE_STATIC;
+    const SHOPGATE_PG_STATIC     = Shopgate_Helper_Redirect_SettingsManagerInterface::SHOPGATE_PG_STATIC;
     const SHOPGATE_PG_STATIC_SSL = Shopgate_Helper_Redirect_SettingsManagerInterface::SHOPGATE_PG_STATIC;
-    const SHOPGATE_SL_STATIC = Shopgate_Helper_Redirect_SettingsManagerInterface::SHOPGATE_SL_STATIC;
+    const SHOPGATE_SL_STATIC     = Shopgate_Helper_Redirect_SettingsManagerInterface::SHOPGATE_SL_STATIC;
     const SHOPGATE_SL_STATIC_SSL = Shopgate_Helper_Redirect_SettingsManagerInterface::SHOPGATE_SL_STATIC;
     /**
      * @var string the URL that is appended to the end of a shop alias (aka subdomain) if the shop is live

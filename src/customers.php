@@ -21,7 +21,7 @@
 
 class ShopgateCustomer extends ShopgateContainer
 {
-    const MALE = "m";
+    const MALE   = "m";
     const FEMALE = "f";
 
     protected $registration_date;
@@ -523,11 +523,11 @@ class ShopgateCustomerGroup extends ShopgateContainer
 
 class ShopgateAddress extends ShopgateContainer
 {
-    const MALE = "m";
-    const FEMALE = "f";
-    const INVOICE = 0x01;
+    const MALE     = "m";
+    const FEMALE   = "f";
+    const INVOICE  = 0x01;
     const DELIVERY = 0x10;
-    const BOTH = 0x11;
+    const BOTH     = 0x11;
 
     protected $id;
 

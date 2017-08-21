@@ -29,11 +29,11 @@
 class ShopgateLogger
 {
     const OBFUSCATION_STRING = Shopgate_Helper_Logging_Obfuscator::OBFUSCATION_STRING;
-    const REMOVED_STRING = Shopgate_Helper_Logging_Obfuscator::REMOVED_STRING;
-    const LOGTYPE_ACCESS = Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_ACCESS;
-    const LOGTYPE_REQUEST = Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_REQUEST;
-    const LOGTYPE_ERROR = Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_ERROR;
-    const LOGTYPE_DEBUG = Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_DEBUG;
+    const REMOVED_STRING     = Shopgate_Helper_Logging_Obfuscator::REMOVED_STRING;
+    const LOGTYPE_ACCESS     = Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_ACCESS;
+    const LOGTYPE_REQUEST    = Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_REQUEST;
+    const LOGTYPE_ERROR      = Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_ERROR;
+    const LOGTYPE_DEBUG      = Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_DEBUG;
 
     /** @var string */
     private $memoryAnalyserLoggingSizeUnit;

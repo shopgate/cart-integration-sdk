@@ -44,7 +44,7 @@ class Shopgate_Model_Catalog_Visibility extends Shopgate_Model_AbstractExport
     );
 
     const DEFAULT_VISIBILITY_CATALOG_AND_SEARCH = 'catalog_and_search';
-    const DEFAULT_VISIBILITY_NOTHING = 'nothing';
+    const DEFAULT_VISIBILITY_NOTHING            = 'nothing';
     /**
      * @deprecated
      * not supported yet, will be handled as catalog_and_search

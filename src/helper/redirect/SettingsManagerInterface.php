@@ -21,21 +21,21 @@
  */
 interface Shopgate_Helper_Redirect_SettingsManagerInterface
 {
-    const DISABLE_REDIRECT_COOKIE_EXPIRATION_1_WEEK = 604800;
+    const DISABLE_REDIRECT_COOKIE_EXPIRATION_1_WEEK   = 604800;
     const DEFAULT_DISABLE_REDIRECT_GET_PARAMETER_NAME = 'shopgate_redirect';
-    const DEFAULT_DISABLE_REDIRECT_COOKIE_NAME = 'SHOPGATE_MOBILE_WEBPAGE';
-    const SHOPGATE_STATIC = '//static.shopgate.com';
-    const SHOPGATE_STATIC_SSL = self::SHOPGATE_STATIC;
-    const SHOPGATE_PG_STATIC = '//static.shopgatepg.com';
-    const SHOPGATE_PG_STATIC_SSL = self::SHOPGATE_PG_STATIC;
-    const SHOPGATE_SL_STATIC = '//static.shopgatesl.com';
-    const SHOPGATE_SL_STATIC_SSL = self::SHOPGATE_SL_STATIC;
-    const SHOPGATE_DEV_STATIC = '//shopgatedev-public.s3.amazonaws.com';
-    const SHOPGATE_DEV_STATIC_SSL = self::SHOPGATE_DEV_STATIC;
-    const SHOPGATE_LIVE_ALIAS = '.shopgate.com';
-    const SHOPGATE_SL_ALIAS = '.shopgatesl.com';
-    const SHOPGATE_PG_ALIAS = '.shopgatepg.com';
-    const SHOPGATE_DEV_ALIAS = '.localdev.cc/php/shopgate/index.php';
+    const DEFAULT_DISABLE_REDIRECT_COOKIE_NAME        = 'SHOPGATE_MOBILE_WEBPAGE';
+    const SHOPGATE_STATIC                             = '//static.shopgate.com';
+    const SHOPGATE_STATIC_SSL                         = self::SHOPGATE_STATIC;
+    const SHOPGATE_PG_STATIC                          = '//static.shopgatepg.com';
+    const SHOPGATE_PG_STATIC_SSL                      = self::SHOPGATE_PG_STATIC;
+    const SHOPGATE_SL_STATIC                          = '//static.shopgatesl.com';
+    const SHOPGATE_SL_STATIC_SSL                      = self::SHOPGATE_SL_STATIC;
+    const SHOPGATE_DEV_STATIC                         = '//shopgatedev-public.s3.amazonaws.com';
+    const SHOPGATE_DEV_STATIC_SSL                     = self::SHOPGATE_DEV_STATIC;
+    const SHOPGATE_LIVE_ALIAS                         = '.shopgate.com';
+    const SHOPGATE_SL_ALIAS                           = '.shopgatesl.com';
+    const SHOPGATE_PG_ALIAS                           = '.shopgatepg.com';
+    const SHOPGATE_DEV_ALIAS                          = '.localdev.cc/php/shopgate/index.php';
 
     /**
      * @return bool

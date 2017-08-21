@@ -37,9 +37,9 @@
 class Shopgate_Model_Catalog_Relation extends Shopgate_Model_AbstractExport
 {
     const DEFAULT_RELATION_TYPE_CROSSSELL = 'crosssell';
-    const DEFAULT_RELATION_TYPE_RELATION = 'relation';
-    const DEFAULT_RELATION_TYPE_CUSTOM = 'custom';
-    const DEFAULT_RELATION_TYPE_UPSELL = 'upsell';
+    const DEFAULT_RELATION_TYPE_RELATION  = 'relation';
+    const DEFAULT_RELATION_TYPE_CUSTOM    = 'custom';
+    const DEFAULT_RELATION_TYPE_UPSELL    = 'upsell';
 
     /**
      * define allowed methods

@@ -44,8 +44,8 @@
  */
 class Shopgate_Model_Catalog_TierPrice extends Shopgate_Model_AbstractExport
 {
-    const DEFAULT_TIER_PRICE_TYPE_PERCENT = 'percent';
-    const DEFAULT_TIER_PRICE_TYPE_FIXED = 'fixed';
+    const DEFAULT_TIER_PRICE_TYPE_PERCENT    = 'percent';
+    const DEFAULT_TIER_PRICE_TYPE_FIXED      = 'fixed';
     const DEFAULT_TIER_PRICE_TYPE_DIFFERENCE = 'difference';
 
     /**

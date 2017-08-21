@@ -3186,10 +3186,10 @@ interface ShopgateMerchantApiInterface
  */
 interface ShopgateAuthenticationServiceInterface
 {
-    const HEADER_X_SHOPGATE_AUTH_USER = 'X-Shopgate-Auth-User';
+    const HEADER_X_SHOPGATE_AUTH_USER  = 'X-Shopgate-Auth-User';
     const HEADER_X_SHOPGATE_AUTH_TOKEN = 'X-Shopgate-Auth-Token';
-    const PHP_X_SHOPGATE_AUTH_USER = 'HTTP_X_SHOPGATE_AUTH_USER';
-    const PHP_X_SHOPGATE_AUTH_TOKEN = 'HTTP_X_SHOPGATE_AUTH_TOKEN';
+    const PHP_X_SHOPGATE_AUTH_USER     = 'HTTP_X_SHOPGATE_AUTH_USER';
+    const PHP_X_SHOPGATE_AUTH_TOKEN    = 'HTTP_X_SHOPGATE_AUTH_TOKEN';
 
     /**
      * @param ShopgateConfigInterface $config

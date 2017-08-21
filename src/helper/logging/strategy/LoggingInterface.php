@@ -21,10 +21,10 @@
  */
 interface Shopgate_Helper_Logging_Strategy_LoggingInterface
 {
-    const LOGTYPE_ACCESS = 'access';
+    const LOGTYPE_ACCESS  = 'access';
     const LOGTYPE_REQUEST = 'request';
-    const LOGTYPE_ERROR = 'error';
-    const LOGTYPE_DEBUG = 'debug';
+    const LOGTYPE_ERROR   = 'error';
+    const LOGTYPE_DEBUG   = 'debug';
 
     /**
      * Enables logging messages to debug log file.

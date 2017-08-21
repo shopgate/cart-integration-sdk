@@ -707,8 +707,8 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
      * The configuration file must be a PHP script defining an indexed array called $shopgate_config
      * containing the desired configuration values to set. If that is not the case, an exception is thrown
      *
-     * @param string $path The path to the configuration file or nothing to load the default Shopgate Cart Integration SDK
-     *                     configuration files.
+     * @param string $path The path to the configuration file or nothing to load the default Shopgate Cart Integration
+     *                     SDK configuration files.
      *
      * @throws ShopgateLibraryException in case a configuration file could not be loaded or the $shopgate_config is not
      *                                  set.
@@ -2553,7 +2553,7 @@ class ShopgateConfigOld extends ShopgateObject
         switch (strtolower($type)) {
             default:
                 $type = 'error';
-                // no break
+            // no break
             case "access":
             case "request":
             case "debug":
@@ -2775,17 +2775,17 @@ class ShopgateConfigOld extends ShopgateObject
  */
 interface ShopgateConfigInterface
 {
-    const SHOPGATE_API_URL_LIVE = 'https://api.shopgate.com/merchant/';
-    const SHOPGATE_API_URL_LIVE_OAUTH = 'https://api.shopgate.com/merchant2/';
-    const SHOPGATE_API_URL_SL = 'https://api.shopgatesl.com/merchant/';
-    const SHOPGATE_API_URL_SL_OAUTH = 'https://api.shopgatesl.com/merchant2/';
-    const SHOPGATE_API_URL_PG = 'https://api.shopgatepg.com/merchant/';
-    const SHOPGATE_API_URL_PG_OAUTH = 'https://api.shopgatepg.com/merchant2/';
+    const SHOPGATE_API_URL_LIVE                     = 'https://api.shopgate.com/merchant/';
+    const SHOPGATE_API_URL_LIVE_OAUTH               = 'https://api.shopgate.com/merchant2/';
+    const SHOPGATE_API_URL_SL                       = 'https://api.shopgatesl.com/merchant/';
+    const SHOPGATE_API_URL_SL_OAUTH                 = 'https://api.shopgatesl.com/merchant2/';
+    const SHOPGATE_API_URL_PG                       = 'https://api.shopgatepg.com/merchant/';
+    const SHOPGATE_API_URL_PG_OAUTH                 = 'https://api.shopgatepg.com/merchant2/';
     const SHOPGATE_AUTH_SERVICE_CLASS_NAME_SHOPGATE = 'ShopgateAuthenticationServiceShopgate';
-    const SHOPGATE_AUTH_SERVICE_CLASS_NAME_OAUTH = 'ShopgateAuthenticationServiceOAuth';
-    const SHOPGATE_FILE_PREFIX = 'shopgate_';
-    const DEFAULT_MEMORY_LIMIT = -1;
-    const DEFAULT_EXECUTION_TIME = 0;
+    const SHOPGATE_AUTH_SERVICE_CLASS_NAME_OAUTH    = 'ShopgateAuthenticationServiceOAuth';
+    const SHOPGATE_FILE_PREFIX                      = 'shopgate_';
+    const DEFAULT_MEMORY_LIMIT                      = -1;
+    const DEFAULT_EXECUTION_TIME                    = 0;
 
     /**
      * Loads an array of key-value pairs or a permanent storage.
@@ -3791,8 +3791,8 @@ interface ShopgateConfigInterface
     public function setIsShopgateAdapter($value);
 
     /**
-     * @param array       <int, string> $value an array with a list of get params which are allowed to passthrough to
-     *                          the mobile device on redirect
+     * @param array                   <int, string> $value an array with a list of get params which are allowed to
+     *                                passthrough to the mobile device on redirect
      */
     public function setRedirectableGetParams($value);
 

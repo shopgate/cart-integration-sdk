@@ -127,10 +127,10 @@ function ShopgateErrorHandler($errno, $errstr, $errfile, $errline, $errContext)
 /**
  * Exception type for errors within the Shopgate Cart Integration SDK.
  *
- * This is used by the Shopgate Cart Integration SDK and should be used by plugins and their components. Predefined error
- * codes and messages are to be used. If not suitable, a custom message can be passed which results in error
- * code 999 (unknown error code) with the message appended. Error code, message, time, additional information
- * and part of the stack trace will be logged automatically on construction of a ShopgateLibraryException.
+ * This is used by the Shopgate Cart Integration SDK and should be used by plugins and their components. Predefined
+ * error codes and messages are to be used. If not suitable, a custom message can be passed which results in error code
+ * 999 (unknown error code) with the message appended. Error code, message, time, additional information and part of
+ * the stack trace will be logged automatically on construction of a ShopgateLibraryException.
  *
  * @author Shopgate GmbH, 35510 Butzbach, DE
  */
@@ -145,86 +145,86 @@ class ShopgateLibraryException extends Exception
     //const INIT_EMPTY_CONFIG = 1;
     const INIT_LOGFILE_OPEN_ERROR = 2;
     // Configuration failure
-    const CONFIG_INVALID_VALUE = 10;
-    const CONFIG_READ_WRITE_ERROR = 11;
+    const CONFIG_INVALID_VALUE     = 10;
+    const CONFIG_READ_WRITE_ERROR  = 11;
     const CONFIG_PLUGIN_NOT_ACTIVE = 12;
     // Plugin API errors
-    const PLUGIN_API_NO_ACTION = 20;
-    const PLUGIN_API_UNKNOWN_ACTION = 21;
-    const PLUGIN_API_DISABLED_ACTION = 22;
-    const PLUGIN_API_WRONG_RESPONSE_FORMAT = 23;
-    const PLUGIN_API_UNKNOWN_SHOP_NUMBER = 24;
-    const PLUGIN_API_INVALID_ACTION = 25;
-    const PLUGIN_API_ADMIN_LOGIN_REQUIRED = 26;
-    const PLUGIN_API_NO_ORDER_NUMBER = 30;
-    const PLUGIN_API_NO_CART = 31;
-    const PLUGIN_API_NO_AUTHORIZATION_CODE = 33;
-    const PLUGIN_API_NO_USER = 35;
-    const PLUGIN_API_NO_PASS = 36;
-    const PLUGIN_API_NO_USER_DATA = 37;
-    const PLUGIN_API_UNKNOWN_LOGTYPE = 38;
-    const PLUGIN_API_CRON_NO_JOBS = 40;
-    const PLUGIN_API_CRON_NO_JOB_NAME = 41;
-    const PLUGIN_API_NO_ITEMS = 42;
-    const PLUGIN_API_WRONG_ITEM_FORMAT = 43;
-    const PLUGIN_API_NO_SHOPGATE_SETTINGS = 50;
+    const PLUGIN_API_NO_ACTION                 = 20;
+    const PLUGIN_API_UNKNOWN_ACTION            = 21;
+    const PLUGIN_API_DISABLED_ACTION           = 22;
+    const PLUGIN_API_WRONG_RESPONSE_FORMAT     = 23;
+    const PLUGIN_API_UNKNOWN_SHOP_NUMBER       = 24;
+    const PLUGIN_API_INVALID_ACTION            = 25;
+    const PLUGIN_API_ADMIN_LOGIN_REQUIRED      = 26;
+    const PLUGIN_API_NO_ORDER_NUMBER           = 30;
+    const PLUGIN_API_NO_CART                   = 31;
+    const PLUGIN_API_NO_AUTHORIZATION_CODE     = 33;
+    const PLUGIN_API_NO_USER                   = 35;
+    const PLUGIN_API_NO_PASS                   = 36;
+    const PLUGIN_API_NO_USER_DATA              = 37;
+    const PLUGIN_API_UNKNOWN_LOGTYPE           = 38;
+    const PLUGIN_API_CRON_NO_JOBS              = 40;
+    const PLUGIN_API_CRON_NO_JOB_NAME          = 41;
+    const PLUGIN_API_NO_ITEMS                  = 42;
+    const PLUGIN_API_WRONG_ITEM_FORMAT         = 43;
+    const PLUGIN_API_NO_SHOPGATE_SETTINGS      = 50;
     const PLUGIN_API_UNSUPPORTED_RESPONSE_TYPE = 51;
     // Plugin errors
-    const PLUGIN_DUPLICATE_ORDER = 60;
-    const PLUGIN_ORDER_NOT_FOUND = 61;
-    const PLUGIN_NO_CUSTOMER_GROUP_FOUND = 62;
-    const PLUGIN_ORDER_ITEM_NOT_FOUND = 63;
-    const PLUGIN_ORDER_STATUS_IS_SENT = 64;
-    const PLUGIN_ORDER_ALREADY_UP_TO_DATE = 65;
-    const PLUGIN_REGISTER_CUSTOMER_ERROR = 66;
-    const PLUGIN_NO_ADDRESSES_FOUND = 70;
-    const PLUGIN_WRONG_USERNAME_OR_PASSWORD = 71;
-    const PLUGIN_NO_CUSTOMER_TOKEN = 72;
-    const PLUGIN_CUSTOMER_TOKEN_INVALID = 73;
-    const PLUGIN_NO_CUSTOMER_LANGUAGE = 74;
+    const PLUGIN_DUPLICATE_ORDER                = 60;
+    const PLUGIN_ORDER_NOT_FOUND                = 61;
+    const PLUGIN_NO_CUSTOMER_GROUP_FOUND        = 62;
+    const PLUGIN_ORDER_ITEM_NOT_FOUND           = 63;
+    const PLUGIN_ORDER_STATUS_IS_SENT           = 64;
+    const PLUGIN_ORDER_ALREADY_UP_TO_DATE       = 65;
+    const PLUGIN_REGISTER_CUSTOMER_ERROR        = 66;
+    const PLUGIN_NO_ADDRESSES_FOUND             = 70;
+    const PLUGIN_WRONG_USERNAME_OR_PASSWORD     = 71;
+    const PLUGIN_NO_CUSTOMER_TOKEN              = 72;
+    const PLUGIN_CUSTOMER_TOKEN_INVALID         = 73;
+    const PLUGIN_NO_CUSTOMER_LANGUAGE           = 74;
     const PLUGIN_CUSTOMER_ACCOUNT_NOT_CONFIRMED = 75;
-    const PLUGIN_CUSTOMER_UNKNOWN_ERROR = 76;
-    const PLUGIN_MISSING_ACCOUNT_PERMISSIONS = 77;
-    const PLUGIN_FILE_DELETE_ERROR = 79;
-    const PLUGIN_FILE_NOT_FOUND = 80;
-    const PLUGIN_FILE_OPEN_ERROR = 81;
-    const PLUGIN_FILE_EMPTY_BUFFER = 82;
-    const PLUGIN_DATABASE_ERROR = 83;
-    const PLUGIN_UNKNOWN_COUNTRY_CODE = 84;
-    const PLUGIN_UNKNOWN_STATE_CODE = 85;
-    const PLUGIN_EMAIL_SEND_ERROR = 90;
-    const PLUGIN_CRON_UNSUPPORTED_JOB = 91;
+    const PLUGIN_CUSTOMER_UNKNOWN_ERROR         = 76;
+    const PLUGIN_MISSING_ACCOUNT_PERMISSIONS    = 77;
+    const PLUGIN_FILE_DELETE_ERROR              = 79;
+    const PLUGIN_FILE_NOT_FOUND                 = 80;
+    const PLUGIN_FILE_OPEN_ERROR                = 81;
+    const PLUGIN_FILE_EMPTY_BUFFER              = 82;
+    const PLUGIN_DATABASE_ERROR                 = 83;
+    const PLUGIN_UNKNOWN_COUNTRY_CODE           = 84;
+    const PLUGIN_UNKNOWN_STATE_CODE             = 85;
+    const PLUGIN_EMAIL_SEND_ERROR               = 90;
+    const PLUGIN_CRON_UNSUPPORTED_JOB           = 91;
     // Merchant API errors
-    const MERCHANT_API_NO_CONNECTION = 100;
+    const MERCHANT_API_NO_CONNECTION    = 100;
     const MERCHANT_API_INVALID_RESPONSE = 101;
-    const MERCHANT_API_ERROR_RECEIVED = 102;
+    const MERCHANT_API_ERROR_RECEIVED   = 102;
     // OAuth errors
-    const SHOPGATE_OAUTH_NO_CONNECTION = 115;
+    const SHOPGATE_OAUTH_NO_CONNECTION        = 115;
     const SHOPGATE_OAUTH_MISSING_ACCESS_TOKEN = 116;
     // Authentication errors
     const AUTHENTICATION_FAILED = 120;
     // File errors
     const FILE_READ_WRITE_ERROR = 130;
     // Coupon Errors
-    const COUPON_NOT_VALID = 200;
-    const COUPON_CODE_NOT_VALID = 201;
-    const COUPON_INVALID_PRODUCT = 202;
-    const COUPON_INVALID_ADDRESS = 203;
-    const COUPON_INVALID_USER = 204;
-    const COUPON_TOO_MANY_COUPONS = 205;
-    const REGISTER_FAILED_TO_ADD_USER = 220;
+    const COUPON_NOT_VALID             = 200;
+    const COUPON_CODE_NOT_VALID        = 201;
+    const COUPON_INVALID_PRODUCT       = 202;
+    const COUPON_INVALID_ADDRESS       = 203;
+    const COUPON_INVALID_USER          = 204;
+    const COUPON_TOO_MANY_COUPONS      = 205;
+    const REGISTER_FAILED_TO_ADD_USER  = 220;
     const REGISTER_USER_ALREADY_EXISTS = 221;
-    const REGISTER_MISSING_FIELDS = 222;
+    const REGISTER_MISSING_FIELDS      = 222;
     // Cart Item Errors
-    const CART_ITEM_OUT_OF_STOCK = 300;
-    const CART_ITEM_PRODUCT_NOT_FOUND = 301;
-    const CART_ITEM_REQUESTED_QUANTITY_NOT_AVAILABLE = 302;
-    const CART_ITEM_INPUT_VALIDATION_FAILED = 303;
+    const CART_ITEM_OUT_OF_STOCK                              = 300;
+    const CART_ITEM_PRODUCT_NOT_FOUND                         = 301;
+    const CART_ITEM_REQUESTED_QUANTITY_NOT_AVAILABLE          = 302;
+    const CART_ITEM_INPUT_VALIDATION_FAILED                   = 303;
     const CART_ITEM_REQUESTED_QUANTITY_UNDER_MINIMUM_QUANTITY = 304;
-    const CART_ITEM_REQUESTED_QUANTITY_OVER_MAXIMUM_QUANTITY = 305;
-    const CART_ITEM_INVALID_PRODUCT_COMBINATION = 306;
-    const CART_ITEM_PRODUCT_NOT_ALLOWED = 307;
-    const CART_ITEM_SILENT_UPDATE = 308;
+    const CART_ITEM_REQUESTED_QUANTITY_OVER_MAXIMUM_QUANTITY  = 305;
+    const CART_ITEM_INVALID_PRODUCT_COMBINATION               = 306;
+    const CART_ITEM_PRODUCT_NOT_ALLOWED                       = 307;
+    const CART_ITEM_SILENT_UPDATE                             = 308;
     //Helper class exception
     const SHOPGATE_HELPER_FUNCTION_NOT_FOUND_EXCEPTION = 310;
     // extended error code format that contains information on multiple errors
@@ -507,43 +507,43 @@ class ShopgateLibraryException extends Exception
  */
 class ShopgateMerchantApiException extends Exception
 {
-    const UNKNOWN_ACTION = 101;
-    const SHOP_NUMBER_NOT_SET = 103;
-    const MERCHANT_NOT_FOUND = 110;
-    const SHOP_NOT_FOUND = 113;
-    const MISSING_PARAMETERS = 118;
-    const FIELDS_OF_WRONG_TYPE = 123;
-    const AUTHORIZATION_NOT_SET = 400;
-    const AUTHORIZATION_USERNAME_INVALID = 401;
-    const AUTHORIZATION_PASSWORD_INVALID = 402;
-    const ORDER_NOT_FOUND = 201;
-    const ORDER_ON_HOLD = 202;
-    const ORDER_ALREADY_COMPLETED = 203;
-    const ORDER_SHIPPING_STATUS_ALREADY_COMPLETED = 204;
-    const ORDER_INVALID_SHIPPING_SERVICE_ID = 119;
-    const CATEGORY_NAME_ALREADY_EXISTS = 142;
-    const CATEGORY_NOT_FOUND = 205;
-    const CATEGORY_PARENT_NOT_FOUND = 212;
-    const CATEGORY_NUMBER_ALREADY_EXISTS = 216;
+    const UNKNOWN_ACTION                           = 101;
+    const SHOP_NUMBER_NOT_SET                      = 103;
+    const MERCHANT_NOT_FOUND                       = 110;
+    const SHOP_NOT_FOUND                           = 113;
+    const MISSING_PARAMETERS                       = 118;
+    const FIELDS_OF_WRONG_TYPE                     = 123;
+    const AUTHORIZATION_NOT_SET                    = 400;
+    const AUTHORIZATION_USERNAME_INVALID           = 401;
+    const AUTHORIZATION_PASSWORD_INVALID           = 402;
+    const ORDER_NOT_FOUND                          = 201;
+    const ORDER_ON_HOLD                            = 202;
+    const ORDER_ALREADY_COMPLETED                  = 203;
+    const ORDER_SHIPPING_STATUS_ALREADY_COMPLETED  = 204;
+    const ORDER_INVALID_SHIPPING_SERVICE_ID        = 119;
+    const CATEGORY_NAME_ALREADY_EXISTS             = 142;
+    const CATEGORY_NOT_FOUND                       = 205;
+    const CATEGORY_PARENT_NOT_FOUND                = 212;
+    const CATEGORY_NUMBER_ALREADY_EXISTS           = 216;
     const CATEGORY_CHILD_ITEMS_COULD_NOT_BE_MAPPED = 217;
-    const CATEGORY_CANNOT_MAP_CHILD_ITEMS = 217;
-    const CATEGORY_ERROR_DELETING_ITEM_MAPPING = 147;
-    const ITEM_ERROR_DOWNLOADING_IMAGE = 149;
-    const ITEM_NOT_FOUND = 206;
-    const ITEM_CURRENCY_NOT_FOUND = 207;
-    const ITEM_PARENT_NOT_FOUND = 220;
-    const ITEM_ALREADY_EXISTS = 221;
-    const ITEM_ERROR_DELETING = 129;
-    const BATCH_ITEM_MULTIPLE_ERRORS = 166;
-    const BATCH_ITEM_TOO_MANY_ELEMENTS = 167;
-    const ORDER_ALREADY_CANCELLED = 222;
-    const ORDER_CANCEL_INVALID_ITEM = 223;
-    const ORDER_CANCEL_INVALID_ITEM_QUANTITY = 224;
-    const ORDER_SHIPPING_COSTS_ALREADY_CANCELLED = 225;
-    const ORDER_CANCEL_INVALID_ARGUMENTS = 226;
-    const INTERNAL_ERROR_OCCURED_WHILE_SAVING = 803;
-    const INTERNAL_ERROR_OCCURED_WHILE_DELETING = 804;
-    const UNKNOWN_ERROR = 999;
+    const CATEGORY_CANNOT_MAP_CHILD_ITEMS          = 217;
+    const CATEGORY_ERROR_DELETING_ITEM_MAPPING     = 147;
+    const ITEM_ERROR_DOWNLOADING_IMAGE             = 149;
+    const ITEM_NOT_FOUND                           = 206;
+    const ITEM_CURRENCY_NOT_FOUND                  = 207;
+    const ITEM_PARENT_NOT_FOUND                    = 220;
+    const ITEM_ALREADY_EXISTS                      = 221;
+    const ITEM_ERROR_DELETING                      = 129;
+    const BATCH_ITEM_MULTIPLE_ERRORS               = 166;
+    const BATCH_ITEM_TOO_MANY_ELEMENTS             = 167;
+    const ORDER_ALREADY_CANCELLED                  = 222;
+    const ORDER_CANCEL_INVALID_ITEM                = 223;
+    const ORDER_CANCEL_INVALID_ITEM_QUANTITY       = 224;
+    const ORDER_SHIPPING_COSTS_ALREADY_CANCELLED   = 225;
+    const ORDER_CANCEL_INVALID_ARGUMENTS           = 226;
+    const INTERNAL_ERROR_OCCURED_WHILE_SAVING      = 803;
+    const INTERNAL_ERROR_OCCURED_WHILE_DELETING    = 804;
+    const UNKNOWN_ERROR                            = 999;
 
     /**
      * @var ShopgateMerchantApiResponse
@@ -1147,8 +1147,8 @@ abstract class ShopgateObject
     /**
      * Creates a JSON string from any passed value.
      *
-     * If json_encode() exists it's done by that, otherwise an external class provided with the Shopgate Cart Integration SDK is
-     * used.
+     * If json_encode() exists it's done by that, otherwise an external class provided with the Shopgate Cart
+     * Integration SDK is used.
      *
      * @param mixed $value
      *
@@ -1170,8 +1170,8 @@ abstract class ShopgateObject
     /**
      * Creates a variable, array or object from any passed JSON string.
      *
-     * If json_encode() exists it's done by that, otherwise an external class provided with the Shopgate Cart Integration SDK is
-     * used.
+     * If json_encode() exists it's done by that, otherwise an external class provided with the Shopgate Cart
+     * Integration SDK is used.
      *
      * @param      $json
      * @param bool $assoc
@@ -1469,16 +1469,16 @@ abstract class ShopgateObject
 /**
  * This class acts as super class for plugin implementations and provides some basic functionality.
  *
- * A plugin implementation using the Shopgate Cart Integration SDK must be derived from this class. The abstract methods are
- * callback methods for shop system specific operations such as retrieval of customer or order information, adding or
- * updating orders etc.
+ * A plugin implementation using the Shopgate Cart Integration SDK must be derived from this class. The abstract
+ * methods are callback methods for shop system specific operations such as retrieval of customer or order information,
+ * adding or updating orders etc.
  *
  * @author Shopgate GmbH, 35510 Butzbach, DE
  */
 abstract class ShopgatePlugin extends ShopgateObject
 {
-    const PRODUCT_STATUS_STOCK = 'stock';
-    const PRODUCT_STATUS_ACTIVE = 'active';
+    const PRODUCT_STATUS_STOCK    = 'stock';
+    const PRODUCT_STATUS_ACTIVE   = 'active';
     const PRODUCT_STATUS_INACTIVE = 'inactive';
 
     /**

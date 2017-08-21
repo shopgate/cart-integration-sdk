@@ -138,10 +138,10 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
     /**
      * weight units
      */
-    const DEFAULT_WEIGHT_UNIT_KG = 'kg';
-    const DEFAULT_WEIGHT_UNIT_OUNCE = 'oz';
-    const DEFAULT_WEIGHT_UNIT_GRAM = 'g';
-    const DEFAULT_WEIGHT_UNIT_POUND = 'lb';
+    const DEFAULT_WEIGHT_UNIT_KG      = 'kg';
+    const DEFAULT_WEIGHT_UNIT_OUNCE   = 'oz';
+    const DEFAULT_WEIGHT_UNIT_GRAM    = 'g';
+    const DEFAULT_WEIGHT_UNIT_POUND   = 'lb';
     const DEFAULT_WEIGHT_UNIT_DEFAULT = self::DEFAULT_WEIGHT_UNIT_GRAM;
     /**
      * @deprecated use Shopgate_Model_Catalog_Product::DEFAULT_WEIGHT_UNIT_GRAM
@@ -155,9 +155,9 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
      * display_type
      */
     const DISPLAY_TYPE_DEFAULT = 'default';
-    const DISPLAY_TYPE_SIMPLE = 'simple';
-    const DISPLAY_TYPE_SELECT = 'select';
-    const DISPLAY_TYPE_LIST = 'list';
+    const DISPLAY_TYPE_SIMPLE  = 'simple';
+    const DISPLAY_TYPE_SELECT  = 'select';
+    const DISPLAY_TYPE_LIST    = 'list';
 
     /**
      * @var string

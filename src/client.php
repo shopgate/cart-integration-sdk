@@ -21,10 +21,10 @@
 
 class ShopgateClient extends ShopgateContainer
 {
-    const TYPE_MOBILESITE = 'mobilesite';
-    const TYPE_IPHONEAPP = 'iphoneapp';
-    const TYPE_IPADAPP = 'ipadapp';
-    const TYPE_ANDROIDPHONEAPP = 'androidphoneapp';
+    const TYPE_MOBILESITE       = 'mobilesite';
+    const TYPE_IPHONEAPP        = 'iphoneapp';
+    const TYPE_IPADAPP          = 'ipadapp';
+    const TYPE_ANDROIDPHONEAPP  = 'androidphoneapp';
     const TYPE_ANDROIDTABLETAPP = 'androidtabletapp';
 
     /** @var string */

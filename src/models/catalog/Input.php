@@ -54,15 +54,15 @@
  */
 class Shopgate_Model_Catalog_Input extends Shopgate_Model_AbstractExport
 {
-    const DEFAULT_INPUT_TYPE_SELECT = 'select';
+    const DEFAULT_INPUT_TYPE_SELECT   = 'select';
     const DEFAULT_INPUT_TYPE_MULTIPLE = 'multiple';
-    const DEFAULT_INPUT_TYPE_RADIO = 'radio';
+    const DEFAULT_INPUT_TYPE_RADIO    = 'radio';
     const DEFAULT_INPUT_TYPE_CHECKBOX = 'checkbox';
-    const DEFAULT_INPUT_TYPE_TEXT = 'text';
-    const DEFAULT_INPUT_TYPE_AREA = 'area';
-    const DEFAULT_INPUT_TYPE_FILE = 'file';
-    const DEFAULT_INPUT_TYPE_DATE = 'date';
-    const DEFAULT_INPUT_TYPE_TIME = 'time';
+    const DEFAULT_INPUT_TYPE_TEXT     = 'text';
+    const DEFAULT_INPUT_TYPE_AREA     = 'area';
+    const DEFAULT_INPUT_TYPE_FILE     = 'file';
+    const DEFAULT_INPUT_TYPE_DATE     = 'date';
+    const DEFAULT_INPUT_TYPE_TIME     = 'time';
     const DEFAULT_INPUT_TYPE_DATETIME = 'datetime';
 
     /**
