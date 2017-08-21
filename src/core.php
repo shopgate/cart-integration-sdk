@@ -1240,8 +1240,8 @@ abstract class ShopgateObject
      * If json_encode() exists it's done by that, otherwise an external class provided with the Shopgate Cart
      * Integration SDK is used.
      *
-     * @param      $json
-     * @param bool $assoc
+     * @param string $json
+     * @param bool   $assoc
      *
      * @return mixed
      */
