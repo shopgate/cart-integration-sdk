@@ -33,14 +33,14 @@
  * @method          setReduction(float $value)
  * @method float    getReduction()
  *
- * @method            setCustomerGroupUid(int $value)
- * @method int        getCustomerGroupUid()
+ * @method          setCustomerGroupUid(int $value)
+ * @method int      getCustomerGroupUid()
  *
- * @method            setToQuantity(int $value)
- * @method int        getToQuantity()
+ * @method          setToQuantity(int $value)
+ * @method int      getToQuantity()
  *
- * @method            setAggregateChildren(bool $value)
- * @method bool        getAggregateChildren()
+ * @method          setAggregateChildren(bool $value)
+ * @method bool     getAggregateChildren()
  */
 class Shopgate_Model_Catalog_TierPrice extends Shopgate_Model_AbstractExport
 {

@@ -21,9 +21,6 @@
  */
 class Shopgate_Model_XmlResultObject extends SimpleXMLElement
 {
-    /**
-     * define default main node
-     */
     const DEFAULT_MAIN_NODE = '<items></items>';
     /**
      * finds all characters that are not allowed in XML
