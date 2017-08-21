@@ -513,7 +513,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 * add the parameter "keep_debug_log" to incoming requests to prevent the debug log file from being discarded
 
 ## [2.1.26]
-* conersion of encodings is now performed via iconv if the mb_string extension for PHP is not installed
+* conversion of encodings is now performed via iconv if the mb_string extension for PHP is not installed
 * implemented logic to handle processing of file-based global and language dependend configurations
 
 ## [2.1.25]

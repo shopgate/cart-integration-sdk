@@ -3828,8 +3828,8 @@ interface ShopgateConfigInterface
     public function setIsShopgateAdapter($value);
 
     /**
-     * @param array                   <int, string> $value an array with a list of get params which are allowed to
-     *                                passthrough to the mobile device on redirect
+     * @param array <int, string> $value an array with a list of get params which are allowed to
+     *              passthrough to the mobile device on redirect
      */
     public function setRedirectableGetParams($value);
 
