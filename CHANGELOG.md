@@ -610,7 +610,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 * fixed error in use of old configuration
 * added changelog.txt
 
-[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.66...HEAD
+[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.67...HEAD
 [2.9.67]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.66...2.9.67
 [2.9.66]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.65...2.9.66
 [2.9.65]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.64...2.9.65
