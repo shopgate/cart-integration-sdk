@@ -1,34 +1,33 @@
-# Shopgate Library
+# Shopgate Cart Integration SDK
 
 [![GitHub license](http://dmlc.github.io/img/apache2.svg)](./LICENSE)
+[![Build Status](https://travis-ci.org/shopgate/cart-integration-sdk.svg?branch=master)](https://travis-ci.org/shopgate/cart-integration-sdk)
 
-The Shopgate Library is a compilation of classes to manage the communication between your shop system and Shopgate via the Shopgate Plugin API and the Shopgate Merchant API. The Library provides methods for processing incoming and outgoing requests, configuration options and for handling errors. 
+The Shopgate Cart Integration SDK (formerly: Shopgate Library) is a compilation of classes to manage the communication between your shop system and Shopgate via the Shopgate Plugin API and the Shopgate Merchant API. The SDK provides methods for processing incoming and outgoing requests, configuration options and for handling errors. 
 
 ## Getting Started
 #### Via Composer
-```composer require shopgate/library```
+```composer require shopgate/cart-integration-sdk```
 
 #### Manually
 Download and unzip the latest package from http://files.shopgate.com/plugins/shopgate_library.zip.
 
 Include ```shopgate.php``` from the root folder of the package:
 
-```require_once 'vendor/shopgate_library/shopgate.php';```
+```require_once 'shopgate-cart-integration-sdk/shopgate.php';```
 
 ## Developing a Shopgate Integration
-If you want to know more about how the Shopgate Library works have a look into the [documentation](http://developer.shopgate.com/library).
+If you want to know more about how the Shopgate Cart Integration SDK works have a look into the [documentation](http://developer.shopgate.com/library).
 
 Wanna see all the code? Try the [example plugin](http://developer.shopgate.com/example_plugin).
 
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) file for more information.
+
 ## Contributing
 
-Contributions to the integration are welcome and encouraged!
-
-1. Fork the project and clone locally.
-1. Create a branch for every change you plan to have applied.
-1. Make *small* commits with *comprehensive* commit messages.
-1. Create a pull request for Shopgate to review.
-1. Monitor and respond to any feed back that may be given prior to merging.
+See [CONTRIBUTING.md](CONTRIBUTING.md) file for more information.
 
 ## About Shopgate
 
@@ -38,6 +37,6 @@ Shopgate offers everything online retailers need to be successful in mobile. Our
 
 ## License
 
-The Shopgate Library is available under the Apache License, Version 2.0.
+The Shopgate Cart Integration SDK is available under the Apache License, Version 2.0.
 
-See the [LICENSE.md](./LICENSE.md) file for more information.
+See the [LICENSE.md](LICENSE.md) file for more information.

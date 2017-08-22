@@ -28,31 +28,31 @@ class ShopgateTestClass
     private function methodPrivate($one)
     {
     }
-    
+
     protected function methodProtected($one)
     {
     }
-    
+
     public function methodWithNoParameters()
     {
     }
-    
+
     public function methodWithOneParameter($one)
     {
     }
-    
+
     public function methodWithTwoParameters($one, $two = 'optional')
     {
     }
-    
+
     public function methodWithDefaultBooleanParameters($one = true, $two = false)
     {
     }
-    
+
     public function methodWithDefaultArrayParameter($one = array())
     {
     }
-    
+
     public function methodWithDefaultNullParameter($one = null)
     {
     }
