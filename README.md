@@ -10,7 +10,7 @@ The Shopgate Cart Integration SDK (formerly: Shopgate Library) is a compilation 
 ```composer require shopgate/cart-integration-sdk```
 
 #### Manually
-Download and unzip the latest package from http://files.shopgate.com/plugins/shopgate_library.zip.
+Download and unzip the [latest releases](https://github.com/shopgate/cart-integration-sdk/releases/latest).
 
 Include ```shopgate.php``` from the root folder of the package:
 
