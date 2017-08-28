@@ -90,7 +90,7 @@ class ShopgateObjectTest extends PHPUnit_Framework_TestCase
             ),
             'serialized string' => array(
                 null,
-                serialize(array('testKey' => 'testValue')),
+                'a:1:{s:7:"testKey";s:9:"testValue";}',
             ),
         );
     }
