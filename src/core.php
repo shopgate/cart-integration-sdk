@@ -1255,12 +1255,17 @@ abstract class ShopgateObject
             }
         }
 
-        return \Zend\Json\Decoder::decode(
-            $json,
-            $assoc
-                ? \Zend\Json\Json::TYPE_ARRAY
-                : \Zend\Json\Json::TYPE_OBJECT
-        );
+        try {
+            return \Zend\Json\Decoder::decode(
+                $json,
+                $assoc
+                    ? \Zend\Json\Json::TYPE_ARRAY
+                    : \Zend\Json\Json::TYPE_OBJECT
+            );
+        } catch (Exception $exception) {
+            // if a string is no valid json this call will throw Zend\Json\Exception\RuntimeException
+            return null;
+        }
     }
 
     /**
