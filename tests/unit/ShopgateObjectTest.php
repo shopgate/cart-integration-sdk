@@ -64,7 +64,7 @@ class ShopgateObjectTest extends PHPUnit_Framework_TestCase
                 null,
                 'abcd',
             ),
-            'quotted string'            => array(
+            'quoted string'            => array(
                 'abcd',
                 '"abcd"',
             ),
