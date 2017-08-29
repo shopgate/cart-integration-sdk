@@ -1219,7 +1219,7 @@ abstract class ShopgateObject
      *
      * @param mixed $value
      *
-     * @return string
+     * @return string | bool in case an error happened false will be returned
      */
     public function jsonEncode($value)
     {
@@ -1231,7 +1231,11 @@ abstract class ShopgateObject
             }
         }
 
-        return \Zend\Json\Encoder::encode($value);
+        try {
+            return \Zend\Json\Encoder::encode($value);
+        } catch (Exception $exception) {
+            return false;
+        }
     }
 
     /**
@@ -1255,12 +1259,17 @@ abstract class ShopgateObject
             }
         }
 
-        return \Zend\Json\Decoder::decode(
-            $json,
-            $assoc
-                ? \Zend\Json\Json::TYPE_ARRAY
-                : \Zend\Json\Json::TYPE_OBJECT
-        );
+        try {
+            return \Zend\Json\Decoder::decode(
+                $json,
+                $assoc
+                    ? \Zend\Json\Json::TYPE_ARRAY
+                    : \Zend\Json\Json::TYPE_OBJECT
+            );
+        } catch (Exception $exception) {
+            // if a string is no valid json this call will throw Zend\Json\Exception\RuntimeException
+            return null;
+        }
     }
 
     /**
