@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [2.9.68] - 2017-08-29
 ### Changed
 - fixed a bug in class ShopgateObject method jsonDecode
 
@@ -612,7 +614,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - fixed error in use of old configuration
 - added changelog.txt
 
-[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.67...HEAD
+[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.68...HEAD
+[2.9.68]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.67...2.9.68
 [2.9.67]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.66...2.9.67
 [2.9.66]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.65...2.9.66
 [2.9.65]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.64...2.9.65
