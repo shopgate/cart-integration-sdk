@@ -1219,7 +1219,7 @@ abstract class ShopgateObject
      *
      * @param mixed $value
      *
-     * @return string
+     * @return string | bool in case an error happened false will be returned
      */
     public function jsonEncode($value)
     {
@@ -1234,7 +1234,7 @@ abstract class ShopgateObject
         try {
             return \Zend\Json\Encoder::encode($value);
         } catch (Exception $exception) {
-            return null;
+            return false;
         }
     }
 
