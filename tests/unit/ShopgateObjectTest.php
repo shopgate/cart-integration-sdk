@@ -64,6 +64,10 @@ class ShopgateObjectTest extends PHPUnit_Framework_TestCase
                 null,
                 'abcd',
             ),
+            'quotted string'            => array(
+                'abcd',
+                '"abcd"',
+            ),
             'integer'           => array(
                 123,
                 123,
@@ -90,6 +94,66 @@ class ShopgateObjectTest extends PHPUnit_Framework_TestCase
             ),
             'serialized string' => array(
                 null,
+                'a:1:{s:7:"testKey";s:9:"testValue";}',
+            ),
+        );
+    }
+
+    /**
+     * @param bool  $expectedResult
+     * @param mixed $input
+     *
+     * @dataProvider provideJsonEncodeExamples
+     */
+    public function testJsonEncode($expectedResult, $input)
+    {
+        $this->assertEquals($expectedResult, $this->subjectUnderTest->jsonEncode($input));
+    }
+
+    /**
+     * @return array
+     */
+    public function provideJsonEncodeExamples()
+    {
+        return array(
+            'integer - zero'    => array(
+                '0',
+                0,
+            ),
+            'empty string'      => array(
+                '""',
+                '',
+            ),
+            'string'            => array(
+                '"abcd"',
+                'abcd',
+            ),
+            'integer'           => array(
+                '123',
+                123,
+            ),
+            'float'             => array(
+                '2.5',
+                2.5,
+            ),
+            'bool - true'       => array(
+                'true',
+                true,
+            ),
+            'bool - false'      => array(
+                'false',
+                false,
+            ),
+            'null'              => array(
+                'null',
+                null,
+            ),
+            'array'             => array(
+                '[]',
+                array(),
+            ),
+            'serialized string' => array(
+                '"a:1:{s:7:\"testKey\";s:9:\"testValue\";}"',
                 'a:1:{s:7:"testKey";s:9:"testValue";}',
             ),
         );

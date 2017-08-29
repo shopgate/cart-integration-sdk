@@ -1231,7 +1231,11 @@ abstract class ShopgateObject
             }
         }
 
-        return \Zend\Json\Encoder::encode($value);
+        try {
+            return \Zend\Json\Encoder::encode($value);
+        } catch (Exception $exception) {
+            return null;
+        }
     }
 
     /**
