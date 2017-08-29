@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 ### Changed
-* fixed a bug in class ShopgateObject method JsonDecode
+* fixed a bug in class ShopgateObject method jsonDecode
 
 ## [2.9.67] - 2017-08-22
 ### Changed
