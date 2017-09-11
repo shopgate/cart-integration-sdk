@@ -686,6 +686,8 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
      * If $data is empty or not an array, the method calls $this->loadFile().
      *
      * @param $data array<string, mixed> The data to be assigned to the configuration.
+     *
+     * @return void
      */
     public function loadArray(array $data = array())
     {
@@ -803,6 +805,8 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
      * Loads the configuration file by a given language or the global configuration file.
      *
      * @param string|null $language the ISO-639 code of the language or null to load global configuration
+     *
+     * @throws ShopgateLibraryException
      */
     public function loadByLanguage($language)
     {
@@ -945,8 +949,6 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
      * This checks all files in the configuration folder and shop numbers in all
      * configuration files.
      *
-     * @param string $shopNumber The shop number to test or null to test all shop numbers found.
-     *
      * @return bool true if there are duplicates, false otherwise.
      */
     public function checkDuplicates()
@@ -1081,7 +1083,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
      *
      * @return string[] The list of fields that failed validation or an empty array if validation was successful.
      */
-    protected function validateCustom(array $fieldList = array())
+    protected function validateCustom(/** @noinspection PhpUnusedParameterInspection */ array $fieldList = array())
     {
         return array();
     }
@@ -2255,6 +2257,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
         // try including the file
         if (file_exists($path)) {
             ob_start();
+            /** @noinspection PhpIncludeInspection */
             include($path);
             ob_end_clean();
         } else {
