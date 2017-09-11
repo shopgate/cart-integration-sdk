@@ -653,6 +653,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
         return false;
     }
 
+    public function buildConfigFilePath($fileName = self::DEFAULT_CONFIGURATION_FILE_NAME)
+    {
+        return $this->config_folder_path . DS . $fileName;
+    }
+
     public function load(array $settings = null)
     {
         $this->loadArray($settings);
@@ -2823,6 +2828,16 @@ interface ShopgateConfigInterface
     const SHOPGATE_FILE_PREFIX                      = 'shopgate_';
     const DEFAULT_MEMORY_LIMIT                      = -1;
     const DEFAULT_EXECUTION_TIME                    = 0;
+    const DEFAULT_CONFIGURATION_FILE_NAME           = 'myconfig.php';
+
+    /**
+     * Builds the path to the configuration file using the passed file name or a default file name.
+     *
+     * @param string $fileName
+     *
+     * @return string
+     */
+    public function buildConfigFilePath($fileName = self::DEFAULT_CONFIGURATION_FILE_NAME);
 
     /**
      * Loads an array of key-value pairs or a permanent storage.
