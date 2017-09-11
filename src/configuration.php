@@ -37,6 +37,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 
     /**
      * @var string The path to the folder where the config file(s) are saved.
+     * @deprecated 2.9.67 Use ShopgateConfig::buildConfigFilePath() instead.
      */
     protected $config_folder_path;
 
@@ -591,6 +592,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
         $this->export_buffer_capacity = 100;
         $this->max_attributes         = 50;
 
+        /** @noinspection PhpDeprecationInspection */
         $this->config_folder_path = SHOPGATE_BASE_DIR . DS . 'config';
 
         $this->export_folder_path = SHOPGATE_BASE_DIR . DS . 'temp';
@@ -655,6 +657,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 
     public function buildConfigFilePath($fileName = self::DEFAULT_CONFIGURATION_FILE_NAME)
     {
+        /** @noinspection PhpDeprecationInspection */
         return $this->config_folder_path . DS . $fileName;
     }
 
@@ -735,7 +738,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
             }
         } else {
             // try myconfig.php
-            $config = $this->includeFile($this->config_folder_path . DS . 'myconfig.php');
+            $config = $this->includeFile($this->buildConfigFilePath());
 
             // if unsuccessful, use default configuration values
             if (!$config) {
@@ -766,17 +769,19 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 
         // find all config files
         $configFile = null;
-        $files      = scandir($this->config_folder_path);
+        $files      = scandir($this->buildConfigFilePath());
         ob_start();
         foreach ($files as $file) {
-            if (!is_file($this->config_folder_path . DS . $file)) {
+            if (!is_file($this->buildConfigFilePath($file))) {
                 continue;
             }
 
             $shopgate_config = null;
-            include($this->config_folder_path . DS . $file);
-            if (isset($shopgate_config) && isset($shopgate_config['shop_number']) && ($shopgate_config['shop_number'] == $shopNumber)) {
-                $configFile = $this->config_folder_path . DS . $file;
+            /** @noinspection PhpIncludeInspection */
+            include($this->buildConfigFilePath($file));
+            if (isset($shopgate_config) && isset($shopgate_config['shop_number'])
+                && ($shopgate_config['shop_number'] == $shopNumber)) {
+                $configFile = $this->buildConfigFilePath($file);
                 break;
             }
         }
@@ -810,7 +815,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
             );
         }
 
-        $this->loadFile($this->config_folder_path . DS . 'myconfig-' . $language . '.php');
+        $this->loadFile($this->buildConfigFilePath('myconfig-' . $language . '.php'));
         $this->initFileNames();
     }
 
@@ -900,7 +905,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 
         // if necessary point $path to  myconfig.php
         if (empty($path)) {
-            $path = $this->config_folder_path . DS . 'myconfig.php';
+            $path = $this->buildConfigFilePath();
         }
 
         // create the array definition string and save it to the file
@@ -928,7 +933,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
         if (!is_null($language)) {
             $this->setLanguage($language);
             $fieldList[] = 'language';
-            $fileName    = $this->config_folder_path . DS . 'myconfig-' . $language . '.php';
+            $fileName    = $this->buildConfigFilePath('myconfig-' . $language . '.php');
         }
 
         $this->saveFile($fieldList, $fileName, $validate);
@@ -947,15 +952,16 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
     public function checkDuplicates()
     {
         $shopNumbers = array();
-        $files       = scandir($this->config_folder_path);
+        $files       = scandir(dirname($this->buildConfigFilePath()));
 
         foreach ($files as $file) {
-            if (!is_file($this->config_folder_path . DS . $file)) {
+            if (!is_file($this->buildConfigFilePath($file))) {
                 continue;
             }
 
             $shopgate_config = null;
-            include($this->config_folder_path . DS . $file);
+            /** @noinspection PhpIncludeInspection */
+            include($this->buildConfigFilePath($file));
             if (isset($shopgate_config) && isset($shopgate_config['shop_number'])) {
                 if (in_array($shopgate_config['shop_number'], $shopNumbers)) {
                     return true;
@@ -975,11 +981,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
      */
     public function checkMultipleConfigs()
     {
-        $files   = scandir($this->config_folder_path);
+        $files   = scandir(dirname($this->buildConfigFilePath()));
         $counter = 0;
 
         foreach ($files as $file) {
-            if (!is_file($this->config_folder_path . DS . $file)) {
+            if (!is_file($this->buildConfigFilePath($file))) {
                 continue;
             }
 
@@ -988,7 +994,8 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
             }
 
             ob_start();
-            include($this->config_folder_path . DS . $file);
+            /** @noinspection PhpIncludeInspection */
+            include($this->buildConfigFilePath($file));
             ob_end_clean();
             if (!isset($shopgate_config)) {
                 continue;
@@ -1010,7 +1017,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
      */
     public function checkUseGlobalFor($language)
     {
-        return !file_exists($this->config_folder_path . DS . 'myconfig-' . $language . '.php');
+        return !file_exists($this->buildConfigFilePath('myconfig-' . $language . '.php'));
     }
 
     /**
@@ -1022,7 +1029,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
      */
     public function useGlobalFor($language)
     {
-        $fileName = $this->config_folder_path . DS . 'myconfig-' . $language . '.php';
+        $fileName = $this->buildConfigFilePath('myconfig-' . $language . '.php');
         if (file_exists($fileName)) {
             if (!@unlink($fileName)) {
                 throw new ShopgateLibraryException(
