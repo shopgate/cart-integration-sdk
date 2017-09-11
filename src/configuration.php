@@ -37,7 +37,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 
     /**
      * @var string The path to the folder where the config file(s) are saved.
-     * @deprecated 2.9.67 Use ShopgateConfig::buildConfigFilePath() instead.
+     * @deprecated 2.9.69 Use ShopgateConfig::buildConfigFilePath() instead.
      */
     protected $config_folder_path;
 
