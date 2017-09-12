@@ -9,8 +9,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - ShopgateConfigInterface::buildConfigFilePath()
 - ShopgateConfig::buildConfigFilePath()
 
-### Changed
-- deprecated ShopgateConfig::$config_folder_path, use ShopgateConfigInterface::buildConfigFilePath() instead
+### Deprecated
+- ShopgateConfig::$config_folder_path, use ShopgateConfigInterface::buildConfigFilePath() instead
 
 ## [2.9.68] - 2017-08-29
 ### Changed
