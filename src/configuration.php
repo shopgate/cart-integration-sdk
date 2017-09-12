@@ -771,7 +771,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 
         // find all config files
         $configFile = null;
-        $files      = scandir($this->buildConfigFilePath());
+        $files      = scandir(dirname($this->buildConfigFilePath()));
         ob_start();
         foreach ($files as $file) {
             if (!is_file($this->buildConfigFilePath($file))) {
