@@ -1083,8 +1083,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
      *
      * @return string[] The list of fields that failed validation or an empty array if validation was successful.
      */
-    protected function validateCustom(/** @noinspection PhpUnusedParameterInspection */ array $fieldList = array())
-    {
+    protected function validateCustom(
+        /** @noinspection PhpUnusedParameterInspection */
+        array $fieldList = array()
+    ) {
         return array();
     }
 
