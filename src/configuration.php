@@ -907,7 +907,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
         // merge old config with new values
         $newConfig = array_merge($this->toArray(), $saveFields);
 
-        // if necessary point $path to  myconfig.php
+        // default if no path to the configuration file is set
         if (empty($path)) {
             $path = $this->buildConfigFilePath();
         }
