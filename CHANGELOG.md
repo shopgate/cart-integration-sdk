@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+- ShopgateConfigInterface::buildConfigFilePath()
+- ShopgateConfig::buildConfigFilePath()
+
+### Deprecated
+- ShopgateConfig::$config_folder_path, use ShopgateConfigInterface::buildConfigFilePath() instead
 
 ## [2.9.68] - 2017-08-29
 ### Changed
