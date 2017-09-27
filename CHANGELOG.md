@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+### Changed
+- modified _.htaccess_ file to support Apache 2.4 module _mod_authz_core_
+
 ## [2.9.69] - 2017-09-13
 ### Added
 - ShopgateConfigInterface::buildConfigFilePath()
