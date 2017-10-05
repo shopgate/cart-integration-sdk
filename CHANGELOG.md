@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+- ShopgateCartBase::BRAINTR_PP
 
 ### Changed
 - modified _.htaccess_ file to support Apache 2.4 module _mod_authz_core_
