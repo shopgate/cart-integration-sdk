@@ -31,7 +31,7 @@ use shopgate\cart_integration_sdk\tests\helper\ShopgateTestCase;
  */
 class ShopgatePluginApiTest extends ShopgateTestCase
 {
-    static private $cronJobWhiteList = array(
+    private static $cronJobWhiteList = array(
         \ShopgatePluginApi::JOB_CANCEL_ORDERS,
         \ShopgatePluginApi::JOB_SET_SHIPPING_COMPLETED,
     );
