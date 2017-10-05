@@ -22,7 +22,7 @@
 
 namespace shopgate\cart_integration_sdk\tests\unit\logging\strategy;
 
-class Shopgate_Helper_Logging_Strategy_DefaultLoggingTest extends \PHPUnit_Framework_TestCase
+class DefaultLoggingTest extends \PHPUnit_Framework_TestCase
 {
     /** @var \Shopgate_Helper_Logging_Strategy_DefaultLogging */
     private $defaultLoggingStrategy;

@@ -22,7 +22,7 @@
 
 namespace shopgate\cart_integration_sdk\tests\unit\logging\stack_trace;
 
-class Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderReflectionTest extends \PHPUnit_Framework_TestCase
+class NamedParameterProviderReflectionTest extends \PHPUnit_Framework_TestCase
 {
     /** @var \Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderReflection */
     protected $subjectUnderTest;

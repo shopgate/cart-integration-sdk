@@ -28,7 +28,7 @@ namespace shopgate\cart_integration_sdk\tests\unit\redirect;
  *
  * @coversDefaultClass Shopgate_Helper_Redirect_TemplateParser
  */
-class Shopgate_Helper_Redirect_TemplateParserTest extends \PHPUnit_Framework_TestCase
+class TemplateParserTest extends \PHPUnit_Framework_TestCase
 {
     /** @var \Shopgate_Helper_Redirect_TemplateParser $class */
     protected $class;

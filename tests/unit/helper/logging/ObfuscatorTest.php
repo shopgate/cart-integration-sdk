@@ -22,7 +22,7 @@
 
 namespace shopgate\cart_integration_sdk\tests\unit\logging;
 
-class Shopgate_Helper_Logging_ObfuscatorTest extends \PHPUnit_Framework_TestCase
+class ObfuscatorTest extends \PHPUnit_Framework_TestCase
 {
     /** @var \Shopgate_Helper_Logging_Obfuscator */
     private $obfuscator;

@@ -22,7 +22,7 @@
 
 namespace shopgate\cart_integration_sdk\tests\unit\redirect;
 
-class Shopgate_Helper_Redirect_KeywordsManagerTest extends \PHPUnit_Framework_TestCase
+class KeywordsManagerTest extends \PHPUnit_Framework_TestCase
 {
     /** @var \ShopgateMerchantApiInterface|\PHPUnit_Framework_MockObject_MockObject $merchantApi */
     protected $merchantApi;

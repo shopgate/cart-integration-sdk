@@ -24,7 +24,7 @@ namespace shopgate\cart_integration_sdk\tests\unit\logging\stack_trace;
 
 use shopgate\cart_integration_sdk\tests\fixtures\helper\logging\stack_trace\Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTestFixtureBuilder;
 
-class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTest extends \PHPUnit_Framework_TestCase
+class GeneratorDefaultTest extends \PHPUnit_Framework_TestCase
 {
     /** @var \PHPUnit_Framework_MockObject_MockObject|\Shopgate_Helper_Logging_Obfuscator */
     protected $obfuscator;

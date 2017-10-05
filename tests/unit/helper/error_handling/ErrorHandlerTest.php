@@ -22,7 +22,7 @@
 
 namespace shopgate\cart_integration_sdk\tests\unit\error_handling;
 
-class Shopgate_Helper_Error_Handling_ErrorHandlerTest extends \PHPUnit_Framework_TestCase
+class ErrorHandlerTest extends \PHPUnit_Framework_TestCase
 {
     /** @var \PHPUnit_Framework_MockObject_MockObject|\Shopgate_Helper_Logging_Stack_Trace_GeneratorInterface */
     protected $stackTraceGenerator;
