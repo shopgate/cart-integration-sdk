@@ -409,22 +409,22 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
     }
 
     /**
-     * @param array $cronbJobs
+     * @param array $cronJobs
      *
      * @return bool
      */
-    protected function containsOnlyAllowedCronJobs(array $cronbJobs)
+    protected function containsOnlyAllowedCronJobs(array $cronJobs)
     {
         $validCronJobs = true;
 
-        if (empty($cronbJobs)) {
+        if (empty($cronJobs)) {
             return $validCronJobs;
         }
 
-        foreach ($cronbJobs as $cronbJob) {
+        foreach ($cronJobs as $cronJob) {
             if (
-                empty($cronbJob['job_name'])
-                || !in_array($cronbJob['job_name'], $this->cronJobWhiteList)
+                empty($cronJob['job_name'])
+                || !in_array($cronJob['job_name'], $this->cronJobWhiteList)
             ) {
                 $validCronJobs = false;
                 break;
