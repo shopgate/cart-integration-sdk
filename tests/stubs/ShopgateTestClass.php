@@ -19,6 +19,9 @@
  * @copyright Shopgate Inc
  * @license   http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  */
+
+namespace shopgate\cart_integration_sdk\tests\stubs;
+
 class ShopgateTestClass
 {
     /** @noinspection PhpUnusedPrivateMethodInspection */
