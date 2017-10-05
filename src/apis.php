@@ -424,7 +424,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
         foreach ($cronbJobs as $cronbJob) {
             if (
                 empty($cronbJob['job_name'])
-                ||!in_array($cronbJob['job_name'], $this->cronJobWhiteList)
+                || !in_array($cronbJob['job_name'], $this->cronJobWhiteList)
             ) {
                 $validCronJobs = false;
                 break;
