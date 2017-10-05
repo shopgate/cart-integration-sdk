@@ -102,9 +102,7 @@ class ShopgatePluginApiTest extends ShopgateTestCase
     {
         return array(
             'unknown job'                 => array(
-                array(
-                    $this->getJobsStrctured(array('unknown job')),
-                ),
+                $this->getJobsStrctured(array('unknown job')),
             ),
             'unknown jobs'                => array(
                 $this->getJobsStrctured(array('unknown job #1', 'unknown job #2')),
