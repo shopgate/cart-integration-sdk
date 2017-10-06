@@ -45,6 +45,9 @@ class ShopgatePluginApiTest extends ShopgateTestCase
     /** @var \ShopgateAuthenticationServiceInterface|\PHPUnit_Framework_MockObject_MockObject $authenticationServiceMock */
     private $authenticationServiceMock;
 
+    /** @var \ShopgatePlugin|\PHPUnit_Framework_MockObject_MockObject */
+    private $shopgatePluginMock;
+
     public function setUp()
     {
         $this->shopgateConfigMock =
@@ -61,11 +64,14 @@ class ShopgatePluginApiTest extends ShopgateTestCase
             $this->getMockBuilder('\ShopgateMerchantApiInterface')->getMockForAbstractClass();
 
         /** @var \ShopgatePlugin $shopgatePluginMock */
-        $shopgatePluginMock =
+        $this->shopgatePluginMock =
             $this->getMockBuilder('\ShopgatePlugin')->disableOriginalConstructor()->getMock();
 
         $this->subjectUnderTest = new \ShopgatePluginApi(
-            $this->shopgateConfigMock, $this->authenticationServiceMock, $shopgateMerchantApiMock, $shopgatePluginMock
+            $this->shopgateConfigMock,
+            $this->authenticationServiceMock,
+            $shopgateMerchantApiMock,
+            $this->shopgatePluginMock
         );
     }
 
@@ -77,6 +83,8 @@ class ShopgatePluginApiTest extends ShopgateTestCase
      */
     public function testHandleRequestMethodCronThrowsUnsupportedJobsException($expectedErrorText, array $cronJobs)
     {
+        $this->shopgatePluginMock->expects($this->never())->method('cron');
+
         ob_start();
         $this->subjectUnderTest->handleRequest(array('action' => 'cron', 'jobs' => $cronJobs));
         $json = ob_get_clean();
@@ -132,12 +140,15 @@ class ShopgatePluginApiTest extends ShopgateTestCase
     }
 
     /**
+     * @param int   $expectedNumberOfCronCalls
      * @param array $cronJobs
      *
      * @dataProvider provideSupportedCronJobs
      */
-    public function testHandleRequestMethodCron(array $cronJobs)
+    public function testHandleRequestMethodCron($expectedNumberOfCronCalls, array $cronJobs)
     {
+        $this->shopgatePluginMock->expects($this->exactly($expectedNumberOfCronCalls))->method('cron');
+
         ob_start();
         $this->subjectUnderTest->handleRequest(array('action' => 'cron', 'jobs' => $cronJobs));
         $json = ob_get_clean();
@@ -157,9 +168,11 @@ class ShopgatePluginApiTest extends ShopgateTestCase
     {
         return array(
             'one supported job'  => array(
+                1,
                 $this->getJobsStructured(array(\ShopgatePluginApi::JOB_SET_SHIPPING_COMPLETED)),
             ),
             'two supported jobs' => array(
+                2,
                 $this->getJobsStructured(
                     array(\ShopgatePluginApi::JOB_CANCEL_ORDERS, \ShopgatePluginApi::JOB_SET_SHIPPING_COMPLETED)
                 ),
