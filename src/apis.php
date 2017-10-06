@@ -353,8 +353,13 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
             throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_API_CRON_NO_JOBS);
         }
 
-        if (!$this->containsOnlyAllowedCronJobs($this->params['jobs'])) {
-            throw new ShopgateLibraryException(ShopgateLibraryException::PLUGIN_CRON_UNSUPPORTED_JOB);
+        $unknownJobs = $this->getUnknownCronJobs($this->params['jobs']);
+        if (!empty($unknownJobs)) {
+            throw new ShopgateLibraryException(
+                ShopgateLibraryException::PLUGIN_CRON_UNSUPPORTED_JOB,
+                implode(', ', $unknownJobs),
+                true
+            );
         }
 
         // time tracking
@@ -407,13 +412,13 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
     /**
      * @param array $cronJobs
      *
-     * @return bool
+     * @return array
      *
      * @throws ShopgateLibraryException
      */
-    protected function containsOnlyAllowedCronJobs(array $cronJobs)
+    protected function getUnknownCronJobs(array $cronJobs)
     {
-        $validCronJobs = true;
+        $unknownCronJobs = array();
 
         foreach ($cronJobs as $cronJob) {
             if (empty($cronJob['job_name'])) {
@@ -421,12 +426,11 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
             }
 
             if (!in_array($cronJob['job_name'], $this->cronJobWhiteList, true)) {
-                $validCronJobs = false;
-                break;
+                $unknownCronJobs[] = $cronJob['job_name'];
             }
         }
 
-        return $validCronJobs;
+        return $unknownCronJobs;
     }
 
     /**

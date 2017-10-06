@@ -50,9 +50,11 @@ class ShopgatePluginApiTest extends ShopgateTestCase
         $this->shopgateConfigMock =
             $this->getMockBuilder('\ShopgateConfigInterface')->getMockForAbstractClass();
         $this->shopgateConfigMock->method('getCronJobWhiteList')->willReturn(self::$cronJobWhiteList);
+        $this->shopgateConfigMock->method('toArray')->willReturn(array('enable_cron' => true));
 
         $this->authenticationServiceMock =
             $this->getMockBuilder('\ShopgateAuthenticationServiceInterface')->getMockForAbstractClass();
+        $this->authenticationServiceMock->method('checkAuthentication')->willReturn(true);
 
         /** @var \ShopgateMerchantApiInterface $shopgateMerchantApiMock */
         $shopgateMerchantApiMock =
@@ -68,16 +70,13 @@ class ShopgatePluginApiTest extends ShopgateTestCase
     }
 
     /**
-     * @param array $cronJobs
+     * @param string $expectedErrorText
+     * @param array  $cronJobs
      *
      * @dataProvider provideUnsupportedCronJobs
      */
-    public function testHandleRequestMethodCronThrowsUnsupportedJobsException(array $cronJobs)
+    public function testHandleRequestMethodCronThrowsUnsupportedJobsException($expectedErrorText, array $cronJobs)
     {
-        $this->shopgateConfigMock->method('toArray')->willReturn(array('enable_cron' => true));
-
-        $this->authenticationServiceMock->method('checkAuthentication')->willReturn(true);
-
         ob_start();
         $this->subjectUnderTest->handleRequest(array('action' => 'cron', 'jobs' => $cronJobs));
         $json = ob_get_clean();
@@ -91,7 +90,7 @@ class ShopgatePluginApiTest extends ShopgateTestCase
 
         $this->assertEquals(
             $response['error_text'],
-            'unsupported job'
+            $expectedErrorText
         );
     }
 
@@ -102,13 +101,16 @@ class ShopgatePluginApiTest extends ShopgateTestCase
     {
         return array(
             'unknown job'                 => array(
-                $this->getJobsStrctured(array('unknown job')),
+                'unsupported job: unknown job',
+                $this->getJobsStructured(array('unknown job')),
             ),
             'unknown jobs'                => array(
-                $this->getJobsStrctured(array('unknown job #1', 'unknown job #2')),
+                'unsupported job: unknown job #1, unknown job #2',
+                $this->getJobsStructured(array('unknown job #1', 'unknown job #2')),
             ),
             'known jobs with unknown job' => array(
-                $this->getJobsStrctured(
+                'unsupported job: unknown job #1',
+                $this->getJobsStructured(
                     array(
                         \ShopgatePluginApi::JOB_CANCEL_ORDERS,
                         \ShopgatePluginApi::JOB_SET_SHIPPING_COMPLETED,
@@ -117,7 +119,8 @@ class ShopgatePluginApiTest extends ShopgateTestCase
                 ),
             ),
             'unknown job with known jobs' => array(
-                $this->getJobsStrctured(
+                'unsupported job: unknown job #1',
+                $this->getJobsStructured(
                     array(
                         'unknown job #1',
                         \ShopgatePluginApi::JOB_CANCEL_ORDERS,
@@ -135,10 +138,6 @@ class ShopgatePluginApiTest extends ShopgateTestCase
      */
     public function testHandleRequestMethodCron(array $cronJobs)
     {
-        $this->shopgateConfigMock->method('toArray')->willReturn(array('enable_cron' => true));
-
-        $this->authenticationServiceMock->method('checkAuthentication')->willReturn(true);
-
         ob_start();
         $this->subjectUnderTest->handleRequest(array('action' => 'cron', 'jobs' => $cronJobs));
         $json = ob_get_clean();
@@ -158,10 +157,10 @@ class ShopgatePluginApiTest extends ShopgateTestCase
     {
         return array(
             'one supported job'  => array(
-                $this->getJobsStrctured(array(\ShopgatePluginApi::JOB_SET_SHIPPING_COMPLETED)),
+                $this->getJobsStructured(array(\ShopgatePluginApi::JOB_SET_SHIPPING_COMPLETED)),
             ),
             'two supported jobs' => array(
-                $this->getJobsStrctured(
+                $this->getJobsStructured(
                     array(\ShopgatePluginApi::JOB_CANCEL_ORDERS, \ShopgatePluginApi::JOB_SET_SHIPPING_COMPLETED)
                 ),
             ),
@@ -173,7 +172,7 @@ class ShopgatePluginApiTest extends ShopgateTestCase
      *
      * @return array
      */
-    private function getJobsStrctured(array $jobs)
+    private function getJobsStructured(array $jobs)
     {
         $jobsStructured = array();
         foreach ($jobs as $job) {
