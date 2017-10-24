@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-## [2.9.70] - 2017-09-13
+## [2.9.70] - 2017-10-24
 ### Added
 - ShopgateCartBase::BRAINTR_PP
 - white list for jobs in method cron
