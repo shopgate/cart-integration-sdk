@@ -2176,6 +2176,8 @@ class ShopgateDeliveryNote extends ShopgateContainer
     const TOF        = "TOF";        // Trnas-o-Flex
     const UPS        = "UPS";        // UPS
     const USPS       = "USPS";       // USPS
+    const LAPOSTE    = "LAPOSTE";    // LAPOSTE
+    const COLL_STORE = "COLL_STORE"; // COLL_STORE
     // shipping types
     const MANUAL      = "MANUAL";
     const USPS_API_V1 = "USPS_API_V1";
