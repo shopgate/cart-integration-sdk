@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [2.9.71]
 ### Added
 - ShopgateDeliveryNote::LAPOSTE and ShopgateDeliveryNote::COLL_STORE
 
@@ -633,7 +633,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - fixed error in use of old configuration
 - added changelog.txt
 
-[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.70...HEAD
+[2.9.71]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.70...2.9.71
 [2.9.70]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.69...2.9.70
 [2.9.69]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.68...2.9.69
 [2.9.68]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.67...2.9.68
