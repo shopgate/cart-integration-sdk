@@ -627,6 +627,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
         $this->is_shopgate_adapter     = false;
         $this->redirectable_get_params = array(
             'gclid',
+            'gclsrc',
             'utm_source',
             'utm_medium',
             'utm_campaign',
