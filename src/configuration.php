@@ -633,6 +633,9 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
             'utm_campaign',
             'utm_term',
             'utm_content',
+            'courier',
+            'trackingNo',
+            'lang',
         );
         $this->html_tags               = '';
 
