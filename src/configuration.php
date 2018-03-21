@@ -159,7 +159,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 
     /**
      * @var bool true to always use SSL / HTTPS urls for download of external content (such as graphics for the mobile
-     *      header button)
+     *      header button). Content provided by Shopgate is always available via HTTPS
      */
     protected $always_use_ssl;
 
@@ -542,7 +542,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
         $this->server                         = 'live';
         $this->api_url                        = '';
         $this->shop_is_active                 = 0;
-        $this->always_use_ssl                 = 0;
+        $this->always_use_ssl                 = 0; // default should be 1, no exceptions should be made for production systems!
         $this->enable_redirect_keyword_update = 0;
         $this->enable_default_redirect        = 0;
         $this->encoding                       = 'UTF-8';
