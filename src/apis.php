@@ -1754,8 +1754,8 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
         $opt[CURLOPT_SSL_VERIFYPEER] = true; // *always* verify peers, otherwise MITM attacks are trivial
         // Use value of CURL_SSLVERSION_TLSv1_2 for CURLOPT_SSLVERSION, because it is not available before PHP 5.5.19 / 5.6.3
         // Actual usage of TLS 1.2 (which is required by PCI DSS) depends on PHP cURL extension and underlying SSL lib
-        $opt[CURLOPT_SSLVERSION]     = 6;
-        $opt[CURLOPT_HTTPHEADER]     = array(
+        $opt[CURLOPT_SSLVERSION] = 6;
+        $opt[CURLOPT_HTTPHEADER] = array(
             'X-Shopgate-Library-Version: ' . SHOPGATE_LIBRARY_VERSION,
             'X-Shopgate-Plugin-Version: ' . (defined(
                 'SHOPGATE_PLUGIN_VERSION'
@@ -1763,11 +1763,11 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
                 ? SHOPGATE_PLUGIN_VERSION
                 : 'called outside plugin'),
         );
-        $opt[CURLOPT_HTTPHEADER]     = !empty($opt[CURLOPT_HTTPHEADER])
+        $opt[CURLOPT_HTTPHEADER] = !empty($opt[CURLOPT_HTTPHEADER])
             ? ($this->authService->getAuthHttpHeaders() + $opt[CURLOPT_HTTPHEADER])
             : $this->authService->getAuthHttpHeaders();
-        $opt[CURLOPT_TIMEOUT]        = 30; // Default timeout 30sec
-        $opt[CURLOPT_POST]           = true;
+        $opt[CURLOPT_TIMEOUT]    = 30; // Default timeout 30sec
+        $opt[CURLOPT_POST]       = true;
 
         return ($override + $opt);
     }
@@ -2488,7 +2488,7 @@ class ShopgateAuthenticationServiceOAuth extends ShopgateObject implements Shopg
                     ? SHOPGATE_PLUGIN_VERSION
                     : 'called outside plugin'),
             CURLOPT_SSL_VERIFYPEER => true,
-			CURLOPT_SSLVERSION 	   => 6,
+            CURLOPT_SSLVERSION     => 6,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HTTPHEADER     => array(
                 'X-Shopgate-Library-Version: ' . SHOPGATE_LIBRARY_VERSION,
