@@ -8,3 +8,8 @@
 /.idea
 /vendor
 /.php-cs.cache
+/temp/cache
+/temp/logs
+
+!temp/cache/index.php
+!temp/logs/index.php

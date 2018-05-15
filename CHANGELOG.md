@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [2.9.74] - 2018-05-15
+### Added
+- temporary generated cache and log files to the git ignore list
+
+### Changed
+- zendframework/zend-json required version adjusted to support Magento 2
+
 ## [2.9.73] - 2018-04-10
 ### Changed
 - resources for Mobile Redirect will now always be loaded from Shopgate via https
@@ -644,7 +651,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - fixed error in use of old configuration
 - added changelog.txt
 
-[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.73...HEAD
+[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.74...HEAD
+[2.9.74]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.73...2.9.74
 [2.9.73]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.72...2.9.73
 [2.9.72]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.71...2.9.72
 [2.9.71]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.70...2.9.71
