@@ -55,7 +55,10 @@ class Shopgate_Model_XmlResultObject extends SimpleXMLElement
             $no   = $node->ownerDocument;
             if ($value != '') {
                 $value = preg_replace(self::PATTERN_INVALID_CHARS, '', $value);
-                $node->appendChild($no->createCDATASection($value));
+                $cData = $no->createCDATASection($value);
+                if (!is_null($cData) & $cData !== false) {
+                    $node->appendChild($cData);
+                }
             }
         }
 
