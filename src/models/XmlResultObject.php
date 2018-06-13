@@ -44,22 +44,23 @@ class Shopgate_Model_XmlResultObject extends SimpleXMLElement
             return null;
         }
 
-        $new_child = $this->addChild($name);
+        $newChild = $this->addChild($name);
         if ($value === Shopgate_Model_AbstractExport::SET_EMPTY) {
-            $new_child->addAttribute('forceEmpty', '1');
-            return $new_child;
+            $newChild->addAttribute('forceEmpty', '1');
+
+            return $newChild;
         }
 
-        $value     = preg_replace(self::PATTERN_INVALID_CHARS, '', $value);
-        if ($new_child !== null && $value != '') {
-            $node  = dom_import_simplexml($new_child);
+        $value = preg_replace(self::PATTERN_INVALID_CHARS, '', $value);
+        if ($newChild !== null && $value != '') {
+            $node  = dom_import_simplexml($newChild);
             $cData = $node->ownerDocument->createCDATASection($value);
             if ($cData !== null & $cData !== false) {
                 $node->appendChild($cData);
             }
         }
 
-        return $new_child;
+        return $newChild;
     }
 
     /**
