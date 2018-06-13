@@ -49,16 +49,13 @@ class Shopgate_Model_XmlResultObject extends SimpleXMLElement
             $value      = '';
         }
         $new_child = $this->addChild($name);
+        $value     = preg_replace(self::PATTERN_INVALID_CHARS, '', $value);
 
-        if ($new_child !== null) {
-            $node = dom_import_simplexml($new_child);
-            $no   = $node->ownerDocument;
-            if ($value != '') {
-                $value = preg_replace(self::PATTERN_INVALID_CHARS, '', $value);
-                $cData = $no->createCDATASection($value);
-                if (!is_null($cData) & $cData !== false) {
-                    $node->appendChild($cData);
-                }
+        if ($new_child !== null && $value != '') {
+            $node  = dom_import_simplexml($new_child);
+            $cData = $node->ownerDocument->createCDATASection($value);
+            if ($cData !== null & $cData !== false) {
+                $node->appendChild($cData);
             }
         }
 
