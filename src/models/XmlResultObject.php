@@ -43,27 +43,24 @@ class Shopgate_Model_XmlResultObject extends SimpleXMLElement
         if (!$allowNull && $value === null) {
             return null;
         }
-        $forceEmpty = false;
-        if ($value === Shopgate_Model_AbstractExport::SET_EMPTY) {
-            $forceEmpty = true;
-            $value      = '';
-        }
-        $new_child = $this->addChild($name);
 
-        if ($new_child !== null) {
-            $node = dom_import_simplexml($new_child);
-            $no   = $node->ownerDocument;
-            if ($value != '') {
-                $value = preg_replace(self::PATTERN_INVALID_CHARS, '', $value);
-                $node->appendChild($no->createCDATASection($value));
+        $newChild = $this->addChild($name);
+        if ($value === Shopgate_Model_AbstractExport::SET_EMPTY) {
+            $newChild->addAttribute('forceEmpty', '1');
+
+            return $newChild;
+        }
+
+        $value = preg_replace(self::PATTERN_INVALID_CHARS, '', $value);
+        if ($newChild !== null && $value != '') {
+            $node  = dom_import_simplexml($newChild);
+            $cData = $node->ownerDocument->createCDATASection($value);
+            if ($cData !== null & $cData !== false) {
+                $node->appendChild($cData);
             }
         }
 
-        if ($forceEmpty) {
-            $new_child->addAttribute('forceEmpty', '1');
-        }
-
-        return $new_child;
+        return $newChild;
     }
 
     /**
