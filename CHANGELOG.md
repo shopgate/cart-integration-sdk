@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-## [2.9.75] - 2018-08-01
+## [2.9.75] - 2018-08-02
 ### Fixed
 - child node creation in xml exports
 
