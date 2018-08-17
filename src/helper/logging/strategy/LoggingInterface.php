@@ -61,10 +61,11 @@ interface Shopgate_Helper_Logging_Strategy_LoggingInterface
      * @param string $msg        The error message.
      * @param string $type       The log type, that would be one of the ShopgateLogger::LOGTYPE_* constants.
      * @param string $stackTrace The stack trace that led to the error, if available.
+     * @param array $payload     An optional, associative array of additional information to be logged.
      *
      * @return bool true on success, false on error.
      */
-    public function log($msg, $type = self::LOGTYPE_ERROR, $stackTrace = '');
+    public function log($msg, $type = self::LOGTYPE_ERROR, $stackTrace = '', array $payload = array());
 
     /**
      * Returns the requested number of lines of the requested log file's end.

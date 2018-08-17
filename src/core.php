@@ -1145,9 +1145,8 @@ abstract class ShopgateObject
      *
      * @param $helperName string defined by constants in this class(ShopgateObject)
      *
-     * @return null|Shopgate_Helper_DataStructure|Shopgate_Helper_Pricing|Shopgate_Helper_String returns the requested
-     *                                                                                           helper instance or
-     *                                                                                           null
+     * @return Shopgate_Helper_DataStructure|Shopgate_Helper_Pricing|Shopgate_Helper_String returns the requested
+     *                                                                                           helper instance
      * @throws ShopgateLibraryException
      */
     protected function getHelper($helperName)
@@ -1213,62 +1212,42 @@ abstract class ShopgateObject
 
     /**
      * Creates a JSON string from any passed value.
-     *
-     * If json_encode() exists it's done by that, otherwise an external class provided with the Shopgate Cart
-     * Integration SDK is used.
+     * Uses json_encode() if present, otherwise falls back to Zend's JSON encoder.
      *
      * @param mixed $value
      *
      * @return string | bool in case an error happened false will be returned
+     *
+     * @deprecated use Shopgate_Helper_DataStructure::jsonEncode() instead
      */
     public function jsonEncode($value)
     {
-        // if json_encode exists use that
-        if (extension_loaded('json') && function_exists('json_encode')) {
-            $encodedValue = json_encode($value);
-            if (!empty($encodedValue)) {
-                return $encodedValue;
-            }
-        }
-
         try {
-            return \Zend\Json\Encoder::encode($value);
-        } catch (Exception $exception) {
-            return false;
+            return $this->getHelper(self::HELPER_DATASTRUCTURE)->jsonEncode($value);
+        } catch (ShopgateLibraryException $ignore) {
+            // will not happen
+            return '';
         }
     }
 
     /**
      * Creates a variable, array or object from any passed JSON string.
-     *
-     * If json_encode() exists it's done by that, otherwise an external class provided with the Shopgate Cart
-     * Integration SDK is used.
+     * Uses json_decode() if present, otherwise falls back to Zend's JSON decoder.
      *
      * @param string $json
      * @param bool   $assoc
      *
      * @return mixed
+     *
+     * @deprecated use Shopgate_Helper_DataStructure::jsonDecode() instead
      */
     public function jsonDecode($json, $assoc = false)
     {
-        // if json_decode exists use that
-        if (extension_loaded('json') && function_exists('json_decode')) {
-            $decodedValue = json_decode($json, $assoc);
-            if (!empty($decodedValue)) {
-                return $decodedValue;
-            }
-        }
-
         try {
-            return \Zend\Json\Decoder::decode(
-                $json,
-                $assoc
-                    ? \Zend\Json\Json::TYPE_ARRAY
-                    : \Zend\Json\Json::TYPE_OBJECT
-            );
-        } catch (Exception $exception) {
-            // if a string is no valid json this call will throw Zend\Json\Exception\RuntimeException
-            return null;
+            return $this->getHelper(self::HELPER_DATASTRUCTURE)->jsonDecode($json, $assoc);
+        } catch (ShopgateLibraryException $ignore) {
+            // will not happen
+            return '';
         }
     }
 
