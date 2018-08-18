@@ -90,4 +90,61 @@ class Shopgate_Helper_DataStructure
 
         return array_merge($firstRow, $result);
     }
+
+    /**
+     * Creates a JSON string from any passed value.
+     * Uses json_encode() if present, otherwise falls back to Zend's JSON encoder.
+     *
+     * @param mixed $value
+     *
+     * @return string | bool in case an error happened false will be returned
+     */
+    public function jsonEncode($value)
+    {
+        // if json_encode exists use that
+        if (extension_loaded('json') && function_exists('json_encode')) {
+            $encodedValue = json_encode($value);
+            if (!empty($encodedValue)) {
+                return $encodedValue;
+            }
+        }
+
+        try {
+            return \Zend\Json\Encoder::encode($value);
+        } catch (Exception $exception) {
+            return false;
+        }
+    }
+
+    /**
+     * Creates a variable, array or object from any passed JSON string.
+     * Uses json_decode() if present, otherwise falls back to Zend's JSON decoder.
+     *
+     * @param string $json
+     * @param bool   $assoc
+     *
+     * @return mixed
+     */
+    public function jsonDecode($json, $assoc = false)
+    {
+        // if json_decode exists use that
+        if (extension_loaded('json') && function_exists('json_decode')) {
+            $decodedValue = json_decode($json, $assoc);
+            if (!empty($decodedValue)) {
+                return $decodedValue;
+            }
+        }
+
+        try {
+            return \Zend\Json\Decoder::decode(
+                $json,
+                $assoc
+                    ? \Zend\Json\Json::TYPE_ARRAY
+                    : \Zend\Json\Json::TYPE_OBJECT
+            );
+        } catch (Exception $exception) {
+            // if a string is no valid json this call will throw Zend\Json\Exception\RuntimeException
+            return null;
+        }
+    }
 }

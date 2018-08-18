@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Changed
+- moved jsonEncode + jsonDecode helpers from ShopgateObject to Shopgate_Helper_DataStructure, so they can be accessed more easily
+- extended LoggingInterface::log() (and DefaultLogging::log()) to accept an optional additional payload array
 
 ## [2.9.75] - 2018-08-02
 ### Fixed
