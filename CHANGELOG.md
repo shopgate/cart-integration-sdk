@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [2.9.76] - 2018-08-24
 ### Changed
 - moved jsonEncode + jsonDecode helpers from ShopgateObject to Shopgate_Helper_DataStructure, so they can be accessed more easily
 - extended LoggingInterface::log() (and DefaultLogging::log()) to accept an optional additional payload array
@@ -658,7 +660,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - fixed error in use of old configuration
 - added changelog.txt
 
-[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.75...HEAD
+[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.76...HEAD
+[2.9.76]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.75...2.9.76
 [2.9.75]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.74...2.9.75
 [2.9.74]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.73...2.9.74
 [2.9.73]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.72...2.9.73
