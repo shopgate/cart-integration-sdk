@@ -36,17 +36,23 @@ class ObfuscatorTest extends \PHPUnit_Framework_TestCase
     {
         $this->obfuscator->addObfuscationFields(array('test'));
         $data = array(
-            'mytestData' => 'this must be readable',
-            'user'       => 'this must be readable',
-            'pass'       => 'this is secure',
-            'test'       => 'this is secure',
+            'myTestData'      => 'this must be readable',
+            'user'            => 'this must be readable',
+            'pass'            => 'this is secure',
+            'test'            => 'this is secure',
+            'apikey'          => 'this is secure',
+            'customer_number' => 'this is secure',
+            'shop_number'     => 'this is secure',
         );
 
         $expected = array(
-            'mytestData' => 'this must be readable',
-            'user'       => 'this must be readable',
-            'pass'       => 'XXXXXXXX',
-            'test'       => 'XXXXXXXX',
+            'myTestData'      => 'this must be readable',
+            'user'            => 'this must be readable',
+            'pass'            => 'XXXXXXXX',
+            'test'            => 'XXXXXXXX',
+            'apikey'          => 'XXXXXXXX',
+            'customer_number' => 'XXXXXXXX',
+            'shop_number'     => 'XXXXXXXX',
         );
         $this->assertEquals(
             $expected,
