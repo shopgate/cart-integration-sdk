@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [2.9.77] - 2018-11-08
 ### Fixed
 - updated fields to obfuscate before logging
 
@@ -662,7 +664,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - fixed error in use of old configuration
 - added changelog.txt
 
-[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.76...HEAD
+[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.77...HEAD
+[2.9.77]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.76...2.9.77
 [2.9.76]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.75...2.9.76
 [2.9.75]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.74...2.9.75
 [2.9.74]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.73...2.9.74
