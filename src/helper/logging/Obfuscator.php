@@ -32,7 +32,7 @@ class Shopgate_Helper_Logging_Obfuscator
 
     public function __construct()
     {
-        $this->obfuscationFields = array('pass');
+        $this->obfuscationFields = array('pass', 'apikey', 'customer_number', 'shop_number');
         $this->removeFields      = array('cart');
     }
 
