@@ -6,8 +6,8 @@
     _shopgate.redirect = "{redirect_code}";
     {additional_parameters}
 
-    (function(b,d){var a=("undefined"!==typeof _shopgate?_shopgate:{}).shop_number,e="http:"===b.location.protocol?"http:":"https:";if(a){
-      var c=b.createElement(d);c.async=!/(ip(ad|od|hone)|Android)/i.test(navigator.userAgent);c.src=e+"{non_ssl_url}/mobile_header/"+a+".js";
+    (function(b,d){var a=("undefined"!==typeof _shopgate?_shopgate:{}).shop_number;if(a){
+      var c=b.createElement(d);c.async=!/(ip(ad|od|hone)|Android)/i.test(navigator.userAgent);c.src="{non_ssl_url}/mobile_header/"+a+".js";
       a=b.getElementsByTagName(d)[0];a.parentNode.insertBefore(c,a)}}
     )(document,"script");
 </script>
