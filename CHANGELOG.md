@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-## [2.9.78]
+## [2.9.78] - 2018-11-19
 ### Fixed
 - prefixing the download URL for redirect scripts with shop's URL
 
