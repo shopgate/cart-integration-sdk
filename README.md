@@ -17,9 +17,9 @@ Include ```shopgate.php``` from the root folder of the package:
 ```require_once 'shopgate-cart-integration-sdk/shopgate.php';```
 
 ## Developing a Shopgate Integration
-If you want to know more about how the Shopgate Cart Integration SDK works have a look into the [documentation](http://developer.shopgate.com/library).
+If you want to know more about how the Shopgate Cart Integration SDK works have a look into the [documentation](https://developer.shopgate.com/guides/commerce/cart-integration/sdk).
 
-Wanna see all the code? Try the [example plugin](http://developer.shopgate.com/example_plugin).
+Wanna see all the code? Try the [example plugin](https://developer.shopgate.com/guides/commerce/cart-integration/example-plugin).
 
 ## Changelog
 
