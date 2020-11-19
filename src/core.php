@@ -1453,7 +1453,7 @@ abstract class ShopgateObject
             foreach ($subject as $key => $val) {
                 if (is_array($ignore) && !in_array($key, $ignore, 1)) {
                     echo str_repeat(" ", $depth * 4) . '[';
-                    if ($key{0} == "\0") {
+                    if ($key[0] == "\0") {
                         $keyParts = explode("\0", $key);
                         echo $keyParts[2] . (($keyParts[1] == '*')
                                 ? ':protected'
