@@ -4,7 +4,7 @@ language: php
 
 before_script:
 - phpenv config-rm xdebug.ini || return 0
-- composer install --ignore-platform-reqs
+- composer install
 
 script:
 - vendor/bin/phpunit
@@ -28,6 +28,7 @@ jobs:
   - stage: Unit Test + Code Style Fixing
     php: 5.6
     script:
+    - composer require rekhyt/php-dependency-checker:^1.0 --dev
     - vendor/bin/php-dependency-checker --exclude-from package-exclusions composer.lock
     - curl -L http://files.shopgate.com/travis-ci/php-cs-fixer.phar -o php-cs-fixer
     - chmod a+x php-cs-fixer
