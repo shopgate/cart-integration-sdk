@@ -4,7 +4,7 @@ language: php
 
 before_script:
 - phpenv config-rm xdebug.ini || return 0
-- composer install
+- composer install --ignore-platform-reqs
 
 script:
 - vendor/bin/phpunit
