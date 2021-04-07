@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [2.9.80] - 2021-04-07
+### Fixed
+- the "is_cover" attribute of an image is now put out as an integer, as defined in the XML export specifications
+
 ## [2.9.79] - 2020-11-19
 ### Fixed
 - deprecation warning (https://wiki.php.net/rfc/deprecate_curly_braces_array_access)
@@ -672,7 +676,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - fixed error in use of old configuration
 - added changelog.txt
 
-[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.79...HEAD
+[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.80...HEAD
+[2.9.80]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.79...2.9.80
 [2.9.79]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.78...2.9.79
 [2.9.78]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.77...2.9.78
 [2.9.77]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.76...2.9.77
