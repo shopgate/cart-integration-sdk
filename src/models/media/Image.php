@@ -41,7 +41,7 @@
  * @method string  getAlt()
  *
  * @method         setIsCover(bool $value)
- * @method string  getIsCover()
+ * @method bool    getIsCover()
  *
  */
 class Shopgate_Model_Media_Image extends Shopgate_Model_AbstractExport
@@ -73,7 +73,7 @@ class Shopgate_Model_Media_Image extends Shopgate_Model_AbstractExport
         $imageNode = $itemNode->addChild('image');
         $imageNode->addAttribute('uid', $this->getUid());
         $imageNode->addAttribute('sort_order', $this->getSortOrder());
-        $imageNode->addAttribute('is_cover', $this->getIsCover());
+        $imageNode->addAttribute('is_cover', (int)$this->getIsCover());
         $imageNode->addChildWithCDATA('url', $this->getUrl());
         $imageNode->addChildWithCDATA('title', $this->getTitle(), false);
         $imageNode->addChildWithCDATA('alt', $this->getAlt(), false);
