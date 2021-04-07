@@ -282,11 +282,9 @@ class DefaultLoggingTest extends \PHPUnit_Framework_TestCase
 
     public function testTailUnknownLogType()
     {
-        $this->setExpectedException(
-            'ShopgateLibraryException',
-            '',
-            \ShopgateLibraryException::PLUGIN_API_UNKNOWN_LOGTYPE
-        );
+        $this->expectException('ShopgateLibraryException');
+        $this->expectExceptionCode(\ShopgateLibraryException::PLUGIN_API_UNKNOWN_LOGTYPE);
+        $this->expectExceptionMessage('unknown logtype');
         $logContent = $this->defaultLoggingStrategy->tail('type not exists');
         $this->assertEquals('', $logContent);
     }
@@ -299,11 +297,10 @@ class DefaultLoggingTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $loggingStrategy->method('openLogFileHandle')->willReturn(false);
 
-        $this->setExpectedException(
-            'ShopgateLibraryException',
-            '',
-            \ShopgateLibraryException::INIT_LOGFILE_OPEN_ERROR
-        );
+        $this->expectException('ShopgateLibraryException');
+        $this->expectExceptionCode(\ShopgateLibraryException::INIT_LOGFILE_OPEN_ERROR);
+        $this->expectExceptionMessage('cannot open/create logfile(s)');
+
         $logContent = $loggingStrategy->tail(\Shopgate_Helper_Logging_Strategy_DefaultLogging::LOGTYPE_ACCESS);
         $this->assertEquals('', $logContent);
     }
