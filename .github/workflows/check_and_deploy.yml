@@ -83,4 +83,4 @@ jobs:
       - name: Notify on Slack
         uses: rtCamp/action-slack-notify@v2
         env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}#merchant-unit
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_MERCHANT_UNIT }}
