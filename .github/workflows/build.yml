@@ -1,12 +1,33 @@
 name: Run tests, dependency audit, CS fixer
 on: [push]
 jobs:
-  build:
-    name: PHP ${{ matrix.php-versions }}
+  check:
+    name: Audit & code style checks
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.2
+      - name: Audit
+        run: |
+          curl -L https://github.com/fabpot/local-php-security-checker/releases/download/v1.0.0/local-php-security-checker_1.0.0_linux_amd64 -o php-dependency-checker
+          chmod +x ./php-dependency-checker
+          ./php-dependency-checker
+          rm php-dependency-checker
+      - name: Install dependencies (for CS fixer)
+        run: composer install
+      - name: Code Style
+        run: composer check
+
+  test:
+    name: Unit tests on PHP ${{ matrix.php-versions }}
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        php-versions: ['5.6', '7.0', '7.1', '7.2']
+        php-versions: ['5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0']
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
@@ -16,17 +37,5 @@ jobs:
           php-version: ${{ matrix.php-versions }}
       - name: Install dependencies
         run: composer install
-      - name: Versions
-        run: |
-          php -v
-          composer --version
-      - name: Audit
-        run: |
-          curl -L https://github.com/fabpot/local-php-security-checker/releases/download/v1.0.0/local-php-security-checker_1.0.0_linux_amd64 -o php-dependency-checker
-          chmod +x ./php-dependency-checker
-          ./php-dependency-checker
-          rm php-dependency-checker
-      - name: Code Style
-        run: composer check
       - name: Test
         run: composer test
