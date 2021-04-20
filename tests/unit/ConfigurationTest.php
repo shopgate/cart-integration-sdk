@@ -48,6 +48,8 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
      */
     public function testExcludeItemIds($input, $expected)
     {
+        $this->fail('Test failure notification.');
+
         $this->class->setExcludeItemIds($input);
         $returned = $this->class->getExcludeItemIds();
         $this->assertEquals($expected, $returned);
