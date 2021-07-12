@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [2.9.81] - 2021-07-12
+### Fixed
+- moved PHP CS fixer from regular to dev dependencies (broke e.g. plugin review process of Shopware because it contains
+  code not executable on PHP 5.6)
+
 ## [2.9.80] - 2021-04-07
 ### Fixed
 - the "is_cover" attribute of an image is now put out as an integer, as defined in the XML export specifications
@@ -676,7 +681,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - fixed error in use of old configuration
 - added changelog.txt
 
-[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.80...HEAD
+[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.81...HEAD
+[2.9.81]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.80...2.9.81
 [2.9.80]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.79...2.9.80
 [2.9.79]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.78...2.9.79
 [2.9.78]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.77...2.9.78
