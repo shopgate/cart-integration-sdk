@@ -93,7 +93,7 @@ class Shopgate_Helper_DataStructure
 
     /**
      * Creates a JSON string from any passed value.
-     * Uses json_encode() if present, otherwise falls back to Zend's JSON encoder.
+     * Uses json_encode() if present, otherwise falls back to Laminas JSON encoder.
      *
      * @param mixed $value
      *
@@ -110,7 +110,7 @@ class Shopgate_Helper_DataStructure
         }
 
         try {
-            return \Zend\Json\Encoder::encode($value);
+            return \Laminas\Json\Encoder::encode($value);
         } catch (Exception $exception) {
             return false;
         }
@@ -118,7 +118,7 @@ class Shopgate_Helper_DataStructure
 
     /**
      * Creates a variable, array or object from any passed JSON string.
-     * Uses json_decode() if present, otherwise falls back to Zend's JSON decoder.
+     * Uses json_decode() if present, otherwise falls back to Laminas JSON decoder.
      *
      * @param string $json
      * @param bool   $assoc
@@ -136,14 +136,14 @@ class Shopgate_Helper_DataStructure
         }
 
         try {
-            return \Zend\Json\Decoder::decode(
+            return \Laminas\Json\Decoder::decode(
                 $json,
                 $assoc
-                    ? \Zend\Json\Json::TYPE_ARRAY
-                    : \Zend\Json\Json::TYPE_OBJECT
+                    ? \Laminas\Json\Json::TYPE_ARRAY
+                    : \Laminas\Json\Json::TYPE_OBJECT
             );
         } catch (Exception $exception) {
-            // if a string is no valid json this call will throw Zend\Json\Exception\RuntimeException
+            // if a string is no valid json this call will throw Laminas\Json\Exception\RuntimeException
             return null;
         }
     }

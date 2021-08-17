@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Changed
+- dependency from zend-json to laminas-json as package was renamed and deprecated
 
 ## [2.9.81] - 2021-07-12
 ### Fixed
