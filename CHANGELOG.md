@@ -5,8 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [2.9.82] - 2021-08-18
 ### Changed
-- dependency from zend-json to laminas-json as package was renamed and deprecated
+- replaced deprecated package requirement `zendframework/zend-json` with `laminas/laminas-json` version `^3.1.0`
 
 ## [2.9.81] - 2021-07-12
 ### Fixed
@@ -683,7 +685,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - fixed error in use of old configuration
 - added changelog.txt
 
-[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.81...HEAD
+[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.82...HEAD
+[2.9.82]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.81...2.9.82
 [2.9.81]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.80...2.9.81
 [2.9.80]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.79...2.9.80
 [2.9.79]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.78...2.9.79
