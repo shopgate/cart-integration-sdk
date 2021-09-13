@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [2.9.83] - 2021-09-13
 ### Changed
 - accepting any `2.*` and `3.*` version of `laminas/laminas-json` now
 
@@ -687,7 +689,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - fixed error in use of old configuration
 - added changelog.txt
 
-[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.82...HEAD
+[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.83...HEAD
+[2.9.83]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.82...2.9.83
 [2.9.82]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.81...2.9.82
 [2.9.81]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.80...2.9.81
 [2.9.80]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.79...2.9.80
