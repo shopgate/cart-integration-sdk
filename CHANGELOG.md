@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Changed
+- accepting any `2.*` and `3.*` version of `laminas/laminas-json` now
 
 ## [2.9.82] - 2021-08-18
 ### Changed
