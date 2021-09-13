@@ -13,3 +13,5 @@
 
 !temp/cache/index.php
 !temp/logs/index.php
+
+composer.lock
