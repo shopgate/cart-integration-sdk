@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+### Added
+- support for PHP 8.0 and 8.1
+
 ## [2.9.83] - 2021-09-13
 ### Changed
 - accepting any `2.*` and `3.*` version of `laminas/laminas-json` now
