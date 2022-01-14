@@ -1892,7 +1892,7 @@ abstract class ShopgatePlugin extends ShopgateObject
      *
      * @throws ShopgateLibraryException if flushing the buffer fails.
      */
-    final private function addRow($row)
+    private function addRow($row)
     {
         $this->buffer->addRow($row);
     }
@@ -1904,7 +1904,7 @@ abstract class ShopgatePlugin extends ShopgateObject
      *
      * @throws ShopgateLibraryException if flushing the buffer fails.
      */
-    final private function addModel(Shopgate_Model_AbstractExport $object)
+    private function addModel(Shopgate_Model_AbstractExport $object)
     {
         $this->buffer->addRow($object);
     }
@@ -2388,7 +2388,7 @@ abstract class ShopgatePlugin extends ShopgateObject
      *
      * @return array
      */
-    final private function getCreateCsvLoaders($subjectName)
+    private function getCreateCsvLoaders($subjectName)
     {
         $actions     = array();
         $subjectName = trim($subjectName);
