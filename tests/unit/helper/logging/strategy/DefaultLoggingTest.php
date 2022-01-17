@@ -22,7 +22,9 @@
 
 namespace shopgate\cart_integration_sdk\tests\unit\logging\strategy;
 
-class DefaultLoggingTest extends \PHPUnit_Framework_TestCase
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+
+class DefaultLoggingTest extends TestCase
 {
     /** @var \Shopgate_Helper_Logging_Strategy_DefaultLogging */
     private $defaultLoggingStrategy;
@@ -30,7 +32,7 @@ class DefaultLoggingTest extends \PHPUnit_Framework_TestCase
     /** @var array */
     private $phpUnitLogFiles = array();
 
-    public function setUp()
+    public function set_up()
     {
         $this->phpUnitLogFiles        = array(
             \Shopgate_Helper_Logging_Strategy_DefaultLogging::LOGTYPE_ACCESS  => SHOPGATE_BASE_DIR . DS . 'temp' . DS

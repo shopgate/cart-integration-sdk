@@ -22,17 +22,18 @@
 
 namespace shopgate\cart_integration_sdk\tests\fixtures\helper\logging\stack_trace;
 
+use Yoast\PHPUnitPolyfills\TestCases\TestCase as PHPUnit_Framework_TestCase;
 use shopgate\cart_integration_sdk\tests\stubs\ThrowableStub;
 
 class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTestFixtureBuilder
 {
-    /** @var \PHPUnit_Framework_TestCase */
+    /** @var PHPUnit_Framework_TestCase */
     private $testCase;
 
     /**
-     * @param \PHPUnit_Framework_TestCase $testCase The calling test case; mock objects might be built using this.
+     * @param PHPUnit_Framework_TestCase $testCase The calling test case; mock objects might be built using this.
      */
-    public function __construct(\PHPUnit_Framework_TestCase $testCase)
+    public function __construct(PHPUnit_Framework_TestCase $testCase)
     {
         $this->testCase = $testCase;
     }

@@ -23,8 +23,9 @@
 namespace shopgate\cart_integration_sdk\tests\unit\logging\stack_trace;
 
 use shopgate\cart_integration_sdk\tests\fixtures\helper\logging\stack_trace\Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTestFixtureBuilder;
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
-class GeneratorDefaultTest extends \PHPUnit_Framework_TestCase
+class GeneratorDefaultTest extends TestCase
 {
     /** @var \PHPUnit_Framework_MockObject_MockObject|\Shopgate_Helper_Logging_Obfuscator */
     protected $obfuscator;
@@ -38,7 +39,7 @@ class GeneratorDefaultTest extends \PHPUnit_Framework_TestCase
     /** @var \Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault */
     protected $subjectUnderTest;
 
-    public function setUp()
+    public function set_up()
     {
         // workaround for PHP versions below 7: load Throwable interface; TODO move to some bootstrap.php or the like
         include_once(dirname(__FILE__) . '/../../../../stubs/Throwable.php');

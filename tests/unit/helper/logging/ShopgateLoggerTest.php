@@ -22,12 +22,14 @@
 
 namespace shopgate\cart_integration_sdk\tests\unit\logging;
 
-class ShopgateLoggerTest extends \PHPUnit_Framework_TestCase
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+
+class ShopgateLoggerTest extends TestCase
 {
     /** @var \ShopgateLogger */
     private $shopgateLogger;
 
-    public function setUp()
+    public function set_up()
     {
         /** @noinspection PhpDeprecationInspection */
         $this->shopgateLogger = \ShopgateLogger::getInstance();

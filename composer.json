@@ -3,11 +3,6 @@
   "description": "A PHP framework supporting the implementation of the Shopgate Plugin API and abstracting access to the Shopgate Merchant API.",
   "homepage": "https://github.com/shopgate/cart-integration-sdk",
   "license": "Apache-2.0",
-  "config": {
-    "platform": {
-      "php": "5.6"
-    }
-  },
   "authors": [
     {
       "name": "Shopgate",
@@ -25,7 +20,8 @@
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^2.18",
-    "phpunit/phpunit": "~5.0"
+    "phpunit/phpunit": ">= 5",
+    "yoast/phpunit-polyfills": "^1.0"
   },
   "autoload": {
     "psr-4": { "shopgate\\cart_integration_sdk\\tests\\": "tests/" },
