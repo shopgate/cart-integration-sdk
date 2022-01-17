@@ -22,17 +22,19 @@
 
 namespace shopgate\cart_integration_sdk\tests\unit;
 
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+
 /**
  * @group              Shopgate_Library
  *
  * @coversDefaultClass ShopgateObject
  */
-class ShopgateObjectTest extends \PHPUnit_Framework_TestCase
+class ShopgateObjectTest extends TestCase
 {
     /** @var \ShopgateObject $subjectUnderTest */
     protected $subjectUnderTest;
 
-    public function setUp()
+    public function set_up()
     {
         $this->subjectUnderTest = $this->getMockBuilder('\ShopgateObject')->getMockForAbstractClass();
     }

@@ -22,18 +22,20 @@
 
 namespace shopgate\cart_integration_sdk\tests\unit\redirect;
 
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+
 /**
  * @group              Shopgate_Library
  * @group              Shopgate_Library_Helpers
  *
  * @coversDefaultClass Shopgate_Helper_Redirect_TemplateParser
  */
-class TemplateParserTest extends \PHPUnit_Framework_TestCase
+class TemplateParserTest extends TestCase
 {
     /** @var \Shopgate_Helper_Redirect_TemplateParser $class */
     protected $class;
 
-    public function setUp()
+    public function set_up()
     {
         $this->class = new \Shopgate_Helper_Redirect_TemplateParser();
     }
@@ -156,7 +158,7 @@ class TemplateParserTest extends \PHPUnit_Framework_TestCase
     /**
      * Prep for garbage collect
      */
-    public function tearDown()
+    public function tear_down()
     {
         unset($this->class);
     }

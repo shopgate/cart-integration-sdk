@@ -22,12 +22,14 @@
 
 namespace shopgate\cart_integration_sdk\tests\unit\logging\stack_trace;
 
-class NamedParameterProviderReflectionTest extends \PHPUnit_Framework_TestCase
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+
+class NamedParameterProviderReflectionTest extends TestCase
 {
     /** @var \Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderReflection */
     protected $subjectUnderTest;
 
-    public function setUp()
+    public function set_up()
     {
         // load some defined functions for testing; TODO move to some bootstrap.php or the like
         include_once(dirname(__FILE__) . '/../../../../stubs/functions.php');
@@ -36,10 +38,8 @@ class NamedParameterProviderReflectionTest extends \PHPUnit_Framework_TestCase
         $this->subjectUnderTest = new \Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderReflection();
     }
 
-    public function tearDown()
+    public function tear_down()
     {
-        parent::tearDown();
-
         $this->subjectUnderTest = null;
     }
 

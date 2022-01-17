@@ -22,7 +22,9 @@
 
 namespace shopgate\cart_integration_sdk\tests\unit\error_handling;
 
-class ShutdownHandlerTest extends \PHPUnit_Framework_TestCase
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+
+class ShutdownHandlerTest extends TestCase
 {
     /** @var \PHPUnit_Framework_MockObject_MockObject|\Shopgate_Helper_Logging_Strategy_LoggingInterface */
     protected $logging;
@@ -30,7 +32,7 @@ class ShutdownHandlerTest extends \PHPUnit_Framework_TestCase
     /** @var \PHPUnit_Framework_MockObject_MockObject|\Shopgate_Helper_Error_Handling_Shutdown_Handler_LastErrorProvider */
     protected $lastErrorProvider;
 
-    public function setUp()
+    public function set_up()
     {
         $this->logging = $this
             ->getMockBuilder('Shopgate_Helper_Logging_Strategy_LoggingInterface')
@@ -48,7 +50,7 @@ class ShutdownHandlerTest extends \PHPUnit_Framework_TestCase
             ->expects($this->exactly(2))
             ->method('log')
             ->with(
-                new \PHPUnit_Framework_Constraint_IsAnything(), // message
+                $this->anything(), // message
                 \Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_ERROR,
                 ''
             )

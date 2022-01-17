@@ -22,7 +22,9 @@
 
 namespace shopgate\cart_integration_sdk\tests\unit\error_handling;
 
-class ErrorHandlerTest extends \PHPUnit_Framework_TestCase
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+
+class ErrorHandlerTest extends TestCase
 {
     /** @var \PHPUnit_Framework_MockObject_MockObject|\Shopgate_Helper_Logging_Stack_Trace_GeneratorInterface */
     protected $stackTraceGenerator;
@@ -30,7 +32,7 @@ class ErrorHandlerTest extends \PHPUnit_Framework_TestCase
     /** @var \PHPUnit_Framework_MockObject_MockObject|\Shopgate_Helper_Logging_Strategy_LoggingInterface */
     protected $logging;
 
-    public function setUp()
+    public function set_up()
     {
         $this->stackTraceGenerator = $this
             ->getMockBuilder('Shopgate_Helper_Logging_Stack_Trace_GeneratorInterface')
@@ -48,14 +50,15 @@ class ErrorHandlerTest extends \PHPUnit_Framework_TestCase
         $this->stackTraceGenerator
             ->expects($this->once())
             ->method('generate')
-            ->with(new \PHPUnit_Framework_Constraint_Exception('Exception'))
+            // ->with(new \PHPUnit_Framework_Constraint_Exception('Exception'))
+            ->with($this->isInstanceOf('Exception'))
             ->willReturn($stackTrace);
 
         $this->logging
             ->expects($this->once())
             ->method('log')
             ->with(
-                new \PHPUnit_Framework_Constraint_IsAnything(), // message
+                $this->anything(), // message
                 \Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_ERROR,
                 $stackTrace
             )

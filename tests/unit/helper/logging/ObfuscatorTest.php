@@ -22,12 +22,14 @@
 
 namespace shopgate\cart_integration_sdk\tests\unit\logging;
 
-class ObfuscatorTest extends \PHPUnit_Framework_TestCase
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+
+class ObfuscatorTest extends TestCase
 {
     /** @var \Shopgate_Helper_Logging_Obfuscator */
     private $obfuscator;
 
-    public function setUp()
+    public function set_up()
     {
         $this->obfuscator = new \Shopgate_Helper_Logging_Obfuscator();
     }

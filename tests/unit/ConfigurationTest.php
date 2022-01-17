@@ -22,17 +22,19 @@
 
 namespace shopgate\cart_integration_sdk\tests\unit;
 
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+
 /**
  * @group              Shopgate_Library
  *
  * @coversDefaultClass ShopgateConfig
  */
-class ConfigurationTest extends \PHPUnit_Framework_TestCase
+class ConfigurationTest extends TestCase
 {
     /** @var \ShopgateConfig $class */
     protected $class;
 
-    public function setUp()
+    public function set_up()
     {
         $this->class = new \ShopgateConfig(array());
     }

@@ -22,7 +22,9 @@
 
 namespace shopgate\cart_integration_sdk\tests\unit\redirect;
 
-class KeywordsManagerTest extends \PHPUnit_Framework_TestCase
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+
+class KeywordsManagerTest extends TestCase
 {
     /** @var \ShopgateMerchantApiInterface|\PHPUnit_Framework_MockObject_MockObject $merchantApi */
     protected $merchantApi;
@@ -33,7 +35,7 @@ class KeywordsManagerTest extends \PHPUnit_Framework_TestCase
     /** @var string[] */
     protected $nonMatchingUserAgents;
 
-    public function setUp()
+    public function set_up()
     {
         /** @var \ShopgateMerchantApiInterface|\PHPUnit_Framework_MockObject_MockObject $merchantApi */
         $this->merchantApi = $this->getMockForAbstractClass('ShopgateMerchantApiInterface');
@@ -104,7 +106,7 @@ class KeywordsManagerTest extends \PHPUnit_Framework_TestCase
         $regEx = $keywordsManager->toRegEx();
 
         foreach ($this->matchingUserAgents as $ua) {
-            $this->assertRegExp(
+            $this->assertMatchesRegularExpression(
                 $regEx,
                 $ua
             );
@@ -122,7 +124,7 @@ class KeywordsManagerTest extends \PHPUnit_Framework_TestCase
         $regEx = $keywordsManager->toRegEx();
 
         foreach ($this->nonMatchingUserAgents as $ua) {
-            $this->assertNotRegExp(
+            $this->assertDoesNotMatchRegularExpression(
                 $regEx,
                 $ua
             );
