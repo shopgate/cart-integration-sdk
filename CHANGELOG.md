@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [2.9.85] - 2022-01-25
 ### Fixed
 - not exporting the "is_cover" flag / XML attribute on category images anymore
 
@@ -695,7 +697,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - fixed error in use of old configuration
 - added changelog.txt
 
-[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.84...HEAD
+[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.85...HEAD
+[2.9.84]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.84...2.9.85
 [2.9.84]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.83...2.9.84
 [2.9.83]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.82...2.9.83
 [2.9.82]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.81...2.9.82
