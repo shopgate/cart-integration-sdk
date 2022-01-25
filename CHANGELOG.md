@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Fixed
+- not exporting the "is_cover" flag / XML attribute on category images anymore
 
 ## [2.9.84] - 2022-01-17
 ### Added

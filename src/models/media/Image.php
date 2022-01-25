@@ -65,7 +65,7 @@ class Shopgate_Model_Media_Image extends Shopgate_Model_AbstractExport
      *
      * @return Shopgate_Model_XmlResultObject
      */
-    public function asXml(Shopgate_Model_XmlResultObject $itemNode)
+    public function asXml(Shopgate_Model_XmlResultObject $itemNode, $isCategory = false)
     {
         /**
          * @var Shopgate_Model_XmlResultObject $imageNode
@@ -73,10 +73,13 @@ class Shopgate_Model_Media_Image extends Shopgate_Model_AbstractExport
         $imageNode = $itemNode->addChild('image');
         $imageNode->addAttribute('uid', $this->getUid());
         $imageNode->addAttribute('sort_order', $this->getSortOrder());
-        $imageNode->addAttribute('is_cover', (int)$this->getIsCover());
         $imageNode->addChildWithCDATA('url', $this->getUrl());
         $imageNode->addChildWithCDATA('title', $this->getTitle(), false);
         $imageNode->addChildWithCDATA('alt', $this->getAlt(), false);
+
+        if (!$isCategory) {
+            $imageNode->addAttribute('is_cover', (int)$this->getIsCover());
+        }
 
         return $itemNode;
     }

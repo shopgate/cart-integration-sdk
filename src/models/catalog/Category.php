@@ -130,7 +130,7 @@ class Shopgate_Model_Catalog_Category extends Shopgate_Model_AbstractExport
         $categoryNode->addChildWithCDATA('deeplink', $this->getDeeplink());
 
         if ($this->getImage()) {
-            $this->getImage()->asXml($categoryNode);
+            $this->getImage()->asXml($categoryNode, true);
         }
 
         return $itemNode;
