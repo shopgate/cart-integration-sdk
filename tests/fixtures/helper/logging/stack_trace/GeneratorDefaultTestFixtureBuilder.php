@@ -25,7 +25,7 @@ namespace shopgate\cart_integration_sdk\tests\fixtures\helper\logging\stack_trac
 use Yoast\PHPUnitPolyfills\TestCases\TestCase as PHPUnit_Framework_TestCase;
 use shopgate\cart_integration_sdk\tests\stubs\ThrowableStub;
 
-class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTestFixtureBuilder
+class GeneratorDefaultTestFixtureBuilder
 {
     /** @var PHPUnit_Framework_TestCase */
     private $testCase;

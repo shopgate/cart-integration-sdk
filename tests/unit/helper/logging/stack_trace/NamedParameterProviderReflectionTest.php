@@ -20,7 +20,7 @@
  * @license   http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  */
 
-namespace shopgate\cart_integration_sdk\tests\unit\logging\stack_trace;
+namespace shopgate\cart_integration_sdk\tests\unit\helper\logging\stack_trace;
 
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 

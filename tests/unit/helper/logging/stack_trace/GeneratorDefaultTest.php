@@ -20,9 +20,9 @@
  * @license   http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  */
 
-namespace shopgate\cart_integration_sdk\tests\unit\logging\stack_trace;
+namespace shopgate\cart_integration_sdk\tests\unit\helper\logging\stack_trace;
 
-use shopgate\cart_integration_sdk\tests\fixtures\helper\logging\stack_trace\Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTestFixtureBuilder;
+use shopgate\cart_integration_sdk\tests\fixtures\helper\logging\stack_trace\GeneratorDefaultTestFixtureBuilder;
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 class GeneratorDefaultTest extends TestCase
@@ -33,7 +33,7 @@ class GeneratorDefaultTest extends TestCase
     /** @var \PHPUnit_Framework_MockObject_MockObject|\Shopgate_Helper_Logging_Stack_Trace_NamedParameterProviderInterface */
     protected $namedParameterProvider;
 
-    /** @var Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTestFixtureBuilder */
+    /** @var GeneratorDefaultTestFixtureBuilder */
     protected $fixtureProvider;
 
     /** @var \Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault */
@@ -59,7 +59,7 @@ class GeneratorDefaultTest extends TestCase
 
         include_once(dirname(__FILE__)
             . '/../../../../fixtures/helper/logging/stack_trace/GeneratorDefaultTestFixtureBuilder.php');
-        $this->fixtureProvider = new Shopgate_Helper_Logging_Stack_Trace_GeneratorDefaultTestFixtureBuilder($this);
+        $this->fixtureProvider = new GeneratorDefaultTestFixtureBuilder($this);
     }
 
     public function testSimpleExceptionProducesProperStackTrace()
