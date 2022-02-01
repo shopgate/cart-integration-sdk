@@ -127,6 +127,10 @@ class Shopgate_Helper_DataStructure
      */
     public function jsonDecode($json, $assoc = false)
     {
+        if ($json === null) {
+            return null;
+        }
+
         // if json_decode exists use that
         if (extension_loaded('json') && function_exists('json_decode')) {
             $decodedValue = json_decode($json, $assoc);
