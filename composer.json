@@ -24,7 +24,6 @@
     "yoast/phpunit-polyfills": "^1.0"
   },
   "autoload": {
-    "psr-4": { "shopgate\\cart_integration_sdk\\tests\\": "tests/" },
     "files": [
       "src/core.php",
       "src/apis.php",
@@ -103,5 +102,8 @@
       "src/helper/error_handling/shutdown_handler/LastErrorProvider.php",
       "shopgate.php"
     ]
+  },
+  "autoload-dev": {
+    "psr-4": { "shopgate\\cart_integration_sdk\\tests\\": "tests/" }
   }
 }
