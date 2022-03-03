@@ -792,8 +792,9 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
             }
 
             $shopgate_config = null;
-            /** @noinspection PhpIncludeInspection */
             include($this->buildConfigFilePath($file));
+
+            /* @phpstan-ignore-next-line */
             if (isset($shopgate_config) && isset($shopgate_config['shop_number'])
                 && ($shopgate_config['shop_number'] == $shopNumber)) {
                 $configFile = $this->buildConfigFilePath($file);
@@ -801,6 +802,8 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
             }
         }
         ob_end_clean();
+
+        /* @phpstan-ignore-next-line */
         if (empty($configFile)) {
             throw new ShopgateLibraryException(
                 ShopgateLibraryException::CONFIG_READ_WRITE_ERROR,
@@ -975,8 +978,9 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
             }
 
             $shopgate_config = null;
-            /** @noinspection PhpIncludeInspection */
             include($this->buildConfigFilePath($file));
+
+            /* @phpstan-ignore-next-line */
             if (isset($shopgate_config) && isset($shopgate_config['shop_number'])) {
                 if (in_array($shopgate_config['shop_number'], $shopNumbers)) {
                     return true;
@@ -1009,9 +1013,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
             }
 
             ob_start();
-            /** @noinspection PhpIncludeInspection */
             include($this->buildConfigFilePath($file));
             ob_end_clean();
+
+            /* @phpstan-ignore-next-line */
             if (!isset($shopgate_config)) {
                 continue;
             }
@@ -2290,6 +2295,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
         }
 
         // check $shopgate_config
+        /* @phpstan-ignore-next-line */
         if (!isset($shopgate_config) || !is_array($shopgate_config)) {
             return false;
         } else {

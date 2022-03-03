@@ -49,7 +49,7 @@
  * @method string                               getLabel()
  *
  * @method                                      setInfoText(string $value)
- * @method string                               getInfoText(string)
+ * @method string                               getInfoText()
  *
  */
 class Shopgate_Model_Catalog_Input extends Shopgate_Model_AbstractExport

@@ -2520,15 +2520,6 @@ class ShopgateAuthenticationServiceOAuth extends ShopgateObject implements Shopg
             );
         }
 
-        if (empty($response)) {
-            // exception without logging - this might cause spamming your logs and we will know when our API is offline anyways
-            throw new ShopgateLibraryException(
-                ShopgateLibraryException::MERCHANT_API_INVALID_RESPONSE,
-                'Response: ' . $response,
-                true,
-                false
-            );
-        }
         // convert returned json string
         $decodedResponse = $this->jsonDecode($response, true);
 

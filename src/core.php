@@ -358,11 +358,10 @@ class ShopgateLibraryException extends Exception
      * @param string    $additionalInformation                More detailed information on what exactly went wrong.
      * @param bool      $appendAdditionalInformationToMessage Set true to output the additional information to the
      *                                                        response. Set false to log it silently.
-     * @param bool      $writeLog                             true to create a log entry in the error log, false
-     *                                                        otherwise.
+     * @param bool      $writeLog                             (unused, kept for compatibility)
      * @param Exception $previous
      */
-    public function __construct(
+    public function __construct( /* @phpstan-ignore-line */
         $code,
         $additionalInformation = null,
         $appendAdditionalInformationToMessage = false,
@@ -384,14 +383,9 @@ class ShopgateLibraryException extends Exception
             $message .= ': ' . $this->additionalInformation;
         }
 
-        // We ALWAYS want to append the additional information for logging. So if it has already been appended here,
-        // it doesn't have to be appended again later.
-        $appendAdditionalInformationToLog = !$appendAdditionalInformationToMessage;
-
         // in case of multiple errors the message should not have any other text attached to it
         if ($code == self::MULTIPLE_ERRORS) {
             $message                          = $this->additionalInformation;
-            $appendAdditionalInformationToLog = false;
         }
 
         // Call default Exception class constructor

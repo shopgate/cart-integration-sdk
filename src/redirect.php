@@ -738,6 +738,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
         $keywordsFromFile = explode("\n", @fread($cacheFile, filesize($file)));
         @fclose($cacheFile);
 
+        /* @phpstan-ignore-next-line */
         return (empty($keywordsFromFile))
             ? $defaultReturn
             : array(

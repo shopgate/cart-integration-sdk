@@ -187,6 +187,7 @@ class Shopgate_Helper_Redirect_KeywordsManager implements Shopgate_Helper_Redire
         $keywordsFromFile = explode("\n", @fread($cacheFile, $fileSize));
         @fclose($cacheFile);
 
+        /* @phpstan-ignore-next-line */
         return (empty($keywordsFromFile))
             ? $defaultReturn
             : array(
