@@ -71,6 +71,7 @@ class Shopgate_Model_XmlResultObject extends SimpleXMLElement
      *
      * @return null|SimpleXMLElement
      */
+    #[ReturnTypeWillChange]
     public function addChild($name, $value = null, $namespace = null, $allowNull = true)
     {
         if (!$allowNull && $value === null) {
@@ -110,7 +111,9 @@ class Shopgate_Model_XmlResultObject extends SimpleXMLElement
      * @param string $name
      * @param string $value
      * @param string $namespace
+     * @return void
      */
+    #[ReturnTypeWillChange]
     public function addAttribute($name, $value = null, $namespace = null)
     {
         if (isset($value)) {

@@ -157,6 +157,10 @@ class ShopgateItem extends ShopgateContainer
 
     protected $unit_amount_with_tax;
 
+    protected $tax_class_key;
+
+    protected $tax_class_id;
+
     protected $old_unit_amount_with_tax;
 
     protected $category_numbers;
