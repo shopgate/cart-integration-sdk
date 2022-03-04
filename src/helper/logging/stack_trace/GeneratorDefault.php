@@ -84,7 +84,7 @@ class Shopgate_Helper_Logging_Stack_Trace_GeneratorDefault implements Shopgate_H
      *
      * @param Exception|Throwable $exception
      *
-     * @return Exception|null
+     * @return Throwable|Exception|null
      */
     private function getPreviousException($exception)
     {

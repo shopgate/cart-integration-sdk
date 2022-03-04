@@ -27,7 +27,7 @@ abstract class Shopgate_Model_AbstractExport extends Shopgate_Model_Abstract
     /**
      * @var string
      */
-    protected $xsdFileLocation = false;
+    protected $xsdFileLocation;
 
     /**
      * @var string

@@ -498,7 +498,7 @@ class ShopgateLibraryException extends Exception
     /**
      * Exception::getPrevious() was introduced in PHP 5.3
      *
-     * @return Exception|null
+     * @return Throwable|Exception|null
      */
     protected function getPreviousException()
     {
@@ -1541,7 +1541,7 @@ abstract class ShopgatePlugin extends ShopgateObject
     const PRODUCT_STATUS_INACTIVE = 'inactive';
 
     /**
-     * @var Shopgate_Model_Abstract
+     * @var Shopgate_Model_Abstract|false
      */
     protected $result_item_model = false;
 
@@ -1977,7 +1977,7 @@ abstract class ShopgatePlugin extends ShopgateObject
     }
 
     /**
-     * @return string[] An array with the csv file field names as indices and empty strings as values.
+     * @return array<string, mixed> An array with the csv file field names as indices and empty strings as values.
      * @see http://wiki.shopgate.com/CSV_File_Categories/
      */
     protected function buildDefaultCategoryRow()
@@ -2203,7 +2203,7 @@ abstract class ShopgatePlugin extends ShopgateObject
     }
 
     /**
-     * @return string[] An array with the csv file field names as indices and empty strings as values.
+     * @return array<string, mixed> An array with the csv file field names as indices and empty strings as values.
      * @see http://wiki.shopgate.com/CSV_File_Media
      */
     protected function buildDefaultMediaRow()
@@ -2541,7 +2541,7 @@ abstract class ShopgatePlugin extends ShopgateObject
      * Callback function for the Shopgate Plugin API Debug action.
      * Override this to append additional information about shop system to the response of the Debug action.
      *
-     * @return mixed[] An string with additional information.
+     * @return mixed Additional debugging information of any form (string, array, ...)
      */
     public function getDebugInfo()
     {
@@ -3029,7 +3029,7 @@ abstract class ShopgateFileBuffer extends ShopgateObject implements ShopgateFile
         $this->onFinish();
 
         fclose($this->fileHandle);
-        $this->fileHandle = null;
+        unset($this->fileHandle);
 
         if (!preg_match("/^php/", $this->filePath)) {
             // FIX for Windows Servers
@@ -3111,14 +3111,14 @@ class ShopgateFileBufferXml extends ShopgateFileBuffer
     protected $xmlModel;
 
     /**
-     * @param Shopgate_Model_Abstract        $xmlModel
+     * @param Shopgate_Model_AbstractExport  $xmlModel
      * @param Shopgate_Model_XmlResultObject $xmlNode
      * @param null|string                    $capacity
      * @param bool                           $convertEncoding
      * @param array                          $sourceEncodings
      */
     public function __construct(
-        Shopgate_Model_Abstract $xmlModel,
+        Shopgate_Model_AbstractExport $xmlModel,
         Shopgate_Model_XmlResultObject $xmlNode,
         $capacity,
         $convertEncoding = true,

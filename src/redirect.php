@@ -40,7 +40,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
     protected $merchantApi;
 
     /**
-     * @var ShopgateConfig
+     * @var ShopgateConfigInterface
      */
     protected $config;
 
@@ -340,9 +340,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
             return false;
         }
 
-        return empty($_COOKIE[ShopgateMobileRedirectInterface::COOKIE_NAME])
-            ? true
-            : false;
+        return empty($_COOKIE[ShopgateMobileRedirectInterface::COOKIE_NAME]);
     }
 
     /**
@@ -715,7 +713,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
      *
      * @param string $file The file to read the keywords from.
      *
-     * @return array<int, string[]> An array with the 'timestamp' of the last update and the list of 'keywords'.
+     * @return array An array with the 'timestamp' of the last update and the list of 'keywords'. ('timestamp' => int, 'keywords' => string[])
      *
      * @throws ShopgateLibraryException in case the file cannot be opened.
      */
@@ -1064,7 +1062,7 @@ interface ShopgateMobileRedirectInterface
      *
      * @param string $url the URL to redirect to
      *
-     * @return false if the passed $url parameter is no valid URL
+     * @return string|false returns false if the passed $url parameter is no valid URL
      */
     public function redirect($url);
 

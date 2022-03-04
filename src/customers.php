@@ -268,7 +268,8 @@ class ShopgateCustomer extends ShopgateContainer
     public function setAddresses($value)
     {
         if (!is_array($value)) {
-            $this->addresses = null;
+            $this->addresses = array();
+            return;
         }
 
         foreach ($value as $index => &$element) {

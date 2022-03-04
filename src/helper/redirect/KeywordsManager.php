@@ -21,7 +21,7 @@
  */
 class Shopgate_Helper_Redirect_KeywordsManager implements Shopgate_Helper_Redirect_KeywordsManagerInterface
 {
-    /** @var ShopgateMerchantApi */
+    /** @var ShopgateMerchantApiInterface */
     protected $merchantApi;
 
     /** @var string */

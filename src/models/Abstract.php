@@ -43,11 +43,12 @@ class Shopgate_Model_Abstract extends ShopgateObject
     protected static $underscoreCache = array();
 
     /**
-     * @return array
+     * @return array An array with all properties of $this that don't contain an array or an object.
      */
     public function clean()
     {
         $result = array();
+        /* @phpstan-ignore-next-line */
         foreach ($this as $k => $v) {
             if (!is_object($v) && !is_array($v)) {
                 $result[$k] = $v;

@@ -36,7 +36,7 @@ class Shopgate_Model_XmlResultObject extends SimpleXMLElement
      * @param mixed  $value
      * @param bool   $allowNull
      *
-     * @return SimpleXMLElement
+     * @return ?SimpleXMLElement
      */
     public function addChildWithCDATA($name, $value = null, $allowNull = true)
     {

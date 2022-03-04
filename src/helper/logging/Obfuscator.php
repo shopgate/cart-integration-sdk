@@ -27,7 +27,7 @@ class Shopgate_Helper_Logging_Obfuscator
     /** @var string[] Names of the fields that should be obfuscated on logging. */
     private $obfuscationFields;
 
-    /** @var string Names of the fields that should be removed from logging. */
+    /** @var string[] Names of the fields that should be removed from logging. */
     private $removeFields;
 
     public function __construct()

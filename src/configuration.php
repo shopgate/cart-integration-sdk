@@ -533,20 +533,17 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 
         // default values
         $this->plugin_name                    = 'not set';
-        $this->use_custom_error_handler       = 0;
-        $this->customer_number                = null;
-        $this->shop_number                    = null;
-        $this->apikey                         = null;
+        $this->use_custom_error_handler       = false;
         $this->alias                          = 'my-shop';
         $this->cname                          = '';
         $this->server                         = 'live';
         $this->api_url                        = '';
-        $this->shop_is_active                 = 0;
-        $this->always_use_ssl                 = 1; // default should be 1, no exceptions should be made for production systems!
-        $this->enable_redirect_keyword_update = 0;
-        $this->enable_default_redirect        = 0;
+        $this->shop_is_active                 = false;
+        $this->always_use_ssl                 = true; // default should be true, no exceptions should be made for production systems!
+        $this->enable_redirect_keyword_update = false;
+        $this->enable_default_redirect        = false;
         $this->encoding                       = 'UTF-8';
-        $this->export_convert_encoding        = 1;
+        $this->export_convert_encoding        = true;
         $this->force_source_encoding          = false;
         $this->supported_fields_check_cart    = array();
         $this->supported_fields_get_settings  = array();
@@ -700,7 +697,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
      *
      * @param array<string, mixed> $data The data to be assigned to the configuration.
      *
-     * @return void
+     * @return array
      */
     public function loadArray(array $data = array())
     {
@@ -708,7 +705,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
         if (empty($data)) {
             $this->loadFile();
 
-            return;
+            return array();
         }
 
         // if data was passed, map via setters
@@ -716,6 +713,8 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
 
         // put the rest into $this->additionalSettings
         $this->mapAdditionalSettings($unmappedData);
+
+        return array();
     }
 
     /**
