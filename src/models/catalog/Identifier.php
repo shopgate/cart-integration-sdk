@@ -55,7 +55,7 @@ class Shopgate_Model_Catalog_Identifier extends Shopgate_Model_AbstractExport
     public function asXml(Shopgate_Model_XmlResultObject $itemNode)
     {
         /**
-         * @var Shopgate_Model_XmlResultObject $stockNode
+         * @var Shopgate_Model_XmlResultObject $identifierNode
          */
         $identifierNode = $itemNode->addChildWithCDATA('identifier', $this->getValue());
         $identifierNode->addAttribute('uid', $this->getUid());

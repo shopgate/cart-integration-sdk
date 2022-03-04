@@ -31,7 +31,7 @@ class ShopgateClient extends ShopgateContainer
     protected $type;
 
     /**
-     * @param string
+     * @param string $data
      */
     public function setType($data)
     {

@@ -98,12 +98,7 @@ class Shopgate_Model_Catalog_Input extends Shopgate_Model_AbstractExport
      */
     public function asXml(Shopgate_Model_XmlResultObject $itemNode)
     {
-        /**
-         * @var Shopgate_Model_XmlResultObject    $inputNode
-         * @var Shopgate_Model_XmlResultObject    $optionsNode
-         * @var Shopgate_Model_Catalog_Validation $validationItem
-         * @var Shopgate_Model_Catalog_Option     $optionItem
-         */
+        /** @var Shopgate_Model_XmlResultObject $inputNode */
         $inputNode = $itemNode->addChild('input');
         $inputNode->addAttribute('uid', $this->getUid());
         $inputNode->addAttribute('type', $this->getType());
@@ -112,18 +107,17 @@ class Shopgate_Model_Catalog_Input extends Shopgate_Model_AbstractExport
         $inputNode->addAttribute('sort_order', $this->getSortOrder());
         $inputNode->addChildWithCDATA('label', $this->getLabel());
         $inputNode->addChildWithCDATA('info_text', $this->getInfoText());
+
+        /** @var Shopgate_Model_XmlResultObject $optionsNode */
         $optionsNode = $inputNode->addChild('options');
 
-        /**
-         * options
-         */
+        // options
         foreach ($this->getOptions() as $optionItem) {
+            /** @var Shopgate_Model_Catalog_Option $optionItem */
             $optionItem->asXml($optionsNode);
         }
 
-        /**
-         * validation
-         */
+        // validation
         $this->getValidation()->asXml($inputNode);
 
         return $itemNode;

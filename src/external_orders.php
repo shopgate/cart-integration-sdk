@@ -338,7 +338,7 @@ class ShopgateExternalOrder extends ShopgateContainer
     }
 
     /**
-     * @param ShopgateDeliveryNote []|array[string, mixed] $value
+     * @param ShopgateDeliveryNote[]|array<string, mixed> $value
      */
     public function setDeliveryNotes($value)
     {
@@ -365,7 +365,7 @@ class ShopgateExternalOrder extends ShopgateContainer
     }
 
     /**
-     * @param ShopgateExternalOrderTax []|array[string, mixed] $value
+     * @param ShopgateExternalOrderTax[]|array<string, mixed> $value
      */
     public function setOrderTaxes($value)
     {
@@ -392,7 +392,7 @@ class ShopgateExternalOrder extends ShopgateContainer
     }
 
     /**
-     * @param ShopgateExternalOrderExtraCost []|array[string, mixed] $value
+     * @param ShopgateExternalOrderExtraCost[]|array<string, mixed> $value
      */
     public function setExtraCosts($value)
     {
@@ -419,7 +419,7 @@ class ShopgateExternalOrder extends ShopgateContainer
     }
 
     /**
-     * @param ShopgateExternalOrderItem []|array[string, mixed] $value
+     * @param ShopgateExternalOrderItem[]|array<string, mixed> $value
      */
     public function setItems($value)
     {

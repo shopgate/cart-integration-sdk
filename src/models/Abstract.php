@@ -98,19 +98,20 @@ class Shopgate_Model_Abstract extends ShopgateObject
         return null;
     }
 
-    /** set the data by key or array
+    /**
+     * Set the data by key (property) or array
      *
-     * @param      $key
-     * @param null $value
+     * @param string|array $key
+     * @param mixed        $value
      *
      * @return Shopgate_Model_Abstract
      */
     public function setData($key, $value = null)
     {
         if (is_array($key)) {
-            foreach ($key as $key => $value) {
+            foreach ($key as $arrayKey => $value) {
                 if (!is_array($value) && !is_object($value)) {
-                    $this->$key = $value;
+                    $this->$arrayKey = $value;
                 }
             }
         } else {
@@ -123,8 +124,8 @@ class Shopgate_Model_Abstract extends ShopgateObject
     /**
      * returns data from key or all
      *
-     * @param string $key
-     * @param null   $index
+     * @param string|array    $key
+     * @param int|string|null $index
      *
      * @return array|null
      */
@@ -133,8 +134,6 @@ class Shopgate_Model_Abstract extends ShopgateObject
         if ('' === $key) {
             return $this->data;
         }
-
-        $default = null;
 
         if (isset($this->data[$key])) {
             if (is_null($index)) {
@@ -149,10 +148,10 @@ class Shopgate_Model_Abstract extends ShopgateObject
                 return null;
             }
 
-            return $default;
+            return null;
         }
 
-        return $default;
+        return null;
     }
 
     /**
@@ -168,7 +167,7 @@ class Shopgate_Model_Abstract extends ShopgateObject
     }
 
     /**
-     * @param $name
+     * @param string $name
      *
      * @return string
      */

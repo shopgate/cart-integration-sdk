@@ -241,7 +241,7 @@ abstract class ShopgateCartBase extends ShopgateContainer
     }
 
     /**
-     * @param $ip - ip of the customer
+     * @param string $ip IP of the customer
      */
     public function setCustomerIp($ip)
     {

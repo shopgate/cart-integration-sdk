@@ -295,7 +295,7 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
     /**
      * set is child
      *
-     * @param $value
+     * @param bool $value
      */
     public function setIsChild($value)
     {
@@ -305,18 +305,14 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
     /**
      * generate xml result object
      *
-     * @param Shopgate_Model_XmlResultObject $itemsNode
+     * @param Shopgate_Model_XmlResultObject $itemNode
      *
      * @return Shopgate_Model_XmlResultObject
      */
-    public function asXml(Shopgate_Model_XmlResultObject $itemsNode)
+    public function asXml(Shopgate_Model_XmlResultObject $itemNode)
     {
-        /**
-         * global info
-         *
-         * @var $itemNode Shopgate_Model_XmlResultObject
-         */
-        $itemNode = $itemsNode->addChild(self::DEFAULT_ITEM_IDENTIFIER);
+        /** @var Shopgate_Model_XmlResultObject $itemNode */
+        $itemNode = $itemNode->addChild(self::DEFAULT_ITEM_IDENTIFIER);
 
         $itemNode->addAttribute('uid', $this->getUid());
         $itemNode->addAttribute('last_update', $this->getLastUpdate());
@@ -343,23 +339,13 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
          */
         $this->getPrice()->asXml($itemNode);
 
-        /**
-         * images
-         *
-         * @var Shopgate_Model_XmlResultObject $imagesNode
-         * @var Shopgate_Model_Media_Image     $imageItem
-         */
+        /** @var Shopgate_Model_XmlResultObject $imagesNode */
         $imagesNode = $itemNode->addChild('images');
         foreach ($this->getImages() as $imageItem) {
             $imageItem->asXml($imagesNode);
         }
 
-        /**
-         * categories
-         *
-         * @var Shopgate_Model_XmlResultObject      $categoryPathNode
-         * @var Shopgate_Model_Catalog_CategoryPath $categoryPathItem
-         */
+        /** @var Shopgate_Model_XmlResultObject $categoryPathNode */
         $categoryPathNode = $itemNode->addChild('categories');
         foreach ($this->getCategoryPaths() as $categoryPathItem) {
             $categoryPathItem->asXml($categoryPathNode);
@@ -380,12 +366,7 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
          */
         $this->getVisibility()->asXml($itemNode);
 
-        /**
-         * properties
-         *
-         * @var Shopgate_Model_XmlResultObject  $propertiesNode
-         * @var Shopgate_Model_Catalog_Property $propertyItem
-         */
+        /** @var Shopgate_Model_XmlResultObject $propertiesNode */
         $propertiesNode = $itemNode->addChild('properties');
         foreach ($this->getProperties() as $propertyItem) {
             $propertyItem->asXml($propertiesNode);
@@ -396,65 +377,39 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
          */
         $this->getStock()->asXml($itemNode);
 
-        /**
-         * identifiers
-         *
-         * @var Shopgate_Model_XmlResultObject    $identifiersNode
-         * @var Shopgate_Model_Catalog_Identifier $identifierItem
-         */
+        /** @var Shopgate_Model_XmlResultObject $identifiersNode */
         $identifiersNode = $itemNode->addChild('identifiers');
         foreach ($this->getIdentifiers() as $identifierItem) {
             $identifierItem->asXml($identifiersNode);
         }
 
-        /**
-         * tags
-         *
-         * @var Shopgate_Model_XmlResultObject $tagsNode
-         * @var Shopgate_Model_Catalog_Tag     $tagItem
-         */
+        /** @var Shopgate_Model_XmlResultObject $tagsNode */
         $tagsNode = $itemNode->addChild('tags');
         foreach ($this->getTags() as $tagItem) {
             $tagItem->asXml($tagsNode);
         }
 
-        /**
-         * relations
-         *
-         * @var Shopgate_Model_XmlResultObject  $relationsNode
-         * @var Shopgate_Model_Catalog_Relation $relationItem
-         */
+        /** @var Shopgate_Model_XmlResultObject $relationsNode */
         $relationsNode = $itemNode->addChild('relations');
         foreach ($this->getRelations() as $relationItem) {
             $relationItem->asXml($relationsNode);
         }
 
-        /**
-         * attribute / options
-         *
-         * @var Shopgate_Model_XmlResultObject        $attributeGroupsNode
-         * @var Shopgate_Model_XmlResultObject        $attributesNode
-         * @var Shopgate_Model_Catalog_Attribute      $attributeItem
-         * @var Shopgate_Model_Catalog_AttributeGroup $attributeGroupItem
-         */
         if ($this->getIsChild()) {
+            /** @var Shopgate_Model_XmlResultObject $attributesNode */
             $attributesNode = $itemNode->addChild('attributes');
             foreach ($this->getAttributes() as $attributeItem) {
                 $attributeItem->asXml($attributesNode);
             }
         } else {
+            /** @var Shopgate_Model_XmlResultObject $attributeGroupsNode */
             $attributeGroupsNode = $itemNode->addChild('attribute_groups');
             foreach ($this->getAttributeGroups() as $attributeGroupItem) {
                 $attributeGroupItem->asXml($attributeGroupsNode);
             }
         }
 
-        /**
-         * inputs
-         *
-         * @var Shopgate_Model_XmlResultObject $inputsNode
-         * @var Shopgate_Model_Catalog_Input   $inputItem
-         */
+        /** @var Shopgate_Model_XmlResultObject $inputsNode */
         $inputsNode = $itemNode->addChild('inputs');
         foreach ($this->getInputs() as $inputItem) {
             $inputItem->asXml($inputsNode);
@@ -464,13 +419,9 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
 
         /**
          * children
-         *
-         * @var Shopgate_Model_XmlResultObject $childrenNode
-         * @var object                         $itemNode ->children
-         * @var Shopgate_Model_Catalog_Product $child
-         * @var Shopgate_Model_XmlResultObject $childXml
          */
         if (!$this->getIsChild()) {
+            /** @var Shopgate_Model_XmlResultObject $childrenNode */
             $childrenNode = $itemNode->addChild('children');
             foreach ($this->getChildren() as $child) {
                 $child->asXml($childrenNode);
@@ -485,7 +436,7 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
             }
         }
 
-        return $itemsNode;
+        return $itemNode;
     }
 
     /**
@@ -513,7 +464,7 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
     }
 
     /**
-     * @return array
+     * @return array|null
      */
     public function getChildren()
     {
@@ -672,80 +623,39 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
         $productResult->setData('weight_unit', $this->getWeightUnit());
         $productResult->setData('display_type', $this->getDisplayType());
 
-        //prices
-
-        /**
-         * images
-         *
-         * @var Shopgate_Model_Media_Image $image
-         */
         $imagesData = array();
         foreach ($this->getImages() as $image) {
-            array_push($imagesData, $image->asArray());
+            $imagesData[] = $image->asArray();
         }
         $productResult->setData('images', $imagesData);
 
-        /**
-         * category paths
-         *
-         * @var Shopgate_Model_Catalog_CategoryPath $categoryPath
-         */
         $categoryPathsData = array();
         foreach ($this->getCategoryPaths() as $categoryPath) {
-            array_push($categoryPathsData, $categoryPath->asArray());
+            $categoryPathsData[] = $categoryPath->asArray();
         }
         $productResult->setData('categories', $categoryPathsData);
 
-        /**
-         * shipping
-         */
         $productResult->setData('shipping', $this->getShipping()->asArray());
-
-        /**
-         * manufacturer
-         */
         $productResult->setData('manufacturer', $this->getManufacturer()->asArray());
-
-        /**
-         * visibility
-         */
         $productResult->setData('visibility', $this->getVisibility()->asArray());
 
-        /**
-         * properties
-         *
-         * @var Shopgate_Model_Catalog_Property $property
-         */
         $propertiesData = array();
         foreach ($this->getProperties() as $property) {
-            array_push($propertiesData, $property->asArray());
+            $propertiesData[] = $property->asArray();
         }
         $productResult->setData('properties', $propertiesData);
 
-        /**
-         * stock
-         */
         $productResult->setData('stock', $this->getStock()->asArray());
 
-        /**
-         * identifiers
-         *
-         * @var Shopgate_Model_Catalog_Identifier $identifier
-         */
         $identifiersData = array();
         foreach ($this->getIdentifiers() as $identifier) {
-            array_push($identifiersData, $identifier->asArray());
+            $identifiersData[] = $identifier->asArray();
         }
         $productResult->setData('identifiers', $identifiersData);
 
-        /**
-         * tags
-         *
-         * @var Shopgate_Model_Catalog_Tag $tag
-         */
         $tagsData = array();
         foreach ($this->getTags() as $tag) {
-            array_push($tagsData, $tag->asArray());
+            $tagsData[] = $tag->asArray();
         }
         $productResult->setData('tags', $tagsData);
 

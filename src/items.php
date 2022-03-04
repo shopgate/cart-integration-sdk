@@ -1298,7 +1298,7 @@ class ShopgateItemOptionValue extends ShopgateContainer
     ##########
 
     /**
-     * @param $value string
+     * @param string $value
      */
     public function setValueNumber($value)
     {
@@ -1306,7 +1306,7 @@ class ShopgateItemOptionValue extends ShopgateContainer
     }
 
     /**
-     * @param $value string
+     * @param string $value
      */
     public function setValue($value)
     {
@@ -1314,7 +1314,7 @@ class ShopgateItemOptionValue extends ShopgateContainer
     }
 
     /**
-     * @param $value int
+     * @param int $value
      */
     public function setOrderIndex($value)
     {
@@ -1322,7 +1322,7 @@ class ShopgateItemOptionValue extends ShopgateContainer
     }
 
     /**
-     * @param $value float
+     * @param float $value
      */
     public function setAdditionalAmountWithTax($value)
     {

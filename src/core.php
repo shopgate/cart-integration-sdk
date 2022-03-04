@@ -1137,10 +1137,9 @@ abstract class ShopgateObject
     /**
      * get a instance of an Shopgate helper class depending on the committed name
      *
-     * @param $helperName string defined by constants in this class(ShopgateObject)
+     * @param string $helperName defined by constants in this class(ShopgateObject)
      *
-     * @return Shopgate_Helper_DataStructure|Shopgate_Helper_Pricing|Shopgate_Helper_String returns the requested
-     *                                                                                           helper instance
+     * @return Shopgate_Helper_DataStructure|Shopgate_Helper_Pricing|Shopgate_Helper_String returns the requested helper instance
      * @throws ShopgateLibraryException
      */
     protected function getHelper($helperName)
@@ -2477,7 +2476,7 @@ abstract class ShopgatePlugin extends ShopgateObject
      * Override this method if the plugin does not have its own entry point (e.g. MVC-implementations that only provide
      * a controller and controller-action as entry point)
      *
-     * @param $pluginApiActionName
+     * @param string $pluginApiActionName
      *
      * @return string URL
      */
@@ -2495,7 +2494,7 @@ abstract class ShopgatePlugin extends ShopgateObject
      * Executes a cron job with parameters.
      *
      * @param string $jobname    The name of the job to execute.
-     * @param <string => mixed> $params Associative list of parameter names and values.
+     * @param array<string, mixed> $params Associative list of parameter names and values.
      * @param string $message    A reference to the variable the message is appended to.
      * @param int    $errorcount A reference to the error counter variable.
      * @post $message contains a message of success or failure for the job.

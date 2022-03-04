@@ -2615,8 +2615,8 @@ abstract class ShopgatePluginApiResponse extends ShopgateObject
     /**
      * Marks the response as error.
      *
-     * @param $code
-     * @param $message
+     * @param int $code
+     * @param string $message
      */
     public function markError($code, $message)
     {
@@ -2872,7 +2872,7 @@ class ShopgateMerchantApiResponse extends ShopgateContainer
     }
 
     /**
-     * @param $value mixed
+     * @param mixed $value
      */
     public function setData($value)
     {
@@ -2965,6 +2965,12 @@ interface ShopgatePluginApiInterface
      * @return bool false if an error occured, otherwise true.
      */
     public function handleRequest(array $data = array());
+
+    /**
+     * @param string $shopgateOAuthActionName
+     * @return string
+     */
+    public function buildShopgateOAuthUrl($shopgateOAuthActionName);
 }
 
 /**
@@ -3055,7 +3061,7 @@ interface ShopgateMerchantApiInterface
      *
      * @param string $orderNumber
      * @param bool   $cancelCompleteOrder
-     * @param        array ('item_number' => string, 'quantity' => int)[] $cancellationItems
+     * @param array  $cancellationItems ('item_number' => string, 'quantity' => int)[]
      * @param bool   $cancelShipping
      * @param string $cancellationNote
      *

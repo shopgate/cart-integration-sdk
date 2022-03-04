@@ -715,8 +715,8 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
      *
      * @param string $file The file to read the keywords from.
      *
-     * @return array<'timestamp' => int, 'keywords' => string[])
-     *            An array with the 'timestamp' of the last update and the list of 'keywords'.
+     * @return array<int, string[]> An array with the 'timestamp' of the last update and the list of 'keywords'.
+     *
      * @throws ShopgateLibraryException in case the file cannot be opened.
      */
     protected function loadKeywordsFromFile($file)
@@ -1083,7 +1083,7 @@ interface ShopgateMobileRedirectInterface
      * @param string  $itemNumber   the product item number
      * @param boolean $autoRedirect if its set to true a redirect will attempt
      *
-     * @return $jsHeader - returns a html snippet for the <head></head> tag
+     * @return string an HTML snippet for the <head></head> tag
      */
     public function buildScriptItem($itemNumber, $autoRedirect = true);
 
@@ -1094,7 +1094,7 @@ interface ShopgateMobileRedirectInterface
      * @param string  $itemNumberPublic the product item number public
      * @param boolean $autoRedirect     if its set to true a redirect will attempt
      *
-     * @return $jsHeader - returns a html snippet for the <head></head> tag
+     * @return string an HTML snippet for the <head></head> tag
      */
     public function buildScriptItemPublic($itemNumberPublic, $autoRedirect = true);
 
@@ -1105,7 +1105,7 @@ interface ShopgateMobileRedirectInterface
      * @param string  $categoryNumber the category number
      * @param boolean $autoRedirect   if its set to true a redirect will attempt
      *
-     * @return $jsHeader - returns a html snippet for the <head></head> tag
+     * @return string an HTML snippet for the <head></head> tag
      */
     public function buildScriptCategory($categoryNumber, $autoRedirect = true);
 
@@ -1115,7 +1115,7 @@ interface ShopgateMobileRedirectInterface
      *
      * @param boolean $autoRedirect if its set to true a redirect will attempt
      *
-     * @return $jsHeader - returns a html snippet for the <head></head> tag
+     * @return string an HTML snippet for the <head></head> tag
      */
     public function buildScriptShop($autoRedirect = true);
 
@@ -1126,7 +1126,7 @@ interface ShopgateMobileRedirectInterface
      * @param string  $cmsPage      the cms page key
      * @param boolean $autoRedirect if its set to true a redirect will attempt
      *
-     * @return $jsHeader - returns a html snippet for the <head></head> tag
+     * @return string an HTML snippet for the <head></head> tag
      */
     public function buildScriptCms($cmsPage, $autoRedirect = true);
 
@@ -1137,7 +1137,7 @@ interface ShopgateMobileRedirectInterface
      * @param string  $manufacturerName the manufacterer name
      * @param boolean $autoRedirect     if its set to true a redirect will attempt
      *
-     * @return $jsHeader - returns a html snippet for the <head></head> tag
+     * @return string an HTML snippet for the <head></head> tag
      */
     public function buildScriptBrand($manufacturerName, $autoRedirect = true);
 
@@ -1148,7 +1148,7 @@ interface ShopgateMobileRedirectInterface
      * @param string  $searchString the search string
      * @param boolean $autoRedirect if its set to true a redirect will attempt
      *
-     * @return $jsHeader - returns a html snippet for the <head></head> tag
+     * @return string an HTML snippet for the <head></head> tag
      */
     public function buildScriptSearch($searchString, $autoRedirect = true);
 

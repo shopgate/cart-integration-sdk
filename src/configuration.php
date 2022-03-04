@@ -698,7 +698,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
      * <br />
      * If $data is empty or not an array, the method calls $this->loadFile().
      *
-     * @param $data array<string, mixed> The data to be assigned to the configuration.
+     * @param array<string, mixed> $data The data to be assigned to the configuration.
      *
      * @return void
      */
@@ -3501,8 +3501,7 @@ interface ShopgateConfigInterface
     public function setEnableRedirectKeywordUpdate($value);
 
     /**
-     * @param bool      true to enable default redirect for mobile devices from content sites to mobile website (welcome
-     *                  page)
+     * @param bool $value true to enable default redirect for mobile devices from content sites to mobile website (welcome page)
      */
     public function setEnableDefaultRedirect($value);
 
@@ -3900,12 +3899,12 @@ interface ShopgateConfigInterface
     public function setHtmlTags($value);
 
     /**
-     * @param $default_execution_time int set value for maximum execution time in seconds
+     * @param int $default_execution_time set value for maximum execution time in seconds
      */
     public function setDefaultExecutionTime($default_execution_time);
 
     /**
-     * @param $default_memory_limit int set value for default memory limit in MB
+     * @param int $default_memory_limit set value for default memory limit in MB
      */
     public function setDefaultMemoryLimit($default_memory_limit);
 

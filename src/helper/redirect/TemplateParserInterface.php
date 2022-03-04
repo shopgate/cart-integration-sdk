@@ -27,7 +27,7 @@ interface Shopgate_Helper_Redirect_TemplateParserInterface
     const FUNCTION_NAME_ESCAPED    = 'escaped';
 
     /**
-     * @param $template
+     * @param string $template
      *
      * @return Shopgate_Model_Redirect_HtmlTagVariable[]
      */

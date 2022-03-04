@@ -46,17 +46,18 @@ abstract class Shopgate_Model_AbstractExport extends Shopgate_Model_Abstract
 
     const SET_EMPTY = '(empty)';
 
-    /** set the data by key or array
+    /**
+     * Set the data by key (property) or array
      *
-     * @param      $key
-     * @param null $value
+     * @param string|array $key
+     * @param mixed        $value
      *
      * @return Shopgate_Model_AbstractExport
      */
     public function setData($key, $value = null)
     {
         if (is_array($key)) {
-            foreach ($key as $key => $value) {
+            foreach ($key as $arrayKey => $value) {
                 if (!is_array($value) && !is_object($value)) {
                     $value = $this->stripInvalidUnicodeSequences(
                         $this->stringToUtf8(
@@ -65,7 +66,7 @@ abstract class Shopgate_Model_AbstractExport extends Shopgate_Model_Abstract
                         )
                     );
                 }
-                $this->$key = $value;
+                $this->$arrayKey = $value;
             }
         } else {
             if (!is_array($value) && !is_object($value)) {
@@ -146,7 +147,7 @@ abstract class Shopgate_Model_AbstractExport extends Shopgate_Model_Abstract
     }
 
     /**
-     * @param $item
+     * @param stdClass $item
      *
      * @return $this
      */
@@ -158,11 +159,11 @@ abstract class Shopgate_Model_AbstractExport extends Shopgate_Model_Abstract
     }
 
     /**
-     * @param Shopgate_Model_XmlResultObject $itemsNode
+     * @param Shopgate_Model_XmlResultObject $itemNode
      *
      * @return Shopgate_Model_XmlResultObject
      */
-    abstract public function asXml(Shopgate_Model_XmlResultObject $itemsNode);
+    abstract public function asXml(Shopgate_Model_XmlResultObject $itemNode);
 
     /**
      * @return array

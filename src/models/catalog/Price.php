@@ -88,10 +88,7 @@ class Shopgate_Model_Catalog_Price extends Shopgate_Model_AbstractExport
 
     public function asXml(Shopgate_Model_XmlResultObject $itemNode)
     {
-        /**
-         * @var Shopgate_Model_XmlResultObject $pricesNode
-         * @var Shopgate_Model_XmlResultObject $tierPricesNode
-         */
+        /** @var Shopgate_Model_XmlResultObject $pricesNode */
         $pricesNode = $itemNode->addChild('prices');
         $pricesNode->addAttribute('type', $this->getType());
 
@@ -104,6 +101,7 @@ class Shopgate_Model_Catalog_Price extends Shopgate_Model_AbstractExport
 
         $tierPrices = $this->getTierPricesGroup();
         if (!empty($tierPrices)) {
+            /** @var Shopgate_Model_XmlResultObject $tierPricesNode */
             $tierPricesNode = $pricesNode->addChild('tier_prices');
             foreach ($tierPrices as $customerGroupItem) {
                 $customerGroupItem->asXml($tierPricesNode);
