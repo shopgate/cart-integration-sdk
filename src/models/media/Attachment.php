@@ -56,7 +56,7 @@ class Shopgate_Model_Media_Attachment extends Shopgate_Model_AbstractExport
          * @var Shopgate_Model_XmlResultObject $attachmentNode
          */
         $attachmentNode = $itemNode->addChild('attachment');
-        $attachmentNode->addAttribute('number', $this->getNumber());
+        $attachmentNode->addAttribute('number', (string)$this->getNumber());
         $attachmentNode->addChildWithCDATA('url', $this->getUrl());
         $attachmentNode->addChild('mime_type', $this->getMimeType());
         $attachmentNode->addChild('file_name', $this->getFileName());

@@ -330,7 +330,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
     {
         // if GET parameter is set create cookie and do not redirect
         if (!empty($_GET['shopgate_redirect'])) {
-            setcookie(ShopgateMobileRedirectInterface::COOKIE_NAME, 1, time() + 604800, '/'); // expires after 7 days
+            setcookie(ShopgateMobileRedirectInterface::COOKIE_NAME, '1', time() + 604800, '/'); // expires after 7 days
 
             return false;
         }
@@ -694,7 +694,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
      *
      * @param string[] $keywords The list of keywords to write to the file.
      * @param string   $file     The path to the file.
-     * @param null     $timestamp
+     * @param int|null $timestamp
      */
     protected function saveKeywordsToFile($keywords, $file, $timestamp = null)
     {
@@ -702,10 +702,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
             $timestamp = time();
         }
         array_unshift($keywords, $timestamp); // add timestamp to first line
-        if (!@file_put_contents($file, implode("\n", $keywords))) {
-            // no logging - this could end up in spamming the logs
-            // $this->log(ShopgateLibraryException::buildLogMessageFor(ShopgateLibraryException::FILE_READ_WRITE_ERROR, 'Could not write to "'.$file.'".'));
-        }
+        @file_put_contents($file, implode("\n", $keywords));
     }
 
     /**

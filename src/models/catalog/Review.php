@@ -115,7 +115,7 @@ class Shopgate_Model_Catalog_Review extends Shopgate_Model_AbstractExport
     }
 
     /**
-     * @return array|null
+     * @return array
      */
     public function asArray()
     {

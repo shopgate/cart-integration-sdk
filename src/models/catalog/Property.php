@@ -58,7 +58,7 @@ class Shopgate_Model_Catalog_Property extends Shopgate_Model_AbstractExport
          * @var Shopgate_Model_XmlResultObject $propertyNode
          */
         $propertyNode = $itemNode->addChild('property');
-        $propertyNode->addAttribute('uid', $this->getUid());
+        $propertyNode->addAttribute('uid', (string)$this->getUid());
         $propertyNode->addChildWithCDATA('label', $this->getLabel());
         $propertyNode->addChildWithCDATA('value', $this->getValue());
 
@@ -66,7 +66,7 @@ class Shopgate_Model_Catalog_Property extends Shopgate_Model_AbstractExport
     }
 
     /**
-     * @return array|null
+     * @return array
      */
     public function asArray()
     {

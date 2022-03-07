@@ -73,11 +73,11 @@ class Shopgate_Model_Catalog_TierPrice extends Shopgate_Model_AbstractExport
          * @var Shopgate_Model_XmlResultObject $tierPriceNode
          */
         $tierPriceNode = $itemNode->addChild('tier_price', $this->getReduction());
-        $tierPriceNode->addAttribute('aggregate_children', $this->getAggregateChildren());
-        $tierPriceNode->addAttribute('threshold', $this->getFromQuantity());
-        $tierPriceNode->addAttribute('max_quantity', $this->getToQuantity());
+        $tierPriceNode->addAttribute('aggregate_children', $this->getAggregateChildren() ? '1' : '0');
+        $tierPriceNode->addAttribute('threshold', (string)$this->getFromQuantity());
+        $tierPriceNode->addAttribute('max_quantity', (string)$this->getToQuantity());
         $tierPriceNode->addAttribute('type', $this->getReductionType());
-        $tierPriceNode->addAttribute('customer_group_uid', $this->getCustomerGroupUid());
+        $tierPriceNode->addAttribute('customer_group_uid', (string)$this->getCustomerGroupUid());
 
         return $itemNode;
     }

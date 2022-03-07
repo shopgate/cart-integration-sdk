@@ -86,7 +86,7 @@ class Shopgate_Model_Catalog_Stock extends Shopgate_Model_AbstractExport
     }
 
     /**
-     * @return array|null
+     * @return array
      */
     public function asArray()
     {

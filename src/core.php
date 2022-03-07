@@ -120,7 +120,7 @@ function ShopgateErrorHandler($errno, $errstr, $errfile, $errline, $errContext)
     $msg .= "$errstr";
     $msg .= (isset($errContext["printStackTrace"]) && $errContext["printStackTrace"])
         ? "\n" . print_r(
-            debug_backtrace(false),
+            debug_backtrace(0),
             true
         )
         : "";
@@ -354,12 +354,13 @@ class ShopgateLibraryException extends Exception
      * For compatiblity reasons, if an unknown error code is passed, the value is used as message
      * and the code 999 (Unknown error code) is assigned. This should not be used anymore, though.
      *
-     * @param int       $code                                 One of the constants defined in ShopgateLibraryException.
-     * @param string    $additionalInformation                More detailed information on what exactly went wrong.
-     * @param bool      $appendAdditionalInformationToMessage Set true to output the additional information to the
-     *                                                        response. Set false to log it silently.
-     * @param bool      $writeLog                             (unused, kept for compatibility)
-     * @param Exception $previous
+     * @param int|string $code                                 One of the constants defined in ShopgateLibraryException
+     *                                                         or an error message, setting code to 999 'Unknown'.
+     * @param string     $additionalInformation                More detailed information on what exactly went wrong.
+     * @param bool       $appendAdditionalInformationToMessage Set true to output the additional information to the
+     *                                                         response. Set false to log it silently.
+     * @param bool       $writeLog                             (unused, kept for compatibility)
+     * @param Exception  $previous
      */
     public function __construct(/* @phpstan-ignore-line */
         $code,
@@ -687,10 +688,10 @@ class ShopgateBuilder
         @chmod($this->config->getErrorLogPath(), 0777);
         @chmod($this->config->getErrorLogPath(), 0755);
         @error_reporting(E_ALL ^ E_DEPRECATED);
-        @ini_set('log_errors', 1);
+        @ini_set('log_errors', '1');
         @ini_set('error_log', $this->config->getErrorLogPath());
-        @ini_set('ignore_repeated_errors', 1);
-        @ini_set('html_errors', 0);
+        @ini_set('ignore_repeated_errors', '1');
+        @ini_set('html_errors', '0');
     }
 
     public function enableShutdownFunction()
@@ -747,6 +748,7 @@ class ShopgateBuilder
     {
         // set error handler if configured
         if ($this->config->getUseCustomErrorHandler()) {
+            /* @phpstan-ignore-next-line */
             set_error_handler('ShopgateErrorHandler');
         }
 
@@ -1143,8 +1145,8 @@ abstract class ShopgateObject
             return $this->helperClassInstances[$helperClassName];
         }
         throw new ShopgateLibraryException(
-            "Helper function {$helperName} not found",
-            ShopgateLibraryException::SHOPGATE_HELPER_FUNCTION_NOT_FOUND_EXCEPTION
+            ShopgateLibraryException::SHOPGATE_HELPER_FUNCTION_NOT_FOUND_EXCEPTION,
+            "Helper function {$helperName} not found"
         );
     }
 
@@ -1433,7 +1435,7 @@ abstract class ShopgateObject
             echo get_class($subject) . " Object ( \n";
             $subject = (array)$subject;
             foreach ($subject as $key => $val) {
-                if (is_array($ignore) && !in_array($key, $ignore, 1)) {
+                if (is_array($ignore) && !in_array($key, $ignore, true)) {
                     echo str_repeat(" ", $depth * 4) . '[';
                     if ($key[0] == "\0") {
                         $keyParts = explode("\0", $key);
@@ -1455,7 +1457,7 @@ abstract class ShopgateObject
         } elseif (is_array($subject)) {
             echo "Array ( \n";
             foreach ($subject as $key => $val) {
-                if (is_array($ignore) && !in_array($key, $ignore, 1)) {
+                if (is_array($ignore) && !in_array($key, $ignore, true)) {
                     echo str_repeat(" ", $depth * 4) . '[' . $key . '] => ';
                     if ($depth == $maxDepth) {
                         return;
@@ -1487,7 +1489,7 @@ abstract class ShopgateObject
     public function setExportTimeLimit($timeLimit)
     {
         @set_time_limit($timeLimit);
-        @ini_set('max_execution_time', $timeLimit);
+        @ini_set('max_execution_time', (string)$timeLimit);
     }
 
     /**
@@ -2856,7 +2858,7 @@ interface ShopgateFileBufferInterface
     /**
      * Adds a line / row to the csv file buffer.
      *
-     * @param mixed[] $row
+     * @param mixed $row
      *
      * @throws ShopgateLibraryException if flushing the buffer fails.
      */
@@ -3095,7 +3097,7 @@ class ShopgateFileBufferXml extends ShopgateFileBuffer
     /**
      * @param Shopgate_Model_AbstractExport  $xmlModel
      * @param Shopgate_Model_XmlResultObject $xmlNode
-     * @param null|string                    $capacity
+     * @param int                            $capacity
      * @param bool                           $convertEncoding
      * @param array                          $sourceEncodings
      */

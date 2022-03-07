@@ -73,13 +73,13 @@ class Shopgate_Model_Catalog_Visibility extends Shopgate_Model_AbstractExport
          */
         $visibilityNode = $itemNode->addChild('visibility');
         $visibilityNode->addAttribute('level', $this->getLevel());
-        $visibilityNode->addAttribute('marketplace', $this->getMarketplace());
+        $visibilityNode->addAttribute('marketplace', $this->getMarketplace() ? '1' : '0');
 
         return $itemNode;
     }
 
     /**
-     * @return array|null
+     * @return array
      */
     public function asArray()
     {

@@ -1665,7 +1665,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
     private function setEnableErrorReporting()
     {
         @error_reporting(E_ERROR | E_CORE_ERROR | E_USER_ERROR);
-        @ini_set('display_errors', 1);
+        @ini_set('display_errors', '1');
     }
 
     /**

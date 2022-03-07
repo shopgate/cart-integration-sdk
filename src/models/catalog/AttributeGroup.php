@@ -54,7 +54,7 @@ class Shopgate_Model_Catalog_AttributeGroup extends Shopgate_Model_AbstractExpor
          * @var Shopgate_Model_XmlResultObject $attributeNode
          */
         $attributeNode = $itemNode->addChildWithCDATA('attribute_group', $this->getLabel());
-        $attributeNode->addAttribute('uid', $this->getUid());
+        $attributeNode->addAttribute('uid', (string)$this->getUid());
 
         return $itemNode;
     }

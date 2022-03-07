@@ -71,21 +71,21 @@ class Shopgate_Model_Media_Image extends Shopgate_Model_AbstractExport
          * @var Shopgate_Model_XmlResultObject $imageNode
          */
         $imageNode = $itemNode->addChild('image');
-        $imageNode->addAttribute('uid', $this->getUid());
-        $imageNode->addAttribute('sort_order', $this->getSortOrder());
+        $imageNode->addAttribute('uid', (string)$this->getUid());
+        $imageNode->addAttribute('sort_order', (string)$this->getSortOrder());
         $imageNode->addChildWithCDATA('url', $this->getUrl());
         $imageNode->addChildWithCDATA('title', $this->getTitle(), false);
         $imageNode->addChildWithCDATA('alt', $this->getAlt(), false);
 
         if (!$isCategory) {
-            $imageNode->addAttribute('is_cover', (int)$this->getIsCover());
+            $imageNode->addAttribute('is_cover', $this->getIsCover() ? '1' : '0');
         }
 
         return $itemNode;
     }
 
     /**
-     * @return array|null
+     * @return array
      */
     public function asArray()
     {

@@ -58,14 +58,14 @@ class Shopgate_Model_Catalog_Identifier extends Shopgate_Model_AbstractExport
          * @var Shopgate_Model_XmlResultObject $identifierNode
          */
         $identifierNode = $itemNode->addChildWithCDATA('identifier', $this->getValue());
-        $identifierNode->addAttribute('uid', $this->getUid());
+        $identifierNode->addAttribute('uid', (string)$this->getUid());
         $identifierNode->addAttribute('type', $this->getType());
 
         return $itemNode;
     }
 
     /**
-     * @return array|null
+     * @return array
      */
     public function asArray()
     {

@@ -106,12 +106,12 @@
  * @method Shopgate_Model_Catalog_Input[]           getInputs()
  *
  * @method                                          setAttachments(array $value)
- * @method Shopgate_Model_Media_Attachment[]          getAttachments()
+ * @method Shopgate_Model_Media_Attachment[]        getAttachments()
  *
  * @method                                          setIsDefaultChild(bool $value)
  * @method bool                                     getIsDefaultChild()
  *
- * @method                                          setChildren(array $value)
+ * @method                                          setChildren(Shopgate_Model_Catalog_Product[] $value)
  *
  * @method                                          setDisplayType(string $value)
  * @method string                                   getDisplayType()
@@ -314,7 +314,7 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
         $itemNode->addChild('currency', $this->getCurrency());
         $itemNode->addChildWithCDATA('description', $this->getDescription());
         $itemNode->addChildWithCDATA('deeplink', $this->getDeeplink());
-        $itemNode->addChild('promotion')->addAttribute('sort_order', $this->getPromotionSortOrder());
+        $itemNode->addChild('promotion')->addAttribute('sort_order', (string)$this->getPromotionSortOrder());
         $itemNode->addChildWithCDATA('internal_order_info', $this->getInternalOrderInfo());
         $itemNode->addChild('age_rating', $this->getAgeRating(), null, false);
         $itemNode->addChild('weight', $this->getWeight())->addAttribute('unit', $this->getWeightUnit());
@@ -323,7 +323,7 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
          * is default child
          */
         if ($this->getIsChild()) {
-            $itemNode->addAttribute('default_child', $this->getIsDefaultChild());
+            $itemNode->addAttribute('default_child', $this->getIsDefaultChild() ? '1' : '0');
         }
 
         /**
@@ -439,7 +439,7 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
     public function addImage(Shopgate_Model_Media_Image $image)
     {
         $images = $this->getImages();
-        array_push($images, $image);
+        $images[] = $image;
         $this->setImages($images);
     }
 
@@ -451,20 +451,23 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
     public function addChild($child)
     {
         $children = $this->getChildren();
-        array_push($children, $child);
+        $children[] = $child;
         $this->setChildren($children);
     }
 
     /**
-     * @return array|null
+     * @return Shopgate_Model_Catalog_Product[]
      */
     public function getChildren()
     {
-        foreach (parent::getData('children') as $child) {
+        $children = (array)parent::getData('children');
+
+        // cleaning of child products happens implicitly by reference on the objects passed ($this, $child)
+        foreach ($children as $child) {
             $this->cleanChildData($this, $child);
         }
 
-        return parent::getData('children');
+        return $children;
     }
 
     /**
@@ -475,7 +478,7 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
     public function addCategoryPath(Shopgate_Model_Catalog_CategoryPath $categoryPath)
     {
         $categoryPaths = $this->getCategoryPaths();
-        array_push($categoryPaths, $categoryPath);
+        $categoryPaths[] = $categoryPath;
         $this->setCategoryPaths($categoryPaths);
     }
 
@@ -487,7 +490,7 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
     public function addAttributeGroup($attributeGroup)
     {
         $attributesGroups = $this->getAttributeGroups();
-        array_push($attributesGroups, $attributeGroup);
+        $attributesGroups[] = $attributeGroup;
         $this->setAttributeGroups($attributesGroups);
     }
 
@@ -499,7 +502,7 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
     public function addProperty($property)
     {
         $properties = $this->getProperties();
-        array_push($properties, $property);
+        $properties[] = $property;
         $this->setProperties($properties);
     }
 
@@ -511,7 +514,7 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
     public function addIdentifier($identifier)
     {
         $identifiers = $this->getIdentifiers();
-        array_push($identifiers, $identifier);
+        $identifiers[] = $identifier;
         $this->setIdentifiers($identifiers);
     }
 
@@ -523,7 +526,7 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
     public function addTag($tag)
     {
         $tags = $this->getTags();
-        array_push($tags, $tag);
+        $tags[] = $tag;
         $this->setTags($tags);
     }
 
@@ -535,7 +538,7 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
     public function addRelation($relation)
     {
         $relations = $this->getRelations();
-        array_push($relations, $relation);
+        $relations[] = $relation;
         $this->setRelations($relations);
     }
 
@@ -547,7 +550,7 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
     public function addInput($input)
     {
         $inputs = $this->getInputs();
-        array_push($inputs, $input);
+        $inputs[] = $input;
         $this->setInputs($inputs);
     }
 
@@ -559,7 +562,7 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
     public function addAttribute($attribute)
     {
         $attributes = $this->getAttributes();
-        array_push($attributes, $attribute);
+        $attributes[] = $attribute;
         $this->setAttributes($attributes);
     }
 

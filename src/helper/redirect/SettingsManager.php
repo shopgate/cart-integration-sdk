@@ -96,7 +96,7 @@ class Shopgate_Helper_Redirect_SettingsManager implements Shopgate_Helper_Redire
 
         setcookie(
             $this->disableRedirectCookieName,
-            1,
+            '1',
             $startTime + $this->expiration,
             '/'
         );

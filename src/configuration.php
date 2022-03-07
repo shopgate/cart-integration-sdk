@@ -97,12 +97,12 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
     protected $sma_auth_service_class_name;
 
     /**
-     * @var int Shopgate customer number (at least 5 digits)
+     * @var string Shopgate customer number (at least 5 digits)
      */
     protected $customer_number;
 
     /**
-     * @var int Shopgate shop number (at least 5 digits)
+     * @var string Shopgate shop number (at least 5 digits)
      */
     protected $shop_number;
 
@@ -2945,12 +2945,12 @@ interface ShopgateConfigInterface
     public function getOauthAccessToken();
 
     /**
-     * @return int Shopgate customer number (at least 5 digits)
+     * @return string Shopgate customer number (at least 5 digits)
      */
     public function getCustomerNumber();
 
     /**
-     * @return int Shopgate shop number (at least 5 digits)
+     * @return string Shopgate shop number (at least 5 digits)
      */
     public function getShopNumber();
 
@@ -3447,12 +3447,12 @@ interface ShopgateConfigInterface
     public function setOauthAccessToken($value);
 
     /**
-     * @param int $value Shopgate customer number (at least 5 digits)
+     * @param string $value Shopgate customer number (at least 5 digits)
      */
     public function setCustomerNumber($value);
 
     /**
-     * @param int $value Shopgate shop number (at least 5 digits)
+     * @param string $value Shopgate shop number (at least 5 digits)
      */
     public function setShopNumber($value);
 

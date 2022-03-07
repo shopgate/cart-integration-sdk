@@ -54,13 +54,13 @@ class Shopgate_Model_Catalog_Tag extends Shopgate_Model_AbstractExport
          * @var Shopgate_Model_XmlResultObject $tagNode
          */
         $tagNode = $itemNode->addChildWithCDATA('tag', $this->getValue());
-        $tagNode->addAttribute('uid', $this->getUid());
+        $tagNode->addAttribute('uid', (string)$this->getUid());
 
         return $itemNode;
     }
 
     /**
-     * @return array|null
+     * @return array
      */
     public function asArray()
     {

@@ -123,12 +123,20 @@ class Shopgate_Model_Abstract extends ShopgateObject
     }
 
     /**
-     * returns data from key or all
+     * Returns this object's data.
+     *
+     * When $key is specified, the data of that property/key is returned or null, if not set.
+     *
+     * When $key and $index are specified, the data of that property/key and its underlying sub-entity is returned or
+     * null if the key or index of the sub-entity is not set or if the sub-entity is not an array.
+     *
+     * When nothing is passed ($key === ''), the complete internal data is returned as an array. Calling this without
+     * parameters will never result in null.
      *
      * @param string|array    $key
      * @param int|string|null $index
      *
-     * @return Shopgate_Model_Abstract|array|null
+     * @return Shopgate_Model_Abstract|array|mixed|null
      */
     public function getData($key = '', $index = null)
     {
@@ -136,29 +144,24 @@ class Shopgate_Model_Abstract extends ShopgateObject
             return $this->data;
         }
 
-        if (isset($this->data[$key])) {
-            if (is_null($index)) {
-                return $this->data[$key];
-            }
-            $value = $this->data[$key];
-            if (is_array($value)) {
-                if (isset($value[$index])) {
-                    return $value[$index];
-                }
-
-                return null;
-            }
-
+        if (!isset($this->data[$key])) {
             return null;
         }
 
-        return null;
+        $value = $this->data[$key];
+        if ($index !== null && is_array($value)) {
+            return isset($value[$index])
+                ? $value[$index]
+                : null;
+        }
+
+        return $this->data[$key];
     }
 
     /**
      * @param string $var
      *
-     * @return array|null|string
+     * @return Shopgate_Model_Abstract|array|mixed|null
      */
     public function __get($var)
     {

@@ -58,7 +58,7 @@ class Shopgate_Model_Catalog_Manufacturer extends Shopgate_Model_AbstractExport
          * @var Shopgate_Model_XmlResultObject $manufacturerNode
          */
         $manufacturerNode = $itemNode->addChild('manufacturer');
-        $manufacturerNode->addAttribute('uid', $this->getUid());
+        $manufacturerNode->addAttribute('uid', (string)$this->getUid());
         $manufacturerNode->addChildWithCDATA('title', $this->getTitle(), false);
         $manufacturerNode->addChildWithCDATA('item_number', $this->getItemNumber(), false);
 
@@ -66,7 +66,7 @@ class Shopgate_Model_Catalog_Manufacturer extends Shopgate_Model_AbstractExport
     }
 
     /**
-     * @return array|null
+     * @return array
      */
     public function asArray()
     {

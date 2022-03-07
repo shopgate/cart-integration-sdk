@@ -116,16 +116,16 @@ class Shopgate_Model_Catalog_Category extends Shopgate_Model_AbstractExport
          * @var Shopgate_Model_XmlResultObject $categoryNode
          */
         $categoryNode = $itemNode->addChild('category');
-        $categoryNode->addAttribute('uid', $this->getUid());
-        $categoryNode->addAttribute('sort_order', (int)$this->getSortOrder());
+        $categoryNode->addAttribute('uid', (string)$this->getUid());
+        $categoryNode->addAttribute('sort_order', (string)$this->getSortOrder());
         $categoryNode->addAttribute(
             'parent_uid',
             $this->getParentUid()
-                ? $this->getParentUid()
+                ? (string)$this->getParentUid()
                 : null
         );
-        $categoryNode->addAttribute('is_active', (int)$this->getIsActive());
-        $categoryNode->addAttribute('is_anchor', (int)$this->getIsAnchor());
+        $categoryNode->addAttribute('is_active', $this->getIsActive() ? '1' : '0');
+        $categoryNode->addAttribute('is_anchor', $this->getIsAnchor() ? '1' : '0');
         $categoryNode->addChildWithCDATA('name', $this->getName());
         $categoryNode->addChildWithCDATA('deeplink', $this->getDeeplink());
 
@@ -137,7 +137,7 @@ class Shopgate_Model_Catalog_Category extends Shopgate_Model_AbstractExport
     }
 
     /**
-     * @return array|null
+     * @return array
      */
     public function asArray()
     {

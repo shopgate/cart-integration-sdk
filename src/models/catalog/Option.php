@@ -66,9 +66,9 @@ class Shopgate_Model_Catalog_Option extends Shopgate_Model_AbstractExport
          * @var Shopgate_Model_XmlResultObject $optionNode
          */
         $optionNode = $itemNode->addChild('option');
-        $optionNode->addAttribute('additional_price', $this->getAdditionalPrice());
-        $optionNode->addAttribute('uid', $this->getUid());
-        $optionNode->addAttribute('sort_order', $this->getSortOrder());
+        $optionNode->addAttribute('additional_price', (string)$this->getAdditionalPrice());
+        $optionNode->addAttribute('uid', (string)$this->getUid());
+        $optionNode->addAttribute('sort_order', (string)$this->getSortOrder());
         $optionNode->addChildWithCDATA('label', $this->getLabel());
         $optionNode->addChildWithCDATA('value', $this->getValue());
 

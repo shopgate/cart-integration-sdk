@@ -100,11 +100,11 @@ class Shopgate_Model_Catalog_Input extends Shopgate_Model_AbstractExport
     {
         /** @var Shopgate_Model_XmlResultObject $inputNode */
         $inputNode = $itemNode->addChild('input');
-        $inputNode->addAttribute('uid', $this->getUid());
+        $inputNode->addAttribute('uid', (string)$this->getUid());
         $inputNode->addAttribute('type', $this->getType());
-        $inputNode->addAttribute('required', (int)$this->getRequired());
+        $inputNode->addAttribute('required', $this->getRequired() ? '1' : '0');
         $inputNode->addAttribute('additional_price', $this->getAdditionalPrice());
-        $inputNode->addAttribute('sort_order', $this->getSortOrder());
+        $inputNode->addAttribute('sort_order', (string)$this->getSortOrder());
         $inputNode->addChildWithCDATA('label', $this->getLabel());
         $inputNode->addChildWithCDATA('info_text', $this->getInfoText());
 

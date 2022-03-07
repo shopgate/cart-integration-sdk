@@ -109,16 +109,16 @@ class Shopgate_Model_XmlResultObject extends SimpleXMLElement
     /**
      * Adds an attribute to the SimpleXML element is value not empty
      *
-     * @param string $name
-     * @param string $value
-     * @param string $namespace
+     * @param string $qualifiedName
+     * @param ?string $value
+     * @param ?string $namespace
      * @return void
      */
     #[ReturnTypeWillChange]
-    public function addAttribute($name, $value = null, $namespace = null)
+    public function addAttribute($qualifiedName, $value = null, $namespace = null)
     {
         if (isset($value)) {
-            parent::addAttribute($name, $value, $namespace);
+            parent::addAttribute($qualifiedName, $value, $namespace);
         }
     }
 }
