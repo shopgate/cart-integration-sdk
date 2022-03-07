@@ -1063,18 +1063,9 @@ class ShopgateBuilder
      */
     private function determineErrorReporting($request)
     {
-        // determine desired error reporting (default to 0)
-        $errorReporting = (isset($request['error_reporting']))
+        return isset($request['error_reporting'])
             ? $request['error_reporting']
             : 0;
-
-        // determine error reporting for the current stage (custom, pg => E_ALL; the previously requested otherwise)
-        $serverTypesAdvancedErrorLogging = array('custom', 'pg');
-        $errorReporting                  = (isset($serverTypesAdvancedErrorLogging[$this->config->getServer()]))
-            ? 32767
-            : $errorReporting;
-
-        return $errorReporting;
     }
 }
 
