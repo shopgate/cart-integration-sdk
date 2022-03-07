@@ -55,7 +55,8 @@ class Shopgate_Model_XmlResultObject extends SimpleXMLElement
         if ($newChild !== null && $value != '') {
             $node  = dom_import_simplexml($newChild);
             $cData = $node->ownerDocument->createCDATASection($value);
-            if ($cData !== null & $cData !== false) {
+            /* @phpstan-ignore-next-line */
+            if ($cData !== null && $cData !== false) {
                 $node->appendChild($cData);
             }
         }

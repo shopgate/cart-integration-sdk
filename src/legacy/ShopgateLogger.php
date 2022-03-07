@@ -38,7 +38,7 @@ class ShopgateLogger
     /** @var string */
     private $memoryAnalyserLoggingSizeUnit;
 
-    /** @var ShopgateLogger */
+    /** @var ?ShopgateLogger */
     private static $singleton;
 
     /** @var Shopgate_Helper_Logging_Obfuscator */

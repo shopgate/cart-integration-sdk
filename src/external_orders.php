@@ -152,26 +152,11 @@ class ShopgateExternalOrder extends ShopgateContainer
     }
 
     /**
-     * @param ShopgateOrderCustomField[] $value
+     * @param ShopgateOrderCustomField[]|array<string, mixed>[] $value
      */
     public function setCustomFields($value)
     {
-        if (!is_array($value)) {
-            $this->custom_fields = array();
-        }
-
-        foreach ($value as $index => &$element) {
-            if ((!is_object($element) || !($element instanceof ShopgateOrderCustomField)) && !is_array($element)) {
-                unset($value[$index]);
-                continue;
-            }
-
-            if (is_array($element)) {
-                $element = new ShopgateOrderCustomField($element);
-            }
-        }
-
-        $this->custom_fields = $value;
+        $this->custom_fields = $this->convertArrayToSubentityList($value, 'ShopgateOrderCustomField');
     }
 
     /**
@@ -183,68 +168,35 @@ class ShopgateExternalOrder extends ShopgateContainer
     }
 
     /**
-     * @param ShopgateAddress|mixed[] $value
+     * @param ShopgateAddress|array<string, mixed> $value
      */
     public function setInvoiceAddress($value)
     {
-        if (!is_object($value) && !($value instanceof ShopgateAddress) && !is_array($value)) {
-            $this->invoice_address = null;
-
-            return;
-        }
-
-        if (is_array($value)) {
-            $value = new ShopgateAddress($value);
-            $value->setIsDeliveryAddress(false);
-            $value->setIsInvoiceAddress(true);
-        }
+        $value = $this->convertArrayToSubentity($value, 'ShopgateAddress');
+        $value->setIsDeliveryAddress(false);
+        $value->setIsInvoiceAddress(true);
 
         $this->invoice_address = $value;
     }
 
     /**
-     * @param ShopgateAddress|mixed[] $value
+     * @param ShopgateAddress|array<string, mixed> $value
      */
     public function setDeliveryAddress($value)
     {
-        if (!is_object($value) && !($value instanceof ShopgateAddress) && !is_array($value)) {
-            $this->delivery_address = null;
+        $value = $this->convertArrayToSubentity($value, 'ShopgateAddress');
+        $value->setIsDeliveryAddress(true);
+        $value->setIsInvoiceAddress(false);
 
-            return;
-        }
-
-        if (is_array($value)) {
-            $value = new ShopgateAddress($value);
-            $value->setIsDeliveryAddress(true);
-            $value->setIsInvoiceAddress(false);
-        }
-
-        $this->delivery_address = $value;
+        $this->invoice_address = $value;
     }
 
     /**
-     * @param ShopgateExternalCoupon[] $value
+     * @param ShopgateExternalCoupon[]|array<string, mixed>[] $value
      */
     public function setExternalCoupons($value)
     {
-        if (!is_array($value)) {
-            $this->external_coupons = null;
-
-            return;
-        }
-
-        foreach ($value as $index => &$element) {
-            if ((!is_object($element) || !($element instanceof ShopgateExternalCoupon)) && !is_array($element)) {
-                unset($value[$index]);
-                continue;
-            }
-
-            if (is_array($element)) {
-                $element = new ShopgateExternalCoupon($element);
-            }
-        }
-
-        $this->external_coupons = $value;
+        $this->external_coupons = $this->convertArrayToSubentityList($value, 'ShopgateExternalCoupon');
     }
 
     /**
@@ -338,109 +290,35 @@ class ShopgateExternalOrder extends ShopgateContainer
     }
 
     /**
-     * @param ShopgateDeliveryNote[]|array<string, mixed> $value
+     * @param ShopgateDeliveryNote[]|array<string, mixed>[] $value
      */
     public function setDeliveryNotes($value)
     {
-        if (empty($value) || !is_array($value)) {
-            $this->delivery_notes = array();
-
-            return;
-        }
-
-        $deliveryNotes = array();
-        foreach ($value as $index => $element) {
-            if (!($element instanceof ShopgateDeliveryNote) && !is_array($element)) {
-                continue;
-            }
-
-            if (is_array($element)) {
-                $deliveryNotes[] = new ShopgateDeliveryNote($element);
-            } else {
-                $deliveryNotes[] = $element;
-            }
-        }
-
-        $this->delivery_notes = $deliveryNotes;
+        $this->delivery_notes = $this->convertArrayToSubentityList($value, 'ShopgateDeliveryNote');
     }
 
     /**
-     * @param ShopgateExternalOrderTax[]|array<string, mixed> $value
+     * @param ShopgateExternalOrderTax[]|array<string, mixed>[] $value
      */
     public function setOrderTaxes($value)
     {
-        if (empty($value) || !is_array($value)) {
-            $this->order_taxes = array();
-
-            return;
-        }
-
-        $orderTaxes = array();
-        foreach ($value as $index => $element) {
-            if (!($element instanceof ShopgateExternalOrderTax) && !is_array($element)) {
-                continue;
-            }
-
-            if (is_array($element)) {
-                $orderTaxes[] = new ShopgateExternalOrderTax($element);
-            } else {
-                $orderTaxes[] = $element;
-            }
-        }
-
-        $this->order_taxes = $orderTaxes;
+        $this->order_taxes = $this->convertArrayToSubentityList($value, 'ShopgateExternalOrderTax');
     }
 
     /**
-     * @param ShopgateExternalOrderExtraCost[]|array<string, mixed> $value
+     * @param ShopgateExternalOrderExtraCost[]|array<string, mixed>[] $value
      */
     public function setExtraCosts($value)
     {
-        if (empty($value) || !is_array($value)) {
-            $this->extra_costs = array();
-
-            return;
-        }
-
-        $extraCosts = array();
-        foreach ($value as $index => $element) {
-            if (!($element instanceof ShopgateExternalOrderExtraCost) && !is_array($element)) {
-                continue;
-            }
-
-            if (is_array($element)) {
-                $extraCosts[] = new ShopgateExternalOrderExtraCost($element);
-            } else {
-                $extraCosts[] = $element;
-            }
-        }
-
-        $this->extra_costs = $extraCosts;
+        $this->extra_costs = $this->convertArrayToSubentityList($value, 'ShopgateExternalOrderExtraCost');
     }
 
     /**
-     * @param ShopgateExternalOrderItem[]|array<string, mixed> $value
+     * @param ShopgateExternalOrderItem[]|array<string, mixed>[] $value
      */
     public function setItems($value)
     {
-        if (!is_array($value)) {
-            $this->items = null;
-
-            return;
-        }
-
-        foreach ($value as $index => &$element) {
-            if ((!is_object($element) || !($element instanceof ShopgateExternalOrderItem)) && !is_array($element)) {
-                unset($value[$index]);
-                continue;
-            }
-
-            if (is_array($element)) {
-                $element = new ShopgateExternalOrderItem($element);
-            }
-        }
-
-        $this->items = $value;
+        $this->items = $this->convertArrayToSubentityList($value, 'ShopgateExternalOrderItem');
     }
 
     /**

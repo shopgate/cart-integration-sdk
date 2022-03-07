@@ -21,7 +21,7 @@
  */
 class Shopgate_Model_Redirect_DeeplinkSuffix extends Shopgate_Model_Abstract
 {
-    /** @var Shopgate_Model_Redirect_DeeplinkSuffixValue [string, Shopgate_Model_Redirect_DeeplinkSuffixValue] */
+    /** @var array<string, Shopgate_Model_Redirect_DeeplinkSuffixValue> */
     protected $valuesByType;
 
     /**
@@ -40,10 +40,12 @@ class Shopgate_Model_Redirect_DeeplinkSuffix extends Shopgate_Model_Abstract
      */
     public function getValue($type)
     {
+        /* @phpstan-ignore-next-line */
         if (!isset($this->valuesByType[$type]) || ($this->valuesByType[$type] === null)) {
             return new Shopgate_Model_Redirect_DeeplinkSuffixValueUnset();
         }
 
+        /* @phpstan-ignore-next-line */
         if ($this->valuesByType[$type] === false) {
             return new Shopgate_Model_Redirect_DeeplinkSuffixValueDisabled();
         }

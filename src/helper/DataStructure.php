@@ -120,7 +120,7 @@ class Shopgate_Helper_DataStructure
      * Creates a variable, array or object from any passed JSON string.
      * Uses json_decode() if present, otherwise falls back to Laminas JSON decoder.
      *
-     * @param string $json
+     * @param ?string $json
      * @param bool   $assoc
      *
      * @return mixed

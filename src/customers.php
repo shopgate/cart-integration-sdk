@@ -232,26 +232,11 @@ class ShopgateCustomer extends ShopgateContainer
     }
 
     /**
-     * @param ShopgateOrderCustomField[] $value
+     * @param ShopgateOrderCustomField[]|array<string, mixed>[] $value
      */
     public function setCustomFields($value)
     {
-        if (!is_array($value)) {
-            $this->custom_fields = array();
-        }
-
-        foreach ($value as $index => &$element) {
-            if ((!is_object($element) || !($element instanceof ShopgateOrderCustomField)) && !is_array($element)) {
-                unset($value[$index]);
-                continue;
-            }
-
-            if (is_array($element)) {
-                $element = new ShopgateOrderCustomField($element);
-            }
-        }
-
-        $this->custom_fields = $value;
+        $this->custom_fields = $this->convertArrayToSubentityList($value, 'ShopgateOrderCustomField');
     }
 
     /**
@@ -263,27 +248,11 @@ class ShopgateCustomer extends ShopgateContainer
     }
 
     /**
-     * @param ShopgateAddress[] $value List of customer's addresses.
+     * @param ShopgateAddress[]|array<string, mixed>[] $value List of customer's addresses.
      */
     public function setAddresses($value)
     {
-        if (!is_array($value)) {
-            $this->addresses = array();
-            return;
-        }
-
-        foreach ($value as $index => &$element) {
-            if ((!is_object($element) || !($element instanceof ShopgateAddress)) && !is_array($element)) {
-                unset($value[$index]);
-                continue;
-            }
-
-            if (is_array($element)) {
-                $element = new ShopgateAddress($element);
-            }
-        }
-
-        $this->addresses = $value;
+        $this->addresses = $this->convertArrayToSubentityList($value, 'ShopgateAddress');
     }
 
 
@@ -756,26 +725,11 @@ class ShopgateAddress extends ShopgateContainer
     }
 
     /**
-     * @param ShopgateOrderCustomField[] $value
+     * @param ShopgateOrderCustomField[]|array<string, mixed>[] $value
      */
     public function setCustomFields($value)
     {
-        if (!is_array($value)) {
-            $this->custom_fields = array();
-        }
-
-        foreach ($value as $index => &$element) {
-            if ((!is_object($element) || !($element instanceof ShopgateOrderCustomField)) && !is_array($element)) {
-                unset($value[$index]);
-                continue;
-            }
-
-            if (is_array($element)) {
-                $element = new ShopgateOrderCustomField($element);
-            }
-        }
-
-        $this->custom_fields = $value;
+        $this->custom_fields = $this->convertArrayToSubentityList($value, 'ShopgateOrderCustomField');
     }
 
 

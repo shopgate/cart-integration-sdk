@@ -35,7 +35,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
     protected $cname = '';
 
     /**
-     * @var ShopgateMerchantApiInterface
+     * @var ?ShopgateMerchantApiInterface
      */
     protected $merchantApi;
 
@@ -127,32 +127,32 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
     protected $enableDefaultRedirect;
 
     /**
-     * @var string itemNumber used for creating a mobile product url
+     * @var ?string itemNumber used for creating a mobile product url
      */
     protected $itemNumber;
 
     /**
-     * @var string itemNumberPublic used for creating a mobile product url with a item number public
+     * @var ?string itemNumberPublic used for creating a mobile product url with a item number public
      */
     protected $itemNumberPublic;
 
     /**
-     * @var string categoryNumber used for creating a mobile category url / mobile head js
+     * @var ?string categoryNumber used for creating a mobile category url / mobile head js
      */
     protected $categoryNumber;
 
     /**
-     * @var string cmsPage used for creating a mobile cms url / mobile head js
+     * @var ?string cmsPage used for creating a mobile cms url / mobile head js
      */
     protected $cmsPage;
 
     /**
-     * @var string manufacturerName used for creating a mobile brand url  / mobile head js
+     * @var ?string manufacturerName used for creating a mobile brand url  / mobile head js
      */
     protected $manufacturerName;
 
     /**
-     * @var string searchQuery used for creating a mobile search url  / mobile head js
+     * @var ?string searchQuery used for creating a mobile search url  / mobile head js
      */
     protected $searchQuery;
 
@@ -161,7 +161,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
      */
     protected $suppressRedirect;
 
-    /** @var Shopgate_Helper_Redirect_TagsGeneratorInterface */
+    /** @var ?Shopgate_Helper_Redirect_TagsGeneratorInterface */
     protected $tagsGenerator;
 
     /**
@@ -995,7 +995,7 @@ interface ShopgateMobileRedirectInterface
      *
      * @deprecated
      *
-     * @param string $keyword The redirect keyword to append.
+     * @param string|string[] $keyword The redirect keyword(s) to append.
      */
     public function addRedirectKeyword($keyword);
 

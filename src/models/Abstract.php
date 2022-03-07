@@ -128,7 +128,7 @@ class Shopgate_Model_Abstract extends ShopgateObject
      * @param string|array    $key
      * @param int|string|null $index
      *
-     * @return array|null
+     * @return Shopgate_Model_Abstract|array|null
      */
     public function getData($key = '', $index = null)
     {

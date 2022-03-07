@@ -670,57 +670,19 @@ class ShopgateItem extends ShopgateContainer
     }
 
     /**
-     * @param ShopgateItemOption[] $value
+     * @param ShopgateItemOption[]|array<string, mixed>[] $value
      */
     public function setOptions($value)
     {
-        if (empty($value) || !is_array($value)) {
-            $this->options = array();
-
-            return;
-        }
-
-        $options = array();
-        foreach ($value as $index => $element) {
-            if (!($element instanceof ShopgateItemOption) && !is_array($element)) {
-                continue;
-            }
-
-            if (is_array($element)) {
-                $options[] = new ShopgateItemOption($element);
-            } else {
-                $options[] = $element;
-            }
-        }
-
-        $this->options = $options;
+        $this->options = $this->convertArrayToSubentityList($value, 'ShopgateItemOption');
     }
 
     /**
-     * @param ShopgateItemInput[] $value
+     * @param ShopgateItemInput[]|array<string, mixed>[] $value
      */
     public function setInputs($value)
     {
-        if (empty($value) || !is_array($value)) {
-            $this->inputs = array();
-
-            return;
-        }
-
-        $inputs = array();
-        foreach ($value as $index => $element) {
-            if (!($element instanceof ShopgateItemInput) && !is_array($element)) {
-                continue;
-            }
-
-            if (is_array($element)) {
-                $inputs[] = new ShopgateItemInput($element);
-            } else {
-                $inputs[] = $element;
-            }
-        }
-
-        $this->inputs = $inputs;
+        $this->inputs = $this->convertArrayToSubentityList($value, 'ShopgateItemInput');
     }
 
 
@@ -1208,34 +1170,11 @@ class ShopgateItemOption extends ShopgateContainer
     }
 
     /**
-     * @param ShopgateItemOptionValue[] $value
+     * @param ShopgateItemOptionValue[]|array<string, mixed>[] $value
      */
     public function setOptionValues($value)
     {
-        if (empty($value)) {
-            $this->option_values = null;
-
-            return;
-        }
-
-        if (!is_array($value)) {
-            $this->option_values = null;
-
-            return;
-        }
-
-        foreach ($value as $index => &$element) {
-            if ((!is_object($element) || !($element instanceof ShopgateItemOptionValue)) && !is_array($element)) {
-                unset($value[$index]);
-                continue;
-            }
-
-            if (is_array($element)) {
-                $element = new ShopgateItemOptionValue($element);
-            }
-        }
-
-        $this->option_values = $value;
+        $this->option_values = $this->convertArrayToSubentityList($value, 'ShopgateItemOptionValue');
     }
 
 

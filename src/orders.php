@@ -305,21 +305,11 @@ abstract class ShopgateCartBase extends ShopgateContainer
     }
 
     /**
-     * @param ShopgateClient $value
+     * @param ShopgateClient|array<string, mixed> $value
      */
     public function setClient($value)
     {
-        if (!($value instanceof ShopgateClient) && !is_array($value)) {
-            $this->client = null;
-
-            return;
-        }
-
-        if (is_array($value)) {
-            $value = new ShopgateClient($value);
-        }
-
-        $this->client = $value;
+        $this->client = $this->convertArrayToSubentity($value, 'ShopgateClient');
     }
 
     /**
@@ -331,26 +321,11 @@ abstract class ShopgateCartBase extends ShopgateContainer
     }
 
     /**
-     * @param ShopgateOrderCustomField[] $value
+     * @param ShopgateOrderCustomField[]|array<string, mixed>[] $value
      */
     public function setCustomFields($value)
     {
-        if (!is_array($value)) {
-            $this->custom_fields = array();
-        }
-
-        foreach ($value as $index => &$element) {
-            if ((!is_object($element) || !($element instanceof ShopgateOrderCustomField)) && !is_array($element)) {
-                unset($value[$index]);
-                continue;
-            }
-
-            if (is_array($element)) {
-                $element = new ShopgateOrderCustomField($element);
-            }
-        }
-
-        $this->custom_fields = $value;
+        $this->custom_fields = $this->convertArrayToSubentityList($value, 'ShopgateOrderCustomField');
     }
 
     /**
@@ -373,21 +348,11 @@ abstract class ShopgateCartBase extends ShopgateContainer
 
     /**
      *
-     * @param ShopgateShippingInfo $value
+     * @param ShopgateShippingInfo|array<string, mixed> $value
      */
     public function setShippingInfos($value)
     {
-        if (!is_object($value) && !($value instanceof ShopgateShippingInfo) && !is_array($value)) {
-            $this->shipping_infos = null;
-
-            return;
-        }
-
-        if (is_array($value)) {
-            $value = new ShopgateShippingInfo($value);
-        }
-
-        $this->shipping_infos = $value;
+        $this->shipping_infos = $this->convertArrayToSubentity($value, 'ShopgateShippingInfo');
     }
 
     /**
@@ -469,118 +434,53 @@ abstract class ShopgateCartBase extends ShopgateContainer
     }
 
     /**
-     * @param ShopgateAddress|mixed[] $value
+     * @param ShopgateAddress|array<string, mixed> $value
      */
     public function setInvoiceAddress($value)
     {
-        if (!is_object($value) && !($value instanceof ShopgateAddress) && !is_array($value)) {
-            $this->invoice_address = null;
+        $address = $this->convertArrayToSubentity($value, 'ShopgateAddress');
 
-            return;
-        }
+        $address->setIsDeliveryAddress(false);
+        $address->setIsInvoiceAddress(true);
 
-        if (is_array($value)) {
-            $value = new ShopgateAddress($value);
-            $value->setIsDeliveryAddress(false);
-            $value->setIsInvoiceAddress(true);
-        }
-
-        $this->invoice_address = $value;
+        $this->invoice_address = $address;
     }
 
     /**
-     * @param ShopgateAddress|mixed[] $value
+     * @param ShopgateAddress|array<string, mixed> $value
      */
     public function setDeliveryAddress($value)
     {
-        if (!is_object($value) && !($value instanceof ShopgateAddress) && !is_array($value)) {
-            $this->delivery_address = null;
+        $address = $this->convertArrayToSubentity($value, 'ShopgateAddress');
 
-            return;
-        }
+        $address->setIsDeliveryAddress(true);
+        $address->setIsInvoiceAddress(false);
 
-        if (is_array($value)) {
-            $value = new ShopgateAddress($value);
-            $value->setIsDeliveryAddress(true);
-            $value->setIsInvoiceAddress(false);
-        }
-
-        $this->delivery_address = $value;
+        $this->invoice_address = $address;
     }
 
     /**
-     * @param ShopgateExternalCoupon[] $value
+     * @param ShopgateExternalCoupon[]|array<string, mixed>[] $value
      */
     public function setExternalCoupons($value)
     {
-        if (!is_array($value)) {
-            $this->external_coupons = null;
-
-            return;
-        }
-
-        foreach ($value as $index => &$element) {
-            if ((!is_object($element) || !($element instanceof ShopgateExternalCoupon)) && !is_array($element)) {
-                unset($value[$index]);
-                continue;
-            }
-
-            if (is_array($element)) {
-                $element = new ShopgateExternalCoupon($element);
-            }
-        }
-
-        $this->external_coupons = $value;
+        $this->external_coupons = $this->convertArrayToSubentityList($value, 'ShopgateExternalCoupon');
     }
 
     /**
-     * @param ShopgateShopgateCoupon[] $value
+     * @param ShopgateShopgateCoupon[]|array<string, mixed>[] $value
      */
     public function setShopgateCoupons($value)
     {
-        if (!is_array($value)) {
-            $this->shopgate_coupons = null;
-
-            return;
-        }
-
-        foreach ($value as $index => &$element) {
-            if ((!is_object($element) || !($element instanceof ShopgateShopgateCoupon)) && !is_array($element)) {
-                unset($value[$index]);
-                continue;
-            }
-
-            if (is_array($element)) {
-                $element = new ShopgateShopgateCoupon($element);
-            }
-        }
-
-        $this->shopgate_coupons = $value;
+        $this->shopgate_coupons = $this->convertArrayToSubentityList($value, 'ShopgateShopgateCoupon');
     }
 
     /**
-     * @param ShopgateOrderItem []|mixed[][] $value
+     * @param ShopgateOrderItem[]|array<string, mixed>[] $value
      */
     public function setItems($value)
     {
-        if (!is_array($value)) {
-            $this->items = null;
-
-            return;
-        }
-
-        foreach ($value as $index => &$element) {
-            if ((!is_object($element) || !($element instanceof ShopgateOrderItem)) && !is_array($element)) {
-                unset($value[$index]);
-                continue;
-            }
-
-            if (is_array($element)) {
-                $element = new ShopgateOrderItem($element);
-            }
-        }
-
-        $this->items = $value;
+        $this->items = $this->convertArrayToSubentityList($value, 'ShopgateOrderItem');
     }
 
     /**
@@ -1042,34 +942,11 @@ class ShopgateOrder extends ShopgateCartBase
     }
 
     /**
-     * @param ShopgateDeliveryNote []|mixed[][] $value
+     * @param ShopgateDeliveryNote[]|array<string, mixed>[] $value
      */
     public function setDeliveryNotes($value)
     {
-        if (empty($value)) {
-            $this->delivery_notes = null;
-
-            return;
-        }
-
-        if (!is_array($value)) {
-            $this->delivery_notes = null;
-
-            return;
-        }
-
-        foreach ($value as $index => &$element) {
-            if ((!is_object($element) || !($element instanceof ShopgateDeliveryNote)) && !is_array($element)) {
-                unset($value[$index]);
-                continue;
-            }
-
-            if (is_array($element)) {
-                $element = new ShopgateDeliveryNote($element);
-            }
-        }
-
-        $this->delivery_notes = $value;
+        $this->delivery_notes = $this->convertArrayToSubentityList($value, 'ShopgateDeliveryNote');
     }
 
 
@@ -1438,83 +1315,27 @@ class ShopgateOrderItem extends ShopgateContainer
     }
 
     /**
-     * @param ShopgateOrderItemOption []|mixed[][] $value
+     * @param ShopgateOrderItemOption[]|array<string, mixed>[] $value
      */
     public function setOptions($value)
     {
-        if (empty($value) || !is_array($value)) {
-            $this->options = array();
-
-            return;
-        }
-
-        $options = array();
-        foreach ($value as $index => $element) {
-            if (!($element instanceof ShopgateOrderItemOption) && !is_array($element)) {
-                continue;
-            }
-
-            if (is_array($element)) {
-                $options[] = new ShopgateOrderItemOption($element);
-            } else {
-                $options[] = $element;
-            }
-        }
-
-        $this->options = $options;
+        $this->options = $this->convertArrayToSubentityList($value, 'ShopgateOrderItemOption');
     }
 
     /**
-     * @param ShopgateOrderItemInput []|mixed[][] $value
+     * @param ShopgateOrderItemInput[]|array<string, mixed>[] $value
      */
     public function setInputs($value)
     {
-        if (empty($value) || !is_array($value)) {
-            $this->inputs = array();
-
-            return;
-        }
-
-        $inputs = array();
-        foreach ($value as $index => $element) {
-            if (!($element instanceof ShopgateOrderItemInput) && !is_array($element)) {
-                continue;
-            }
-
-            if (is_array(($element))) {
-                $inputs[] = new ShopgateOrderItemInput($element);
-            } else {
-                $inputs[] = $element;
-            }
-        }
-
-        $this->inputs = $inputs;
+        $this->inputs = $this->convertArrayToSubentityList($value, 'ShopgateOrderItemInput');
     }
 
     /**
-     * @param ShopgateOrderItemAttribute []|mixed[][] $value
+     * @param ShopgateOrderItemAttribute[]|array<string, mixed>[] $value
      */
     public function setAttributes($value)
     {
-        if (empty($value) || !is_array($value)) {
-            $this->attributes = array();
-
-            return;
-        }
-
-        // convert sub-arrays into ShopgateOrderItemInputs objects if necessary
-        foreach ($value as $index => &$element) {
-            if ((!is_object($element) || !($element instanceof ShopgateOrderItemAttribute)) && !is_array($element)) {
-                unset($value[$index]);
-                continue;
-            }
-
-            if (is_array(($element))) {
-                $element = new ShopgateOrderItemAttribute($element);
-            }
-        }
-
-        $this->attributes = $value;
+        $this->attributes = $this->convertArrayToSubentityList($value, 'ShopgateOrderItemAttribute');
     }
 
 
@@ -3063,57 +2884,19 @@ class ShopgateCartItem extends ShopgateContainer
     }
 
     /**
-     * @param ShopgateOrderItemOption []|mixed[][] $value
+     * @param ShopgateOrderItemOption[]|array<string, mixed>[] $value
      */
     public function setOptions($value)
     {
-        if (empty($value) || !is_array($value)) {
-            $this->options = array();
-
-            return;
-        }
-
-        $options = array();
-        foreach ($value as $index => $element) {
-            if (!($element instanceof ShopgateOrderItemOption) && !is_array($element)) {
-                continue;
-            }
-
-            if (is_array($element)) {
-                $options[] = new ShopgateOrderItemOption($element);
-            } else {
-                $options[] = $element;
-            }
-        }
-
-        $this->options = $options;
+        $this->options = $this->convertArrayToSubentityList($value, 'ShopgateOrderItemOption');
     }
 
     /**
-     * @param ShopgateOrderItemInput []|mixed[][] $value
+     * @param ShopgateOrderItemInput[]|array<string, mixed>[] $value
      */
     public function setInputs($value)
     {
-        if (empty($value) || !is_array($value)) {
-            $this->inputs = array();
-
-            return;
-        }
-
-        $inputs = array();
-        foreach ($value as $index => $element) {
-            if (!($element instanceof ShopgateOrderItemInput) && !is_array($element)) {
-                continue;
-            }
-
-            if (is_array($element)) {
-                $inputs[] = new ShopgateOrderItemInput($element);
-            } else {
-                $inputs[] = $element;
-            }
-        }
-
-        $this->inputs = $inputs;
+        $this->inputs = $this->convertArrayToSubentityList($value, 'ShopgateOrderItemInput');
     }
 
     /**
@@ -3121,25 +2904,7 @@ class ShopgateCartItem extends ShopgateContainer
      */
     public function setAttributes($value)
     {
-        if (empty($value) || !is_array($value)) {
-            $this->attributes = array();
-
-            return;
-        }
-
-        // convert sub-arrays into ShopgateOrderItemInputs objects if necessary
-        foreach ($value as $index => &$element) {
-            if ((!is_object($element) || !($element instanceof ShopgateOrderItemAttribute)) && !is_array($element)) {
-                unset($value[$index]);
-                continue;
-            }
-
-            if (is_array(($element))) {
-                $element = new ShopgateOrderItemAttribute($element);
-            }
-        }
-
-        $this->attributes = $value;
+        $this->attributes = $this->convertArrayToSubentityList($value, 'ShopgateOrderItemAttribute');
     }
 
     ##########

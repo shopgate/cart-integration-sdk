@@ -124,17 +124,9 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
      */
     const DEFAULT_IDENTIFIER_UID = 'uid';
     /**
-     * define remove empty children nodes
-     */
-    const DEFAULT_CLEAN_CHILDREN_NODES = true;
-    /**
      * define default item identifier
      */
     const DEFAULT_ITEM_IDENTIFIER = 'item';
-    /**
-     * define clean children
-     */
-    const DEFAULT_CLEAN_CHILDREN = true;
     /**
      * weight units
      */
@@ -429,7 +421,7 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
             /**
              * remove empty nodes
              */
-            if (self::DEFAULT_CLEAN_CHILDREN_NODES && count($this->getChildren()) > 0) {
+            if (count($this->getChildren()) > 0) {
                 foreach ($itemNode->children as $childXml) {
                     $itemNode->replaceChild($this->removeEmptyNodes($childXml), $itemNode->children);
                 }
@@ -468,10 +460,8 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
      */
     public function getChildren()
     {
-        if (self::DEFAULT_CLEAN_CHILDREN) {
-            foreach (parent::getData('children') as $child) {
-                $this->cleanChildData($this, $child);
-            }
+        foreach (parent::getData('children') as $child) {
+            $this->cleanChildData($this, $child);
         }
 
         return parent::getData('children');

@@ -143,7 +143,7 @@ function ShopgateErrorHandler($errno, $errstr, $errfile, $errline, $errContext)
 class ShopgateLibraryException extends Exception
 {
     /**
-     * @var string
+     * @var ?string
      */
     private $additionalInformation;
 
@@ -361,7 +361,7 @@ class ShopgateLibraryException extends Exception
      * @param bool      $writeLog                             (unused, kept for compatibility)
      * @param Exception $previous
      */
-    public function __construct( /* @phpstan-ignore-line */
+    public function __construct(/* @phpstan-ignore-line */
         $code,
         $additionalInformation = null,
         $appendAdditionalInformationToMessage = false,
@@ -404,9 +404,9 @@ class ShopgateLibraryException extends Exception
      */
     public function getAdditionalInformation()
     {
-        return (!is_null($this->additionalInformation)
+        return !is_null($this->additionalInformation)
             ? $this->additionalInformation
-            : '');
+            : '';
     }
 
     /**
@@ -895,7 +895,6 @@ class ShopgateBuilder
                     'Invalid SMA-Auth-Service defined - this should not happen with valid plugin code',
                     E_USER_ERROR
                 );
-                break;
         }
 
         return $merchantApi;
@@ -1306,7 +1305,6 @@ abstract class ShopgateObject
      */
     public function recursiveToUtf8($subject, $sourceEncoding = 'ISO-8859-15', $force = false, $useIconv = false)
     {
-        /** @var array $subject */
         if (is_array($subject)) {
             foreach ($subject as $key => $value) {
                 $subject[$key] = $this->recursiveToUtf8($value, $sourceEncoding, $force, $useIconv);
@@ -2584,11 +2582,10 @@ abstract class ShopgatePlugin extends ShopgateObject
      *
      * @param ShopgateOrder $order The ShopgateOrder object to be added to the shop system's database.
      *
-     * @return array(
-     *          <ul>
-     *            <li>'external_order_id' => <i>string</i>, # the ID of the order in your shop system's database</li>
-     *              <li>'external_order_number' => <i>string</i> # the number of the order in your shop system</li>
-     *          </ul>)
+     * @return array|string ('external_order_id' => string , 'external_order_number' => string)
+     *                      The values are the ID and number of the order in the source system respectively.
+     *                      Returning a string is DEPRECATED, set only 'external_order_id' instead.
+     *
      * @throws ShopgateLibraryException if an error occurs.
      */
     abstract public function addOrder(ShopgateOrder $order);
@@ -2601,11 +2598,10 @@ abstract class ShopgatePlugin extends ShopgateObject
      *
      * @param ShopgateOrder $order The ShopgateOrder object to be updated in the shop system's database.
      *
-     * @return array(
-     *          <ul>
-     *            <li>'external_order_id' => <i>string</i>, # the ID of the order in your shop system's database</li>
-     *              <li>'external_order_number' => <i>string</i> # the number of the order in your shop system</li>
-     *          </ul>)
+     * @return array|string ('external_order_id' => string , 'external_order_number' => string)
+     *                      The values are the ID and number of the order in the source system respectively.
+     *                      Returning a string is DEPRECATED, set only 'external_order_id' instead.
+     *
      * @throws ShopgateLibraryException if an error occurs.
      */
     abstract public function updateOrder(ShopgateOrder $order);
@@ -2641,12 +2637,7 @@ abstract class ShopgatePlugin extends ShopgateObject
      *
      * @param ShopgateCart $cart The ShopgateCart object to be checked and validated.
      *
-     * @return array(
-     *          <ul>
-     *            <li>'external_coupons' => ShopgateExternalCoupon[], # list of all coupons</li>
-     *            <li>'items' => ShopgateCartItem[], # list of item changes</li>
-     *            <li>'shippings' => ShopgateShippingMethod[], # list of available shipping services for this cart</li>
-     *          </ul>)
+     * @return array 'external_coupons' => ShopgateExternalCoupon[], 'items' => ShopgateCartItem[], 'shippings' => ShopgateShippingMethod[]</li>)
      * @throws ShopgateLibraryException if an error occurs.
      */
     abstract public function checkCart(ShopgateCart $cart);
@@ -2911,7 +2902,7 @@ abstract class ShopgateFileBuffer extends ShopgateObject implements ShopgateFile
     protected $filePath;
 
     /**
-     * @var resource
+     * @var ?resource
      */
     protected $fileHandle;
 
@@ -3183,6 +3174,49 @@ abstract class ShopgateContainer extends ShopgateObject
     public function __construct($data = array())
     {
         $this->loadArray($data);
+    }
+
+    /**
+     * @param array<mixed, string>|object $arr If an object was passed it will be verified to be an instance of what was passed in $className.
+     * @param string $className
+     * @return ?object An instance of what was passed in $className or null.
+     */
+    public function convertArrayToSubentity($arr, $className)
+    {
+        if ((!is_object($arr) || !($arr instanceof $className)) && !is_array($arr)) {
+            return null;
+        }
+
+        if (is_array($arr)) {
+            return new $className($arr);
+        }
+
+        return null;
+    }
+
+    /**
+     * @param array<mixed, string>[]|object[] $list If an object list was passed every object in the list will be verified to be an instance of what was passed in $className.
+     * @param string $className
+     * @return object[] A list of instances of what was passed in $className.
+     */
+    public function convertArrayToSubentityList($list, $className)
+    {
+        if (!is_array($list)) {
+            return array();
+        }
+
+        foreach ($list as $index => &$element) {
+            if ((!is_object($element) || !($element instanceof $className)) && !is_array($element)) {
+                unset($list[$index]);
+                continue;
+            }
+
+            if (is_array($element)) {
+                $element = new $className($element);
+            }
+        }
+
+        return $list;
     }
 
     /**

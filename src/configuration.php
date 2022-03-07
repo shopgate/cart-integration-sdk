@@ -812,6 +812,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
             );
         }
 
+        /* @phpstan-ignore-next-line */
         $this->loadFile($configFile);
         $this->initFileNames();
     }
@@ -1020,10 +1021,12 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
                 continue;
             }
 
+            /* @phpstan-ignore-next-line */
             $counter++;
             unset($shopgate_config);
         }
 
+        /* @phpstan-ignore-next-line */
         return ($counter > 1);
     }
 
@@ -2276,8 +2279,8 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
      *
      * @param string $path The path to the configuration file.
      *
-     * @return mixed[]|bool The $shopgate_config array if the file was included and defined $shopgate_config, false
-     *                      otherwise.
+     * @phpstan-ignore-next-line
+     * @return array|bool The $shopgate_config array if the file was included and defined $shopgate_config, false otherwise.
      */
     private function includeFile($path)
     {
@@ -2286,7 +2289,6 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
         // try including the file
         if (file_exists($path)) {
             ob_start();
-            /** @noinspection PhpIncludeInspection */
             include($path);
             ob_end_clean();
         } else {

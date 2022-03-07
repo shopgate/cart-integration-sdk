@@ -27,8 +27,8 @@
  * @method        setValue(string $value)
  * @method string getValue()
  *
- * @method                                        setDeeplinkSuffix(Shopgate_Model_Redirect_DeeplinkSuffix $value)
- * @method Shopgate_Model_Redirect_DeeplinkSuffix getDeeplinkSuffix()
+ * @method                                             setDeeplinkSuffix(Shopgate_Model_Redirect_DeeplinkSuffix $value)
+ * @method Shopgate_Model_Redirect_DeeplinkSuffix|null getDeeplinkSuffix()
  *
  * @method                                           setVariables(array $value)
  * @method Shopgate_Model_Redirect_HtmlTagVariable[] getVariables()
