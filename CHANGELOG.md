@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [2.9.86] - 2022-03-08
+### Fixed
+- several warnings and notices and deprecation notices that popped up when using PHP 8.x
+
 ## [2.9.85] - 2022-01-25
 ### Fixed
 - not exporting the "is_cover" flag / XML attribute on category images anymore
@@ -697,7 +701,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - fixed error in use of old configuration
 - added changelog.txt
 
-[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.85...HEAD
+[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.86...HEAD
+[2.9.85]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.85...2.9.86
 [2.9.85]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.84...2.9.85
 [2.9.84]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.83...2.9.84
 [2.9.83]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.82...2.9.83
