@@ -456,7 +456,7 @@ abstract class ShopgateCartBase extends ShopgateContainer
         $address->setIsDeliveryAddress(true);
         $address->setIsInvoiceAddress(false);
 
-        $this->invoice_address = $address;
+        $this->delivery_address = $address;
     }
 
     /**
