@@ -31,7 +31,7 @@ class Shopgate_Helper_Redirect_SettingsManager implements Shopgate_Helper_Redire
     protected $disableRedirectCookieName;
 
     /**
-     * @var int Seconds until the disable cookie should expire if set at $this->startTime.
+     * @var int Seconds until the redirect-disabling cookie should expire if set at $this->startTime.
      */
     protected $expiration;
 
@@ -49,8 +49,8 @@ class Shopgate_Helper_Redirect_SettingsManager implements Shopgate_Helper_Redire
      * @param ShopgateConfigInterface $config
      * @param array                   $get              [string, mixed] A copy of $_GET.
      * @param array                   $cookie           [string, mixed] A reference to $_COOKIE.
-     * @param int                     $cookieExpiration Seconds until the disable cookie should expire if set at
-     *                                                  $startTime.
+     * @param int                     $cookieExpiration Seconds until the redirect-disabling cookie should expire if set
+     *                                                   at $startTime.
      * @param string                  $disableRedirectGetParameterName
      * @param string                  $disableRedirectCookieName
      */
