@@ -24,23 +24,23 @@
  * @class Shopgate_Model_Media_Attachment
  * @see   http://developer.shopgate.com/file_formats/xml/products
  *
- * @method         setNumber(int $value)
- * @method int     getNumber()
+ * @method              setNumber(int $value)
+ * @method int|null     getNumber()
  *
- * @method         setUrl(string $value)
- * @method string  getUrl()
+ * @method              setUrl(string $value)
+ * @method string|null  getUrl()
  *
- * @method         setTitle(string $value)
- * @method string  getTitle()
+ * @method              setTitle(string $value)
+ * @method string|null  getTitle()
  *
- * @method         setDescription(string $value)
- * @method string  getDescription()
+ * @method              setDescription(string $value)
+ * @method string|null  getDescription()
  *
- * @method         setMimeType(string $value)
- * @method string  getMimeType()
+ * @method              setMimeType(string $value)
+ * @method string|null  getMimeType()
  *
- * @method         setFileName(string $value)
- * @method string  getFileName()
+ * @method              setFileName(string $value)
+ * @method string|null  getFileName()
  *
  */
 class Shopgate_Model_Media_Attachment extends Shopgate_Model_AbstractExport
@@ -56,7 +56,7 @@ class Shopgate_Model_Media_Attachment extends Shopgate_Model_AbstractExport
          * @var Shopgate_Model_XmlResultObject $attachmentNode
          */
         $attachmentNode = $itemNode->addChild('attachment');
-        $attachmentNode->addAttribute('number', (string)$this->getNumber());
+        $attachmentNode->addAttribute('number', $this->getNumber());
         $attachmentNode->addChildWithCDATA('url', $this->getUrl());
         $attachmentNode->addChild('mime_type', $this->getMimeType());
         $attachmentNode->addChild('file_name', $this->getFileName());

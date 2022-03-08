@@ -25,23 +25,23 @@
  * @class Shopgate_Model_Media_Image
  * @see   http://developer.shopgate.com/file_formats/xml/products
  *
- * @method         setUid(int $value)
- * @method int     getUid()
+ * @method             setUid(int $value)
+ * @method int|null    getUid()
  *
- * @method         setSortOrder(int $value)
- * @method int     getSortOrder()
+ * @method              setSortOrder(int $value)
+ * @method int|null     getSortOrder()
  *
- * @method         setUrl(string $value)
- * @method string  getUrl()
+ * @method              setUrl(string $value)
+ * @method string|null  getUrl()
  *
- * @method         setTitle(string $value)
- * @method string  getTitle()
+ * @method              setTitle(string $value)
+ * @method string|null  getTitle()
  *
- * @method         setAlt(string $value)
- * @method string  getAlt()
+ * @method              setAlt(string $value)
+ * @method string|null  getAlt()
  *
- * @method         setIsCover(bool $value)
- * @method bool    getIsCover()
+ * @method              setIsCover(bool $value)
+ * @method bool|null    getIsCover()
  *
  */
 class Shopgate_Model_Media_Image extends Shopgate_Model_AbstractExport
@@ -71,8 +71,8 @@ class Shopgate_Model_Media_Image extends Shopgate_Model_AbstractExport
          * @var Shopgate_Model_XmlResultObject $imageNode
          */
         $imageNode = $itemNode->addChild('image');
-        $imageNode->addAttribute('uid', (string)$this->getUid());
-        $imageNode->addAttribute('sort_order', (string)$this->getSortOrder());
+        $imageNode->addAttribute('uid', $this->getUid());
+        $imageNode->addAttribute('sort_order', $this->getSortOrder());
         $imageNode->addChildWithCDATA('url', $this->getUrl());
         $imageNode->addChildWithCDATA('title', $this->getTitle(), false);
         $imageNode->addChildWithCDATA('alt', $this->getAlt(), false);

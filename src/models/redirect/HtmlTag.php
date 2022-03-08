@@ -21,8 +21,8 @@
  */
 
 /**
- * @method        setName(string $value)
- * @method string getName()
+ * @method             setName(string $value)
+ * @method string|null getName()
  *
  * @method                                            setAttributes(array $value)
  * @method Shopgate_Model_Redirect_HtmlTagAttribute[] getAttributes()

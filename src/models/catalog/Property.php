@@ -24,14 +24,14 @@
  * @class Shopgate_Model_Catalog_Property
  * @see   http://developer.shopgate.com/file_formats/xml/products
  *
- * @method         setUid(int $value)
- * @method int     getUid()
+ * @method              setUid(int $value)
+ * @method int|null     getUid()
  *
- * @method         setLabel(string $value)
- * @method string  getLabel()
+ * @method              setLabel(string $value)
+ * @method string|null  getLabel()
  *
- * @method         setValue(string $value)
- * @method string  getValue()
+ * @method              setValue(string $value)
+ * @method string|null  getValue()
  *
  */
 class Shopgate_Model_Catalog_Property extends Shopgate_Model_AbstractExport
@@ -58,7 +58,7 @@ class Shopgate_Model_Catalog_Property extends Shopgate_Model_AbstractExport
          * @var Shopgate_Model_XmlResultObject $propertyNode
          */
         $propertyNode = $itemNode->addChild('property');
-        $propertyNode->addAttribute('uid', (string)$this->getUid());
+        $propertyNode->addAttribute('uid', $this->getUid());
         $propertyNode->addChildWithCDATA('label', $this->getLabel());
         $propertyNode->addChildWithCDATA('value', $this->getValue());
 

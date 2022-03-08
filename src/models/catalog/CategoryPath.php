@@ -24,26 +24,26 @@
  * @class Shopgate_Model_Catalog_CategoryPath
  * @see   http://developer.shopgate.com/file_formats/xml/products
  *
- * @method                             setUid(int $value)
- * @method int                         getUid()
+ * @method                                  setUid(int $value)
+ * @method int|null                         getUid()
  *
- * @method                             setSortOrder(int $value)
- * @method int                         getSortOrder()
+ * @method                                  setSortOrder(int $value)
+ * @method int|null                         getSortOrder()
  *
- * @method                             setItems(array $value)
- * @method array                       getItems()
+ * @method                                  setItems(array $value)
+ * @method array|null                       getItems()
  *
- * @method                             setParentUid(int $value)
- * @method int                         getParentUid()
+ * @method                                  setParentUid(int $value)
+ * @method int|null                         getParentUid()
  *
- * @method                             setImage(Shopgate_Model_Media_Image $value)
- * @method Shopgate_Model_Media_Image  getImage()
+ * @method                                  setImage(Shopgate_Model_Media_Image $value)
+ * @method Shopgate_Model_Media_Image|null  getImage()
  *
- * @method                             setIsActive(bool $value)
- * @method bool                        getIsActive()
+ * @method                                  setIsActive(bool $value)
+ * @method bool|null                        getIsActive()
  *
- * @method                             setDeeplink(string $value)
- * @method string                      getDeeplink()
+ * @method                                  setDeeplink(string $value)
+ * @method string|null                      getDeeplink()
  *
  */
 class Shopgate_Model_Catalog_CategoryPath extends Shopgate_Model_AbstractExport
@@ -80,8 +80,8 @@ class Shopgate_Model_Catalog_CategoryPath extends Shopgate_Model_AbstractExport
     {
         /** @var Shopgate_Model_XmlResultObject $categoryPathNode */
         $categoryPathNode = $itemNode->addChild('category');
-        $categoryPathNode->addAttribute('uid', (string)$this->getUid());
-        $categoryPathNode->addAttribute('sort_order', (string)$this->getSortOrder());
+        $categoryPathNode->addAttribute('uid', $this->getUid());
+        $categoryPathNode->addAttribute('sort_order', $this->getSortOrder());
 
         return $itemNode;
     }
@@ -124,7 +124,7 @@ class Shopgate_Model_Catalog_CategoryPath extends Shopgate_Model_AbstractExport
         $item  = new Shopgate_Model_Abstract();
         $item->setData('level', $level);
         $item->setData('path', $path);
-        array_push($items, $item);
+        $items[] = $item;
         $this->setItems($items);
     }
 }

@@ -21,17 +21,17 @@
  */
 
 /**
- * @method        setName(string $value)
- * @method string getName()
+ * @method             setName(string $value)
+ * @method string|null getName()
  *
- * @method        setValue(string $value)
- * @method string getValue()
+ * @method             setValue(string $value)
+ * @method string|null getValue()
  *
  * @method                                             setDeeplinkSuffix(Shopgate_Model_Redirect_DeeplinkSuffix $value)
  * @method Shopgate_Model_Redirect_DeeplinkSuffix|null getDeeplinkSuffix()
  *
- * @method                                           setVariables(array $value)
- * @method Shopgate_Model_Redirect_HtmlTagVariable[] getVariables()
+ * @method                                                setVariables(array $value)
+ * @method Shopgate_Model_Redirect_HtmlTagVariable[]|null getVariables()
  */
 class Shopgate_Model_Redirect_HtmlTagAttribute extends Shopgate_Model_Abstract
 {

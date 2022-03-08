@@ -24,29 +24,29 @@
  * @class Shopgate_Model_Catalog_Price
  * @see   http://developer.shopgate.com/file_formats/xml/products
  *
- * @method                                      setType(string $value)
- * @method string                               getType()
+ * @method                                           setType(string $value)
+ * @method string|null                               getType()
  *
- * @method                                      setPrice(float $value)
- * @method float                                getPrice()
+ * @method                                           setPrice(float $value)
+ * @method float|null                                getPrice()
  *
- * @method                                      setCost(float $value)
- * @method float                                getCost()
+ * @method                                           setCost(float $value)
+ * @method float|null                                getCost()
  *
- * @method                                      setSalePrice(float $value)
- * @method float                                getSalePrice()
+ * @method                                           setSalePrice(float $value)
+ * @method float|null                                getSalePrice()
  *
- * @method                                      setMsrp(float $value)
- * @method float                                getMsrp()
+ * @method                                           setMsrp(float $value)
+ * @method float|null                                getMsrp()
  *
- * @method                                      setTierPricesGroup(array $value)
- * @method Shopgate_Model_Catalog_TierPrice[]   getTierPricesGroup()
+ * @method                                           setTierPricesGroup(array $value)
+ * @method Shopgate_Model_Catalog_TierPrice[]|null   getTierPricesGroup()
  *
- * @method                                      setMinimumOrderAmount(int $value)
- * @method int                                  getMinimumOrderAmount()
+ * @method                                           setMinimumOrderAmount(int $value)
+ * @method int|null                                  getMinimumOrderAmount()
  *
- * @method                                      setBasePrice(string $value)
- * @method string                               getBasePrice()
+ * @method                                           setBasePrice(string $value)
+ * @method string|null                               getBasePrice()
  *
  */
 class Shopgate_Model_Catalog_Price extends Shopgate_Model_AbstractExport

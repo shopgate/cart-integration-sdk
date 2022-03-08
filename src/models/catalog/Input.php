@@ -24,32 +24,32 @@
  * @class Shopgate_Model_Catalog_Input
  * @see   http://developer.shopgate.com/file_formats/xml/products
  *
- * @method                                      setUid(int $value)
- * @method int                                  getUid()
+ * @method                                        setUid(int $value)
+ * @method int|null                               getUid()
  *
- * @method                                      setType(string $value)
- * @method string                               getType()
+ * @method                                        setType(string $value)
+ * @method string|null                            getType()
  *
- * @method                                      setOptions(array $value)
- * @method array                                getOptions()
+ * @method                                        setOptions(array $value)
+ * @method array|null                             getOptions()
  *
- * @method                                      setValidation(Shopgate_Model_Catalog_Validation $value)
- * @method Shopgate_Model_Catalog_Validation    getValidation()
+ * @method                                        setValidation(Shopgate_Model_Catalog_Validation $value)
+ * @method Shopgate_Model_Catalog_Validation|null getValidation()
  *
- * @method                                      setRequired(bool $value)
- * @method bool                                 getRequired()
+ * @method                                        setRequired(bool $value)
+ * @method bool|null                              getRequired()
  *
- * @method                                      setAdditionalPrice(string $value)
- * @method string                               getAdditionalPrice()
+ * @method                                        setAdditionalPrice(string $value)
+ * @method string|null                            getAdditionalPrice()
  *
- * @method                                      setSortOrder(int $value)
- * @method int                                  getSortOrder()
+ * @method                                        setSortOrder(int $value)
+ * @method int|null                               getSortOrder()
  *
- * @method                                      setLabel(string $value)
- * @method string                               getLabel()
+ * @method                                        setLabel(string $value)
+ * @method string|null                            getLabel()
  *
- * @method                                      setInfoText(string $value)
- * @method string                               getInfoText()
+ * @method                                        setInfoText(string $value)
+ * @method string|null                            getInfoText()
  *
  */
 class Shopgate_Model_Catalog_Input extends Shopgate_Model_AbstractExport
@@ -100,11 +100,11 @@ class Shopgate_Model_Catalog_Input extends Shopgate_Model_AbstractExport
     {
         /** @var Shopgate_Model_XmlResultObject $inputNode */
         $inputNode = $itemNode->addChild('input');
-        $inputNode->addAttribute('uid', (string)$this->getUid());
+        $inputNode->addAttribute('uid', $this->getUid());
         $inputNode->addAttribute('type', $this->getType());
         $inputNode->addAttribute('required', $this->getRequired() ? '1' : '0');
         $inputNode->addAttribute('additional_price', $this->getAdditionalPrice());
-        $inputNode->addAttribute('sort_order', (string)$this->getSortOrder());
+        $inputNode->addAttribute('sort_order', $this->getSortOrder());
         $inputNode->addChildWithCDATA('label', $this->getLabel());
         $inputNode->addChildWithCDATA('info_text', $this->getInfoText());
 

@@ -21,20 +21,20 @@
  */
 
 /**
- * @method        setName(string $value)
- * @method string getName()
+ * @method             setName(string $value)
+ * @method string|null getName()
  *
- * @method        setValue(string $value)
- * @method string getValue()
+ * @method             setValue(string $value)
+ * @method string|null getValue()
  *
- * @method      setUnset(bool $value)
- * @method bool getUnset()
+ * @method           setUnset(bool $value)
+ * @method bool|null getUnset()
  *
- * @method      setDisabled(bool $value)
- * @method bool getDisabled()
+ * @method           setDisabled(bool $value)
+ * @method bool|null getDisabled()
  *
- * @method                                           setVariables(array $value)
- * @method Shopgate_Model_Redirect_HtmlTagVariable[] getVariables()
+ * @method                                                setVariables(array $value)
+ * @method Shopgate_Model_Redirect_HtmlTagVariable[]|null getVariables()
  */
 class Shopgate_Model_Redirect_DeeplinkSuffixValue extends Shopgate_Model_Abstract
 {

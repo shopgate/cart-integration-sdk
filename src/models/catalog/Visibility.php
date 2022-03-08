@@ -24,11 +24,11 @@
  * @class Shopgate_Model_Catalog_Visibility
  * @see   http://developer.shopgate.com/file_formats/xml/products
  *
- * @method          setMarketplace(bool $value)
- * @method bool     getMarketplace()
+ * @method               setMarketplace(bool $value)
+ * @method bool|null     getMarketplace()
  *
- * @method          setLevel(string $value)
- * @method string   getLevel()
+ * @method               setLevel(string $value)
+ * @method string|null   getLevel()
  *
  */
 class Shopgate_Model_Catalog_Visibility extends Shopgate_Model_AbstractExport

@@ -25,28 +25,28 @@
  * @see   http://developer.shopgate.com/file_formats/xml/categories
  *
  * @method                                      setUid(int $value)
- * @method int                                  getUid()
+ * @method int|null                             getUid()
  *
  * @method                                      setSortOrder(int $value)
- * @method int                                  getSortOrder()
+ * @method int|null                             getSortOrder()
  *
  * @method                                      setName(string $value)
- * @method string                               getName()
+ * @method string|null                          getName()
  *
  * @method                                      setParentUid(int $value)
- * @method int                                  getParentUid()
+ * @method int|null                             getParentUid()
  *
  * @method                                      setImage(Shopgate_Model_Media_Image $value)
- * @method Shopgate_Model_Media_Image | null    getImage()
+ * @method Shopgate_Model_Media_Image|null      getImage()
  *
  * @method                                      setIsActive(bool $value)
- * @method bool                                 getIsActive()
+ * @method bool|null                            getIsActive()
  *
  * @method                                      setDeeplink(string $value)
- * @method string                               getDeeplink()
+ * @method string|null                          getDeeplink()
  *
  * @method                                      setIsAnchor(bool $value)
- * @method bool                                 getIsAnchor()
+ * @method bool|null                            getIsAnchor()
  */
 class Shopgate_Model_Catalog_Category extends Shopgate_Model_AbstractExport
 {
@@ -116,14 +116,9 @@ class Shopgate_Model_Catalog_Category extends Shopgate_Model_AbstractExport
          * @var Shopgate_Model_XmlResultObject $categoryNode
          */
         $categoryNode = $itemNode->addChild('category');
-        $categoryNode->addAttribute('uid', (string)$this->getUid());
-        $categoryNode->addAttribute('sort_order', (string)$this->getSortOrder());
-        $categoryNode->addAttribute(
-            'parent_uid',
-            $this->getParentUid()
-                ? (string)$this->getParentUid()
-                : null
-        );
+        $categoryNode->addAttribute('uid', $this->getUid());
+        $categoryNode->addAttribute('sort_order', $this->getSortOrder());
+        $categoryNode->addAttribute('parent_uid', $this->getParentUid());
         $categoryNode->addAttribute('is_active', $this->getIsActive() ? '1' : '0');
         $categoryNode->addAttribute('is_anchor', $this->getIsAnchor() ? '1' : '0');
         $categoryNode->addChildWithCDATA('name', $this->getName());

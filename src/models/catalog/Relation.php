@@ -24,14 +24,14 @@
  * @class Shopgate_Model_Catalog_Relation
  * @see   http://developer.shopgate.com/file_formats/xml/products
  *
- * @method          setType(string $value)
- * @method string   getType()
+ * @method               setType(string $value)
+ * @method string|null   getType()
  *
- * @method          setValues(array $value)
- * @method array    getValues()
+ * @method               setValues(array $value)
+ * @method array|null    getValues()
  *
- * @method          setLabel(string $value)
- * @method string   getLabel()
+ * @method               setLabel(string $value)
+ * @method string|null   getLabel()
  *
  */
 class Shopgate_Model_Catalog_Relation extends Shopgate_Model_AbstractExport

@@ -21,11 +21,11 @@
  */
 
 /**
- * @method        setName(string $value)
- * @method string getName()
+ * @method             setName(string $value)
+ * @method string|null getName()
  *
- * @method        setFunctionName(string $value)
- * @method string getFunctionName()
+ * @method             setFunctionName(string $value)
+ * @method string|null getFunctionName()
  */
 class Shopgate_Model_Redirect_HtmlTagVariable extends Shopgate_Model_Abstract
 {

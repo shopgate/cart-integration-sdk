@@ -24,26 +24,26 @@
  * @class Shopgate_Model_Review
  * @see   http://developer.shopgate.com/file_formats/xml/reviews
  *
- * @method          setUid(string $value)
- * @method string   getUid()
+ * @method               setUid(string $value)
+ * @method string|null   getUid()
  *
- * @method          setItemUid(string $value)
- * @method string   getItemUid()
+ * @method               setItemUid(string $value)
+ * @method string|null   getItemUid()
  *
- * @method          setScore(int $value)
- * @method int      getScore()
+ * @method               setScore(int $value)
+ * @method int|null      getScore()
  *
- * @method          setReviewerName(string $value)
- * @method string   getReviewerName()
+ * @method               setReviewerName(string $value)
+ * @method string|null   getReviewerName()
  *
- * @method          setDate(string $value)
- * @method string   getDate()
+ * @method               setDate(string $value)
+ * @method string|null   getDate()
  *
- * @method          setTitle(string $value)
- * @method string   getTitle()
+ * @method               setTitle(string $value)
+ * @method string|null   getTitle()
  *
- * @method          setText(string $value)
- * @method string   getText()
+ * @method               setText(string $value)
+ * @method string|null   getText()
  */
 class Shopgate_Model_Catalog_Review extends Shopgate_Model_AbstractExport
 {

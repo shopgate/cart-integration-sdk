@@ -24,23 +24,23 @@
  * @class Shopgate_Model_Catalog_TierPrice
  * @see   http://developer.shopgate.com/file_formats/xml/products
  *
- * @method          setFromQuantity(int $value)
- * @method int      getFromQuantity()
+ * @method               setFromQuantity(int $value)
+ * @method int|null      getFromQuantity()
  *
- * @method          setReductionType(string $value)
- * @method string   getReductionType()
+ * @method               setReductionType(string $value)
+ * @method string|null   getReductionType()
  *
- * @method          setReduction(float $value)
- * @method float    getReduction()
+ * @method               setReduction(float $value)
+ * @method float|null    getReduction()
  *
- * @method          setCustomerGroupUid(int $value)
- * @method int      getCustomerGroupUid()
+ * @method               setCustomerGroupUid(int $value)
+ * @method int|null      getCustomerGroupUid()
  *
- * @method          setToQuantity(int $value)
- * @method int      getToQuantity()
+ * @method               setToQuantity(int $value)
+ * @method int|null      getToQuantity()
  *
- * @method          setAggregateChildren(bool $value)
- * @method bool     getAggregateChildren()
+ * @method               setAggregateChildren(bool $value)
+ * @method bool|null     getAggregateChildren()
  */
 class Shopgate_Model_Catalog_TierPrice extends Shopgate_Model_AbstractExport
 {
@@ -74,10 +74,10 @@ class Shopgate_Model_Catalog_TierPrice extends Shopgate_Model_AbstractExport
          */
         $tierPriceNode = $itemNode->addChild('tier_price', $this->getReduction());
         $tierPriceNode->addAttribute('aggregate_children', $this->getAggregateChildren() ? '1' : '0');
-        $tierPriceNode->addAttribute('threshold', (string)$this->getFromQuantity());
-        $tierPriceNode->addAttribute('max_quantity', (string)$this->getToQuantity());
+        $tierPriceNode->addAttribute('threshold', $this->getFromQuantity());
+        $tierPriceNode->addAttribute('max_quantity', $this->getToQuantity());
         $tierPriceNode->addAttribute('type', $this->getReductionType());
-        $tierPriceNode->addAttribute('customer_group_uid', (string)$this->getCustomerGroupUid());
+        $tierPriceNode->addAttribute('customer_group_uid', $this->getCustomerGroupUid());
 
         return $itemNode;
     }

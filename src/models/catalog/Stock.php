@@ -24,26 +24,26 @@
  * @class Shopgate_Model_Catalog_Stock
  * @see   http://developer.shopgate.com/file_formats/xml/products
  *
- * @method          setIsSaleable(bool $value)
- * @method bool     getIsSaleable()
+ * @method               setIsSaleable(bool $value)
+ * @method bool|null     getIsSaleable()
  *
- * @method          setBackorders(bool $value)
- * @method bool     getBackorders()
+ * @method               setBackorders(bool $value)
+ * @method bool|null     getBackorders()
  *
- * @method          setUseStock(bool $value)
- * @method bool     getUseStock()
+ * @method               setUseStock(bool $value)
+ * @method bool|null     getUseStock()
  *
- * @method          setStockQuantity(int $value)
- * @method int      getStockQuantity()
+ * @method               setStockQuantity(int $value)
+ * @method int|null      getStockQuantity()
  *
- * @method          setMinimumOrderQuantity(int $value)
- * @method int      getMinimumOrderQuantity()
+ * @method               setMinimumOrderQuantity(int $value)
+ * @method int|null      getMinimumOrderQuantity()
  *
- * @method          setMaximumOrderQuantity(int $value)
- * @method int      getMaximumOrderQuantity()
+ * @method               setMaximumOrderQuantity(int $value)
+ * @method int|null      getMaximumOrderQuantity()
  *
- * @method          setAvailabilityText(string $value)
- * @method string   getAvailabilityText()
+ * @method               setAvailabilityText(string $value)
+ * @method string|null   getAvailabilityText()
  *
  */
 class Shopgate_Model_Catalog_Stock extends Shopgate_Model_AbstractExport
@@ -74,9 +74,9 @@ class Shopgate_Model_Catalog_Stock extends Shopgate_Model_AbstractExport
          * @var Shopgate_Model_XmlResultObject $stockNode
          */
         $stockNode = $itemNode->addChild('stock');
-        $stockNode->addChild('is_saleable', (int)$this->getIsSaleable());
-        $stockNode->addChild('backorders', (int)$this->getBackorders());
-        $stockNode->addChild('use_stock', (int)$this->getUseStock());
+        $stockNode->addChild('is_saleable', $this->getIsSaleable() ? '1' : '0');
+        $stockNode->addChild('backorders', $this->getBackorders() ? '1' : '0');
+        $stockNode->addChild('use_stock', $this->getUseStock() ? '1' : '0');
         $stockNode->addChild('stock_quantity', $this->getStockQuantity());
         $stockNode->addChild('minimum_order_quantity', $this->getMinimumOrderQuantity(), null, false);
         $stockNode->addChild('maximum_order_quantity', $this->getMaximumOrderQuantity(), null, false);

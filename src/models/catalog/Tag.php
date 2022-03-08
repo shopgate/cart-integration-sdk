@@ -24,11 +24,11 @@
  * @class Shopgate_Model_Catalog_Tag
  * @see   http://developer.shopgate.com/file_formats/xml/products
  *
- * @method          setUid(int $value)
- * @method int      getUid()
+ * @method               setUid(int $value)
+ * @method int|null      getUid()
  *
- * @method          setValue(string $value)
- * @method string   getValue()
+ * @method               setValue(string $value)
+ * @method string|null   getValue()
  *
  */
 class Shopgate_Model_Catalog_Tag extends Shopgate_Model_AbstractExport
@@ -54,7 +54,7 @@ class Shopgate_Model_Catalog_Tag extends Shopgate_Model_AbstractExport
          * @var Shopgate_Model_XmlResultObject $tagNode
          */
         $tagNode = $itemNode->addChildWithCDATA('tag', $this->getValue());
-        $tagNode->addAttribute('uid', (string)$this->getUid());
+        $tagNode->addAttribute('uid', $this->getUid());
 
         return $itemNode;
     }

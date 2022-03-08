@@ -24,14 +24,14 @@
  * @class Shopgate_Model_Catalog_Manufacturer
  * @see   http://developer.shopgate.com/file_formats/xml/products
  *
- * @method         setUid(int $value)
- * @method int     getUid()
+ * @method              setUid(int $value)
+ * @method int|null     getUid()
  *
- * @method         setItemNumber(string $value)
- * @method string  getItemNumber()
+ * @method              setItemNumber(string $value)
+ * @method string|null  getItemNumber()
  *
- * @method         setTitle(string $value)
- * @method string  getTitle()
+ * @method              setTitle(string $value)
+ * @method string|null  getTitle()
  *
  */
 class Shopgate_Model_Catalog_Manufacturer extends Shopgate_Model_AbstractExport
@@ -58,7 +58,7 @@ class Shopgate_Model_Catalog_Manufacturer extends Shopgate_Model_AbstractExport
          * @var Shopgate_Model_XmlResultObject $manufacturerNode
          */
         $manufacturerNode = $itemNode->addChild('manufacturer');
-        $manufacturerNode->addAttribute('uid', (string)$this->getUid());
+        $manufacturerNode->addAttribute('uid', $this->getUid());
         $manufacturerNode->addChildWithCDATA('title', $this->getTitle(), false);
         $manufacturerNode->addChildWithCDATA('item_number', $this->getItemNumber(), false);
 

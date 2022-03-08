@@ -25,10 +25,10 @@
  * @see   http://developer.shopgate.com/file_formats/xml/products
  *
  * @method          setUid(int $value)
- * @method int      getUid()
+ * @method int|null getUid()
  *
- * @method          setLabel(string $value)
- * @method string   getLabel()
+ * @method             setLabel(string $value)
+ * @method string|null getLabel()
  *
  */
 class Shopgate_Model_Catalog_AttributeGroup extends Shopgate_Model_AbstractExport
@@ -54,7 +54,7 @@ class Shopgate_Model_Catalog_AttributeGroup extends Shopgate_Model_AbstractExpor
          * @var Shopgate_Model_XmlResultObject $attributeNode
          */
         $attributeNode = $itemNode->addChildWithCDATA('attribute_group', $this->getLabel());
-        $attributeNode->addAttribute('uid', (string)$this->getUid());
+        $attributeNode->addAttribute('uid', $this->getUid());
 
         return $itemNode;
     }

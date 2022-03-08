@@ -24,11 +24,11 @@
  * @class Shopgate_Model_Catalog_Validation
  * @see   http://developer.shopgate.com/file_formats/xml/products
  *
- * @method          setValidationType(string $value)
- * @method string   getValidationType()
+ * @method               setValidationType(string $value)
+ * @method string|null   getValidationType()
  *
- * @method          setValue(string $value)
- * @method string   getValue()
+ * @method               setValue(string $value)
+ * @method string|null   getValue()
  *
  */
 class Shopgate_Model_Catalog_Validation extends Shopgate_Model_AbstractExport

@@ -24,14 +24,14 @@
  * @class Shopgate_Model_Catalog_Shipping
  * @see   http://developer.shopgate.com/file_formats/xml/products
  *
- * @method          setCostsPerOrder(float $value)
- * @method float    getCostsPerOrder()
+ * @method               setCostsPerOrder(float $value)
+ * @method float|null    getCostsPerOrder()
  *
- * @method          setAdditionalCostsPerUnit(float $value)
- * @method float    getAdditionalCostsPerUnit()
+ * @method               setAdditionalCostsPerUnit(float $value)
+ * @method float|null    getAdditionalCostsPerUnit()
  *
- * @method          setIsFree(bool $value)
- * @method bool     getIsFree()
+ * @method               setIsFree(bool $value)
+ * @method bool|null     getIsFree()
  *
  */
 class Shopgate_Model_Catalog_Shipping extends Shopgate_Model_AbstractExport
