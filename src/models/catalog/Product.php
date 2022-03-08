@@ -326,8 +326,8 @@ class Shopgate_Model_Catalog_Product extends Shopgate_Model_AbstractExport
         /**
          * is default child
          */
-        if ($this->getIsChild()) {
-            $itemNode->addAttribute('default_child', $this->getIsDefaultChild() ? '1' : '0');
+        if ($this->getIsChild() && $this->getIsDefaultChild()) {
+            $itemNode->addAttribute('default_child', '1');
         }
 
         /**
