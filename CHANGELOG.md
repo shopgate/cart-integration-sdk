@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Fixed
+- setters of `ShopgateContainer` classes setting properties to `null` if they're single subtypes and an object of the required type was passed
+
+### Added
+- debug logging when error file cannot be created or is not writable in `ShopgateBuilder::enableErrorHandler`
+- `ShopgateBuilder::enableErrorHandler` now takes a second argument `$enableLogToFile`, defaults to `true`; if `false`,
+  no error log file is trying to be created and no file path will be set to PHP's `error_log` setting
 
 ## [2.9.86] - 2022-03-08
 ### Fixed
