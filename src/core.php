@@ -666,7 +666,7 @@ class ShopgateBuilder
         );
     }
 
-    public function enableErrorHandler($errorReporting = 32767)
+    public function enableErrorHandler($errorReporting = 32767, $enableLogToFile = true)
     {
         set_error_handler(
             array(
@@ -687,6 +687,8 @@ class ShopgateBuilder
         @ini_set('log_errors', '1');
         @ini_set('ignore_repeated_errors', '1');
         @ini_set('html_errors', '0');
+
+        if (!$enableLogToFile) return;
 
         if (!file_exists($this->config->getErrorLogPath()) && !is_writable(dirname($this->config->getErrorLogPath()))) {
             $this->logging->log(
