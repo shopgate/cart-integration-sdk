@@ -688,14 +688,16 @@ class ShopgateBuilder
         @ini_set('ignore_repeated_errors', '1');
         @ini_set('html_errors', '0');
 
-        if (!$enableLogToFile) return;
+        if (!$enableLogToFile) {
+            return;
+        }
 
         if (!file_exists($this->config->getErrorLogPath()) && !is_writable(dirname($this->config->getErrorLogPath()))) {
             $this->logging->log(
                 'Log file does not exist and cannot be created.',
                 Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_DEBUG,
                 '',
-                ['logFilePath' => $this->config->getErrorLogPath()]
+                array('logFilePath' => $this->config->getErrorLogPath())
             );
 
             return;
@@ -706,7 +708,7 @@ class ShopgateBuilder
                 'Log file is not writable.',
                 Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_DEBUG,
                 '',
-                ['logFilePath' => $this->config->getErrorLogPath()]
+                array('logFilePath' => $this->config->getErrorLogPath())
             );
 
             return;
