@@ -3201,8 +3201,8 @@ abstract class ShopgateContainer extends ShopgateObject
      */
     public function convertArrayToSubentity($arr, $className)
     {
-        if ((!is_object($arr) || !($arr instanceof $className)) && !is_array($arr)) {
-            return null;
+        if ($arr instanceof $className) {
+            return $arr;
         }
 
         if (is_array($arr)) {
