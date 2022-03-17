@@ -683,15 +683,38 @@ class ShopgateBuilder
             )
         );
 
+        @error_reporting(E_ALL ^ E_DEPRECATED);
+        @ini_set('log_errors', '1');
+        @ini_set('ignore_repeated_errors', '1');
+        @ini_set('html_errors', '0');
+
+        if (!file_exists($this->config->getErrorLogPath()) && !is_writable(dirname($this->config->getErrorLogPath()))) {
+            $this->logging->log(
+                'Log file does not exist and cannot be created.',
+                Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_DEBUG,
+                '',
+                ['logFilePath' => $this->config->getErrorLogPath()]
+            );
+
+            return;
+        }
+
+        if (!is_writable($this->config->getErrorLogPath())) {
+            $this->logging->log(
+                'Log file is not writable.',
+                Shopgate_Helper_Logging_Strategy_LoggingInterface::LOGTYPE_DEBUG,
+                '',
+                ['logFilePath' => $this->config->getErrorLogPath()]
+            );
+
+            return;
+        }
+
         $logFileHandler = @fopen($this->config->getErrorLogPath(), 'a');
         @fclose($logFileHandler);
         @chmod($this->config->getErrorLogPath(), 0777);
         @chmod($this->config->getErrorLogPath(), 0755);
-        @error_reporting(E_ALL ^ E_DEPRECATED);
-        @ini_set('log_errors', '1');
         @ini_set('error_log', $this->config->getErrorLogPath());
-        @ini_set('ignore_repeated_errors', '1');
-        @ini_set('html_errors', '0');
     }
 
     public function enableShutdownFunction()
