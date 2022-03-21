@@ -188,7 +188,7 @@ class ShopgateExternalOrder extends ShopgateContainer
         $value->setIsDeliveryAddress(true);
         $value->setIsInvoiceAddress(false);
 
-        $this->invoice_address = $value;
+        $this->delivery_address = $value;
     }
 
     /**
