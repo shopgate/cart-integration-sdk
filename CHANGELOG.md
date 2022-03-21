@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+## [2.9.88] - 2022-03-21
+### Fixed
+- delivery address set to invoice address on `ShopgateExternalOrder` instances
 
 ## [2.9.87] - 2022-03-17
 ### Fixed
@@ -710,7 +713,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - fixed error in use of old configuration
 - added changelog.txt
 
-[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.87...HEAD
+[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.88...HEAD
+[2.9.88]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.87...2.9.88
 [2.9.87]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.86...2.9.87
 [2.9.86]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.85...2.9.86
 [2.9.85]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.84...2.9.85
