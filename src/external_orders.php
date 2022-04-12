@@ -173,8 +173,11 @@ class ShopgateExternalOrder extends ShopgateContainer
     public function setInvoiceAddress($value)
     {
         $value = $this->convertArrayToSubentity($value, 'ShopgateAddress');
-        $value->setIsDeliveryAddress(false);
-        $value->setIsInvoiceAddress(true);
+
+        if ($value !== null) {
+            $value->setIsDeliveryAddress(false);
+            $value->setIsInvoiceAddress(true);
+        }
 
         $this->invoice_address = $value;
     }
@@ -185,8 +188,11 @@ class ShopgateExternalOrder extends ShopgateContainer
     public function setDeliveryAddress($value)
     {
         $value = $this->convertArrayToSubentity($value, 'ShopgateAddress');
-        $value->setIsDeliveryAddress(true);
-        $value->setIsInvoiceAddress(false);
+
+        if ($value !== null) {
+            $value->setIsDeliveryAddress(true);
+            $value->setIsInvoiceAddress(false);
+        }
 
         $this->delivery_address = $value;
     }

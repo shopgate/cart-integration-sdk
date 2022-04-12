@@ -440,8 +440,10 @@ abstract class ShopgateCartBase extends ShopgateContainer
     {
         $address = $this->convertArrayToSubentity($value, 'ShopgateAddress');
 
-        $address->setIsDeliveryAddress(false);
-        $address->setIsInvoiceAddress(true);
+        if ($address !== null) {
+            $address->setIsDeliveryAddress(false);
+            $address->setIsInvoiceAddress(true);
+        }
 
         $this->invoice_address = $address;
     }
@@ -453,8 +455,10 @@ abstract class ShopgateCartBase extends ShopgateContainer
     {
         $address = $this->convertArrayToSubentity($value, 'ShopgateAddress');
 
-        $address->setIsDeliveryAddress(true);
-        $address->setIsInvoiceAddress(false);
+        if ($address !== null) {
+            $address->setIsDeliveryAddress(true);
+            $address->setIsInvoiceAddress(false);
+        }
 
         $this->delivery_address = $address;
     }
