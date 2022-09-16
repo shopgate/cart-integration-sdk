@@ -156,7 +156,7 @@ class ShopgateExternalOrder extends ShopgateContainer
      */
     public function setCustomFields($value)
     {
-        $this->custom_fields = $this->convertArrayToSubentityList($value, 'ShopgateOrderCustomField');
+        $this->custom_fields = $this->convertArrayToSubEntityList($value, 'ShopgateOrderCustomField');
     }
 
     /**
@@ -198,11 +198,15 @@ class ShopgateExternalOrder extends ShopgateContainer
     }
 
     /**
-     * @param ShopgateExternalCoupon[]|array<string, mixed>[] $value
+     * Before v2.9.90 $value was expected to be a ShopgateExternalCoupon. This is still working but deprecated, as the
+     * object differs vastly from what the documentation for the get_orders response requires. It is strongly
+     * recommended to switch to ShopgateExternalOrderExternalCoupon objects instead.
+     *
+     * @param ShopgateExternalOrderExternalCoupon[]|array<string, mixed>[] $value
      */
     public function setExternalCoupons($value)
     {
-        $this->external_coupons = $this->convertArrayToSubentityList($value, 'ShopgateExternalCoupon');
+        $this->external_coupons = $this->convertArrayToSubEntityList($value, array('ShopgateExternalOrderExternalCoupon', 'ShopgateExternalCoupon'));
     }
 
     /**
@@ -300,7 +304,7 @@ class ShopgateExternalOrder extends ShopgateContainer
      */
     public function setDeliveryNotes($value)
     {
-        $this->delivery_notes = $this->convertArrayToSubentityList($value, 'ShopgateDeliveryNote');
+        $this->delivery_notes = $this->convertArrayToSubEntityList($value, 'ShopgateDeliveryNote');
     }
 
     /**
@@ -308,7 +312,7 @@ class ShopgateExternalOrder extends ShopgateContainer
      */
     public function setOrderTaxes($value)
     {
-        $this->order_taxes = $this->convertArrayToSubentityList($value, 'ShopgateExternalOrderTax');
+        $this->order_taxes = $this->convertArrayToSubEntityList($value, 'ShopgateExternalOrderTax');
     }
 
     /**
@@ -316,7 +320,7 @@ class ShopgateExternalOrder extends ShopgateContainer
      */
     public function setExtraCosts($value)
     {
-        $this->extra_costs = $this->convertArrayToSubentityList($value, 'ShopgateExternalOrderExtraCost');
+        $this->extra_costs = $this->convertArrayToSubEntityList($value, 'ShopgateExternalOrderExtraCost');
     }
 
     /**
@@ -324,7 +328,7 @@ class ShopgateExternalOrder extends ShopgateContainer
      */
     public function setItems($value)
     {
-        $this->items = $this->convertArrayToSubentityList($value, 'ShopgateExternalOrderItem');
+        $this->items = $this->convertArrayToSubEntityList($value, 'ShopgateExternalOrderItem');
     }
 
     /**
@@ -436,7 +440,7 @@ class ShopgateExternalOrder extends ShopgateContainer
     }
 
     /**
-     * @return ShopgateExternalCoupon[]
+     * @return ShopgateExternalOrderExternalCoupon[]
      */
     public function getExternalCoupons()
     {
@@ -921,5 +925,149 @@ class ShopgateExternalOrderTax extends ShopgateContainer
     public function accept(ShopgateContainerVisitor $v)
     {
         $v->visitExternalOrderTax($this);
+    }
+}
+
+class ShopgateExternalOrderExternalCoupon extends ShopgateContainer {
+    protected $code;
+    protected $order_index;
+    protected $name;
+    protected $description;
+    protected $amount;
+    protected $currency;
+    protected $is_free_shipping;
+    protected $internal_info;
+
+    /**
+     * @return string
+     */
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    /**
+     * @param string $code
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOrderIndex()
+    {
+        return $this->order_index;
+    }
+
+    /**
+     * @param int $order_index
+     */
+    public function setOrderIndex($order_index)
+    {
+        $this->order_index = $order_index;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAmount()
+    {
+        return $this->amount;
+    }
+
+    /**
+     * @param float $amount
+     */
+    public function setAmount($amount)
+    {
+        $this->amount = $amount;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrency()
+    {
+        return $this->currency;
+    }
+
+    /**
+     * @param string $currency
+     */
+    public function setCurrency($currency)
+    {
+        $this->currency = $currency;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsFreeShipping()
+    {
+        return $this->is_free_shipping;
+    }
+
+    /**
+     * @param bool $is_free_shipping
+     */
+    public function setIsFreeShipping($is_free_shipping)
+    {
+        $this->is_free_shipping = $is_free_shipping;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInternalInfo()
+    {
+        return $this->internal_info;
+    }
+
+    /**
+     * @param string $internal_info
+     */
+    public function setInternalInfo($internal_info)
+    {
+        $this->internal_info = $internal_info;
+    }
+
+    public function accept(ShopgateContainerVisitor $v)
+    {
+        $v->visitExternalOrderExternalCoupon($this);
     }
 }
