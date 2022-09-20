@@ -544,7 +544,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
         $this->enable_default_redirect        = false;
         $this->encoding                       = 'UTF-8';
         $this->export_convert_encoding        = true;
-        $this->force_source_encoding          = false;
+        $this->force_source_encoding          = true;
         $this->supported_fields_check_cart    = array();
         $this->supported_fields_get_settings  = array();
         $this->supported_methods_cron         = array();
