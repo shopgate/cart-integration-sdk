@@ -928,7 +928,8 @@ class ShopgateExternalOrderTax extends ShopgateContainer
     }
 }
 
-class ShopgateExternalOrderExternalCoupon extends ShopgateContainer {
+class ShopgateExternalOrderExternalCoupon extends ShopgateContainer
+{
     protected $code;
     protected $order_index;
     protected $name;

@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+- class `ShopgateExternalOrderExternalCoupon`, representing external coupons in the [get_orders documentation](http://developers.shopgate.com/plugin_api/orders/get_orders.html)
+
+### Changed
+- `ShopgateExternalOrder::setExternalCoupons()` now takes a list of `ShopgateExternalOrderExternalCoupon` objects; `ShopgateExternalCoupon` will still work but is deprecated
+
 ## [2.9.89] - 2022-04-12
 ### Fixed
 - setting an invoice or delivery address of `null` on a `ShopgateCartBase` object results in a fatal PHP error
