@@ -236,7 +236,7 @@ class ShopgateCustomer extends ShopgateContainer
      */
     public function setCustomFields($value)
     {
-        $this->custom_fields = $this->convertArrayToSubentityList($value, 'ShopgateOrderCustomField');
+        $this->custom_fields = $this->convertArrayToSubEntityList($value, 'ShopgateOrderCustomField');
     }
 
     /**
@@ -252,7 +252,7 @@ class ShopgateCustomer extends ShopgateContainer
      */
     public function setAddresses($value)
     {
-        $this->addresses = $this->convertArrayToSubentityList($value, 'ShopgateAddress');
+        $this->addresses = $this->convertArrayToSubEntityList($value, 'ShopgateAddress');
     }
 
 
@@ -729,7 +729,7 @@ class ShopgateAddress extends ShopgateContainer
      */
     public function setCustomFields($value)
     {
-        $this->custom_fields = $this->convertArrayToSubentityList($value, 'ShopgateOrderCustomField');
+        $this->custom_fields = $this->convertArrayToSubEntityList($value, 'ShopgateOrderCustomField');
     }
 
 
