@@ -1114,7 +1114,6 @@ abstract class ShopgateObject
         'ASCII',
         'CP1252',
         'ISO-8859-15',
-        'UTF-16LE',
         'ISO-8859-1',
     );
 

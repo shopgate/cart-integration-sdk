@@ -8,8 +8,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 - class `ShopgateExternalOrderExternalCoupon`, representing external coupons in the [get_orders documentation](http://developers.shopgate.com/plugin_api/orders/get_orders.html)
 
+### Fixed
+- detection of ISO-8859-1 compatible strings as UTF-16LE, leading to them becoming strings with Japanese characters after conversion to UTF-8
+
 ### Changed
 - `ShopgateExternalOrder::setExternalCoupons()` now takes a list of `ShopgateExternalOrderExternalCoupon` objects; `ShopgateExternalCoupon` will still work but is deprecated
+- the `force_source_encoding` flag is now set to true by default, assuming the source encoding to be UTF-8 and effectively disabling auto-detection (*)
+- removed UTF-16LE from the list of possible source encodings (*)
+
+(*) These changes were made after a change in PHP 8.1's `mb_string` library made auto-detection work differently.
+    The assumed source encoding can be set via the `encoding` setting of the SDK if you need something different from UTF-8.
+    If you need auto-detection back, set `force_source_encoding` back to `0`/`false`.
 
 ## [2.9.89] - 2022-04-12
 ### Fixed
