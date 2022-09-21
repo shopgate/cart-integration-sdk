@@ -240,8 +240,8 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
         } catch (ShopgateMerchantApiException $e) {
             $error     = ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED;
             $errortext = ShopgateLibraryException::getMessageFor(
-                    ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED
-                ) . ': "' . $e->getCode() . ' - ' . $e->getMessage() . '"';
+                ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED
+            ) . ': "' . $e->getCode() . ' - ' . $e->getMessage() . '"';
         } catch (Exception $e) {
             $message = get_class($e) . " with code: {$e->getCode()} and message: '{$e->getMessage()}'";
 
@@ -1729,8 +1729,8 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
 
         $opt[CURLOPT_HEADER]         = false;
         $opt[CURLOPT_USERAGENT]      = 'ShopgatePlugin/' . (defined(
-                'SHOPGATE_PLUGIN_VERSION'
-            )
+            'SHOPGATE_PLUGIN_VERSION'
+        )
                 ? SHOPGATE_PLUGIN_VERSION
                 : 'called outside plugin');
         $opt[CURLOPT_RETURNTRANSFER] = true;
@@ -2463,8 +2463,8 @@ class ShopgateAuthenticationServiceOAuth extends ShopgateObject implements Shopg
         $curlOpt = array(
             CURLOPT_HEADER         => false,
             CURLOPT_USERAGENT      => 'ShopgatePlugin/' . (defined(
-                    'SHOPGATE_PLUGIN_VERSION'
-                )
+                'SHOPGATE_PLUGIN_VERSION'
+            )
                     ? SHOPGATE_PLUGIN_VERSION
                     : 'called outside plugin'),
             CURLOPT_SSL_VERIFYPEER => true,
@@ -2511,7 +2511,7 @@ class ShopgateAuthenticationServiceOAuth extends ShopgateObject implements Shopg
             throw new ShopgateLibraryException(
                 ShopgateLibraryException::SHOPGATE_OAUTH_MISSING_ACCESS_TOKEN,
                 (
-                (!empty($decodedResponse['error']) && !empty($decodedResponse['error_description']))
+                    (!empty($decodedResponse['error']) && !empty($decodedResponse['error_description']))
                     ? ' [Shopgate authorization failure "' . $decodedResponse['error'] . '": ' . $decodedResponse['error_description'] . ']'
                     : ' [Shopgate authorization failure: Unexpected server response]'
                 ),
@@ -2586,8 +2586,8 @@ abstract class ShopgatePluginApiResponse extends ShopgateObject
         $this->trace_id      = $traceId;
         $this->version       = $version;
         $this->pluginVersion = (empty($pluginVersion) && defined(
-                'SHOPGATE_PLUGIN_VERSION'
-            ))
+            'SHOPGATE_PLUGIN_VERSION'
+        ))
             ? SHOPGATE_PLUGIN_VERSION
             : $pluginVersion;
     }
