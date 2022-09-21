@@ -674,7 +674,7 @@ class ShopgateItem extends ShopgateContainer
      */
     public function setOptions($value)
     {
-        $this->options = $this->convertArrayToSubentityList($value, 'ShopgateItemOption');
+        $this->options = $this->convertArrayToSubEntityList($value, 'ShopgateItemOption');
     }
 
     /**
@@ -682,7 +682,7 @@ class ShopgateItem extends ShopgateContainer
      */
     public function setInputs($value)
     {
-        $this->inputs = $this->convertArrayToSubentityList($value, 'ShopgateItemInput');
+        $this->inputs = $this->convertArrayToSubEntityList($value, 'ShopgateItemInput');
     }
 
 
@@ -1174,7 +1174,7 @@ class ShopgateItemOption extends ShopgateContainer
      */
     public function setOptionValues($value)
     {
-        $this->option_values = $this->convertArrayToSubentityList($value, 'ShopgateItemOptionValue');
+        $this->option_values = $this->convertArrayToSubEntityList($value, 'ShopgateItemOptionValue');
     }
 
 

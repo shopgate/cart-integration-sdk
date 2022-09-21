@@ -3214,24 +3214,47 @@ abstract class ShopgateContainer extends ShopgateObject
     }
 
     /**
-     * @param array<mixed, string>[]|object[] $list If an object list was passed every object in the list will be verified to be an instance of what was passed in $className.
-     * @param string $className
-     * @return object[] A list of instances of what was passed in $className.
+     * Filters & converts a list of associative arrays to instances of the passed class name.
+     *
+     * If $list is not an array an empty array will be returned.
+     *
+     * If an element in the list is an object it will be verified to be an instance of one of the classes passed in
+     * $classNames.
+     *
+     * If an element in the list is an array an instance of the first class passed in $classNames will be instantiated,
+     * passing $list as argument to the constructor.
+     *
+     * Elements that are neither an instance of one of $classNames nor an array will be removed from the return result.
+     *
+     * @param array<mixed, string>[]|object[] $list
+     * @param string|string[] $classNames
+     * @return object[] A list of instances of what was passed in $classNames.
      */
-    public function convertArrayToSubentityList($list, $className)
+    public function convertArrayToSubEntityList($list, $classNames)
     {
         if (!is_array($list)) {
             return array();
         }
 
+        if (!is_array($classNames)) {
+            $classNames = array($classNames);
+        }
+
         foreach ($list as $index => &$element) {
-            if ((!is_object($element) || !($element instanceof $className)) && !is_array($element)) {
+            $isValidInstance = false;
+            if (is_object($element)) {
+                $isValidInstance = array_reduce($classNames, function ($isValid, $className) use ($element) {
+                    return $isValid || $element instanceof $className;
+                }, false);
+            }
+
+            if (!$isValidInstance && !is_array($element)) {
                 unset($list[$index]);
                 continue;
             }
 
             if (is_array($element)) {
-                $element = new $className($element);
+                $element = new $classNames[0]($element);
             }
         }
 
@@ -3443,6 +3466,8 @@ interface ShopgateContainerVisitor
     public function visitCartItem(ShopgateCartItem $c);
 
     public function visitCartCustomer(ShopgateCartCustomer $c);
+
+    public function visitExternalOrderExternalCoupon(ShopgateExternalOrderExternalCoupon $c);
 }
 
 /**
@@ -4056,6 +4081,21 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor
         }
     }
 
+    public function visitExternalOrderExternalCoupon(ShopgateExternalOrderExternalCoupon $c)
+    {
+        $properties = $c->buildProperties();
+
+        // iterate the simple variables
+        $this->iterateSimpleProperties($properties);
+
+        // create new object with utf-8 en- / decoded data
+        try {
+            $this->object = new ShopgateExternalOrderExternalCoupon($properties);
+        } catch (ShopgateLibraryException $e) {
+            $this->object = null;
+        }
+    }
+
     protected function iterateSimpleProperties(array &$properties)
     {
         foreach ($properties as $key => &$value) {
@@ -4494,6 +4534,11 @@ class ShopgateContainerToArrayVisitor implements ShopgateContainerVisitor
         $properties         = $this->iterateSimpleProperties($c->buildProperties());
         $additionalSettings = $this->iterateSimpleProperties($c->returnAdditionalSettings());
         $this->array        = array_merge($properties, $additionalSettings);
+    }
+
+    public function visitExternalOrderExternalCoupon(ShopgateExternalOrderExternalCoupon $c)
+    {
+        $this->array = $this->iterateSimpleProperties($c->buildProperties());
     }
 
     protected function iterateSimpleProperties(array $properties)
