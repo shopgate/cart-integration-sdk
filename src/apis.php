@@ -234,30 +234,39 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
             }
 
             $this->{$action}();
-        } catch (ShopgateLibraryException $e) {
-            $error     = $e->getCode();
-            $errortext = $e->getMessage();
-        } catch (ShopgateMerchantApiException $e) {
+        } catch (ShopgateLibraryException $sge) {
+            $error     = $sge->getCode();
+            $errortext = $sge->getMessage();
+        } catch (ShopgateMerchantApiException $sge) {
             $error     = ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED;
             $errortext = ShopgateLibraryException::getMessageFor(
                 ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED
-            ) . ': "' . $e->getCode() . ' - ' . $e->getMessage() . '"';
+            ) . ': "' . $sge->getCode() . ' - ' . $sge->getMessage() . '"';
         } catch (Exception $e) {
+            if ($this->config->getExternalExceptionHandling() === 'ignore') {
+                throw $e;
+            }
+
             $message = get_class($e) . " with code: {$e->getCode()} and message: '{$e->getMessage()}'";
 
             // new ShopgateLibraryException to build proper error message and perform logging
-            $e         = new ShopgateLibraryException($message, null, false, true, $e);
-            $error     = $e->getCode();
-            $errortext = $e->getMessage();
+            $sge       = new ShopgateLibraryException($message, null, false, true, $e);
+            $error     = $sge->getCode();
+            $errortext = $sge->getMessage();
         }
 
         // build stack trace if generator is available
-        $stackTrace = (!empty($e) && !empty($this->stackTraceGenerator))
-            ? $this->stackTraceGenerator->generate($e)
+        $stackTrace = (!empty($sge) && !empty($this->stackTraceGenerator))
+            ? $this->stackTraceGenerator->generate($sge)
             : '';
 
         // log error if there is any
         $this->logApiError($errortext, $stackTrace);
+
+        // if external exception handling is set to logging only, let the original exception bubble up
+        if (!empty($e) && $this->config->getExternalExceptionHandling() === 'log') {
+            throw $e;
+        }
 
         // print out the response
         if (!empty($error)) {
@@ -2940,9 +2949,11 @@ interface ShopgatePluginApiInterface
      * However, some actions such as the get_*_csv actions, might stop the script after execution to prevent invalid
      * data being appended to the output.
      *
-     * @param mixed[] $data The incoming request's parameters.
+     * @param array $data The incoming request's parameters.
      *
-     * @return bool false if an error occured, otherwise true.
+     * @return bool false if an error occurred, otherwise true.
+     *
+     * @throws Exception only if ShopgateConfig::getExternalExceptionHandling() returns "log" or "ignore"
      */
     public function handleRequest(array $data = array());
 
