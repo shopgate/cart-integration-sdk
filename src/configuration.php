@@ -59,7 +59,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
         'server'          => '/^(live|pg|sl|custom)$/',
         // "live" or "pg" or "sl" or "custom"
         'api_url'         => '/^(https?:\/\/\S+)?$/i',
-        // empty or a string beginning with "http://" or "https://" followed by any number of non-whitespace characters (this is used for testing only, thus the lose validation)
+        // empty or a string beginning with "http://" or "https://" followed by any number of non-whitespace characters (this is used for testing only, thus the loose validation)
     );
 
     /**
@@ -77,6 +77,14 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
      * @var bool true to activate the Shopgate error handler.
      */
     protected $use_custom_error_handler;
+
+    /**
+     * @var string Handling of uncaught external (i.e. non-ShopgateLibraryException) exceptions. One of:
+     *             - "catch" (default) - catch uncaught exceptions and transform them to an API response)
+     *             - "log" - log uncaught exceptions and then throw them further up
+     *             - "ignore" - no handling at all
+     */
+    protected $external_exception_handling;
 
     ##################################################################################
     ### basic shop information necessary for use of the APIs, mobile redirect etc. ###
@@ -534,6 +542,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
         // default values
         $this->plugin_name                    = 'not set';
         $this->use_custom_error_handler       = false;
+        $this->external_exception_handling    = 'catch';
         $this->alias                          = 'my-shop';
         $this->cname                          = '';
         $this->server                         = 'live';
@@ -1124,6 +1133,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
         return $this->use_custom_error_handler;
     }
 
+    public function getExternalExceptionHandling()
+    {
+        return $this->external_exception_handling;
+    }
+
     //	public function getSpaAuthServiceClassName() {
     //		return $this->spa_auth_service_class_name;
     //	}
@@ -1627,6 +1641,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
     public function setUseCustomErrorHandler($value)
     {
         $this->use_custom_error_handler = $value;
+    }
+
+    public function setExternalExceptionHandling($value)
+    {
+        $this->external_exception_handling = $value;
     }
 
     //	public function setSpaAuthServiceClassName($value) {
@@ -2929,6 +2948,15 @@ interface ShopgateConfigInterface
      */
     public function getUseCustomErrorHandler();
 
+    /**
+     * @return string Handling of uncaught external (i.e. non-ShopgateLibraryException) exceptions. One of:
+     *                - "catch" (default) - catch uncaught exceptions and transform them to an API response)
+     *                - "log" - log uncaught exceptions and then throw them further up
+     *                - "ignore" - no handling at all
+     *                This setting applies to all uncaught exceptions that are not a ShopgateLibraryException.
+     */
+    public function getExternalExceptionHandling();
+
     //	/**
     //	 * @return string $value Class name for the PluginAPI auth service
     //	 */
@@ -3430,6 +3458,16 @@ interface ShopgateConfigInterface
      * @param bool $value true to activate the Shopgate error handler.
      */
     public function setUseCustomErrorHandler($value);
+
+    /**
+     * @param $value string Handling of uncaught external (i.e. non-ShopgateLibraryException, non-ShopgateMerchantApiException)
+     *                      exceptions. $value can be one of:
+     *                      - "catch" (default) - catch uncaught exceptions and transform them to an API response)
+     *                      - "log" - log uncaught exceptions and then throw them further up
+     *                      - "ignore" - no handling at all
+     *                      This setting applies to all uncaught exceptions that are not a ShopgateLibraryException.
+     */
+    public function setExternalExceptionHandling($value);
 
     //	/**
     //	 * @param string $value Class name for the PluginAPI authentication service
