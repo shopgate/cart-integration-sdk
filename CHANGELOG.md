@@ -7,17 +7,27 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ## [Unreleased]
 ### Added
 - class `ShopgateExternalOrderExternalCoupon`, representing external coupons in the [get_orders documentation](http://developers.shopgate.com/plugin_api/orders/get_orders.html)
+- configuration setting `external_exception_handling` with possible values `catch` (default), `log` or `ignore` [^external_exception_handling-values]
 
 ### Fixed
 - detection of ISO-8859-1 compatible strings as UTF-16LE, leading to them becoming strings with Japanese characters after conversion to UTF-8
 
 ### Changed
 - `ShopgateExternalOrder::setExternalCoupons()` now takes a list of `ShopgateExternalOrderExternalCoupon` objects; `ShopgateExternalCoupon` will still work but is deprecated
-- the `force_source_encoding` flag is now set to true by default, assuming the source encoding to be UTF-8 and effectively disabling auto-detection (*)
-- removed UTF-16LE from the list of possible source encodings (*)
+- the `force_source_encoding` flag is now set to true by default, assuming the source encoding to be UTF-8 and effectively disabling auto-detection [^force_source_encoding-new-default]
+- removed UTF-16LE from the list of possible source encodings [^force_source_encoding-new-default]
 
-(*) These changes were made after a change in PHP 8.1's `mb_string` library made auto-detection work differently.
-    The assumed source encoding can be set via the `encoding` setting of the SDK if you need something different from UTF-8.
+[^external_exception_handling-values]:
+    The new setting should not be user-configurable but be overridden hard-coded by plugins that use their own error handling.<br />
+    It applies only to non-SDK exceptions (i.e. non-`ShopgateLibraryException`, non-`ShopgateMerchantApiException`).<br />
+    Possible values explained:
+    - `catch` (default) - catch uncaught exceptions and transform them to an API response
+    - `log` - log uncaught exceptions and then throw them further up
+    - `ignore` - no handling at all, exceptions just bubble through all the way
+
+[^force_source_encoding-new-default]:
+    These changes were made after a change in PHP 8.1's `mb_string` library made auto-detection work differently.<br />
+    The assumed source encoding can be set via the `encoding` setting of the SDK if you need something different from UTF-8.<br />
     If you need auto-detection back, set `force_source_encoding` back to `0`/`false`.
 
 ## [2.9.89] - 2022-04-12
