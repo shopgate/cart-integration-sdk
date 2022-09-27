@@ -3269,7 +3269,7 @@ abstract class ShopgateContainer extends ShopgateObject
      *
      * Tha data that couldn't be mapped is returned as an array.
      *
-     * @param array <string, mixed> $data The data that should be mapped to the container object.
+     * @param array<string, mixed> $data The data that should be mapped to the container object.
      *
      * @return array<string, mixed> The part of the array that couldn't be mapped.
      */

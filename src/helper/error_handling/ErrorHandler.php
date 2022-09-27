@@ -88,7 +88,7 @@ class Shopgate_Helper_Error_Handling_ErrorHandler
         /** @noinspection PhpUnusedParameterInspection */
         array $context = array()
     ) {
-        // on error supression with '@' do not log
+        // on error suppression with '@' do not log
         if ($severity === 0) {
             return $this->skipInternalErrorHandler;
         }
