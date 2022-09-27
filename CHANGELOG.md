@@ -7,7 +7,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ## [Unreleased]
 ### Added
 - class `ShopgateExternalOrderExternalCoupon`, representing external coupons in the [get_orders documentation](http://developers.shopgate.com/plugin_api/orders/get_orders.html)
-- configuration setting `external_exception_handling` with possible values `catch` (default), `log` or `ignore` [^external_exception_handling-values]
+- configuration setting `external_exception_handling` with possible values `catch` (default), `log` or `none` [^external_exception_handling-values]
 
 ### Fixed
 - detection of ISO-8859-1 compatible strings as UTF-16LE, leading to them becoming strings with Japanese characters after conversion to UTF-8
@@ -23,7 +23,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
     Possible values explained:
     - `catch` (default) - catch uncaught exceptions and transform them to an API response
     - `log` - log uncaught exceptions and then throw them further up
-    - `ignore` - no handling at all, exceptions just bubble through all the way
+    - `none` - no handling at all, exceptions just bubble through all the way
 
 [^force_source_encoding-new-default]:
     These changes were made after a change in PHP 8.1's `mb_string` library made auto-detection work differently.<br />

@@ -35,6 +35,10 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
      */
     const DEFAULT_XSD_URL_LOCATION = 'http://files.shopgate.com/xml/xsd';
 
+    const EXTERNAL_EXCEPTION_HANDLING_CATCH = 'catch';
+    const EXTERNAL_EXCEPTION_HANDLING_LOG = 'log';
+    const EXTERNAL_EXCEPTION_HANDLING_NONE = 'none';
+
     /**
      * @var string The path to the folder where the config file(s) are saved.
      * @deprecated 2.9.69 Use ShopgateConfig::buildConfigFilePath() instead.
@@ -79,10 +83,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
     protected $use_custom_error_handler;
 
     /**
-     * @var string Handling of uncaught external (i.e. non-ShopgateLibraryException) exceptions. One of:
-     *             - "catch" (default) - catch uncaught exceptions and transform them to an API response)
+     * @var string Handling of uncaught external (i.e. non-ShopgateLibraryException) exceptions. One of the
+     *             ShopgateConfig::EXTERNAL_EXCEPTION_HANDLING_* constants:
+     *             - "catch" (default) - catch uncaught exceptions and transform them to an API response
      *             - "log" - log uncaught exceptions and then throw them further up
-     *             - "ignore" - no handling at all
+     *             - "none" - no handling at all
      */
     protected $external_exception_handling;
 
@@ -2949,10 +2954,11 @@ interface ShopgateConfigInterface
     public function getUseCustomErrorHandler();
 
     /**
-     * @return string Handling of uncaught external (i.e. non-ShopgateLibraryException) exceptions. One of:
-     *                - "catch" (default) - catch uncaught exceptions and transform them to an API response)
+     * @return string Handling of uncaught external (i.e. non-ShopgateLibraryException) exceptions. One of the
+     *                ShopgateConfig::EXTERNAL_EXCEPTION_HANDLING_* constants:
+     *                - "catch" (default) - catch uncaught exceptions and transform them to an API response
      *                - "log" - log uncaught exceptions and then throw them further up
-     *                - "ignore" - no handling at all
+     *                - "none" - no handling at all
      *                This setting applies to all uncaught exceptions that are not a ShopgateLibraryException.
      */
     public function getExternalExceptionHandling();
@@ -3461,10 +3467,10 @@ interface ShopgateConfigInterface
 
     /**
      * @param $value string Handling of uncaught external (i.e. non-ShopgateLibraryException, non-ShopgateMerchantApiException)
-     *                      exceptions. $value can be one of:
-     *                      - "catch" (default) - catch uncaught exceptions and transform them to an API response)
+     *                      exceptions. $value can be one of the ShopgateConfig::EXTERNAL_EXCEPTION_HANDLING_* constants:
+     *                      - "catch" (default) - catch uncaught exceptions and transform them to an API response
      *                      - "log" - log uncaught exceptions and then throw them further up
-     *                      - "ignore" - no handling at all
+     *                      - "none" - no handling at all
      *                      This setting applies to all uncaught exceptions that are not a ShopgateLibraryException.
      */
     public function setExternalExceptionHandling($value);

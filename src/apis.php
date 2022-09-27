@@ -243,7 +243,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
                 ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED
             ) . ': "' . $sge->getCode() . ' - ' . $sge->getMessage() . '"';
         } catch (Exception $e) {
-            if ($this->config->getExternalExceptionHandling() === 'ignore') {
+            if ($this->config->getExternalExceptionHandling() === ShopgateConfig::EXTERNAL_EXCEPTION_HANDLING_NONE) {
                 throw $e;
             }
 
@@ -2953,7 +2953,7 @@ interface ShopgatePluginApiInterface
      *
      * @return bool false if an error occurred, otherwise true.
      *
-     * @throws Exception only if ShopgateConfig::getExternalExceptionHandling() returns "log" or "ignore"
+     * @throws Exception only if ShopgateConfig::getExternalExceptionHandling() returns "log" or "none"
      */
     public function handleRequest(array $data = array());
 
