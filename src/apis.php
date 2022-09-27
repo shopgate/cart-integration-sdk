@@ -264,7 +264,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
         $this->logApiError($errortext, $stackTrace);
 
         // if external exception handling is set to logging only, let the original exception bubble up
-        if (!empty($e) && $this->config->getExternalExceptionHandling() === 'log') {
+        if (!empty($e) && $this->config->getExternalExceptionHandling() === ShopgateConfig::EXTERNAL_EXCEPTION_HANDLING_LOG) {
             throw $e;
         }
 
