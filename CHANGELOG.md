@@ -745,7 +745,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - added changelog.txt
 
 [Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.90...HEAD
-[2.9.89]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.89...2.9.90
+[2.9.90]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.89...2.9.90
 [2.9.89]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.88...2.9.89
 [2.9.88]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.87...2.9.88
 [2.9.87]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.86...2.9.87
