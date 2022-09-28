@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [2.9.90]
 ### Added
 - class `ShopgateExternalOrderExternalCoupon`, representing external coupons in the [get_orders documentation](http://developers.shopgate.com/plugin_api/orders/get_orders.html)
 - configuration setting `external_exception_handling` with possible values `catch` (default), `log` or `none` [^external_exception_handling-values]
@@ -742,7 +744,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - fixed error in use of old configuration
 - added changelog.txt
 
-[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.89...HEAD
+[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.90...HEAD
+[2.9.89]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.89...2.9.90
 [2.9.89]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.88...2.9.89
 [2.9.88]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.87...2.9.88
 [2.9.87]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.86...2.9.87
