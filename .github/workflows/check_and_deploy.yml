@@ -47,6 +47,9 @@ jobs:
     runs-on: ubuntu-20.04
     if: startsWith(github.ref, 'refs/tags/') # only tags
     steps:
+      - name: Get tag name
+        id: set-tag
+        run: echo "TAG_NAME=${GITHUB_REF:10}" >> $GITHUB_OUTPUT
       - name: Check out repository code
         uses: actions/checkout@v3
       - name: Install PHP
@@ -61,8 +64,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          name: Shopgate Cart Integration SDK version ${{ github.ref }}
+          tag_name: ${{ steps.set-tag.outputs.TAG_NAME }}
+          name: Shopgate Cart Integration SDK version ${{ steps.set-tag.outputs.TAG_NAME }}
           draft: true
           prerelease: true
           fail_on_unmatched_files: true
