@@ -55,24 +55,18 @@ jobs:
           php-version: 7.2
       - name: Build ZIP
         run: ./release/build_release_package.sh
-      - name: Create GitHub release
+      - name: Release & upload
         id: create_release
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Shopgate Cart Integration SDK version ${{ github.ref }}
+          name: Shopgate Cart Integration SDK version ${{ github.ref }}
           draft: true
-      - name: Upload ZIP to GitHub release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./shopgate-cart-integration-sdk.zip
-          asset_name: shopgate-cart-integration-sdk.zip
-          asset_content_type: application/zip
+          prerelease: true
+          fail_on_unmatched_files: true
+          files: ./shopgate-cart-integration-sdk.zip
 
   notify-release-success:
     name: Notify developers of new release
