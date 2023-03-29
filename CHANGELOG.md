@@ -5,8 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+- support for gender selection "d" (diverse) in get_customer, register_customer, check_cart, get_orders, add_order and update_order
 
-## [2.9.90]
+## [2.9.90] - 2022-09-28
 ### Added
 - class `ShopgateExternalOrderExternalCoupon`, representing external coupons in the [get_orders documentation](http://developers.shopgate.com/plugin_api/orders/get_orders.html)
 - configuration setting `external_exception_handling` with possible values `catch` (default), `log` or `none` [^external_exception_handling-values]
