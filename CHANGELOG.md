@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-## [2.9.91] - 2023-04-03
+## [2.9.91] - 2023-04-04
 ### Added
 - support for gender selection "d" (diverse) in get_customer, register_customer, check_cart, get_orders, add_order and update_order
 
