@@ -23,6 +23,7 @@ class ShopgateCustomer extends ShopgateContainer
 {
     const MALE   = "m";
     const FEMALE = "f";
+    const DIVERSE = "d";
 
     protected $registration_date;
 
@@ -173,15 +174,16 @@ class ShopgateCustomer extends ShopgateContainer
     }
 
     /**
-     * @param string $value <ul><li>"m" = Male</li><li>"f" = Female</li></ul>
+     * @param string|null $value
      */
     public function setGender($value)
     {
         if (empty($value)) {
+            $this->gender = null;
             return;
         }
 
-        if (($value != self::MALE) && ($value != self::FEMALE)) {
+        if (($value != self::MALE) && ($value != self::FEMALE) && ($value != self::DIVERSE)) {
             $this->gender = null;
         } else {
             $this->gender = $value;
@@ -351,7 +353,7 @@ class ShopgateCustomer extends ShopgateContainer
     }
 
     /**
-     * @return string <ul><li>"m" = Male</li><li>"f" = Female</li></ul>
+     * @return string|null
      */
     public function getGender()
     {
@@ -495,6 +497,7 @@ class ShopgateAddress extends ShopgateContainer
 {
     const MALE     = "m";
     const FEMALE   = "f";
+    const DIVERSE  = "d";
     const INVOICE  = 0x01;
     const DELIVERY = 0x10;
     const BOTH     = 0x11;
@@ -606,15 +609,16 @@ class ShopgateAddress extends ShopgateContainer
     }
 
     /**
-     * @param string $value <ul><li>"m" = Male</li><li>"f" = Female</li></ul>
+     * @param string|null $value
      */
     public function setGender($value = null)
     {
         if (empty($value)) {
+            $this->gender = null;
             return;
         }
 
-        if (($value != self::MALE) && ($value != self::FEMALE)) {
+        if (($value != self::MALE) && ($value != self::FEMALE) && ($value != self::DIVERSE)) {
             $this->gender = null;
         } else {
             $this->gender = $value;
@@ -793,7 +797,7 @@ class ShopgateAddress extends ShopgateContainer
     }
 
     /**
-     * @return string <ul><li>"m" = Male</li><li>"f" = Female</li></ul>
+     * @return string|null
      */
     public function getGender()
     {

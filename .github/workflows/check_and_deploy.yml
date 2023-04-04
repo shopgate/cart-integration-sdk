@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -14,11 +14,7 @@ jobs:
       - name: Install dependencies
         run: composer install
       - name: Audit
-        run: |
-          curl -L https://github.com/fabpot/local-php-security-checker/releases/download/v1.0.0/local-php-security-checker_1.0.0_linux_amd64 -o php-dependency-checker
-          chmod +x ./php-dependency-checker
-          ./php-dependency-checker
-          rm php-dependency-checker
+        run: composer audit
       - name: Code Style
         run: composer check
 
@@ -31,7 +27,7 @@ jobs:
         php-versions: ['5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0', '8.1']
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -47,32 +43,29 @@ jobs:
     runs-on: ubuntu-20.04
     if: startsWith(github.ref, 'refs/tags/') # only tags
     steps:
+      - name: Get tag name
+        id: set-tag
+        run: echo "TAG_NAME=${GITHUB_REF:10}" >> $GITHUB_OUTPUT
       - name: Check out repository code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: 7.2
       - name: Build ZIP
         run: ./release/build_release_package.sh
-      - name: Create GitHub release
+      - name: Release & upload
         id: create_release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Shopgate Cart Integration SDK version ${{ github.ref }}
+          tag_name: ${{ steps.set-tag.outputs.TAG_NAME }}
+          name: Shopgate Cart Integration SDK version ${{ steps.set-tag.outputs.TAG_NAME }}
           draft: true
-      - name: Upload ZIP to GitHub release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./shopgate-cart-integration-sdk.zip
-          asset_name: shopgate-cart-integration-sdk.zip
-          asset_content_type: application/zip
+          prerelease: true
+          fail_on_unmatched_files: true
+          files: ./shopgate-cart-integration-sdk.zip
 
   notify-release-success:
     name: Notify developers of new release
@@ -84,7 +77,7 @@ jobs:
     steps:
       - name: Get tag name
         id: set-tag
-        run: echo ::set-output name=TAG_NAME::${GITHUB_REF:10}
+        run: echo "TAG_NAME=${GITHUB_REF:10}" >> $GITHUB_OUTPUT
       - name: Notify on Slack
         uses: rtCamp/action-slack-notify@v2
         env:
@@ -104,7 +97,7 @@ jobs:
     steps:
       - name: Get tag name
         id: set-tag
-        run: echo ::set-output name=TAG_NAME::${GITHUB_REF:10}
+        run: echo "TAG_NAME=${GITHUB_REF:10}" >> $GITHUB_OUTPUT
       - name: Notify on Slack
         uses: rtCamp/action-slack-notify@v2
         env:

@@ -6,7 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-## [2.9.90]
+## [2.9.91] - 2023-04-04
+### Added
+- support for gender selection "d" (diverse) in get_customer, register_customer, check_cart, get_orders, add_order and update_order
+
+## [2.9.90] - 2022-09-28
 ### Added
 - class `ShopgateExternalOrderExternalCoupon`, representing external coupons in the [get_orders documentation](http://developers.shopgate.com/plugin_api/orders/get_orders.html)
 - configuration setting `external_exception_handling` with possible values `catch` (default), `log` or `none` [^external_exception_handling-values]
@@ -744,7 +748,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - fixed error in use of old configuration
 - added changelog.txt
 
-[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.90...HEAD
+[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.91...HEAD
+[2.9.91]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.90...2.9.91
 [2.9.90]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.89...2.9.90
 [2.9.89]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.88...2.9.89
 [2.9.88]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.87...2.9.88
