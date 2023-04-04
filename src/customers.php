@@ -179,6 +179,7 @@ class ShopgateCustomer extends ShopgateContainer
     public function setGender($value)
     {
         if (empty($value)) {
+            $this->gender = null;
             return;
         }
 
@@ -613,6 +614,7 @@ class ShopgateAddress extends ShopgateContainer
     public function setGender($value = null)
     {
         if (empty($value)) {
+            $this->gender = null;
             return;
         }
 
