@@ -33,11 +33,12 @@ abstract class ShopgatePluginApiResponse extends ShopgateObject
 
     protected $data;
 
-    public function __construct($traceId, $version = SHOPGATE_LIBRARY_VERSION, $pluginVersion = null)
+    public function __construct($traceId, $data = null, $version = SHOPGATE_LIBRARY_VERSION, $pluginVersion = null)
     {
         $this->error         = 0;
         $this->error_text    = null;
         $this->trace_id      = $traceId;
+        $this->data          = $this->recursiveToUtf8($data, ShopgateObject::$sourceEncodings);
         $this->version       = $version;
         $this->pluginVersion = (empty($pluginVersion) && defined(
                 'SHOPGATE_PLUGIN_VERSION'
@@ -56,6 +57,11 @@ abstract class ShopgatePluginApiResponse extends ShopgateObject
     {
         $this->error      = $code;
         $this->error_text = $message;
+    }
+
+    public function isError()
+    {
+        return $this->error !== 0;
     }
 
     public function setData($data)

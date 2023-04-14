@@ -55,12 +55,10 @@ class ShopgateMerchantApi extends ShopgateObject implements ShopgateMerchantApiI
     {
         $opt = array();
 
+        $pluginVersion = defined('SHOPGATE_PLUGIN_VERSION') ? SHOPGATE_PLUGIN_VERSION : 'called outside plugin';
+
         $opt[CURLOPT_HEADER]         = false;
-        $opt[CURLOPT_USERAGENT]      = 'ShopgatePlugin/' . (defined(
-            'SHOPGATE_PLUGIN_VERSION'
-        )
-                ? SHOPGATE_PLUGIN_VERSION
-                : 'called outside plugin');
+        $opt[CURLOPT_USERAGENT]      = 'ShopgatePlugin/' . $pluginVersion;
         $opt[CURLOPT_RETURNTRANSFER] = true;
         $opt[CURLOPT_SSL_VERIFYPEER] = true; // *always* verify peers, otherwise MITM attacks are trivial
         // Use value of CURL_SSLVERSION_TLSv1_2 for CURLOPT_SSLVERSION, because it is not available before PHP 5.5.19 / 5.6.3

@@ -21,6 +21,11 @@
 
 abstract class ShopgatePluginApiResponseExport extends ShopgatePluginApiResponse
 {
+    public function __construct($traceId, $version = SHOPGATE_LIBRARY_VERSION, $pluginVersion = null)
+    {
+        parent::__construct($traceId, null, $version, $pluginVersion);
+    }
+
     public function setData($data)
     {
         if (!file_exists($data) && !preg_match("/^php/", $data)) {

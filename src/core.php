@@ -811,7 +811,7 @@ class ShopgateBuilder
             $this->config->getApikey()
         );
         $pluginApi      = new ShopgatePluginApi(
-            $this->config, $spaAuthService, $merchantApi, $plugin, null,
+            $this->config, $spaAuthService, $merchantApi, $plugin,
             $this->buildStackTraceGenerator(), $this->logging
         );
 
@@ -1331,7 +1331,7 @@ abstract class ShopgateObject
 
             return $subject;
         } elseif (is_object($subject)) {
-            /** @var \stdClass $subject */
+            /** @var stdClass $subject */
             $objectVars = get_object_vars($subject);
             foreach ($objectVars as $property => $value) {
                 $subject->{$property} = $this->recursiveToUtf8($value, $sourceEncoding, $force, $useIconv);
@@ -1339,7 +1339,6 @@ abstract class ShopgateObject
 
             return $subject;
         } elseif (is_string($subject)) {
-            /** @var string $subject */
             return $this->stringToUtf8($subject, $sourceEncoding, $force, $useIconv);
         }
 
