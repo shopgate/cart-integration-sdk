@@ -1153,7 +1153,7 @@ abstract class ShopgateObject
     );
 
     /**
-     * get a instance of an Shopgate helper class depending on the committed name
+     * Get an instance of a Shopgate helper class depending on the committed name
      *
      * @param string $helperName defined by constants in this class(ShopgateObject)
      *
@@ -1718,9 +1718,11 @@ abstract class ShopgatePlugin extends ShopgateObject
     /**
      * Convenience method to call ShopgatePluginApi::handleRequest() from $this.
      *
-     * @param mixed[] $data The incoming request's parameters.
+     * @param array $data The incoming request's parameters.
      *
-     * @return bool false if an error occured, otherwise true.
+     * @return bool false if an error occurred, otherwise true.
+     *
+     * @throws Exception
      */
     final public function handleRequest($data = array())
     {

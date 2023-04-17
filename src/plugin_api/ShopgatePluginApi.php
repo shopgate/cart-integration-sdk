@@ -137,11 +137,12 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
 
         $this->setEnableErrorReporting();
 
-        $processId = function_exists('posix_getpid')
-            ? posix_getpid()
-            : (function_exists('getmypid')
-                ? getmypid()
-                : 0);
+        $processId = 0;
+        if (function_exists('posix_getpid')) {
+            $processId = posix_getpid();
+        } elseif (function_exists('getmypid')) {
+            $processId =  getmypid();
+        }
 
         // log incoming request
         $this->log(
@@ -261,7 +262,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
             $response->markError($error, $errorText);
         }
 
-        if (empty($response)) {
+        if (!($response instanceof ShopgatePluginApiResponse)) {
             // Just a meaningful error message for a programming error where one of the "action functions" doesn't return a response object.
             trigger_error('No response object defined. This should _never_ happen.', E_USER_ERROR);
         }

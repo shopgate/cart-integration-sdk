@@ -48,7 +48,7 @@ abstract class ShopgatePluginApiResponse extends ShopgateObject
     }
 
     /**
-     * Marks the response as error.
+     * Marks the response as error with given code & message.
      *
      * @param int $code
      * @param string $message
