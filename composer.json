@@ -39,7 +39,6 @@
       "src/plugin_api/response/ShopgatePluginApiResponseAppJson.php",
       "src/plugin_api/response/ShopgatePluginApiResponseTextPlain.php",
       "src/plugin_api/response/ShopgatePluginApiResponseExport.php",
-      "src/plugin_api/response/ShopgatePluginApiResponseAppGzipExport.php",
       "src/plugin_api/response/ShopgatePluginApiResponseAppJsonExport.php",
       "src/plugin_api/response/ShopgatePluginApiResponseAppXmlExport.php",
       "src/plugin_api/response/ShopgatePluginApiResponseTextCsvExport.php",

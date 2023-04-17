@@ -48,7 +48,7 @@ class ShopgatePluginApiTest extends ShopgateTestCase
     /** @var \ShopgatePlugin|\PHPUnit_Framework_MockObject_MockObject */
     private $shopgatePluginMock;
 
-    public function setUp()
+    public function set_up()
     {
         $this->shopgateConfigMock =
             $this->getMockBuilder('\ShopgateConfigInterface')->getMockForAbstractClass();
@@ -80,6 +80,8 @@ class ShopgatePluginApiTest extends ShopgateTestCase
      * @param array  $cronJobs
      *
      * @dataProvider provideUnsupportedCronJobs
+     *
+     * @runInSeparateProcess
      */
     public function testHandleRequestMethodCronThrowsUnsupportedJobsException($expectedErrorText, array $cronJobs)
     {
@@ -144,6 +146,8 @@ class ShopgatePluginApiTest extends ShopgateTestCase
      * @param array $cronJobs
      *
      * @dataProvider provideSupportedCronJobs
+     *
+     * @runInSeparateProcess
      */
     public function testHandleRequestMethodCron($expectedNumberOfCronCalls, array $cronJobs)
     {

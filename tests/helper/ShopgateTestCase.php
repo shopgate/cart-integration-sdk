@@ -22,7 +22,9 @@
 
 namespace shopgate\cart_integration_sdk\tests\helper;
 
-class ShopgateTestCase extends \PHPUnit_Framework_TestCase
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+
+class ShopgateTestCase extends TestCase
 {
     /**
      * @param mixed  $object
