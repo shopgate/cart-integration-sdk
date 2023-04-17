@@ -21,9 +21,10 @@
 
 class ShopgatePluginApiResponseAppJsonExport extends ShopgatePluginApiResponseExport
 {
-    protected function getHeaders()
+    public function getHeaders()
     {
         return array(
+            'HTTP/1.0 200 OK',
             'Content-Type: application/json',
             'Content-Length: ' . filesize($this->data),
             'Content-Disposition: attachment; filename="' . basename($this->data) . '"',

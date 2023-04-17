@@ -270,10 +270,20 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
         if (empty($this->params['error_reporting']) && ob_get_contents()) {
             ob_clean();
         }
-        $response->send();
 
-        // return true or false
-        return empty($error);
+        if (!$this->config->getExternalResponseHandling()) {
+            $response->send();
+
+            // Keep the "old" behavior of exiting after flushing some response types. It used to help with invalid XML
+            // in some cases.
+            if ($response instanceof ShopgatePluginApiResponseTextPlain || $response instanceof ShopgatePluginApiResponseExport) {
+                exit;
+            } else {
+                return !$response->isError();
+            }
+        }
+
+        return $response;
     }
 
     ######################################################################

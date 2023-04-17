@@ -21,12 +21,26 @@
 
 class ShopgatePluginApiResponseTextPlain extends ShopgatePluginApiResponse
 {
+    public function setData($data)
+    {
+        $this->data = $this->stringToUtf8($data, ShopgateObject::$sourceEncodings);
+    }
+
+    public function getHeaders()
+    {
+        return array(
+            'HTTP/1.0 200 OK',
+            'Content-Type: text/plain; charset=UTF-8',
+            'Content-Length: ' . strlen($this->getBody())
+        );
+    }
+    public function getBody()
+    {
+        return $this->data;
+    }
+
     public function send()
     {
-        header('HTTP/1.0 200 OK');
-        header('Content-Type: text/plain; charset=UTF-8');
-        header('Content-Length: ' . strlen($this->data));
         echo $this->data;
-        exit;
     }
 }

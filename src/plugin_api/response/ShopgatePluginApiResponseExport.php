@@ -21,11 +21,6 @@
 
 abstract class ShopgatePluginApiResponseExport extends ShopgatePluginApiResponse
 {
-    public function __construct($traceId, $version = SHOPGATE_LIBRARY_VERSION, $pluginVersion = null)
-    {
-        parent::__construct($traceId, null, $version, $pluginVersion);
-    }
-
     public function setData($data)
     {
         if (!file_exists($data) && !preg_match("/^php/", $data)) {
@@ -35,10 +30,26 @@ abstract class ShopgatePluginApiResponseExport extends ShopgatePluginApiResponse
         $this->data = $data;
     }
 
+    public function isStream()
+    {
+        return preg_match("/^php/", $this->data);
+    }
+
+    /**
+     * Returns the path to the export file or null if the export is streamed.
+     *
+     * @return string|null
+     */
+    public function getBody()
+    {
+        return $this->isStream() ? null : $this->data;
+    }
+
     public function send()
     {
-        if (preg_match("/^php/", $this->data)) { // don't output files when the "file" is a stream
-            exit;
+        // streams (php://...) are already constantly putting out their content, nothing to do here
+        if ($this->isStream()) {
+            return;
         }
 
         $fp = @fopen($this->data, 'r');
@@ -51,7 +62,6 @@ abstract class ShopgatePluginApiResponseExport extends ShopgatePluginApiResponse
         }
 
         // output headers ...
-        header('HTTP/1.0 200 OK');
         $headers = $this->getHeaders();
         foreach ($headers as $header) {
             header($header);
@@ -64,13 +74,5 @@ abstract class ShopgatePluginApiResponseExport extends ShopgatePluginApiResponse
 
         // clean up and leave
         fclose($fp);
-        exit;
     }
-
-    /**
-     * Returns all except the "200 OK" HTTP headers to send before outputting the file.
-     *
-     * @return string[]
-     */
-    abstract protected function getHeaders();
 }

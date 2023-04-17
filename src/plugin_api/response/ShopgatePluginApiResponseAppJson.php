@@ -21,8 +21,38 @@
 
 class ShopgatePluginApiResponseAppJson extends ShopgatePluginApiResponse
 {
-    public function send()
+    /**
+     * @var string|null
+     */
+    protected $bodyCache;
+
+    public function markError($code, $message)
     {
+        $this->bodyCache = null;
+        parent::markError($code, $message);
+    }
+
+    public function setData($data)
+    {
+        $this->bodyCache = null;
+        $this->data = $this->recursiveToUtf8($data, ShopgateObject::$sourceEncodings);
+    }
+
+    public function getHeaders()
+    {
+        return array(
+            'HTTP/1.0 200 OK',
+            'Content-Type: application/json',
+            'Content-Length: ' . strlen($this->getBody())
+        );
+    }
+
+    public function getBody()
+    {
+        if (!empty($this->bodyCache)) {
+            return $this->bodyCache;
+        }
+
         $data                             = array();
         $data['error']                    = $this->error;
         $data['error_text']               = $this->error_text;
@@ -33,12 +63,19 @@ class ShopgatePluginApiResponseAppJson extends ShopgatePluginApiResponse
             $data['plugin_version'] = $this->pluginVersion;
         }
 
-        $this->data      = array_merge($data, $this->data);
-        $jsonEncodedData = $this->jsonEncode($this->data);
+        $this->bodyCache = $this
+            ->getHelper(self::HELPER_DATASTRUCTURE)
+            ->jsonEncode(array_merge($data, $this->data));
 
-        header("HTTP/1.0 200 OK");
-        header("Content-Type: application/json");
-        header('Content-Length: ' . strlen($jsonEncodedData));
-        echo $jsonEncodedData;
+        return $this->bodyCache;
+    }
+
+    public function send()
+    {
+        foreach ($this->getHeaders() as $header) {
+            header($header);
+        }
+
+        echo $this->getBody();
     }
 }

@@ -64,10 +64,48 @@ abstract class ShopgatePluginApiResponse extends ShopgateObject
         return $this->error !== 0;
     }
 
-    public function setData($data)
-    {
-        $this->data = $this->recursiveToUtf8($data, ShopgateObject::$sourceEncodings);
-    }
+    /**
+     * Set the response data.
+     *
+     * Type may depend on the actual implementation.
+     *
+     * Current classes provided by the SDK will for example have:
+     * - a string for plain text responses
+     * - an object or array for JSON responses
+     * - a file path on larger response bodies like the ones generated in catalog exports
+     *
+     * @param mixed $data
+     *
+     * @throws ShopgateLibraryException
+     */
+    abstract public function setData($data);
 
+    /**
+     * A list of headers that would be sent by the send() method.
+     *
+     * @return string[]
+     *
+     * @throws ShopgateLibraryException
+     */
+    abstract public function getHeaders();
+
+    /**
+     * Get the body that would be sent by the send() method if applicable.
+     *
+     * This may return null if the body is streamed or if the response doesn't have a body.
+     *
+     * @return string|null
+     *
+     * @throws ShopgateLibraryException
+     */
+    abstract public function getBody();
+
+    /**
+     * Sends headers and flushes the body to stdout if applicable.
+     *
+     * This may do nothing if the response is streamed.
+     *
+     * @throws ShopgateLibraryException
+     */
     abstract public function send();
 }
