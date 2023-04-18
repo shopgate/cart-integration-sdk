@@ -34,13 +34,18 @@ interface ShopgatePluginApiInterface
      * Inspects an incoming request, performs the requested actions, prepares and prints out the response to the
      * requesting entity.
      *
+     * Default behavior (ShopgateConfig::getExternalResponseHandling() == false):
      * Note that the method usually returns true or false on completion, depending on the success of the operation.
      * However, some actions such as the get_*_csv actions, might stop the script after execution to prevent invalid
      * data being appended to the output.
      *
+     * Custom response handling (ShopgateConfig::getExternalResponseHandling() != false):
+     * The response object corresponding to the API request and error handling will be returned. There may be content
+     * flushed to stdout in case of streams.
+     *
      * @param array $data The incoming request's parameters.
      *
-     * @return bool false if an error occurred, otherwise true.
+     * @return bool|ShopgatePluginApiResponse see description above
      *
      * @throws Exception only if ShopgateConfig::getExternalExceptionHandling() returns "log" or "none"
      */

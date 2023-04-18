@@ -275,7 +275,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
             $response->send();
 
             // Keep the "old" behavior of exiting after flushing some response types. It used to help with invalid XML
-            // in some cases.
+            // in some cases. If not exiting, true or false was returned, depending on whether on error occurred or not.
             if ($response instanceof ShopgatePluginApiResponseTextPlain || $response instanceof ShopgatePluginApiResponseExport) {
                 exit;
             } else {
