@@ -48,6 +48,9 @@ class ShopgatePluginApiTest extends ShopgateTestCase
         ShopgatePluginApi::JOB_SET_SHIPPING_COMPLETED,
     );
 
+    /** @var string */
+    private $tmpCategoriesXmlFilePath;
+
     /** @var ShopgatePluginApi $subjectUnderTest */
     private $subjectUnderTest;
 
@@ -62,6 +65,8 @@ class ShopgatePluginApiTest extends ShopgateTestCase
 
     public function set_up()
     {
+        $this->tmpCategoriesXmlFilePath = '/tmp/shopgate_categories.xml';
+
         $this->shopgateConfigMock =
             $this->getMockBuilder('\ShopgateConfigInterface')->getMockForAbstractClass();
         $this->shopgateConfigMock->method('getCronJobWhiteList')->willReturn(self::$cronJobWhiteList);
@@ -91,6 +96,13 @@ class ShopgatePluginApiTest extends ShopgateTestCase
             $shopgateMerchantApiMock,
             $this->shopgatePluginMock
         );
+    }
+
+    public function tear_down()
+    {
+        if (file_exists($this->tmpCategoriesXmlFilePath)) {
+            unlink($this->tmpCategoriesXmlFilePath);
+        }
     }
 
     /**
@@ -160,15 +172,15 @@ class ShopgatePluginApiTest extends ShopgateTestCase
                     'customer_language' => 'en_US'
                 ),
             ),
-            'get_categories to file /tmp/shopgate_categories.xml' => array(
+            "get_categories to file {$this->tmpCategoriesXmlFilePath}" => array(
                 'expectedOutputBuffer' => '',
-                'expectedResponse' => new ShopgatePluginApiResponseAppXmlExport($traceId, '/tmp/shopgate_categories.xml'),
+                'expectedResponse' => new ShopgatePluginApiResponseAppXmlExport($traceId, $this->tmpCategoriesXmlFilePath),
                 'action' => 'get_categories',
                 'parameters' => array(
                     'limit' => 100,
                     'offset' => 5,
                 ),
-                'filePath' => '/tmp/shopgate_categories.xml'
+                'filePath' => $this->tmpCategoriesXmlFilePath
             ),
             'get_categories to file php://output' => array(
                 'expectedOutputBuffer' => '<categories xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://files.shopgate.com/xml/xsd/catalog/categories.xsd"><category uid="10" is_active="1" is_anchor="0"><name><![CDATA[example]]></name><deeplink/></category></categories>',
