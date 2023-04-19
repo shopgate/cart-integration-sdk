@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+**WARNING** This release may have breaking changes if classes `ShopgatePluginApi` or any of the `ShopgatePluginApiResponse`
+classes are used directly. The regular "SDK way" of writing a plugin, as shown in the examples, remains unaffected.
+
+**NOTE** Enabling `external_response_handling` changes the way `ShopgatePlugin::handleRequest()` works:
+* `handleRequest()` will return a `ShopgatePluginApiResponse` object
+* no headers will be sent, no content flushed, except for export file paths that are PHP I/O streams (`php://output`)
+* use `ShopgatePluginApiResponse::getHeaders()` and `::getBody()` to get response content
+* use `ShopgatePluginApiResponse::send()` to send headers and flush response data
+* previously, some response implementations stopped script execution after flushing; this has been removed
+
+### Added
+- configuration setting `external_response_handling` (bool)
+- `ShopgatePluginApiResponse::getHeaders()` and `::getBody()`
+- `ShopgatePluginApiResponseExport::isStream()` - true when the file path is an I/O stream
+
+### Changed
+- when the new setting is active, `ShopgatePlugin::handleRequest()` will return the `ShopgatePluginApiResponse` object
+- moved classes `ShopgatePluginApi`, `ShopgatePluginApiResponse*` and interface `ShopgatePluginApiInterface` out of
+  `src/apis.php` into separate files under `src/plugin_api`
+- integration tests are now also run on CI
+
+### Removed
+- the fifth argument (`ShopgatePluginApiResponse $response = null`) from `ShopgatePluginApi::__construct()`
+- stopping script execution on some response types after flushing
+
+### Fixed
+- PHP 8: deprecation warning on preg_replace() arguments
+- PHP 8: error when calling filesize() on an i/o stream
 
 ## [2.9.91] - 2023-04-04
 ### Added
