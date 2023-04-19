@@ -23,11 +23,16 @@ class ShopgatePluginApiResponseAppXmlExport extends ShopgatePluginApiResponseExp
 {
     public function getHeaders()
     {
-        return array(
+        $headers = array(
             'HTTP/1.0 200 OK',
             'Content-Type: application/xml',
-            'Content-Length: ' . filesize($this->data),
-            'Content-Disposition: attachment; filename="' . basename($this->data) . '"',
         );
+
+        if (!$this->isStream()) {
+            $headers[] = 'Content-Length: ' . filesize($this->data);
+            $headers[] = 'Content-Disposition: attachment; filename="' . basename($this->data) . '"';
+        }
+
+        return $headers;
     }
 }
