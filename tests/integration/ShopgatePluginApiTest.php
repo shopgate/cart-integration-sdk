@@ -136,8 +136,8 @@ class ShopgatePluginApiTest extends ShopgateTestCase
         ob_end_clean();
 
         $this->assertEquals($expectedOutputBuffer, $outputBuffer);
-        $this->assertEquals($expectedResponse->getHeaders(), $response->getHeaders());
         $this->assertEquals($expectedResponse->getBody(), $response->getBody());
+        $this->assertEquals($expectedResponse->getHeaders(), $response->getHeaders());
         $this->assertEquals($expectedResponse->isError(), $response->isError());
 
         if ($response instanceof ShopgatePluginApiResponseAppXmlExport) {
