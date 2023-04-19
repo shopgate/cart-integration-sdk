@@ -267,6 +267,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
             trigger_error('No response object defined. This should _never_ happen.', E_USER_ERROR);
         }
 
+        // filter out any output that would mess up our response, unless error reporting is active
         if (empty($this->params['error_reporting']) && ob_get_contents()) {
             ob_clean();
         }

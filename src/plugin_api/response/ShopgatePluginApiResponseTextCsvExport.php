@@ -23,11 +23,16 @@ class ShopgatePluginApiResponseTextCsvExport extends ShopgatePluginApiResponseEx
 {
     public function getHeaders()
     {
-        return array(
+        $headers = array(
             'HTTP/1.0 200 OK',
-            'Content-Type: text/csv',
-            'Content-Length: ' . filesize($this->data),
-            'Content-Disposition: attachment; filename="' . basename($this->data) . '"',
+            'Content-Type: text/csv'
         );
+
+        if (!$this->isStream()) {
+            $headers[] = 'Content-Length: ' . filesize($this->data);
+            $headers[] = 'Content-Disposition: attachment; filename="' . basename($this->data) . '"';
+        }
+
+        return $headers;
     }
 }
