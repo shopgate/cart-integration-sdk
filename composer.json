@@ -17,9 +17,11 @@
   },
   "require": {
     "php": ">=5.3",
+    "ext-simplexml": "*",
     "laminas/laminas-json": "2.* || 3.*"
   },
   "require-dev": {
+    "ext-json": "*",
     "friendsofphp/php-cs-fixer": "^2.18",
     "phpunit/phpunit": ">= 5",
     "yoast/phpunit-polyfills": "^1.0"
