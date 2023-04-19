@@ -160,15 +160,15 @@ class ShopgatePluginApiTest extends ShopgateTestCase
                     'customer_language' => 'en_US'
                 ),
             ),
-            'get_categories to file /dev/null' => array(
+            'get_categories to file /tmp/shopgate_categories.xml' => array(
                 'expectedOutputBuffer' => '',
-                'expectedResponse' => new ShopgatePluginApiResponseAppXmlExport($traceId, '/dev/null'),
+                'expectedResponse' => new ShopgatePluginApiResponseAppXmlExport($traceId, '/tmp/shopgate_categories.xml'),
                 'action' => 'get_categories',
                 'parameters' => array(
                     'limit' => 100,
                     'offset' => 5,
                 ),
-                'filePath' => '/dev/null'
+                'filePath' => '/tmp/shopgate_categories.xml'
             ),
             'get_categories to file php://output' => array(
                 'expectedOutputBuffer' => '<categories xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://files.shopgate.com/xml/xsd/catalog/categories.xsd"><category uid="10" is_active="1" is_anchor="0"><name><![CDATA[example]]></name><deeplink/></category></categories>',
