@@ -51,7 +51,9 @@ class Shopgate_Model_XmlResultObject extends SimpleXMLElement
             return $newChild;
         }
 
-        $value = preg_replace(self::PATTERN_INVALID_CHARS, '', $value);
+        if ($value !== null) {
+            $value = preg_replace(self::PATTERN_INVALID_CHARS, '', $value);
+        }
         if ($newChild !== null && $value != '') {
             $node  = dom_import_simplexml($newChild);
             $cData = $node->ownerDocument->createCDATASection($value);

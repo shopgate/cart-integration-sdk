@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright Shopgate Inc.
  *
@@ -20,25 +19,28 @@
  * @license   http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  */
 
-namespace shopgate\cart_integration_sdk\tests\helper;
-
-use Yoast\PHPUnitPolyfills\TestCases\TestCase;
-
-class ShopgateTestCase extends TestCase
+class ShopgatePluginApiResponseTextPlain extends ShopgatePluginApiResponse
 {
-    /**
-     * @param mixed  $object
-     * @param string $methodName
-     * @param array  $parameters
-     *
-     * @return mixed
-     */
-    public function invokeNonPublicMethod($object, $methodName, array $parameters = array())
+    public function setData($data)
     {
-        $reflection = new \ReflectionClass(get_class($object));
-        $method     = $reflection->getMethod($methodName);
-        $method->setAccessible(true);
+        $this->data = $this->stringToUtf8($data, ShopgateObject::$sourceEncodings);
+    }
 
-        return $method->invokeArgs($object, $parameters);
+    public function getHeaders()
+    {
+        return array(
+            'HTTP/1.0 200 OK',
+            'Content-Type: text/plain; charset=UTF-8',
+            'Content-Length: ' . strlen($this->getBody())
+        );
+    }
+    public function getBody()
+    {
+        return $this->data;
+    }
+
+    public function send()
+    {
+        echo $this->data;
     }
 }

@@ -91,6 +91,12 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
      */
     protected $external_exception_handling;
 
+    /**
+     * @var bool true to return the response object from handleRequest() rather than flushing to stdout and, depending
+     *           on response type, exiting. Defaults to false.
+     */
+    protected $external_response_handling;
+
     ##################################################################################
     ### basic shop information necessary for use of the APIs, mobile redirect etc. ###
     ##################################################################################
@@ -548,6 +554,7 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
         $this->plugin_name                    = 'not set';
         $this->use_custom_error_handler       = false;
         $this->external_exception_handling    = 'catch';
+        $this->external_response_handling     = false;
         $this->alias                          = 'my-shop';
         $this->cname                          = '';
         $this->server                         = 'live';
@@ -1143,6 +1150,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
         return $this->external_exception_handling;
     }
 
+    public function getExternalResponseHandling()
+    {
+        return $this->external_response_handling;
+    }
+
     //	public function getSpaAuthServiceClassName() {
     //		return $this->spa_auth_service_class_name;
     //	}
@@ -1651,6 +1663,11 @@ class ShopgateConfig extends ShopgateContainer implements ShopgateConfigInterfac
     public function setExternalExceptionHandling($value)
     {
         $this->external_exception_handling = $value;
+    }
+
+    public function setExternalResponseHandling($value)
+    {
+        $this->external_response_handling = $value;
     }
 
     //	public function setSpaAuthServiceClassName($value) {
@@ -2963,6 +2980,12 @@ interface ShopgateConfigInterface
      */
     public function getExternalExceptionHandling();
 
+    /**
+     * @return bool true to return the response object from handleRequest() rather than flushing to stdout and,
+     *              depending on response type, exiting. Defaults to false.
+     */
+    public function getExternalResponseHandling();
+
     //	/**
     //	 * @return string $value Class name for the PluginAPI auth service
     //	 */
@@ -3474,6 +3497,12 @@ interface ShopgateConfigInterface
      *                      This setting applies to all uncaught exceptions that are not a ShopgateLibraryException.
      */
     public function setExternalExceptionHandling($value);
+
+    /**
+     * @param $value bool true to return the response object from handleRequest() rather than flushing to stdout and,
+     *                    depending on response type, exiting. Defaults to false.
+     */
+    public function setExternalResponseHandling($value);
 
     //	/**
     //	 * @param string $value Class name for the PluginAPI authentication service

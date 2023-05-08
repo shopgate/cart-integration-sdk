@@ -22,7 +22,7 @@
 ###################################################################################
 # define constants
 ###################################################################################
-define("SHOPGATE_LIBRARY_VERSION", "2.9.91");
+define("SHOPGATE_LIBRARY_VERSION", "2.10.1-beta.2");
 define('SHOPGATE_LIBRARY_ENCODING', 'UTF-8');
 define('SHOPGATE_BASE_DIR', realpath(dirname(__FILE__) . '/../'));
 
@@ -811,7 +811,7 @@ class ShopgateBuilder
             $this->config->getApikey()
         );
         $pluginApi      = new ShopgatePluginApi(
-            $this->config, $spaAuthService, $merchantApi, $plugin, null,
+            $this->config, $spaAuthService, $merchantApi, $plugin,
             $this->buildStackTraceGenerator(), $this->logging
         );
 
@@ -1153,7 +1153,7 @@ abstract class ShopgateObject
     );
 
     /**
-     * get a instance of an Shopgate helper class depending on the committed name
+     * Get an instance of a Shopgate helper class depending on the committed name
      *
      * @param string $helperName defined by constants in this class(ShopgateObject)
      *
@@ -1331,7 +1331,7 @@ abstract class ShopgateObject
 
             return $subject;
         } elseif (is_object($subject)) {
-            /** @var \stdClass $subject */
+            /** @var stdClass $subject */
             $objectVars = get_object_vars($subject);
             foreach ($objectVars as $property => $value) {
                 $subject->{$property} = $this->recursiveToUtf8($value, $sourceEncoding, $force, $useIconv);
@@ -1339,7 +1339,6 @@ abstract class ShopgateObject
 
             return $subject;
         } elseif (is_string($subject)) {
-            /** @var string $subject */
             return $this->stringToUtf8($subject, $sourceEncoding, $force, $useIconv);
         }
 
@@ -1719,9 +1718,11 @@ abstract class ShopgatePlugin extends ShopgateObject
     /**
      * Convenience method to call ShopgatePluginApi::handleRequest() from $this.
      *
-     * @param mixed[] $data The incoming request's parameters.
+     * @param array $data The incoming request's parameters.
      *
-     * @return bool false if an error occured, otherwise true.
+     * @return bool false if an error occurred, otherwise true.
+     *
+     * @throws Exception
      */
     final public function handleRequest($data = array())
     {

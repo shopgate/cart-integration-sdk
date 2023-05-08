@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright Shopgate Inc.
  *
@@ -20,25 +19,20 @@
  * @license   http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  */
 
-namespace shopgate\cart_integration_sdk\tests\helper;
-
-use Yoast\PHPUnitPolyfills\TestCases\TestCase;
-
-class ShopgateTestCase extends TestCase
+class ShopgatePluginApiResponseAppXmlExport extends ShopgatePluginApiResponseExport
 {
-    /**
-     * @param mixed  $object
-     * @param string $methodName
-     * @param array  $parameters
-     *
-     * @return mixed
-     */
-    public function invokeNonPublicMethod($object, $methodName, array $parameters = array())
+    public function getHeaders()
     {
-        $reflection = new \ReflectionClass(get_class($object));
-        $method     = $reflection->getMethod($methodName);
-        $method->setAccessible(true);
+        $headers = array(
+            'HTTP/1.0 200 OK',
+            'Content-Type: application/xml',
+        );
 
-        return $method->invokeArgs($object, $parameters);
+        if (!$this->isStream()) {
+            $headers[] = 'Content-Length: ' . filesize($this->data);
+            $headers[] = 'Content-Disposition: attachment; filename="' . basename($this->data) . '"';
+        }
+
+        return $headers;
     }
 }
