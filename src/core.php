@@ -1720,7 +1720,7 @@ abstract class ShopgatePlugin extends ShopgateObject
      *
      * @param array $data The incoming request's parameters.
      *
-     * @return bool false if an error occurred, otherwise true.
+     * @return bool|ShopgatePluginApiResponse false if an error occurred, otherwise true.
      *
      * @throws Exception
      */
