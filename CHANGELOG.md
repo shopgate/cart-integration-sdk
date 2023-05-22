@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+## [2.10.1] - 2023-05-22
 **WARNING** This release may have breaking changes if classes `ShopgatePluginApi` or any of the `ShopgatePluginApiResponse`
 classes are used directly. The regular "SDK way" of writing a plugin, as shown in the examples, remains unaffected.
 
@@ -776,7 +777,8 @@ classes are used directly. The regular "SDK way" of writing a plugin, as shown i
 - fixed error in use of old configuration
 - added changelog.txt
 
-[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.91...HEAD
+[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.10.1...HEAD
+[2.10.1]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.91...2.10.1
 [2.9.91]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.90...2.9.91
 [2.9.90]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.89...2.9.90
 [2.9.89]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.88...2.9.89
