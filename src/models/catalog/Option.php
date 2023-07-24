@@ -24,8 +24,8 @@
  * @class Shopgate_Model_Catalog_Option
  * @see   http://developer.shopgate.com/file_formats/xml/products
  *
- * @method                setUid(int $value)
- * @method int|null       getUid()
+ * @method                setUid(string $value)
+ * @method string|null    getUid()
  *
  * @method                setLabel(string $value)
  * @method string|null    getLabel()

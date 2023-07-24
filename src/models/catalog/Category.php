@@ -24,8 +24,8 @@
  * @class Shopgate_Model_Catalog_Category
  * @see   http://developer.shopgate.com/file_formats/xml/categories
  *
- * @method                                      setUid(int $value)
- * @method int|null                             getUid()
+ * @method                                      setUid(string $value)
+ * @method string|null                          getUid()
  *
  * @method                                      setSortOrder(int $value)
  * @method int|null                             getSortOrder()
@@ -33,8 +33,8 @@
  * @method                                      setName(string $value)
  * @method string|null                          getName()
  *
- * @method                                      setParentUid(int $value)
- * @method int|null                             getParentUid()
+ * @method                                      setParentUid(string $value)
+ * @method string|null                          getParentUid()
  *
  * @method                                      setImage(Shopgate_Model_Media_Image $value)
  * @method Shopgate_Model_Media_Image|null      getImage()

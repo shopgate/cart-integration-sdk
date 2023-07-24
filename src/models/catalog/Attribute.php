@@ -24,11 +24,11 @@
  * @class Shopgate_Model_Catalog_Attribute
  * @see   http://developer.shopgate.com/file_formats/xml/products
  *
- * @method             setUid(int $value)
- * @method int|null    getUid()
+ * @method             setUid(string $value)
+ * @method string|null getUid()
  *
- * @method             setGroupUid(int $value)
- * @method int|null    getGroupUid()
+ * @method             setGroupUid(string $value)
+ * @method string|null getGroupUid()
  *
  * @method             setLabel(string $value)
  * @method string|null getLabel()

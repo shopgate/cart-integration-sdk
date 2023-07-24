@@ -25,8 +25,8 @@
  * @class Shopgate_Model_Media_Image
  * @see   http://developer.shopgate.com/file_formats/xml/products
  *
- * @method             setUid(int $value)
- * @method int|null    getUid()
+ * @method              setUid(string $value)
+ * @method string|null  getUid()
  *
  * @method              setSortOrder(int $value)
  * @method int|null     getSortOrder()

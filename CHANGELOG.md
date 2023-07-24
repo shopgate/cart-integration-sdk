@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Changed
+* all UID fields of models and fields referring to UID fields of other models are now type-hinted to strings in PHPDoc
+
 ## [2.10.1] - 2023-05-22
 **WARNING** This release may have breaking changes if classes `ShopgatePluginApi` or any of the `ShopgatePluginApiResponse`
 classes are used directly. The regular "SDK way" of writing a plugin, as shown in the examples, remains unaffected.
