@@ -1522,13 +1522,13 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
             $uid = fileowner($file);
             if (function_exists('posix_getpwuid')) {
                 $uinfo = posix_getpwuid($uid);
-                $uid   = $uinfo['name'];
+                $uid   = !empty($uinfo) ? $uinfo['name'] : null;
             }
 
             $gid = filegroup($file);
             if (function_exists('posix_getgrgid')) {
                 $ginfo = posix_getgrgid($gid);
-                $gid   = $ginfo['name'];
+                $gid   = !empty($ginfo) ? $ginfo['name'] : null;
             }
 
             $meta['owner']                  = $uid;
