@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [2.10.2] - 2023-10-16
+### Fixed
+* remove PHP notices from array access on a boolean in some cases when calling the `ping` action
+
 ### Changed
 * all UID fields of models and fields referring to UID fields of other models are now type-hinted to strings in PHPDoc
 
@@ -780,7 +785,8 @@ classes are used directly. The regular "SDK way" of writing a plugin, as shown i
 - fixed error in use of old configuration
 - added changelog.txt
 
-[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.10.1...HEAD
+[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.10.2...HEAD
+[2.10.2]: https://github.com/shopgate/cart-integration-sdk/compare/2.10.1...2.10.2
 [2.10.1]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.91...2.10.1
 [2.9.91]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.90...2.9.91
 [2.9.90]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.89...2.9.90
