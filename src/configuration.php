@@ -2670,7 +2670,7 @@ class ShopgateConfigOld extends ShopgateObject
         switch (strtolower($type)) {
             default:
                 $type = 'error';
-            // no break
+                // no break
             case "access":
             case "request":
             case "debug":

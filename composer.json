@@ -11,8 +11,8 @@
   ],
   "scripts": {
     "test": "phpunit",
-    "check": "php-cs-fixer fix --dry-run --verbose .",
-    "check&fix": "php-cs-fixer fix --verbose .",
+    "check": "php-cs-fixer fix --dry-run --diff --verbose .",
+    "check&fix": "php-cs-fixer fix --diff --verbose .",
     "check&test": ["@check", "@test"]
   },
   "require": {

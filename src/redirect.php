@@ -195,8 +195,10 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
         $this->buttonParent             = 'body';
         $this->buttonPrepend            = true;
 
-        $this->useSecureConnection = isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] === "on" || $_SERVER["HTTPS"] == "1") || $this->config->getAlwaysUseSsl(
-            );
+        $this->useSecureConnection =
+            isset($_SERVER["HTTPS"]) &&
+            ($_SERVER["HTTPS"] === "on" || $_SERVER["HTTPS"] == "1") ||
+            $this->config->getAlwaysUseSsl();
 
         // mobile header options
         $this->mobileHeaderTemplatePath = dirname(__FILE__) . '/../assets/mobile_header.html';

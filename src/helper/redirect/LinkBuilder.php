@@ -124,9 +124,9 @@ class Shopgate_Helper_Redirect_LinkBuilder implements Shopgate_Helper_Redirect_L
 
         return
             $url . (
-            $this->settingsManager->getRedirectableGetParameters()
-                ? $concat . $this->settingsManager->getRedirectableGetParameters()
-                : ''
+                $this->settingsManager->getRedirectableGetParameters()
+                    ? $concat . $this->settingsManager->getRedirectableGetParameters()
+                    : ''
             );
     }
 

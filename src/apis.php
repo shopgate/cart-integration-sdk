@@ -664,8 +664,7 @@ class ShopgateAuthenticationServiceOAuth extends ShopgateObject implements Shopg
     public function setup(ShopgateConfigInterface $config)
     {
         // needs to check if an old config is present without any access token
-        if ($config->getCustomerNumber() && $config->getShopNumber() && $config->getApikey(
-            ) && !$config->getOauthAccessToken()) {
+        if ($config->getCustomerNumber() && $config->getShopNumber() && $config->getApikey() && !$config->getOauthAccessToken()) {
             // needs to load the non-oauth-url since the new access token needs to be generated using the classic shopgate merchant api authentication
             $apiUrls                = $config->getApiUrls();
             $apiUrl                 = $config->getServer() == 'custom'

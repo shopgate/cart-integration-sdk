@@ -40,9 +40,7 @@ abstract class ShopgatePluginApiResponse extends ShopgateObject
         $this->trace_id      = $traceId;
         $this->data          = $this->recursiveToUtf8($data, ShopgateObject::$sourceEncodings);
         $this->version       = $version;
-        $this->pluginVersion = (empty($pluginVersion) && defined(
-                'SHOPGATE_PLUGIN_VERSION'
-            ))
+        $this->pluginVersion = (empty($pluginVersion) && defined('SHOPGATE_PLUGIN_VERSION'))
             ? SHOPGATE_PLUGIN_VERSION
             : $pluginVersion;
     }

@@ -114,8 +114,8 @@ class Shopgate_Helper_Logging_Strategy_DefaultLogging implements Shopgate_Helper
             default:
                 $type = self::LOGTYPE_ERROR;
 
-            // allowed types:
-            // no break
+                // allowed types:
+                // no break
             case self::LOGTYPE_ERROR:
             case self::LOGTYPE_ACCESS:
             case self::LOGTYPE_REQUEST:

@@ -217,7 +217,7 @@ class GeneratorDefaultTest extends TestCase
             ->method('get')
             ->withConsecutive($args1, $args2, $args3, $args4, $args5, $args6, $args7, $args8, $args9)
             ->willReturnOnConsecutiveCalls(
-            // for ShopgateLibraryException
+                // for ShopgateLibraryException
                 array('user' => 'herp@derp.com', 'pass' => 'herpiderp'), // ShopgatePluginMyCart::getCustomer()
                 array(),                                                 // ShopgatePluginApi::getCustomer()
                 array('data' => array()),                                // ShopgatePluginApi::handleRequest()

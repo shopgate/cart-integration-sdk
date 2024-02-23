@@ -582,8 +582,8 @@ class ShopgateMerchantApiException extends Exception
         }
 
         if (ShopgateLogger::getInstance()->log(
-                'SMA reports error: ' . $code . ' - ' . $additionalInformation
-            ) === false) {
+            'SMA reports error: ' . $code . ' - ' . $additionalInformation
+        ) === false) {
             $message .= ' (unable to log)';
         }
 
@@ -1526,13 +1526,9 @@ abstract class ShopgateObject
     {
         switch (strtoupper(trim(ShopgateLogger::getInstance()->getMemoryAnalyserLoggingSizeUnit()))) {
             case 'GB':
-                return (memory_get_usage() / (1024 * 1024 * 1024)) . " GB (real usage " . (memory_get_usage(
-                            true
-                        ) / (1024 * 1024 * 1024)) . " GB)";
+                return (memory_get_usage() / (1024 * 1024 * 1024)) . " GB (real usage " . (memory_get_usage(true) / (1024 * 1024 * 1024)) . " GB)";
             case 'MB':
-                return (memory_get_usage() / (1024 * 1024)) . " MB (real usage " . (memory_get_usage(
-                            true
-                        ) / (1024 * 1024)) . " MB)";
+                return (memory_get_usage() / (1024 * 1024)) . " MB (real usage " . (memory_get_usage(true) / (1024 * 1024)) . " MB)";
             case 'KB':
                 return (memory_get_usage() / 1024) . " KB (real usage " . (memory_get_usage(true) / 1024) . " KB)";
             default:
@@ -2503,9 +2499,9 @@ abstract class ShopgatePlugin extends ShopgateObject
         return 'http' . (!empty($_SERVER['HTTPS'])
                 ? 's'
                 : '') . '://' . trim(
-                $_SERVER['HTTP_HOST'],
-                '/'
-            ) . '/' . trim($_SERVER['SCRIPT_NAME'], '/');
+                    $_SERVER['HTTP_HOST'],
+                    '/'
+                ) . '/' . trim($_SERVER['SCRIPT_NAME'], '/');
     }
 
     /**
@@ -3306,7 +3302,7 @@ abstract class ShopgateContainer extends ShopgateObject
     {
         foreach ($whitelist as $acceptedField) {
             if ($obj->{$this->camelize('get_' . $acceptedField)}() != $obj2->{$this->camelize('get_' . $acceptedField)}(
-                )) {
+            )) {
                 return false;
             }
         }
@@ -3509,8 +3505,8 @@ class ShopgateContainerUtf8Visitor implements ShopgateContainerVisitor
             default:
                 $mode = self::MODE_DECODE;
 
-            // allowed modes
-            // no break
+                // allowed modes
+                // no break
             case self::MODE_ENCODE:
             case self::MODE_DECODE:
                 $this->mode = $mode;

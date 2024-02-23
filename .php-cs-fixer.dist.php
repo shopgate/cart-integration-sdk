@@ -18,8 +18,8 @@ $fixers = array(
     'method_argument_space' => false,
 );
 
-$config = new PhpCsFixer\Config();
-$finder = new PhpCsFixer\Finder();
+$config = new Config();
+$finder = new Finder();
 return $config
     ->setRiskyAllowed(true)
     ->setUsingCache(true)

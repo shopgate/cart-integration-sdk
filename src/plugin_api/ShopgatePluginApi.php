@@ -225,9 +225,9 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
             $errorText = $sge->getMessage();
         } catch (ShopgateMerchantApiException $sge) {
             $error     = ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED;
-            $errorText = ShopgateLibraryException::getMessageFor(
-                    ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED
-                ) . ': "' . $sge->getCode() . ' - ' . $sge->getMessage() . '"';
+            $errorText =
+                ShopgateLibraryException::getMessageFor(ShopgateLibraryException::MERCHANT_API_ERROR_RECEIVED) . ': "'
+                . $sge->getCode() . ' - ' . $sge->getMessage() . '"';
         } catch (Exception $e) {
             if ($this->config->getExternalExceptionHandling() === ShopgateConfig::EXTERNAL_EXCEPTION_HANDLING_NONE) {
                 throw $e;
@@ -1339,8 +1339,7 @@ class ShopgatePluginApi extends ShopgateObject implements ShopgatePluginApiInter
      */
     protected function receiveAuthorization()
     {
-        if ($this->config->getSmaAuthServiceClassName(
-            ) != ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_OAUTH) {
+        if ($this->config->getSmaAuthServiceClassName() != ShopgateConfigInterface::SHOPGATE_AUTH_SERVICE_CLASS_NAME_OAUTH) {
             throw new ShopgateLibraryException(
                 ShopgateLibraryException::PLUGIN_API_INVALID_ACTION,
                 '=> "receive_authorization" action can only be called for plugins with SMA-AuthService set to "OAuth" type',
