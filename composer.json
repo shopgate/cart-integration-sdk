@@ -11,8 +11,8 @@
   ],
   "scripts": {
     "test": "phpunit",
-    "check": "php-cs-fixer fix --config=.php-cs.dist --cache-file=.php-cs.cache --diff --dry-run --verbose .",
-    "check&fix": "php-cs-fixer fix --config=.php-cs.dist --cache-file=.php-cs.cache --diff --verbose .",
+    "check": "php-cs-fixer fix --dry-run --verbose .",
+    "check&fix": "php-cs-fixer fix --verbose .",
     "check&test": ["@check", "@test"]
   },
   "require": {
@@ -22,7 +22,7 @@
   },
   "require-dev": {
     "ext-json": "*",
-    "friendsofphp/php-cs-fixer": "^2.18",
+    "friendsofphp/php-cs-fixer": "^v3.49.0",
     "phpunit/phpunit": ">= 5",
     "yoast/phpunit-polyfills": "^1.0"
   },

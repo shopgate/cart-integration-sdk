@@ -8,6 +8,7 @@
 /.idea
 /vendor
 /.php-cs.cache
+/.php-cs-fixer.cache
 /temp/cache
 /temp/logs
 
@@ -15,3 +16,4 @@
 !temp/logs/index.php
 
 composer.lock
+.DS_Store
