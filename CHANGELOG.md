@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 ### Fixed
-* handle zero length file case in loadKeywordsFromFile function
+* handle zero length files properly in `ShopateMobileRedirect::loadKeywordsFromFile()`
 
 ## [2.10.2] - 2023-10-16
 ### Fixed

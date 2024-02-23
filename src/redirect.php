@@ -731,7 +731,7 @@ class ShopgateMobileRedirect extends ShopgateObject implements ShopgateMobileRed
         }
 
         $filesize = filesize($file);
-        $keywordsFromFile = $filesize > 0 ? explode("\n", @fread($cacheFile, $filesize)) : array();
+        $keywordsFromFile = $filesize > 0 ? explode("\n", @fread($cacheFile, $filesize)) : $defaultReturn;
         @fclose($cacheFile);
 
         /* @phpstan-ignore-next-line */
