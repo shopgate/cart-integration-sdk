@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Fixed
+* handle zero length file case in loadKeywordsFromFile function
 
 ## [2.10.2] - 2023-10-16
 ### Fixed
