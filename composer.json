@@ -22,7 +22,7 @@
   },
   "require-dev": {
     "ext-json": "*",
-    "friendsofphp/php-cs-fixer": "^v3.49.0",
+    "friendsofphp/php-cs-fixer": "^2.19.3 ||3.49.0",
     "phpunit/phpunit": ">= 5",
     "yoast/phpunit-polyfills": "^1.0"
   },
