@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-## [2.10.3]
+## [2.10.3] - 2024-02-23
 ### Fixed
 * handle zero length files properly in `ShopateMobileRedirect::loadKeywordsFromFile()`
 
