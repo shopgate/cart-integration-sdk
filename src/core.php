@@ -386,11 +386,11 @@ class ShopgateLibraryException extends Exception
 
         // in case of multiple errors the message should not have any other text attached to it
         if ($code == self::MULTIPLE_ERRORS) {
-            $message                          = $this->additionalInformation;
+            $message = $this->additionalInformation;
         }
 
         // Call default Exception class constructor
-        if (method_exists(get_parent_class(), 'getPrevious')) {
+        if (method_exists(get_parent_class($this), 'getPrevious')) {
             // The "previous" argument was introduced in PHP 5.3
             parent::__construct($message, $code, $previous);
         } else {
