@@ -1223,7 +1223,6 @@ abstract class ShopgateObject
 
     /**
      * Creates a JSON string from any passed value.
-     * Uses json_encode() if present, otherwise falls back to Laminas JSON encoder.
      *
      * @param mixed $value
      *
@@ -1243,7 +1242,6 @@ abstract class ShopgateObject
 
     /**
      * Creates a variable, array or object from any passed JSON string.
-     * Uses json_decode() if present, otherwise falls back to Laminas JSON decoder.
      *
      * @param string $json
      * @param bool   $assoc

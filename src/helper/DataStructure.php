@@ -93,7 +93,6 @@ class Shopgate_Helper_DataStructure
 
     /**
      * Creates a JSON string from any passed value.
-     * Uses json_encode() if present, otherwise falls back to Laminas JSON encoder.
      *
      * @param mixed $value
      *
@@ -101,24 +100,11 @@ class Shopgate_Helper_DataStructure
      */
     public function jsonEncode($value)
     {
-        // if json_encode exists use that
-        if (extension_loaded('json') && function_exists('json_encode')) {
-            $encodedValue = json_encode($value);
-            if (!empty($encodedValue)) {
-                return $encodedValue;
-            }
-        }
-
-        try {
-            return \Laminas\Json\Encoder::encode($value);
-        } catch (Exception $exception) {
-            return false;
-        }
+        return json_encode($value);
     }
 
     /**
      * Creates a variable, array or object from any passed JSON string.
-     * Uses json_decode() if present, otherwise falls back to Laminas JSON decoder.
      *
      * @param ?string $json
      * @param bool   $assoc
@@ -131,24 +117,6 @@ class Shopgate_Helper_DataStructure
             return null;
         }
 
-        // if json_decode exists use that
-        if (extension_loaded('json') && function_exists('json_decode')) {
-            $decodedValue = json_decode($json, $assoc);
-            if (!empty($decodedValue)) {
-                return $decodedValue;
-            }
-        }
-
-        try {
-            return \Laminas\Json\Decoder::decode(
-                $json,
-                $assoc
-                    ? \Laminas\Json\Json::TYPE_ARRAY
-                    : \Laminas\Json\Json::TYPE_OBJECT
-            );
-        } catch (Exception $exception) {
-            // if a string is no valid json this call will throw Laminas\Json\Exception\RuntimeException
-            return null;
-        }
+        return json_decode($json, $assoc);
     }
 }
