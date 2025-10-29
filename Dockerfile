@@ -1,4 +1,4 @@
-FROM php:5.6-cli
+FROM php:8.3-cli
 
 RUN apt-get update && apt-get install -y git zip nano && \
     curl -o /composer-setup.php https://getcomposer.org/installer && \
