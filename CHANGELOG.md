@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [2.11.1] - 2025-10-29
+**WARNING** This release may break on your PHP installation if the JSON extension is not installed. The JSON extension
+has been bundled with PHP since 5.2.0 but could be explicitly disabled. It is part of PHP core and can't be disabled
+anymore since PHP 8.0.0.
+
+### Removed
+* the fallback to the abandoned package `laminas/laminas-json` has been removed in favor of compatibility to PHP 8.3
+
+### Added
+* PHP 8.3 compatibility
+
+### Fixed
+* CI runners getting stuck due to abandoned images; updated to `ubuntu-24.04`
+
 ## [2.10.3] - 2024-02-23
 ### Fixed
 * handle zero length files properly in `ShopateMobileRedirect::loadKeywordsFromFile()`
@@ -789,7 +803,8 @@ classes are used directly. The regular "SDK way" of writing a plugin, as shown i
 - fixed error in use of old configuration
 - added changelog.txt
 
-[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.10.3...HEAD
+[Unreleased]: https://github.com/shopgate/cart-integration-sdk/compare/2.11.0...HEAD
+[2.11.0]: https://github.com/shopgate/cart-integration-sdk/compare/2.10.3...2.11.0
 [2.10.3]: https://github.com/shopgate/cart-integration-sdk/compare/2.10.2...2.10.3
 [2.10.2]: https://github.com/shopgate/cart-integration-sdk/compare/2.10.1...2.10.2
 [2.10.1]: https://github.com/shopgate/cart-integration-sdk/compare/2.9.91...2.10.1
